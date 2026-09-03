@@ -1,0 +1,12 @@
+[project]
+name = "pfefferminzia"
+version = "0.1.0"
+description = "Small read-only AgentMail inbox reader"
+requires-python = ">=3.11"
+dependencies = [
+    "agentmail>=0.2.15",
+    "python-dotenv>=1.0.0",
+]
+
+[tool.uv]
+package = false
