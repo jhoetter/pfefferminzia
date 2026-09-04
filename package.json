@@ -11,7 +11,6 @@
     "start": "NODE_ENV=production tsx server/index.ts",
     "mcp": "tsx mcp/stdio.ts",
     "sync": "tsx scripts/sync-agentmail.ts",
-    "generate:tariffs": "tsx scripts/generate-tariffs.ts",
     "workshop:reset": "tsx scripts/reset-workshop.ts --confirm-demo-reset",
     "test": "vitest run"
   },

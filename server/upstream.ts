@@ -6,7 +6,7 @@ import { parse } from "csv-parse/sync";
 import { getDatabase, ROOT } from "./database";
 
 export const FALK_DATASET_ID = "falk-pfefferminzia-S";
-export const FALK_UPSTREAM_COMMIT = "352a68ec5786920bdb41b42d3cefc41627ad1145";
+export const FALK_UPSTREAM_COMMIT = "53a80bf49176a5066b80f0d4d509f096c16f57e7";
 export const FALK_ATTRIBUTION = "Pfefferminzia – synthetischer Lehr-Datensatz, Falk Uebernickel, CC BY 4.0";
 export const FALK_ROOT = path.join(ROOT, "vendor", "falk-pfefferminzia");
 const MANIFEST_PATH = path.join(FALK_ROOT, "data", "manifest_S.json");
@@ -183,7 +183,6 @@ export function importFalkDataset(db = getDatabase(), force = false): UpstreamIm
 
 export function upstreamWarnings() {
   return [
-    "Upstream contains persona documents and business rules as Markdown/EML, but no rendered tariff PDFs.",
     "Finance and broader process stages are not fully implemented yet.",
   ];
 }

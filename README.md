@@ -57,31 +57,24 @@ application. The `data/truth` instructor solution layer is deliberately not
 loaded or exposed through the operational MCP server.
 
 The upstream snapshot now includes persona claim, interaction, and document
-tables plus synthetic case files and three business-rule documents. Finance,
-broader process data, and full tariff rendering remain future stages. This
+tables plus synthetic case files, three business-rule documents, and rendered
+tariff sheets. Finance, broader process data, and full policy wordings remain future stages. This
 repository keeps mutable workshop workflow in a separate, explicitly labelled
 extension layer using the upstream identifiers.
 
 ### Tariff documents
 
-Falk's tariff reference tables already define 14 tariff generations and their
-canonical Swiss and German document IDs, but the pinned upstream revision does
-not contain the corresponding rendered policy PDFs. This repository therefore
-generates 28 two-page Markdown/PDF references from those tables: one per tariff
-generation and market. The reusable `PF-PDF-1.1` template provides a consistent
-German tariff layout, document facts, application notes, tariff characteristics,
-and machine-extractable text. The tariff library embeds the rendered PDF and
-offers the extracted Markdown as a separate inspection view. Contracts resolve
-documents by the exact upstream generation, product, and market rather than by
-a loose product-name match.
+Falk's repository renders its 14 tariff generations for Switzerland and
+Germany as 28 deterministic Markdown/PDF tariff sheets. This application
+indexes those canonical files directly from the pinned submodule; it does not
+copy or regenerate them. The tariff library embeds the PDF and offers the
+Markdown source as a separate inspection view. Contracts resolve documents by
+the exact upstream generation, product, and market rather than by a loose
+product-name match.
 
-These generated files are intentionally condensed workshop aids. They are not
-complete policy wordings, real tariffs, legally reviewed terms, or substitutes
-for the future upstream document wave. Their front matter, PDF header/footer,
-catalog, PDF metadata, and application copy all mark them as synthetic workshop
-extensions. A
-future contribution of richer documents to Falk's repository would require
-separate agreement and is not part of this repository's current integration.
+The tariff sheets are intentionally condensed, synthetic teaching material.
+They are not complete policy wordings, real tariffs, legally reviewed terms, or
+insurance advice.
 
 ### Claims workshop extension
 
@@ -105,7 +98,7 @@ technically blocked and cannot be approved.
 - `server/` — SQLite schema, domain services, AgentMail adapter, and HTTP host
 - `mcp/` — MCP transports, tools, and resources
 - `src/` — React workshop interface
-- `data/tariffs/` — local workshop document sources and generated PDFs
+- `data/tariffs/catalog.json` — application index for Falk's upstream tariff documents
 - `scripts/` — reproducible import, document generation, and sync commands
 - `tests/` — domain-rule, data-contract, and workflow tests
 - `docs/` — architecture and third-party attribution
@@ -120,7 +113,6 @@ git clone --recurse-submodules https://github.com/jhoetter/pfefferminzia.git
 cd pfefferminzia
 npm install
 npm run data:import
-npm run generate:tariffs
 npm run workshop:reset
 npm run dev
 ```
@@ -226,7 +218,6 @@ is intentionally outside this workshop system.
 npm test
 npm run build
 npm run data:import
-npm run generate:tariffs
 npm run workshop:reset
 ```
 

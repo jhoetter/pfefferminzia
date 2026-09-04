@@ -50,7 +50,7 @@ definitions cannot drift between stdio and HTTP.
 | Falk reference data | `reference_*` | Imported reference catalogs and tariff generations |
 | Falk instructor truth | none | Deliberately excluded from the operational service |
 | Local ticket operations | tickets, messages, attachments, drafts, events | Application-owned and audited |
-| Local document extension | documents plus `data/tariffs/` | Generated from Falk IDs; explicitly workshop-only |
+| Falk tariff documents | documents plus `data/tariffs/catalog.json` | Indexed directly from the pinned upstream submodule |
 | Local claim workflow | `workshop_claims`, recommendations, tasks, events | Mutable exercise projection over selected Falk `core_schaden` records |
 
 The upstream revision is pinned in Git and recorded with manifest and table
@@ -176,12 +176,12 @@ The fixture set covers four complementary paths:
 
 ## Upstream compatibility
 
-The pinned Falk revision does not yet render policy PDFs or generate claim
-transactions. Local additions therefore use exact published identifiers but
-remain visibly separate:
+The pinned Falk revision renders deterministic tariff PDFs but does not generate
+operational claim transactions. The application indexes the tariff files
+directly; mutable local additions use exact published identifiers but remain
+visibly separate:
 
-- document metadata carries `workshop_extension = true` and the upstream
-  commit;
+- tariff metadata carries the upstream commit and `workshop_extension = false`;
 - mutable claim workflow records use `workshop_*` table names and retain their
   exact upstream `core_schaden` identifiers;
 - source notes distinguish imported Falk facts from point-in-time exercise

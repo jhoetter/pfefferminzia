@@ -5,12 +5,14 @@
 This application treats
 [`falkue/Pfefferminzia`](https://github.com/falkue/Pfefferminzia) as the
 canonical teaching-domain source. It is pinned as a Git submodule at commit
-`352a68ec5786920bdb41b42d3cefc41627ad1145`. We adapt this application's data
+`53a80bf49176a5066b80f0d4d509f096c16f57e7`. We adapt this application's data
 and identifiers to Falk's repository, not the reverse.
 
-No upstream pull request has been opened. Any future contribution to Falk's
-repository requires explicit prior agreement with the repository owner and the
-workshop project owner.
+The deterministic tariff-sheet renderer was contributed upstream in
+[`falkue/Pfefferminzia#1`](https://github.com/falkue/Pfefferminzia/pull/1) and
+is now part of the canonical dataset. Any further upstream contribution still
+requires explicit prior agreement with the repository owner and the workshop
+project owner.
 
 ## What is imported
 
@@ -29,27 +31,20 @@ The current scale-S snapshot produces 67 imported tables and 29,559 rows. The
 import records the upstream commit, dataset/schema versions, manifest hash,
 per-table hashes, row counts, generation time, import time, and attribution.
 
-## Current gaps and local adapters
+## Upstream coverage and local adapters
 
 ### Rendered tariff documents
 
 Finding: the tariff reference CSVs define canonical document IDs for 14 tariff
-generations in CH and DE, but the pinned repository contains no rendered PDF
-files. Its architecture plans Markdown sources and PDF/DOCX rendering for a
-later render stage.
+generations in CH and DE. The upstream render stage now creates 28 deterministic,
+condensed Markdown/PDF tariff sheets from those values.
 
-Local adapter: `scripts/generate-tariffs.ts` derives 28 deterministic,
-condensed Markdown/PDF references from the exact document IDs, generation
-codes, products, markets, dates, and version notes. Template `PF-PDF-1.1`
-renders a consistent two-page German tariff layout with document facts,
-application notes, tariff characteristics, and extractable text. The application embeds the
-PDF next to a separate extracted-text view. Every layer carries workshop-only
-metadata; the documents are not complete or binding terms.
-
-Possible later upstream contribution, only after agreement: document metadata
-schema, source templates, deterministic rendering, disclaimer/footer checks,
-and a small reviewed set of generation-specific policy documents. The current
-condensed references should not simply be presented upstream as full terms.
+Local adapter: `data/tariffs/catalog.json` provides application-facing metadata.
+The database index points directly to
+`vendor/falk-pfefferminzia/data/documents/S/tarife`; no local PDF renderer or
+duplicate document copy remains. The application embeds the upstream PDF next
+to its Markdown source. The documents are synthetic teaching material, not
+complete or binding terms.
 
 ### Claims and interactions
 
@@ -89,7 +84,8 @@ declared storyline invariants.
 
 1. Review upstream release notes and planned schema changes.
 2. Update the submodule pointer on a dedicated branch.
-3. Update `FALK_UPSTREAM_COMMIT` and regenerate tariff references.
+3. Update `FALK_UPSTREAM_COMMIT` and verify the tariff catalog against the
+   upstream documents.
 4. Run `npm run data:import`; all manifest and CSV hashes must verify.
 5. Run `npm test` and `npm run build`.
 6. Compare row counts, persona invariants, contract/document resolution, and
