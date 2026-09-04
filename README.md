@@ -39,6 +39,9 @@ The React interface is a human workspace over the same application services.
 MCP clients use domain-level tools and resources rather than generic SQL or
 unrestricted filesystem access.
 
+The current three-day workshop design is documented in
+[`docs/WORKSHOP_AGENDA.md`](docs/WORKSHOP_AGENDA.md).
+
 ## Upstream dataset
 
 The pinned sample dataset currently contributes:
@@ -101,7 +104,7 @@ technically blocked and cannot be approved.
 - `data/tariffs/catalog.json` — application index for Falk's upstream tariff documents
 - `scripts/` — reproducible import, document generation, and sync commands
 - `tests/` — domain-rule, data-contract, and workflow tests
-- `docs/` — architecture and third-party attribution
+- `docs/` — workshop agenda, architecture, and third-party attribution
 
 ## Setup
 
