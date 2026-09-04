@@ -1,0 +1,3 @@
+[submodule "vendor/falk-pfefferminzia"]
+	path = vendor/falk-pfefferminzia
+	url = https://github.com/falkue/Pfefferminzia.git

@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "data:init": "git submodule update --init --recursive",
     "dev": "tsx watch server/index.ts",
     "build": "tsc --noEmit && vite build",
     "start": "NODE_ENV=production tsx server/index.ts",

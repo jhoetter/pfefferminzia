@@ -5,6 +5,11 @@ Versicherungsanfragen. AgentMail ist der E-Mail-Transport; Pfefferminzia spiegel
 Threads, Nachrichten und Anhänge in eine eigene SQLite-Datenschicht und stellt
 dieselben Vorgänge Menschen über eine Web-App und Agenten über MCP zur Verfügung.
 
+Die synthetischen Kunden-, Vertrags- und Tarifstammdaten stammen aus dem als
+Submodule eingebundenen Lehr-Datensatz von Falk Uebernickel. Hinweise zu Version,
+Lizenz und Namensnennung stehen in
+[`docs/THIRD_PARTY_DATA.md`](docs/THIRD_PARTY_DATA.md).
+
 Die mitgelieferten Tarife sind fiktive MVP-Unterlagen. Der normale Start erzeugt keine
 Demo-Tickets; Tickets entstehen ausschließlich aus synchronisierten AgentMail-Threads.
 
@@ -31,10 +36,14 @@ _Anonymisierte Aufnahme der lokalen MVP-Oberfläche._
 Voraussetzungen: Node.js 22 oder neuer und ein AgentMail-Key.
 
 ```bash
+npm run data:init
 npm install
 npm run generate:tariffs
 npm run dev
 ```
+
+`npm run data:init` initialisiert das gepinnte Daten-Submodule. Alternativ kann das
+Repository direkt mit `git clone --recurse-submodules` geklont werden.
 
 Danach läuft die App unter <http://127.0.0.1:3004>.
 
