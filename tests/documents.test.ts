@@ -1,4 +1,5 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
+import { PDFDocument } from "pdf-lib";
 import { describe, expect, it } from "vitest";
 import { createDatabase } from "../server/database";
 import { ensureSeedData } from "../server/seed";
@@ -6,7 +7,7 @@ import { listContractDocuments, listTariffs, resolveStoragePath } from "../serve
 import { FALK_UPSTREAM_COMMIT, importFalkDataset } from "../server/upstream";
 
 describe("Falk-aligned workshop documents", () => {
-  it("maps every tariff generation and market to a deterministic PDF", () => {
+  it("maps every tariff generation and market to a deterministic PDF", async () => {
     const db = createDatabase(":memory:");
     importFalkDataset(db, true);
     ensureSeedData(db);
@@ -14,6 +15,13 @@ describe("Falk-aligned workshop documents", () => {
     expect(documents).toHaveLength(28);
     expect(documents.every((document) => document.sourceCommit === FALK_UPSTREAM_COMMIT)).toBe(true);
     expect(documents.every((document) => existsSync(resolveStoragePath(`data/tariffs/${document.filename}`)))).toBe(true);
+    const sample = documents.find((document) => document.id === "RW-HP-AHB-DE-2013");
+    expect(sample).toBeDefined();
+    const pdf = await PDFDocument.load(readFileSync(resolveStoragePath(`data/tariffs/${sample!.filename}`)));
+    expect(pdf.getPageCount()).toBe(2);
+    expect(pdf.getCreator()).toBe("Pfefferminzia MCP / PF-PDF-1.0");
+    expect(pdf.getSubject()).toContain("Synthetische Bedingungsreferenz");
+    expect(readFileSync(resolveStoragePath(`data/tariffs/${sample!.id}.md`), "utf8")).toContain("template_version: PF-PDF-1.0");
     expect(listContractDocuments("VTR-00000801", db).map((document) => document.id)).toEqual(["RW-HP-AHB-DE-2013"]);
     expect(listContractDocuments("VTR-00000202", db).map((document) => document.id)).toEqual(["RW-LV-AVB-DE-2025"]);
     db.close();

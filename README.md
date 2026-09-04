@@ -64,14 +64,19 @@ identifiers and planned schemas from the upstream project.
 Falk's tariff reference tables already define 14 tariff generations and their
 canonical Swiss and German document IDs, but the pinned upstream revision does
 not contain the corresponding rendered policy PDFs. This repository therefore
-generates 28 short Markdown/PDF references from those tables: one per tariff
-generation and market. Contracts resolve documents by the exact upstream
-generation, product, and market rather than by a loose product-name match.
+generates 28 two-page Markdown/PDF references from those tables: one per tariff
+generation and market. The reusable `PF-PDF-1.0` template provides a consistent
+German workshop layout, document facts, review path, scenario focus, provenance,
+and machine-extractable text. The tariff library embeds the rendered PDF and
+offers the extracted Markdown as a separate inspection view. Contracts resolve
+documents by the exact upstream generation, product, and market rather than by
+a loose product-name match.
 
 These generated files are intentionally condensed workshop aids. They are not
 complete policy wordings, real tariffs, legally reviewed terms, or substitutes
-for the future upstream document wave. Their front matter, PDF footer, catalog,
-and application metadata all mark them as synthetic workshop extensions. A
+for the future upstream document wave. Their front matter, PDF header/footer,
+catalog, PDF metadata, and application copy all mark them as synthetic workshop
+extensions. A
 future contribution of richer documents to Falk's repository would require
 separate agreement and is not part of this repository's current integration.
 

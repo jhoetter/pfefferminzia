@@ -6,41 +6,45 @@ market: DE
 valid_from: 1985-01-01
 valid_to: 1994-06-30
 source_dataset: falkue/Pfefferminzia@4d847a63ec6f8eb0d033c6d3dce6782789817768
+template_version: PF-PDF-1.0
 workshop_extension: true
 ---
 
-# Pfefferminz Kapital 1985 · DE
+# Bedingungsreferenz Leben
 
-> Synthetic workshop-only conditions reference. This is not a real insurance product, not a complete policy wording, and not legal or insurance advice.
+## Pfefferminz Kapital 1985 · Deutschland
 
-## Canonical assignment
+> Fiktive Workshop-Referenz. Kein echtes Versicherungsprodukt, kein vollständiges Bedingungswerk und keine Rechts- oder Versicherungsberatung.
 
-- Document ID: RW-LV-AVB-DE-1985
-- Tariff generation: PK-85
-- Products: LV-VORS, LV-EU
-- Market: DE
-- New-business validity: 1985-01-01 to 1994-06-30
-- Origin: PFEFFERMINZ
-- Underwriting guideline: ARL-1985
-- Health questionnaire: GF-1985
+## Einordnung
 
-## Generation parameters
+Diese Referenz ordnet die Falk-Tarifgeneration PK-85 den Produkten LV-VORS, LV-EU im Markt DE zu. Sie dient der nachvollziehbaren Recherche und niemals einer automatischen Annahme- oder Leistungsentscheidung.
 
-- Suicide exclusion period in this market: 1 year(s)
-- Follow-up insurance guarantee: NEIN
-- Surrender-value method: TABELLE
-- Disability reference method: ABSTRAKT
-- Flight-risk exclusion: JA
-- Simplified mortality table: T1985
-
-## Teaching characteristics
+## Generationsprofil
 
 DM-Summen (Umrechnung 1.95583); Praemienbefreiung als Antragsklausel; Bezugsrecht oft gesetzliche Erben; Flugrisiko-Ausschluss; nur gescannte Papierakten
 
-## Use in Pfefferminzia MCP
+## Dokument- und Tarifdaten
 
-The applicable document must be selected through contract ID, tariff generation, and market. Every life-insurance communication, underwriting recommendation, beneficiary assessment, or benefit decision requires qualified human review before it can leave the workshop system.
+- **Produkte:** LV-VORS, LV-EU
+- **Neugeschäft:** 1985-01-01 bis 1994-06-30
+- **Annahmerichtlinie:** ARL-1985
+- **Gesundheitsfragen:** GF-1985
+- **Suizidfrist:** 1 Jahr(e) · Markt DE
+- **Rückkaufswert:** TABELLE
 
-## Responsible-use boundary
+## Prüfpfad vor einer Aussage
 
-This condensed document exists to demonstrate version-aware retrieval and tool use. It deliberately preserves conflicts and ambiguity documented by the upstream teaching dataset. It must never be presented as a real insurer's binding terms.
+- Rolle der Person, Vertrag, Produkt und Markt eindeutig auflösen.
+- Tarifgeneration, Vertragsbeginn, Nachträge und versicherte Summe prüfen.
+- Gesundheitsangaben und Dokumente nur zweckgebunden und minimal verwenden.
+- Begünstigung, Ausschlüsse und Leistungsunterlagen niemals aus Stammdaten ableiten.
+- Jede Annahme-, Begünstigten- oder Leistungsentscheidung menschlich prüfen lassen.
+
+## Workshop-Fokus
+
+Lebensversicherung PK-85 / DE: Das MCP-System darf relevante Generationseigenschaften und fehlende Unterlagen aufzeigen. Annahme-, Begünstigten- oder Leistungsentscheidungen bleiben immer bei einer qualifizierten menschlichen Prüfstelle.
+
+## Provenienz und Verantwortung
+
+Abgeleitet aus den Tarifreferenzen von falkue/Pfefferminzia, Commit 4d847a63ec6f8eb0d033c6d3dce6782789817768. Template PF-PDF-1.0. Die Zuordnung erfolgt über Vertrag, Tarifgeneration und Markt. Widersprüche oder fehlende Nachträge müssen vor jeder fachlichen Aussage durch einen Menschen geklärt werden.

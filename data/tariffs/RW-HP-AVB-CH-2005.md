@@ -6,36 +6,45 @@ market: CH
 valid_from: 2001-01-01
 valid_to: 2012-12-31
 source_dataset: falkue/Pfefferminzia@4d847a63ec6f8eb0d033c6d3dce6782789817768
+template_version: PF-PDF-1.0
 workshop_extension: true
 ---
 
-# Pfefferminz Klassik · CH
+# Bedingungsreferenz Haftpflicht
 
-> Synthetic workshop-only conditions reference. This is not a real insurance product, not a complete policy wording, and not legal or insurance advice.
+## Pfefferminz Klassik · Schweiz
 
-## Canonical assignment
+> Fiktive Workshop-Referenz. Kein echtes Versicherungsprodukt, kein vollständiges Bedingungswerk und keine Rechts- oder Versicherungsberatung.
 
-- Document ID: RW-HP-AVB-CH-2005
-- Tariff generation: HP-KLASSIK
-- Products: HP-PRIV, HP-BETR, HP-BERUF
-- Market: CH
-- New-business validity: 2001-01-01 to 2012-12-31
-- Origin: Pfefferminz
-- Primary source system: HAPO
-- Tariff manual: TH-2005
+## Einordnung
 
-## Version notes
+Diese Referenz ordnet die Falk-Tarifgeneration HP-KLASSIK den Produkten HP-PRIV, HP-BETR, HP-BERUF im Markt CH zu. Sie unterstützt die versionsgenaue Recherche im Workshop, ersetzt aber keine vollständigen Bedingungen.
 
-CH: Vorläufer-AVB 2001 nicht separat modelliert (2005 auf alle Verträge umgestellt); DE: AHB 2008 gilt für alle DE-Verträge ab Markteintritt 2006
-
-## Teaching characteristics
+## Generationsprofil
 
 Deckungssumme 3 Mio.; keine Gefälligkeitsschäden; keine Ausfalldeckung (DE); Obhutsschäden nur bis 2'000; Meldefrist 'sofort'; Krankheitsübertragung ausgeschlossen; kein ordentliches Kündigungsrecht nach 3 Jahren; Verweis auf Art. 12 VVG alt (Genehmigungsfiktion); DE AHB 2008 mit abweichender Ziffernnummerierung (Kfz Ziff. 7.6); Verträge ohne Bausteine
 
-## Use in Pfefferminzia MCP
+## Dokument- und Tarifdaten
 
-The applicable document must be selected through contract ID, tariff generation, and market. Product line alone is insufficient. Any coverage or claim conclusion must also inspect the contract's concrete coverages, limits, deductibles, risk object, amendments, and available evidence.
+- **Produkte:** HP-PRIV, HP-BETR, HP-BERUF
+- **Neugeschäft:** 2001-01-01 bis 2012-12-31
+- **Herkunft:** Pfefferminz
+- **Primäres System:** HAPO
+- **Tarifhandbuch:** TH-2005
+- **Revisionen:** CH: Vorläufer-AVB 2001 nicht separat modelliert (2005 auf alle Verträge umgestellt); DE: AHB 2008 gilt für alle DE-Verträge ab Markteintritt 2006
 
-## Responsible-use boundary
+## Prüfpfad vor einer Aussage
 
-This condensed document exists to demonstrate version-aware retrieval and tool use. It deliberately preserves conflicts and ambiguity documented by the upstream teaching dataset. It must never be presented as a real insurer's binding terms.
+- Vertrag, Versicherungsnehmer, Produkt und Markt eindeutig auflösen.
+- Tarifgeneration sowie Gültigkeit am Vertrags- und Schadendatum prüfen.
+- Konkrete Deckungen, Bausteine, Versicherungssummen und Selbstbehalte lesen.
+- Nachträge, Quellsystem und Migrationsabweichungen als eigene Evidenz behandeln.
+- Ergebnis als Empfehlung kennzeichnen und erforderliche menschliche Freigabe einholen.
+
+## Workshop-Fokus
+
+Das MCP-System muss zuerst den konkreten Vertrag auflösen und anschließend Generation, Markt, Deckungen, Bausteine und Nachträge gemeinsam bewerten. Diese Referenz allein erlaubt keine Deckungsentscheidung.
+
+## Provenienz und Verantwortung
+
+Abgeleitet aus den Tarifreferenzen von falkue/Pfefferminzia, Commit 4d847a63ec6f8eb0d033c6d3dce6782789817768. Template PF-PDF-1.0. Die Zuordnung erfolgt über Vertrag, Tarifgeneration und Markt. Widersprüche oder fehlende Nachträge müssen vor jeder fachlichen Aussage durch einen Menschen geklärt werden.

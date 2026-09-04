@@ -1,7 +1,7 @@
 [
   {
     "id": "RW-HP-AVB-CH-2005",
-    "title": "Pfefferminz Klassik · CH",
+    "title": "Bedingungsreferenz Haftpflicht · Pfefferminz Klassik · CH",
     "productLine": "liability",
     "productIds": [
       "HP-PRIV",
@@ -15,11 +15,11 @@
     "revision": "CH: Vorläufer-AVB 2001 nicht separat modelliert (2005 auf alle Verträge umgestellt); DE: AHB 2008 gilt für alle DE-Verträge ab Markteintritt 2006",
     "filename": "RW-HP-AVB-CH-2005.pdf",
     "source": "data/tariffs/RW-HP-AVB-CH-2005.md",
-    "summary": "Pfefferminz Klassik (HP-KLASSIK) for CH; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminz Klassik (HP-KLASSIK) für CH; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-HP-AHB-DE-2008",
-    "title": "Pfefferminz Klassik · DE",
+    "title": "Bedingungsreferenz Haftpflicht · Pfefferminz Klassik · DE",
     "productLine": "liability",
     "productIds": [
       "HP-PRIV",
@@ -33,11 +33,11 @@
     "revision": "CH: Vorläufer-AVB 2001 nicht separat modelliert (2005 auf alle Verträge umgestellt); DE: AHB 2008 gilt für alle DE-Verträge ab Markteintritt 2006",
     "filename": "RW-HP-AHB-DE-2008.pdf",
     "source": "data/tariffs/RW-HP-AHB-DE-2008.md",
-    "summary": "Pfefferminz Klassik (HP-KLASSIK) for DE; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminz Klassik (HP-KLASSIK) für DE; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-HP-AVB-CH-2013",
-    "title": "Pfefferminz Modern · CH",
+    "title": "Bedingungsreferenz Haftpflicht · Pfefferminz Modern · CH",
     "productLine": "liability",
     "productIds": [
       "HP-PRIV",
@@ -51,11 +51,11 @@
     "revision": "CH: Revision 2017.1 (Obhut 5'000, Gefälligkeit 5'000, Rückruf-Baustein); DE: Revision 2016.1 (AHB Pfefferminz-Fassung 2016 mit BBR 2015); Neugeschäft 2021-2024 nur für HP-BETR, HP-BERUF und HP-PRIV über Agentur/Makler/Bank",
     "filename": "RW-HP-AVB-CH-2013.pdf",
     "source": "data/tariffs/RW-HP-AVB-CH-2013.md",
-    "summary": "Pfefferminz Modern (HP-MODERN) for CH; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminz Modern (HP-MODERN) für CH; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-HP-AHB-DE-2013",
-    "title": "Pfefferminz Modern · DE",
+    "title": "Bedingungsreferenz Haftpflicht · Pfefferminz Modern · DE",
     "productLine": "liability",
     "productIds": [
       "HP-PRIV",
@@ -69,11 +69,11 @@
     "revision": "CH: Revision 2017.1 (Obhut 5'000, Gefälligkeit 5'000, Rückruf-Baustein); DE: Revision 2016.1 (AHB Pfefferminz-Fassung 2016 mit BBR 2015); Neugeschäft 2021-2024 nur für HP-BETR, HP-BERUF und HP-PRIV über Agentur/Makler/Bank",
     "filename": "RW-HP-AHB-DE-2013.pdf",
     "source": "data/tariffs/RW-HP-AHB-DE-2013.md",
-    "summary": "Pfefferminz Modern (HP-MODERN) for DE; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminz Modern (HP-MODERN) für DE; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-HP-AVB-CH-2022",
-    "title": "Minzia Direct · CH",
+    "title": "Bedingungsreferenz Haftpflicht · Minzia Direct · CH",
     "productLine": "liability",
     "productIds": [
       "HP-PRIV"
@@ -85,11 +85,11 @@
     "revision": "DE-Start 2021-01-01; CH-Start 2022-07-01 (ca. 10 % der MZ-DIRECT-Verträge); MINT Schema-Drift v1 (2021) / v2 (2022) / v3 (2023)",
     "filename": "RW-HP-AVB-CH-2022.pdf",
     "source": "data/tariffs/RW-HP-AVB-CH-2022.md",
-    "summary": "Minzia Direct (MZ-DIRECT) for CH; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Minzia Direct (MZ-DIRECT) für CH; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-HP-AHB-DE-2021",
-    "title": "Minzia Direct · DE",
+    "title": "Bedingungsreferenz Haftpflicht · Minzia Direct · DE",
     "productLine": "liability",
     "productIds": [
       "HP-PRIV"
@@ -101,11 +101,11 @@
     "revision": "DE-Start 2021-01-01; CH-Start 2022-07-01 (ca. 10 % der MZ-DIRECT-Verträge); MINT Schema-Drift v1 (2021) / v2 (2022) / v3 (2023)",
     "filename": "RW-HP-AHB-DE-2021.pdf",
     "source": "data/tariffs/RW-HP-AHB-DE-2021.md",
-    "summary": "Minzia Direct (MZ-DIRECT) for DE; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Minzia Direct (MZ-DIRECT) für DE; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-HP-AVB-CH-2025",
-    "title": "Pfefferminzia · CH",
+    "title": "Bedingungsreferenz Haftpflicht · Pfefferminzia · CH",
     "productLine": "liability",
     "productIds": [
       "HP-PRIV",
@@ -119,11 +119,11 @@
     "revision": "Erstfassung 2025.1; DE mit drei Tarifstufen Basis/Komfort/Premium (BBR 2025); Bedingungsumstellung migrierter Altverträge ab Migration Haftpflicht Q2 2025",
     "filename": "RW-HP-AVB-CH-2025.pdf",
     "source": "data/tariffs/RW-HP-AVB-CH-2025.md",
-    "summary": "Pfefferminzia (PM-2025) for CH; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminzia (PM-2025) für CH; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-HP-AHB-DE-2025",
-    "title": "Pfefferminzia · DE",
+    "title": "Bedingungsreferenz Haftpflicht · Pfefferminzia · DE",
     "productLine": "liability",
     "productIds": [
       "HP-PRIV",
@@ -137,11 +137,11 @@
     "revision": "Erstfassung 2025.1; DE mit drei Tarifstufen Basis/Komfort/Premium (BBR 2025); Bedingungsumstellung migrierter Altverträge ab Migration Haftpflicht Q2 2025",
     "filename": "RW-HP-AHB-DE-2025.pdf",
     "source": "data/tariffs/RW-HP-AHB-DE-2025.md",
-    "summary": "Pfefferminzia (PM-2025) for DE; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminzia (PM-2025) für DE; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-LV-AVB-CH-1985",
-    "title": "Pfefferminz Kapital 1985 · CH",
+    "title": "Bedingungsreferenz Leben · Pfefferminz Kapital 1985 · CH",
     "productLine": "life",
     "productIds": [
       "LV-VORS",
@@ -154,11 +154,11 @@
     "revision": "ARL-1985",
     "filename": "RW-LV-AVB-CH-1985.pdf",
     "source": "data/tariffs/RW-LV-AVB-CH-1985.md",
-    "summary": "Pfefferminz Kapital 1985 (PK-85) for CH; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminz Kapital 1985 (PK-85) für CH; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-LV-AVB-DE-1985",
-    "title": "Pfefferminz Kapital 1985 · DE",
+    "title": "Bedingungsreferenz Leben · Pfefferminz Kapital 1985 · DE",
     "productLine": "life",
     "productIds": [
       "LV-VORS",
@@ -171,11 +171,11 @@
     "revision": "ARL-1985",
     "filename": "RW-LV-AVB-DE-1985.pdf",
     "source": "data/tariffs/RW-LV-AVB-DE-1985.md",
-    "summary": "Pfefferminz Kapital 1985 (PK-85) for DE; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminz Kapital 1985 (PK-85) für DE; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-LV-AVB-CH-1995",
-    "title": "Pfefferminz Kapital / Risiko 1995 · CH",
+    "title": "Bedingungsreferenz Leben · Pfefferminz Kapital / Risiko 1995 · CH",
     "productLine": "life",
     "productIds": [
       "LV-VORS",
@@ -189,11 +189,11 @@
     "revision": "ARL-1985",
     "filename": "RW-LV-AVB-CH-1995.pdf",
     "source": "data/tariffs/RW-LV-AVB-CH-1995.md",
-    "summary": "Pfefferminz Kapital / Risiko 1995 (PK-95) for CH; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminz Kapital / Risiko 1995 (PK-95) für CH; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-LV-AVB-DE-1995",
-    "title": "Pfefferminz Kapital / Risiko 1995 · DE",
+    "title": "Bedingungsreferenz Leben · Pfefferminz Kapital / Risiko 1995 · DE",
     "productLine": "life",
     "productIds": [
       "LV-VORS",
@@ -207,11 +207,11 @@
     "revision": "ARL-1985",
     "filename": "RW-LV-AVB-DE-1995.pdf",
     "source": "data/tariffs/RW-LV-AVB-DE-1995.md",
-    "summary": "Pfefferminz Kapital / Risiko 1995 (PK-95) for DE; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminz Kapital / Risiko 1995 (PK-95) für DE; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-LV-AVB-CH-2000",
-    "title": "Pfefferminz Kapital / Rente 2000 · CH",
+    "title": "Bedingungsreferenz Leben · Pfefferminz Kapital / Rente 2000 · CH",
     "productLine": "life",
     "productIds": [
       "LV-VORS",
@@ -226,11 +226,11 @@
     "revision": "ARL-1985",
     "filename": "RW-LV-AVB-CH-2000.pdf",
     "source": "data/tariffs/RW-LV-AVB-CH-2000.md",
-    "summary": "Pfefferminz Kapital / Rente 2000 (PK-2000) for CH; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminz Kapital / Rente 2000 (PK-2000) für CH; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-LV-AVB-DE-2000",
-    "title": "Pfefferminz Kapital / Rente 2000 · DE",
+    "title": "Bedingungsreferenz Leben · Pfefferminz Kapital / Rente 2000 · DE",
     "productLine": "life",
     "productIds": [
       "LV-VORS",
@@ -245,11 +245,11 @@
     "revision": "ARL-1985",
     "filename": "RW-LV-AVB-DE-2000.pdf",
     "source": "data/tariffs/RW-LV-AVB-DE-2000.md",
-    "summary": "Pfefferminz Kapital / Rente 2000 (PK-2000) for DE; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminz Kapital / Rente 2000 (PK-2000) für DE; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-LV-AVB-CH-2004",
-    "title": "Pfefferminz Kapital / Rente 2004 · CH",
+    "title": "Bedingungsreferenz Leben · Pfefferminz Kapital / Rente 2004 · CH",
     "productLine": "life",
     "productIds": [
       "LV-VORS",
@@ -264,11 +264,11 @@
     "revision": "ARL-1985",
     "filename": "RW-LV-AVB-CH-2004.pdf",
     "source": "data/tariffs/RW-LV-AVB-CH-2004.md",
-    "summary": "Pfefferminz Kapital / Rente 2004 (PK-2004) for CH; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminz Kapital / Rente 2004 (PK-2004) für CH; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-LV-AVB-DE-2004",
-    "title": "Pfefferminz Kapital / Rente 2004 · DE",
+    "title": "Bedingungsreferenz Leben · Pfefferminz Kapital / Rente 2004 · DE",
     "productLine": "life",
     "productIds": [
       "LV-VORS",
@@ -283,11 +283,11 @@
     "revision": "ARL-1985",
     "filename": "RW-LV-AVB-DE-2004.pdf",
     "source": "data/tariffs/RW-LV-AVB-DE-2004.md",
-    "summary": "Pfefferminz Kapital / Rente 2004 (PK-2004) for DE; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminz Kapital / Rente 2004 (PK-2004) für DE; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-LV-AVB-CH-2007",
-    "title": "Pfefferminz Kapital / Rente / Risiko 2007 · CH",
+    "title": "Bedingungsreferenz Leben · Pfefferminz Kapital / Rente / Risiko 2007 · CH",
     "productLine": "life",
     "productIds": [
       "LV-VORS",
@@ -302,11 +302,11 @@
     "revision": "ARL-2008",
     "filename": "RW-LV-AVB-CH-2007.pdf",
     "source": "data/tariffs/RW-LV-AVB-CH-2007.md",
-    "summary": "Pfefferminz Kapital / Rente / Risiko 2007 (PK-2007) for CH; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminz Kapital / Rente / Risiko 2007 (PK-2007) für CH; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-LV-AVB-DE-2008",
-    "title": "Pfefferminz Kapital / Rente / Risiko 2007 · DE",
+    "title": "Bedingungsreferenz Leben · Pfefferminz Kapital / Rente / Risiko 2007 · DE",
     "productLine": "life",
     "productIds": [
       "LV-VORS",
@@ -321,11 +321,11 @@
     "revision": "ARL-2008",
     "filename": "RW-LV-AVB-DE-2008.pdf",
     "source": "data/tariffs/RW-LV-AVB-DE-2008.md",
-    "summary": "Pfefferminz Kapital / Rente / Risiko 2007 (PK-2007) for DE; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminz Kapital / Rente / Risiko 2007 (PK-2007) für DE; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-LV-AVB-CH-2012",
-    "title": "Pfefferminz Leben 2012 · CH",
+    "title": "Bedingungsreferenz Leben · Pfefferminz Leben 2012 · CH",
     "productLine": "life",
     "productIds": [
       "LV-RENTE",
@@ -340,11 +340,11 @@
     "revision": "ARL-2008",
     "filename": "RW-LV-AVB-CH-2012.pdf",
     "source": "data/tariffs/RW-LV-AVB-CH-2012.md",
-    "summary": "Pfefferminz Leben 2012 (PL-2012) for CH; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminz Leben 2012 (PL-2012) für CH; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-LV-AVB-DE-2012",
-    "title": "Pfefferminz Leben 2012 · DE",
+    "title": "Bedingungsreferenz Leben · Pfefferminz Leben 2012 · DE",
     "productLine": "life",
     "productIds": [
       "LV-RENTE",
@@ -359,11 +359,11 @@
     "revision": "ARL-2008",
     "filename": "RW-LV-AVB-DE-2012.pdf",
     "source": "data/tariffs/RW-LV-AVB-DE-2012.md",
-    "summary": "Pfefferminz Leben 2012 (PL-2012) for DE; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminz Leben 2012 (PL-2012) für DE; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-LV-AVB-CH-2015",
-    "title": "Pfefferminz Leben 2015 · CH",
+    "title": "Bedingungsreferenz Leben · Pfefferminz Leben 2015 · CH",
     "productLine": "life",
     "productIds": [
       "LV-RENTE",
@@ -378,11 +378,11 @@
     "revision": "ARL-2015",
     "filename": "RW-LV-AVB-CH-2015.pdf",
     "source": "data/tariffs/RW-LV-AVB-CH-2015.md",
-    "summary": "Pfefferminz Leben 2015 (PL-2015) for CH; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminz Leben 2015 (PL-2015) für CH; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-LV-AVB-DE-2015",
-    "title": "Pfefferminz Leben 2015 · DE",
+    "title": "Bedingungsreferenz Leben · Pfefferminz Leben 2015 · DE",
     "productLine": "life",
     "productIds": [
       "LV-RENTE",
@@ -397,11 +397,11 @@
     "revision": "ARL-2015",
     "filename": "RW-LV-AVB-DE-2015.pdf",
     "source": "data/tariffs/RW-LV-AVB-DE-2015.md",
-    "summary": "Pfefferminz Leben 2015 (PL-2015) for DE; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminz Leben 2015 (PL-2015) für DE; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-LV-AVB-CH-2017",
-    "title": "Pfefferminz Leben 2017 · CH",
+    "title": "Bedingungsreferenz Leben · Pfefferminz Leben 2017 · CH",
     "productLine": "life",
     "productIds": [
       "LV-RENTE",
@@ -416,11 +416,11 @@
     "revision": "ARL-2015",
     "filename": "RW-LV-AVB-CH-2017.pdf",
     "source": "data/tariffs/RW-LV-AVB-CH-2017.md",
-    "summary": "Pfefferminz Leben 2017 (PL-2017) for CH; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminz Leben 2017 (PL-2017) für CH; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-LV-AVB-DE-2017",
-    "title": "Pfefferminz Leben 2017 · DE",
+    "title": "Bedingungsreferenz Leben · Pfefferminz Leben 2017 · DE",
     "productLine": "life",
     "productIds": [
       "LV-RENTE",
@@ -435,11 +435,11 @@
     "revision": "ARL-2015",
     "filename": "RW-LV-AVB-DE-2017.pdf",
     "source": "data/tariffs/RW-LV-AVB-DE-2017.md",
-    "summary": "Pfefferminz Leben 2017 (PL-2017) for DE; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminz Leben 2017 (PL-2017) für DE; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-LV-AVB-CH-MZ-2020",
-    "title": "Minzia RisikoLeben digital · CH",
+    "title": "Bedingungsreferenz Leben · Minzia RisikoLeben digital · CH",
     "productLine": "life",
     "productIds": [
       "LV-RISK",
@@ -452,11 +452,11 @@
     "revision": "ARL-2020",
     "filename": "RW-LV-AVB-CH-MZ-2020.pdf",
     "source": "data/tariffs/RW-LV-AVB-CH-MZ-2020.md",
-    "summary": "Minzia RisikoLeben digital (MZ-2020) for CH; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Minzia RisikoLeben digital (MZ-2020) für CH; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-LV-AVB-DE-MZ-2020",
-    "title": "Minzia RisikoLeben digital · DE",
+    "title": "Bedingungsreferenz Leben · Minzia RisikoLeben digital · DE",
     "productLine": "life",
     "productIds": [
       "LV-RISK",
@@ -469,11 +469,11 @@
     "revision": "ARL-2020",
     "filename": "RW-LV-AVB-DE-MZ-2020.pdf",
     "source": "data/tariffs/RW-LV-AVB-DE-MZ-2020.md",
-    "summary": "Minzia RisikoLeben digital (MZ-2020) for DE; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Minzia RisikoLeben digital (MZ-2020) für DE; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-LV-AVB-CH-2025",
-    "title": "Pfefferminzia 2025 · CH",
+    "title": "Bedingungsreferenz Leben · Pfefferminzia 2025 · CH",
     "productLine": "life",
     "productIds": [
       "LV-RISK",
@@ -488,11 +488,11 @@
     "revision": "ARL-2025",
     "filename": "RW-LV-AVB-CH-2025.pdf",
     "source": "data/tariffs/RW-LV-AVB-CH-2025.md",
-    "summary": "Pfefferminzia 2025 (PZ-2025) for CH; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminzia 2025 (PZ-2025) für CH; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   },
   {
     "id": "RW-LV-AVB-DE-2025",
-    "title": "Pfefferminzia 2025 · DE",
+    "title": "Bedingungsreferenz Leben · Pfefferminzia 2025 · DE",
     "productLine": "life",
     "productIds": [
       "LV-RISK",
@@ -507,6 +507,6 @@
     "revision": "ARL-2025",
     "filename": "RW-LV-AVB-DE-2025.pdf",
     "source": "data/tariffs/RW-LV-AVB-DE-2025.md",
-    "summary": "Pfefferminzia 2025 (PZ-2025) for DE; synthetic workshop conditions mapped to Falk's exact tariff generation."
+    "summary": "Pfefferminzia 2025 (PZ-2025) für DE; synthetische Workshop-Referenz mit exakter Falk-Tarifzuordnung."
   }
 ]

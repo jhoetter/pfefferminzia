@@ -241,7 +241,34 @@ function TariffView({ tariffs }: { tariffs: TariffDocument[] }) {
   const [active, setActive] = useState(tariffs[0]?.id || "");
   const [line, setLine] = useState<"all" | "liability" | "life">("all");
   const [market, setMarket] = useState<"all" | "CH" | "DE">("all");
+  const [documentView, setDocumentView] = useState<"pdf" | "text">("pdf");
   const visible = tariffs.filter((tariff) => (line === "all" || tariff.productLine === line) && (market === "all" || tariff.market === market));
   const selected = visible.find((tariff) => tariff.id === active) || visible[0];
-  return <div className="page tariff-page"><section className="page-heading"><div><p className="eyebrow">WISSENSBASIS · SYNTHETISCHE BEDINGUNGEN</p><h1>Tarifbibliothek</h1><p>Falk-Tarifgeneration und Markt bestimmen das passende Workshop-Dokument.</p></div><div className="tariff-filters"><select value={line} onChange={(event) => setLine(event.target.value as typeof line)}><option value="all">Alle Sparten</option><option value="liability">Haftpflicht</option><option value="life">Leben</option></select><select value={market} onChange={(event) => setMarket(event.target.value as typeof market)}><option value="all">CH & DE</option><option value="CH">Schweiz</option><option value="DE">Deutschland</option></select></div></section><div className="tariff-layout"><div className="tariff-list">{visible.map((tariff) => <button key={tariff.id} className={tariff.id === selected?.id ? "active" : ""} onClick={() => setActive(tariff.id)}><span className={`tariff-icon ${tariff.productLine}`}>{tariff.productLine === "life" ? <HeartPulse /> : <Shield />}</span><div><strong>{tariff.title}</strong><small>{tariff.id} · {tariff.tariffGenerationId}</small></div><ChevronRight /></button>)}</div>{selected && <article className="tariff-reader"><header><div className="tariff-badges"><Badge tone={productTone(selected.productLine)}>{productLabel[selected.productLine]}</Badge><Badge>{selected.market || "–"}</Badge><Badge>{selected.tariffGenerationId || "–"}</Badge></div><a href={`/api/tariffs/${selected.id}/download`}><FileText size={15} />PDF öffnen</a></header><h2>{selected.title}</h2><p className="tariff-summary">{selected.summary}</p><div className="document-text">{selected.textContent.split("\n").map((textLine, index) => textLine.startsWith("# ") ? <h2 key={index}>{textLine.slice(2)}</h2> : textLine.startsWith("## ") ? <h3 key={index}>{textLine.slice(3)}</h3> : textLine.startsWith("> ") ? <blockquote key={index}>{textLine.slice(2)}</blockquote> : textLine.startsWith("- ") ? <p className="list-line" key={index}>• {textLine.slice(2)}</p> : textLine && textLine !== "---" && !textLine.includes(": ") ? <p key={index}>{textLine}</p> : null)}</div></article>}</div></div>;
+  return <div className="page tariff-page">
+    <section className="page-heading">
+      <div><p className="eyebrow">WISSENSBASIS · SYNTHETISCHE BEDINGUNGEN</p><h1>Tarifbibliothek</h1><p>Falk-Tarifgeneration und Markt bestimmen das passende Workshop-Dokument.</p></div>
+      <div className="tariff-filters">
+        <select value={line} onChange={(event) => setLine(event.target.value as typeof line)}><option value="all">Alle Sparten</option><option value="liability">Haftpflicht</option><option value="life">Leben</option></select>
+        <select value={market} onChange={(event) => setMarket(event.target.value as typeof market)}><option value="all">CH & DE</option><option value="CH">Schweiz</option><option value="DE">Deutschland</option></select>
+      </div>
+    </section>
+    <div className="tariff-layout">
+      <div className="tariff-list">{visible.map((tariff) => <button key={tariff.id} className={tariff.id === selected?.id ? "active" : ""} onClick={() => setActive(tariff.id)}><span className={`tariff-icon ${tariff.productLine}`}>{tariff.productLine === "life" ? <HeartPulse /> : <Shield />}</span><div><strong>{tariff.title}</strong><small>{tariff.id} · {tariff.tariffGenerationId}</small></div><ChevronRight /></button>)}</div>
+      {selected && <article className="tariff-reader">
+        <header>
+          <div className="tariff-badges"><Badge tone={productTone(selected.productLine)}>{productLabel[selected.productLine]}</Badge><Badge>{selected.market || "–"}</Badge><Badge>{selected.tariffGenerationId || "–"}</Badge></div>
+          <a href={`/api/tariffs/${selected.id}/download`} target="_blank" rel="noreferrer"><FileText size={15} />PDF herunterladen</a>
+        </header>
+        <h2>{selected.title}</h2>
+        <p className="tariff-summary">{selected.summary}</p>
+        <div className="tariff-view-switch" role="group" aria-label="Dokumentansicht">
+          <button className={documentView === "pdf" ? "active" : ""} onClick={() => setDocumentView("pdf")}>PDF-Vorschau</button>
+          <button className={documentView === "text" ? "active" : ""} onClick={() => setDocumentView("text")}>Extrahierter Text</button>
+        </div>
+        {documentView === "pdf"
+          ? <div className="pdf-preview"><iframe title={`PDF-Vorschau ${selected.id}`} src={`/api/tariffs/${selected.id}/download?inline=1#toolbar=0&navpanes=0&view=FitH`} /></div>
+          : <div className="document-text">{selected.textContent.split("\n").map((textLine, index) => textLine.startsWith("# ") ? <h2 key={index}>{textLine.slice(2)}</h2> : textLine.startsWith("## ") ? <h3 key={index}>{textLine.slice(3)}</h3> : textLine.startsWith("> ") ? <blockquote key={index}>{textLine.slice(2)}</blockquote> : textLine.startsWith("- ") ? <p className="list-line" key={index}>• {textLine.slice(2)}</p> : textLine && textLine !== "---" && !textLine.includes(": ") ? <p key={index}>{textLine}</p> : null)}</div>}
+      </article>}
+    </div>
+  </div>;
 }

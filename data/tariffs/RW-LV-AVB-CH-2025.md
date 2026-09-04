@@ -6,41 +6,45 @@ market: CH
 valid_from: 2025-01-01
 valid_to: null
 source_dataset: falkue/Pfefferminzia@4d847a63ec6f8eb0d033c6d3dce6782789817768
+template_version: PF-PDF-1.0
 workshop_extension: true
 ---
 
-# Pfefferminzia 2025 · CH
+# Bedingungsreferenz Leben
 
-> Synthetic workshop-only conditions reference. This is not a real insurance product, not a complete policy wording, and not legal or insurance advice.
+## Pfefferminzia 2025 · Schweiz
 
-## Canonical assignment
+> Fiktive Workshop-Referenz. Kein echtes Versicherungsprodukt, kein vollständiges Bedingungswerk und keine Rechts- oder Versicherungsberatung.
 
-- Document ID: RW-LV-AVB-CH-2025
-- Tariff generation: PZ-2025
-- Products: LV-RISK, LV-VORS, LV-RENTE, LV-EU
-- Market: CH
-- New-business validity: 2025-01-01 to open
-- Origin: PFEFFERMINZIA
-- Underwriting guideline: ARL-2025
-- Health questionnaire: GF-2025
+## Einordnung
 
-## Generation parameters
+Diese Referenz ordnet die Falk-Tarifgeneration PZ-2025 den Produkten LV-RISK, LV-VORS, LV-RENTE, LV-EU im Markt CH zu. Sie dient der nachvollziehbaren Recherche und niemals einer automatischen Annahme- oder Leistungsentscheidung.
 
-- Suicide exclusion period in this market: 3 year(s)
-- Follow-up insurance guarantee: JA
-- Surrender-value method: FORMEL
-- Disability reference method: KONKRET
-- Flight-risk exclusion: NEIN
-- Simplified mortality table: T2020
-
-## Teaching characteristics
+## Generationsprofil
 
 Harmonisierte AVB CH/DE mit Laenderanhang; Referenz-Bedingungswerk fuer RAG; Migration MZ-Tarife auf PZ-Codes; CH weiterhin geschlechtsabhaengig (Kontrast zu DE)
 
-## Use in Pfefferminzia MCP
+## Dokument- und Tarifdaten
 
-The applicable document must be selected through contract ID, tariff generation, and market. Every life-insurance communication, underwriting recommendation, beneficiary assessment, or benefit decision requires qualified human review before it can leave the workshop system.
+- **Produkte:** LV-RISK, LV-VORS, LV-RENTE, LV-EU
+- **Neugeschäft:** 2025-01-01 bis offen
+- **Annahmerichtlinie:** ARL-2025
+- **Gesundheitsfragen:** GF-2025
+- **Suizidfrist:** 3 Jahr(e) · Markt CH
+- **Rückkaufswert:** FORMEL
 
-## Responsible-use boundary
+## Prüfpfad vor einer Aussage
 
-This condensed document exists to demonstrate version-aware retrieval and tool use. It deliberately preserves conflicts and ambiguity documented by the upstream teaching dataset. It must never be presented as a real insurer's binding terms.
+- Rolle der Person, Vertrag, Produkt und Markt eindeutig auflösen.
+- Tarifgeneration, Vertragsbeginn, Nachträge und versicherte Summe prüfen.
+- Gesundheitsangaben und Dokumente nur zweckgebunden und minimal verwenden.
+- Begünstigung, Ausschlüsse und Leistungsunterlagen niemals aus Stammdaten ableiten.
+- Jede Annahme-, Begünstigten- oder Leistungsentscheidung menschlich prüfen lassen.
+
+## Workshop-Fokus
+
+Lebensversicherung PZ-2025 / CH: Das MCP-System darf relevante Generationseigenschaften und fehlende Unterlagen aufzeigen. Annahme-, Begünstigten- oder Leistungsentscheidungen bleiben immer bei einer qualifizierten menschlichen Prüfstelle.
+
+## Provenienz und Verantwortung
+
+Abgeleitet aus den Tarifreferenzen von falkue/Pfefferminzia, Commit 4d847a63ec6f8eb0d033c6d3dce6782789817768. Template PF-PDF-1.0. Die Zuordnung erfolgt über Vertrag, Tarifgeneration und Markt. Widersprüche oder fehlende Nachträge müssen vor jeder fachlichen Aussage durch einen Menschen geklärt werden.

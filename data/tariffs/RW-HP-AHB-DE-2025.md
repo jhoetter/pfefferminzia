@@ -6,36 +6,45 @@ market: DE
 valid_from: 2025-01-01
 valid_to: null
 source_dataset: falkue/Pfefferminzia@4d847a63ec6f8eb0d033c6d3dce6782789817768
+template_version: PF-PDF-1.0
 workshop_extension: true
 ---
 
-# Pfefferminzia · DE
+# Bedingungsreferenz Haftpflicht
 
-> Synthetic workshop-only conditions reference. This is not a real insurance product, not a complete policy wording, and not legal or insurance advice.
+## Pfefferminzia · Deutschland
 
-## Canonical assignment
+> Fiktive Workshop-Referenz. Kein echtes Versicherungsprodukt, kein vollständiges Bedingungswerk und keine Rechts- oder Versicherungsberatung.
 
-- Document ID: RW-HP-AHB-DE-2025
-- Tariff generation: PM-2025
-- Products: HP-PRIV, HP-BETR, HP-BERUF
-- Market: DE
-- New-business validity: 2025-01-01 to open
-- Origin: Pfefferminzia
-- Primary source system: MINT
-- Tariff manual: TH-2024
+## Einordnung
 
-## Version notes
+Diese Referenz ordnet die Falk-Tarifgeneration PM-2025 den Produkten HP-PRIV, HP-BETR, HP-BERUF im Markt DE zu. Sie unterstützt die versionsgenaue Recherche im Workshop, ersetzt aber keine vollständigen Bedingungen.
 
-Erstfassung 2025.1; DE mit drei Tarifstufen Basis/Komfort/Premium (BBR 2025); Bedingungsumstellung migrierter Altverträge ab Migration Haftpflicht Q2 2025
-
-## Teaching characteristics
+## Generationsprofil
 
 Harmonisierte Bedingungen beider Häuser für alle drei Produkte; CH ordentliches Kündigungsrecht nach 3 Jahren explizit (Art. 35a VVG); DE Tarifstufen Basis/Komfort/Premium mit unterschiedlichen Sublimits; Neuwertentschädigung bis 500 EUR (Premium); Personenschäden unter Angehörigen mitversichert (DE Premium); Gefälligkeitsschäden 10'000 im AVB-Text vs. 5'000 in Sublimit-Tabelle (bewusste Unschärfe R1); Tarifhandbuch 2024 mit geändertem Selbstbehaltfaktor (R6)
 
-## Use in Pfefferminzia MCP
+## Dokument- und Tarifdaten
 
-The applicable document must be selected through contract ID, tariff generation, and market. Product line alone is insufficient. Any coverage or claim conclusion must also inspect the contract's concrete coverages, limits, deductibles, risk object, amendments, and available evidence.
+- **Produkte:** HP-PRIV, HP-BETR, HP-BERUF
+- **Neugeschäft:** 2025-01-01 bis offen
+- **Herkunft:** Pfefferminzia
+- **Primäres System:** MINT
+- **Tarifhandbuch:** TH-2024
+- **Revisionen:** Erstfassung 2025.1; DE mit drei Tarifstufen Basis/Komfort/Premium (BBR 2025); Bedingungsumstellung migrierter Altverträge ab Migration Haftpflicht Q2 2025
 
-## Responsible-use boundary
+## Prüfpfad vor einer Aussage
 
-This condensed document exists to demonstrate version-aware retrieval and tool use. It deliberately preserves conflicts and ambiguity documented by the upstream teaching dataset. It must never be presented as a real insurer's binding terms.
+- Vertrag, Versicherungsnehmer, Produkt und Markt eindeutig auflösen.
+- Tarifgeneration sowie Gültigkeit am Vertrags- und Schadendatum prüfen.
+- Konkrete Deckungen, Bausteine, Versicherungssummen und Selbstbehalte lesen.
+- Nachträge, Quellsystem und Migrationsabweichungen als eigene Evidenz behandeln.
+- Ergebnis als Empfehlung kennzeichnen und erforderliche menschliche Freigabe einholen.
+
+## Workshop-Fokus
+
+Das MCP-System muss zuerst den konkreten Vertrag auflösen und anschließend Generation, Markt, Deckungen, Bausteine und Nachträge gemeinsam bewerten. Diese Referenz allein erlaubt keine Deckungsentscheidung.
+
+## Provenienz und Verantwortung
+
+Abgeleitet aus den Tarifreferenzen von falkue/Pfefferminzia, Commit 4d847a63ec6f8eb0d033c6d3dce6782789817768. Template PF-PDF-1.0. Die Zuordnung erfolgt über Vertrag, Tarifgeneration und Markt. Widersprüche oder fehlende Nachträge müssen vor jeder fachlichen Aussage durch einen Menschen geklärt werden.

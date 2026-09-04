@@ -204,6 +204,12 @@ export function createApp() {
   app.get("/api/tariffs/:id/download", (req, res) => {
     const record = getDocumentRecord(String(req.params.id));
     if (!record) return res.status(404).json({ error: "Tariff not found" });
+    if (req.query.inline === "1") {
+      const filename = String(record.filename).replace(/["\r\n]/g, "_");
+      res.type("application/pdf");
+      res.setHeader("Content-Disposition", `inline; filename="${filename}"`);
+      return res.sendFile(resolveStoragePath(String(record.storage_path)));
+    }
     res.download(resolveStoragePath(String(record.storage_path)), String(record.filename));
   });
 

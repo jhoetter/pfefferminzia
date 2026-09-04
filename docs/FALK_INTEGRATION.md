@@ -40,8 +40,11 @@ later render stage.
 
 Local adapter: `scripts/generate-tariffs.ts` derives 28 deterministic,
 condensed Markdown/PDF references from the exact document IDs, generation
-codes, products, markets, dates, and version notes. They carry workshop-only
-metadata and are not complete or binding terms.
+codes, products, markets, dates, and version notes. Template `PF-PDF-1.0`
+renders a consistent two-page German layout with document facts, a review path,
+workshop scenario, provenance, and extractable text. The application embeds the
+PDF next to a separate extracted-text view. Every layer carries workshop-only
+metadata; the documents are not complete or binding terms.
 
 Possible later upstream contribution, only after agreement: document metadata
 schema, source templates, deterministic rendering, disclaimer/footer checks,

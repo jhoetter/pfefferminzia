@@ -6,36 +6,45 @@ market: CH
 valid_from: 2013-01-01
 valid_to: 2020-12-31
 source_dataset: falkue/Pfefferminzia@4d847a63ec6f8eb0d033c6d3dce6782789817768
+template_version: PF-PDF-1.0
 workshop_extension: true
 ---
 
-# Pfefferminz Modern · CH
+# Bedingungsreferenz Haftpflicht
 
-> Synthetic workshop-only conditions reference. This is not a real insurance product, not a complete policy wording, and not legal or insurance advice.
+## Pfefferminz Modern · Schweiz
 
-## Canonical assignment
+> Fiktive Workshop-Referenz. Kein echtes Versicherungsprodukt, kein vollständiges Bedingungswerk und keine Rechts- oder Versicherungsberatung.
 
-- Document ID: RW-HP-AVB-CH-2013
-- Tariff generation: HP-MODERN
-- Products: HP-PRIV, HP-BETR, HP-BERUF
-- Market: CH
-- New-business validity: 2013-01-01 to 2020-12-31
-- Origin: Pfefferminz
-- Primary source system: HAPO
-- Tariff manual: TH-2013;TH-2017
+## Einordnung
 
-## Version notes
+Diese Referenz ordnet die Falk-Tarifgeneration HP-MODERN den Produkten HP-PRIV, HP-BETR, HP-BERUF im Markt CH zu. Sie unterstützt die versionsgenaue Recherche im Workshop, ersetzt aber keine vollständigen Bedingungen.
 
-CH: Revision 2017.1 (Obhut 5'000, Gefälligkeit 5'000, Rückruf-Baustein); DE: Revision 2016.1 (AHB Pfefferminz-Fassung 2016 mit BBR 2015); Neugeschäft 2021-2024 nur für HP-BETR, HP-BERUF und HP-PRIV über Agentur/Makler/Bank
-
-## Teaching characteristics
+## Generationsprofil
 
 Deckungssumme 5 Mio. (DE 5-10 Mio.); Bausteine eingeführt; Gefälligkeitsschäden bis 5'000; Nebenerwerb nicht gedeckt; Krankheitsübertragung ausgeschlossen; Schlüsselverlust DE 30'000; Meldefrist 'unverzüglich'; CH Mehrjahresverträge 3/5 Jahre
 
-## Use in Pfefferminzia MCP
+## Dokument- und Tarifdaten
 
-The applicable document must be selected through contract ID, tariff generation, and market. Product line alone is insufficient. Any coverage or claim conclusion must also inspect the contract's concrete coverages, limits, deductibles, risk object, amendments, and available evidence.
+- **Produkte:** HP-PRIV, HP-BETR, HP-BERUF
+- **Neugeschäft:** 2013-01-01 bis 2020-12-31
+- **Herkunft:** Pfefferminz
+- **Primäres System:** HAPO
+- **Tarifhandbuch:** TH-2013;TH-2017
+- **Revisionen:** CH: Revision 2017.1 (Obhut 5'000, Gefälligkeit 5'000, Rückruf-Baustein); DE: Revision 2016.1 (AHB Pfefferminz-Fassung 2016 mit BBR 2015); Neugeschäft 2021-2024 nur für HP-BETR, HP-BERUF und HP-PRIV über Agentur/Makler/Bank
 
-## Responsible-use boundary
+## Prüfpfad vor einer Aussage
 
-This condensed document exists to demonstrate version-aware retrieval and tool use. It deliberately preserves conflicts and ambiguity documented by the upstream teaching dataset. It must never be presented as a real insurer's binding terms.
+- Vertrag, Versicherungsnehmer, Produkt und Markt eindeutig auflösen.
+- Tarifgeneration sowie Gültigkeit am Vertrags- und Schadendatum prüfen.
+- Konkrete Deckungen, Bausteine, Versicherungssummen und Selbstbehalte lesen.
+- Nachträge, Quellsystem und Migrationsabweichungen als eigene Evidenz behandeln.
+- Ergebnis als Empfehlung kennzeichnen und erforderliche menschliche Freigabe einholen.
+
+## Workshop-Fokus
+
+Niederberger und Kaufmann: Bei Kinderschäden sind Aufsichtspflicht und konkrete Deckung zu prüfen. Beim Gewerbe-Grossschaden kommen Deckung, Selbstbehalt, Kompetenzgrenze, Kausalität und Regress hinzu.
+
+## Provenienz und Verantwortung
+
+Abgeleitet aus den Tarifreferenzen von falkue/Pfefferminzia, Commit 4d847a63ec6f8eb0d033c6d3dce6782789817768. Template PF-PDF-1.0. Die Zuordnung erfolgt über Vertrag, Tarifgeneration und Markt. Widersprüche oder fehlende Nachträge müssen vor jeder fachlichen Aussage durch einen Menschen geklärt werden.
