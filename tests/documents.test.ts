@@ -19,9 +19,12 @@ describe("Falk-aligned workshop documents", () => {
     expect(sample).toBeDefined();
     const pdf = await PDFDocument.load(readFileSync(resolveStoragePath(`data/tariffs/${sample!.filename}`)));
     expect(pdf.getPageCount()).toBe(2);
-    expect(pdf.getCreator()).toBe("Pfefferminzia MCP / PF-PDF-1.0");
-    expect(pdf.getSubject()).toContain("Synthetische Bedingungsreferenz");
-    expect(readFileSync(resolveStoragePath(`data/tariffs/${sample!.id}.md`), "utf8")).toContain("template_version: PF-PDF-1.0");
+    expect(pdf.getCreator()).toBe("Pfefferminzia Dokumentgenerator / PF-PDF-1.1");
+    expect(pdf.getSubject()).toContain("Synthetisches Tarifblatt");
+    const markdown = readFileSync(resolveStoragePath(`data/tariffs/${sample!.id}.md`), "utf8");
+    expect(markdown).toContain("template_version: PF-PDF-1.1");
+    expect(markdown).not.toContain("Falk-Tarifgeneration");
+    expect(markdown).not.toContain("Workshop-Fokus");
     expect(listContractDocuments("VTR-00000801", db).map((document) => document.id)).toEqual(["RW-HP-AHB-DE-2013"]);
     expect(listContractDocuments("VTR-00000202", db).map((document) => document.id)).toEqual(["RW-LV-AVB-DE-2025"]);
     db.close();

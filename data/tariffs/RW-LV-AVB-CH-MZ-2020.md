@@ -6,25 +6,25 @@ market: CH
 valid_from: 2020-03-01
 valid_to: 2024-12-31
 source_dataset: falkue/Pfefferminzia@352a68ec5786920bdb41b42d3cefc41627ad1145
-template_version: PF-PDF-1.0
+template_version: PF-PDF-1.1
 workshop_extension: true
 ---
 
-# Bedingungsreferenz Leben
+# Tarifblatt Leben
 
 ## Minzia RisikoLeben digital · Schweiz
 
-> Fiktive Workshop-Referenz. Kein echtes Versicherungsprodukt, kein vollständiges Bedingungswerk und keine Rechts- oder Versicherungsberatung.
+> Fiktives Lehrbeispiel. Dieses Tarifblatt ist kein vollständiges Bedingungswerk und keine Rechts- oder Versicherungsberatung.
 
-## Einordnung
+## Geltungsbereich
 
-Diese Referenz ordnet die Falk-Tarifgeneration MZ-2020 den Produkten LV-RISK, LV-EU im Markt CH zu. Sie dient der nachvollziehbaren Recherche und niemals einer automatischen Annahme- oder Leistungsentscheidung.
+Die Tarifgeneration MZ-2020 gilt für die Produkte LV-RISK, LV-EU im Markt Schweiz. Der Neugeschäftszeitraum beginnt am 2020-03-01 und endet am 2024-12-31.
 
-## Generationsprofil
+## Tarifmerkmale
 
 Volldigital, Gesundheitsfragen als JSON, E-Signatur; Minzia kalkuliert von Beginn an mit 0.25 % (unter Hoechstrechnungszins); Unisex auch in CH (Produktentscheid Minzia); Nachversicherungsgarantie nur in Minzia-AVB; AVB Klartext 8-10 Seiten
 
-## Dokument- und Tarifdaten
+## Tarifdaten
 
 - **Produkte:** LV-RISK, LV-EU
 - **Neugeschäft:** 2020-03-01 bis 2024-12-31
@@ -33,18 +33,18 @@ Volldigital, Gesundheitsfragen als JSON, E-Signatur; Minzia kalkuliert von Begin
 - **Suizidfrist:** 3 Jahr(e) · Markt CH
 - **Rückkaufswert:** ENTFAELLT
 
-## Prüfpfad vor einer Aussage
+## Anwendungshinweise
 
-- Rolle der Person, Vertrag, Produkt und Markt eindeutig auflösen.
-- Tarifgeneration, Vertragsbeginn, Nachträge und versicherte Summe prüfen.
-- Gesundheitsangaben und Dokumente nur zweckgebunden und minimal verwenden.
-- Begünstigung, Ausschlüsse und Leistungsunterlagen niemals aus Stammdaten ableiten.
-- Jede Annahme-, Begünstigten- oder Leistungsentscheidung menschlich prüfen lassen.
+- Anwendbar nur auf die ausgewiesenen Produkte und den genannten Markt.
+- Tarifgeneration, Vertragsbeginn, Nachträge und versicherte Summe sind gemeinsam zu lesen.
+- Rechnungsgrundlagen richten sich nach Abschlussdatum, Markt und Tarifgeneration.
+- Begünstigung, Ausschlüsse und Leistungsumfang ergeben sich aus den Vertragsunterlagen.
+- Individuelle Zuschläge oder Ausschlüsse gehen den allgemeinen Tarifmerkmalen vor.
 
-## Workshop-Fokus
+## Besondere Hinweise
 
-Lebensversicherung MZ-2020 / CH: Das MCP-System darf relevante Generationseigenschaften und fehlende Unterlagen aufzeigen. Annahme-, Begünstigten- oder Leistungsentscheidungen bleiben immer bei einer qualifizierten menschlichen Prüfstelle.
+Flugrisiko-Ausschluss: NEIN. Nachversicherungsgarantie: JA. Verweisung EU/BU: KONKRET.
 
-## Provenienz und Verantwortung
+## Dokumentstatus
 
-Abgeleitet aus den Tarifreferenzen von falkue/Pfefferminzia, Commit 352a68ec5786920bdb41b42d3cefc41627ad1145. Template PF-PDF-1.0. Die Zuordnung erfolgt über Vertrag, Tarifgeneration und Markt. Widersprüche oder fehlende Nachträge müssen vor jeder fachlichen Aussage durch einen Menschen geklärt werden.
+Tarifblatt RW-LV-AVB-CH-MZ-2020, gültig ab 2020-03-01 bis 2024-12-31. Es handelt sich um ein fiktives Lehrbeispiel. Individuelle Vertragsunterlagen und spätere Nachträge haben Vorrang.

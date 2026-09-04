@@ -6,25 +6,25 @@ market: DE
 valid_from: 2015-01-01
 valid_to: 2016-12-31
 source_dataset: falkue/Pfefferminzia@352a68ec5786920bdb41b42d3cefc41627ad1145
-template_version: PF-PDF-1.0
+template_version: PF-PDF-1.1
 workshop_extension: true
 ---
 
-# Bedingungsreferenz Leben
+# Tarifblatt Leben
 
 ## Pfefferminz Leben 2015 · Deutschland
 
-> Fiktive Workshop-Referenz. Kein echtes Versicherungsprodukt, kein vollständiges Bedingungswerk und keine Rechts- oder Versicherungsberatung.
+> Fiktives Lehrbeispiel. Dieses Tarifblatt ist kein vollständiges Bedingungswerk und keine Rechts- oder Versicherungsberatung.
 
-## Einordnung
+## Geltungsbereich
 
-Diese Referenz ordnet die Falk-Tarifgeneration PL-2015 den Produkten LV-RENTE, LV-VORS, LV-RISK, LV-EU im Markt DE zu. Sie dient der nachvollziehbaren Recherche und niemals einer automatischen Annahme- oder Leistungsentscheidung.
+Die Tarifgeneration PL-2015 gilt für die Produkte LV-RENTE, LV-VORS, LV-RISK, LV-EU im Markt Deutschland. Der Neugeschäftszeitraum beginnt am 2015-01-01 und endet am 2016-12-31.
 
-## Generationsprofil
+## Tarifmerkmale
 
 Niedrigzins; erste Ueberschussdeklarationen nahe null; HIV unter Therapie ab ARL-2015 versicherbar
 
-## Dokument- und Tarifdaten
+## Tarifdaten
 
 - **Produkte:** LV-RENTE, LV-VORS, LV-RISK, LV-EU
 - **Neugeschäft:** 2015-01-01 bis 2016-12-31
@@ -33,18 +33,18 @@ Niedrigzins; erste Ueberschussdeklarationen nahe null; HIV unter Therapie ab ARL
 - **Suizidfrist:** 3 Jahr(e) · Markt DE
 - **Rückkaufswert:** FORMEL
 
-## Prüfpfad vor einer Aussage
+## Anwendungshinweise
 
-- Rolle der Person, Vertrag, Produkt und Markt eindeutig auflösen.
-- Tarifgeneration, Vertragsbeginn, Nachträge und versicherte Summe prüfen.
-- Gesundheitsangaben und Dokumente nur zweckgebunden und minimal verwenden.
-- Begünstigung, Ausschlüsse und Leistungsunterlagen niemals aus Stammdaten ableiten.
-- Jede Annahme-, Begünstigten- oder Leistungsentscheidung menschlich prüfen lassen.
+- Anwendbar nur auf die ausgewiesenen Produkte und den genannten Markt.
+- Tarifgeneration, Vertragsbeginn, Nachträge und versicherte Summe sind gemeinsam zu lesen.
+- Rechnungsgrundlagen richten sich nach Abschlussdatum, Markt und Tarifgeneration.
+- Begünstigung, Ausschlüsse und Leistungsumfang ergeben sich aus den Vertragsunterlagen.
+- Individuelle Zuschläge oder Ausschlüsse gehen den allgemeinen Tarifmerkmalen vor.
 
-## Workshop-Fokus
+## Besondere Hinweise
 
-Lebensversicherung PL-2015 / DE: Das MCP-System darf relevante Generationseigenschaften und fehlende Unterlagen aufzeigen. Annahme-, Begünstigten- oder Leistungsentscheidungen bleiben immer bei einer qualifizierten menschlichen Prüfstelle.
+Flugrisiko-Ausschluss: NEIN. Nachversicherungsgarantie: NEIN. Verweisung EU/BU: KONKRET.
 
-## Provenienz und Verantwortung
+## Dokumentstatus
 
-Abgeleitet aus den Tarifreferenzen von falkue/Pfefferminzia, Commit 352a68ec5786920bdb41b42d3cefc41627ad1145. Template PF-PDF-1.0. Die Zuordnung erfolgt über Vertrag, Tarifgeneration und Markt. Widersprüche oder fehlende Nachträge müssen vor jeder fachlichen Aussage durch einen Menschen geklärt werden.
+Tarifblatt RW-LV-AVB-DE-2015, gültig ab 2015-01-01 bis 2016-12-31. Es handelt sich um ein fiktives Lehrbeispiel. Individuelle Vertragsunterlagen und spätere Nachträge haben Vorrang.

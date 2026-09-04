@@ -6,25 +6,25 @@ market: DE
 valid_from: 2025-01-01
 valid_to: null
 source_dataset: falkue/Pfefferminzia@352a68ec5786920bdb41b42d3cefc41627ad1145
-template_version: PF-PDF-1.0
+template_version: PF-PDF-1.1
 workshop_extension: true
 ---
 
-# Bedingungsreferenz Haftpflicht
+# Tarifblatt Haftpflicht
 
 ## Pfefferminzia · Deutschland
 
-> Fiktive Workshop-Referenz. Kein echtes Versicherungsprodukt, kein vollständiges Bedingungswerk und keine Rechts- oder Versicherungsberatung.
+> Fiktives Lehrbeispiel. Dieses Tarifblatt ist kein vollständiges Bedingungswerk und keine Rechts- oder Versicherungsberatung.
 
-## Einordnung
+## Geltungsbereich
 
-Diese Referenz ordnet die Falk-Tarifgeneration PM-2025 den Produkten HP-PRIV, HP-BETR, HP-BERUF im Markt DE zu. Sie unterstützt die versionsgenaue Recherche im Workshop, ersetzt aber keine vollständigen Bedingungen.
+Die Tarifgeneration PM-2025 gilt für die Produkte HP-PRIV, HP-BETR, HP-BERUF im Markt Deutschland. Der Neugeschäftszeitraum beginnt am 2025-01-01 und hat kein hinterlegtes Enddatum.
 
-## Generationsprofil
+## Tarifmerkmale
 
 Harmonisierte Bedingungen beider Häuser für alle drei Produkte; CH ordentliches Kündigungsrecht nach 3 Jahren explizit (Art. 35a VVG); DE Tarifstufen Basis/Komfort/Premium mit unterschiedlichen Sublimits; Neuwertentschädigung bis 500 EUR (Premium); Personenschäden unter Angehörigen mitversichert (DE Premium); Gefälligkeitsschäden 10'000 im AVB-Text vs. 5'000 in Sublimit-Tabelle (bewusste Unschärfe R1); Tarifhandbuch 2024 mit geändertem Selbstbehaltfaktor (R6)
 
-## Dokument- und Tarifdaten
+## Tarifdaten
 
 - **Produkte:** HP-PRIV, HP-BETR, HP-BERUF
 - **Neugeschäft:** 2025-01-01 bis offen
@@ -33,18 +33,18 @@ Harmonisierte Bedingungen beider Häuser für alle drei Produkte; CH ordentliche
 - **Tarifhandbuch:** TH-2024
 - **Revisionen:** Erstfassung 2025.1; DE mit drei Tarifstufen Basis/Komfort/Premium (BBR 2025); Bedingungsumstellung migrierter Altverträge ab Migration Haftpflicht Q2 2025
 
-## Prüfpfad vor einer Aussage
+## Anwendungshinweise
 
-- Vertrag, Versicherungsnehmer, Produkt und Markt eindeutig auflösen.
-- Tarifgeneration sowie Gültigkeit am Vertrags- und Schadendatum prüfen.
-- Konkrete Deckungen, Bausteine, Versicherungssummen und Selbstbehalte lesen.
-- Nachträge, Quellsystem und Migrationsabweichungen als eigene Evidenz behandeln.
-- Ergebnis als Empfehlung kennzeichnen und erforderliche menschliche Freigabe einholen.
+- Anwendbar nur auf die ausgewiesenen Produkte und den genannten Markt.
+- Für die zeitliche Zuordnung sind Vertragsbeginn, Änderungsdatum und Schadenzeitpunkt maßgeblich.
+- Deckungen, Bausteine, Versicherungssummen und Selbstbehalte ergeben sich aus der Police.
+- Nachträge und individuell vereinbarte Klauseln gehen diesem Tarifblatt vor.
+- Bei abweichenden Bestandsdaten ist das führende Vertragssystem zu prüfen.
 
-## Workshop-Fokus
+## Besondere Hinweise
 
-Das MCP-System muss zuerst den konkreten Vertrag auflösen und anschließend Generation, Markt, Deckungen, Bausteine und Nachträge gemeinsam bewerten. Diese Referenz allein erlaubt keine Deckungsentscheidung.
+Erstfassung 2025.1; DE mit drei Tarifstufen Basis/Komfort/Premium (BBR 2025); Bedingungsumstellung migrierter Altverträge ab Migration Haftpflicht Q2 2025
 
-## Provenienz und Verantwortung
+## Dokumentstatus
 
-Abgeleitet aus den Tarifreferenzen von falkue/Pfefferminzia, Commit 352a68ec5786920bdb41b42d3cefc41627ad1145. Template PF-PDF-1.0. Die Zuordnung erfolgt über Vertrag, Tarifgeneration und Markt. Widersprüche oder fehlende Nachträge müssen vor jeder fachlichen Aussage durch einen Menschen geklärt werden.
+Tarifblatt RW-HP-AHB-DE-2025, gültig ab 2025-01-01 ohne hinterlegtes Enddatum. Es handelt sich um ein fiktives Lehrbeispiel. Individuelle Vertragsunterlagen und spätere Nachträge haben Vorrang.
