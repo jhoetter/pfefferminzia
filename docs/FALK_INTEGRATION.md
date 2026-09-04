@@ -5,7 +5,7 @@
 This application treats
 [`falkue/Pfefferminzia`](https://github.com/falkue/Pfefferminzia) as the
 canonical teaching-domain source. It is pinned as a Git submodule at commit
-`4d847a63ec6f8eb0d033c6d3dce6782789817768`. We adapt this application's data
+`352a68ec5786920bdb41b42d3cefc41627ad1145`. We adapt this application's data
 and identifiers to Falk's repository, not the reverse.
 
 No upstream pull request has been opened. Any future contribution to Falk's
@@ -19,13 +19,13 @@ then rebuilds local read models:
 
 | Upstream layer | Local prefix | Operational use |
 | --- | --- | --- |
-| `data/curated/S/csv` | `core_*` | Customer, organisation, product, application, policy, coverage, and risk views |
+| `data/curated/S/csv` | `core_*` | Customer, organisation, product, policy, claim, interaction, and document views |
 | `data/migration/S/csv` | `migration_*` | Source-system IDs, mappings, and migration provenance |
 | `data/reference` | `reference_*` | Tariff generations and other controlled reference values |
 | `data/truth/S` | not imported | Instructor-only solutions remain outside the service |
 | raw HAPO/VERA/MINT exports | not imported | Preserved upstream; not needed by the current operational UI |
 
-The current scale-S snapshot produces 63 imported tables and 29,386 rows. The
+The current scale-S snapshot produces 67 imported tables and 29,559 rows. The
 import records the upstream commit, dataset/schema versions, manifest hash,
 per-table hashes, row counts, generation time, import time, and attribution.
 
@@ -53,20 +53,20 @@ condensed references should not simply be presented upstream as full terms.
 
 ### Claims and interactions
 
-Finding: claim IDs, schemas, pipeline stages, and persona storylines are planned
-upstream, but the current generator package has no claim-stage implementation
-or generated claim tables.
+Finding: upstream now supplies 16 persona claims, 58 claim positions, 62
+interactions, and 37 document records plus their Markdown/EML files. The
+participant-safe curated tables are imported as `core_schaden`,
+`core_schaden_position`, `core_interaktion`, and `core_dokument`; the truth
+layer remains excluded.
 
-Local adapter: `workshop_*` tables model four public persona scenarios and link
-them to the exact published partner, contract, and claim identifiers. They do
-not import instructor truth labels. The API describes every record as a local
-workshop extension.
+Local adapter: `workshop_*` tables retain only mutable exercise workflow for
+four selected upstream claims: recommendations, tasks, audit events, and a
+point-in-time operational snapshot. Seeding verifies the exact upstream claim,
+contract, and partner linkage. It never writes back to the imported facts.
 
-Possible later upstream contribution, only after agreement: deterministic
-claim, position, participant, status-history, interaction, task, and document
-generation for the scale-S personas, with participant/truth separation and
-manifest coverage. When that exists, this application should map the upstream
-tables and remove the local scenario copies.
+Possible later work: expose the complete upstream interaction and document
+history in Customer 360 and the claim workspace. This is an application adapter,
+not a missing upstream dataset contribution.
 
 ### Persona narrative versus generated tables
 

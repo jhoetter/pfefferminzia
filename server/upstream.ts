@@ -6,7 +6,7 @@ import { parse } from "csv-parse/sync";
 import { getDatabase, ROOT } from "./database";
 
 export const FALK_DATASET_ID = "falk-pfefferminzia-S";
-export const FALK_UPSTREAM_COMMIT = "4d847a63ec6f8eb0d033c6d3dce6782789817768";
+export const FALK_UPSTREAM_COMMIT = "352a68ec5786920bdb41b42d3cefc41627ad1145";
 export const FALK_ATTRIBUTION = "Pfefferminzia – synthetischer Lehr-Datensatz, Falk Uebernickel, CC BY 4.0";
 export const FALK_ROOT = path.join(ROOT, "vendor", "falk-pfefferminzia");
 const MANIFEST_PATH = path.join(FALK_ROOT, "data", "manifest_S.json");
@@ -112,6 +112,14 @@ function ensureIndexes(db: DatabaseSync) {
     CREATE INDEX IF NOT EXISTS idx_core_risiko_vertrag ON core_risiko_objekt(vertrag_id);
     CREATE INDEX IF NOT EXISTS idx_core_rollen_vertrag ON core_vertrag_partner_rolle(vertrag_id);
     CREATE INDEX IF NOT EXISTS idx_core_rollen_partner ON core_vertrag_partner_rolle(partner_id);
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_core_schaden_id ON core_schaden(schaden_id);
+    CREATE INDEX IF NOT EXISTS idx_core_schaden_vertrag ON core_schaden(vertrag_id, schadendatum);
+    CREATE INDEX IF NOT EXISTS idx_core_schaden_partner ON core_schaden(partner_id, schadendatum);
+    CREATE INDEX IF NOT EXISTS idx_core_schaden_position_schaden ON core_schaden_position(schaden_id, datum);
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_core_interaktion_id ON core_interaktion(interaktion_id);
+    CREATE INDEX IF NOT EXISTS idx_core_interaktion_partner ON core_interaktion(partner_id, zeitpunkt);
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_core_dokument_id ON core_dokument(dokument_id);
+    CREATE INDEX IF NOT EXISTS idx_core_dokument_partner ON core_dokument(partner_id, erstellt_am);
     CREATE INDEX IF NOT EXISTS idx_migration_partner_xref ON migration_partner_xref(curated_id);
     CREATE INDEX IF NOT EXISTS idx_migration_vertrag_xref ON migration_vertrag_xref(curated_id);
   `);
@@ -175,9 +183,8 @@ export function importFalkDataset(db = getDatabase(), force = false): UpstreamIm
 
 export function upstreamWarnings() {
   return [
-    "Upstream currently contains no rendered PDF documents.",
-    "Upstream claim, finance, process, text and render pipeline stages are not implemented yet.",
-    "Persona contract sums and terms are not consistently applied by the upstream generator.",
+    "Upstream contains persona documents and business rules as Markdown/EML, but no rendered tariff PDFs.",
+    "Finance and broader process stages are not fully implemented yet.",
   ];
 }
 

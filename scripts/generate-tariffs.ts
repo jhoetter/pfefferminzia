@@ -7,7 +7,7 @@ import { PDFDocument, PDFFont, PDFPage, StandardFonts, rgb } from "pdf-lib";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const outputDirectory = path.join(root, "data", "tariffs");
 const upstreamReference = path.join(root, "vendor", "falk-pfefferminzia", "data", "reference");
-const upstreamCommit = "4d847a63ec6f8eb0d033c6d3dce6782789817768";
+const upstreamCommit = "352a68ec5786920bdb41b42d3cefc41627ad1145";
 const fixedDate = new Date("2026-09-04T00:00:00.000Z");
 
 interface CatalogEntry {

@@ -5,7 +5,7 @@ tariff_generation: PK-85
 market: CH
 valid_from: 1985-01-01
 valid_to: 1994-06-30
-source_dataset: falkue/Pfefferminzia@4d847a63ec6f8eb0d033c6d3dce6782789817768
+source_dataset: falkue/Pfefferminzia@352a68ec5786920bdb41b42d3cefc41627ad1145
 template_version: PF-PDF-1.0
 workshop_extension: true
 ---
@@ -47,4 +47,4 @@ Lebensversicherung PK-85 / CH: Das MCP-System darf relevante Generationseigensch
 
 ## Provenienz und Verantwortung
 
-Abgeleitet aus den Tarifreferenzen von falkue/Pfefferminzia, Commit 4d847a63ec6f8eb0d033c6d3dce6782789817768. Template PF-PDF-1.0. Die Zuordnung erfolgt über Vertrag, Tarifgeneration und Markt. Widersprüche oder fehlende Nachträge müssen vor jeder fachlichen Aussage durch einen Menschen geklärt werden.
+Abgeleitet aus den Tarifreferenzen von falkue/Pfefferminzia, Commit 352a68ec5786920bdb41b42d3cefc41627ad1145. Template PF-PDF-1.0. Die Zuordnung erfolgt über Vertrag, Tarifgeneration und Markt. Widersprüche oder fehlende Nachträge müssen vor jeder fachlichen Aussage durch einen Menschen geklärt werden.

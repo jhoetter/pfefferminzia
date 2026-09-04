@@ -48,16 +48,19 @@ The pinned sample dataset currently contributes:
 - products and 14 tariff generations for liability and life insurance in
   Switzerland and Germany;
 - employees, organisational units, agencies, and intermediaries;
+- 16 persona claims, 58 claim positions, 62 interactions, and 37 document
+  records with synthetic Markdown/EML case files;
 - curated, raw legacy, migration, and instructor-only truth layers.
 
 Only the curated, migration, and reference CSV data is imported into the
 application. The `data/truth` instructor solution layer is deliberately not
 loaded or exposed through the operational MCP server.
 
-The upstream claim, finance, process, text, and full document-rendering waves
-are not implemented yet. Until they arrive, this repository keeps workshop
-additions in a separate, explicitly labelled extension layer using the
-identifiers and planned schemas from the upstream project.
+The upstream snapshot now includes persona claim, interaction, and document
+tables plus synthetic case files and three business-rule documents. Finance,
+broader process data, and full tariff rendering remain future stages. This
+repository keeps mutable workshop workflow in a separate, explicitly labelled
+extension layer using the upstream identifiers.
 
 ### Tariff documents
 
@@ -82,13 +85,12 @@ separate agreement and is not part of this repository's current integration.
 
 ### Claims workshop extension
 
-Because the pinned upstream claim wave is still a schema stub, four public
-persona storylines are represented in local `workshop_*` tables: Niederberger's
-small e-bike loss, Kaufmann's complex water loss, the Pieper governance
-incident, and Grimm's fraud-signal/fairness scenario. They retain Falk's
-published partner, contract, claim, and storyline identifiers while being
-explicitly marked as local synthetic workshop extensions. No instructor truth
-tables are copied into the operational service.
+Four upstream persona claims are projected into local `workshop_*` workflow:
+Niederberger's small e-bike loss, Kaufmann's complex water loss, the Pieper
+governance incident, and Grimm's fraud-signal/fairness scenario. Seeding verifies
+their exact upstream partner, contract, and claim identifiers. Only mutable
+exercise state such as recommendations, tasks, and audit events is application
+owned; no instructor truth tables are copied into the operational service.
 
 Claims are joined to Customer 360, the exact contract, and its matching tariff
 document. MCP and UI users may create internal tasks and explainable action
@@ -186,10 +188,10 @@ it to a public interface.
 Core capabilities currently cover ticket queues, ticket details,
 classification, attachments, response drafts, internal notes, controlled
 submission, audited human-approved sending, data provenance, customer search,
-Customer 360, policy context, and version-aware tariff documents. Claims are
-kept as a separate workshop extension until Falk's planned claim wave is
-available. The local claims extension adds bounded claim retrieval, intake from
-a linked ticket, internal tasks, recommendations, and human review. Domain
+Customer 360, policy context, and version-aware tariff documents. Falk's claim
+records back the selected scenarios; the local operational layer adds bounded
+claim retrieval, intake from a linked ticket, internal tasks, recommendations,
+and human review. Domain
 modules remain available through both MCP and the human workspace.
 
 MCP includes every business action used by the workspace: operational summary,

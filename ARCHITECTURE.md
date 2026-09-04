@@ -51,7 +51,7 @@ definitions cannot drift between stdio and HTTP.
 | Falk instructor truth | none | Deliberately excluded from the operational service |
 | Local ticket operations | tickets, messages, attachments, drafts, events | Application-owned and audited |
 | Local document extension | documents plus `data/tariffs/` | Generated from Falk IDs; explicitly workshop-only |
-| Local claim extension | `workshop_claims`, recommendations, tasks, events | Temporary workshop layer pending an upstream claim wave |
+| Local claim workflow | `workshop_claims`, recommendations, tasks, events | Mutable exercise projection over selected Falk `core_schaden` records |
 
 The upstream revision is pinned in Git and recorded with manifest and table
 hashes in `source_datasets` and `source_tables`. A forced import recreates only
@@ -182,15 +182,16 @@ remain visibly separate:
 
 - document metadata carries `workshop_extension = true` and the upstream
   commit;
-- claims and their supporting records use `workshop_*` table names;
-- source notes identify the public persona narrative and absence of an
-  upstream transaction record;
+- mutable claim workflow records use `workshop_*` table names and retain their
+  exact upstream `core_schaden` identifiers;
+- source notes distinguish imported Falk facts from point-in-time exercise
+  state;
 - no local extension is written back into the submodule.
 
-When upstream document or claim waves arrive, adapters should map their native
-tables into the existing domain interfaces, verify identifiers and scenario
-semantics, run contract tests, and then retire the corresponding local
-extension. Any contribution to Falk's repository requires separate agreement.
+When further upstream document or transaction waves arrive, adapters should map
+their native tables into the existing domain interfaces, verify identifiers and
+scenario semantics, and run contract tests before retiring corresponding local
+projections. Any contribution to Falk's repository requires separate agreement.
 
 ## Production gaps
 

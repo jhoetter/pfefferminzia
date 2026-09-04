@@ -291,7 +291,7 @@ interface SeedClaim {
 
 const seedClaims: SeedClaim[] = [
   {
-    claim: ["SCH-00000118", "VTR-00000101", "PTR-00000001", "Damaged neighbour's e-bike", "2025-05-17", "2025-05-18T09:15:00Z", "liability", "CH", "CHF", 2340, 0, 2340, "settled", "low", "Claims Liability CH", "Child knocked over a neighbour's e-bike; display and frame damage documented.", "correct_small_claim_automation", "Falk persona PTR-00000001; workshop extension pending upstream claim wave", "2025-05-18T09:15:00Z"],
+    claim: ["SCH-00000118", "VTR-00000101", "PTR-00000001", "Damaged neighbour's e-bike", "2025-05-17", "2025-05-18T09:15:00Z", "liability", "CH", "CHF", 2340, 0, 2340, "settled", "low", "Claims Liability CH", "Child knocked over a neighbour's e-bike; display and frame damage documented.", "correct_small_claim_automation", "Falk core_schaden SCH-00000118; operational workshop snapshot", "2025-05-18T09:15:00Z"],
     recommendation: ["PAY", 2340, "Historical workshop snapshot: amount below CHF 5,000 with estimate and follow-up answers available.", 0.96, "MINT-Triage-v2/R08", "historical-workshop-import", "approved", "historical-rule-execution", "Recorded from the public synthetic persona narrative.", "2025-05-21T10:00:00Z"],
     events: [
       ["claim_reported", "customer-app", { channel: "app", photos: 3 }, "2025-05-18T09:15:00Z"],
@@ -300,7 +300,7 @@ const seedClaims: SeedClaim[] = [
     ],
   },
   {
-    claim: ["SCH-00000810", "VTR-00000801", "PTR-00000008", "Dog bite involving cyclist", "2025-03-21", "2025-03-21T15:20:00Z", "liability", "DE", "EUR", 1240, 1240, 0, "awaiting_human", "critical", "Claims Liability DE", "A migrated component mismatch conflicts with the documented dog-owner extension and requires human correction.", "pieper_wrongful_denial_governance", "Falk persona PTR-00000008; workshop extension pending upstream claim wave", "2025-03-21T15:20:00Z"],
+    claim: ["SCH-00000810", "VTR-00000801", "PTR-00000008", "Dog bite involving cyclist", "2025-03-21", "2025-03-21T15:20:00Z", "liability", "DE", "EUR", 1240, 1240, 0, "awaiting_human", "critical", "Claims Liability DE", "A migrated component mismatch conflicts with the documented dog-owner extension and requires human correction.", "pieper_wrongful_denial_governance", "Falk core_schaden SCH-00000810; operational workshop snapshot", "2025-03-21T15:20:00Z"],
     recommendation: ["DENY", null, "Legacy configuration did not find the animal-owner component in the migrated target field. Source-policy notes contradict this result.", 0.81, "MINT-Triage-v3/legacy-replay", "workshop-legacy-model", "blocked", null, "Blocked by the no-automated-denial control.", "2025-03-24T08:30:00Z"],
     events: [
       ["claim_reported", "contact-center", { keywords: ["dog", "bite", "cyclist", "leash"] }, "2025-03-21T15:20:00Z"],
@@ -309,7 +309,7 @@ const seedClaims: SeedClaim[] = [
     tasks: [["SOURCE_POLICY_CHECK", "Verify the dog-owner extension against the HAPO source and 2019 advisory record.", "Claims Liability DE", "2025-03-25T16:00:00Z", "2025-03-24T08:31:00Z"]],
   },
   {
-    claim: ["SCH-00000318", "VTR-00000301", "PTR-00000003", "Water damage after kitchen installation", "2024-03-12", "2024-03-13T08:00:00Z", "liability", "CH", "CHF", 180000, 172400, 95000, "investigation", "high", "Claims Complex CH", "Water affected three apartments; causation between fitting defect and installation remains material for recourse.", "complex_loss_and_recourse", "Falk persona PTR-00000003; workshop extension pending upstream claim wave", "2024-03-13T08:00:00Z"],
+    claim: ["SCH-00000318", "VTR-00000301", "PTR-00000003", "Water damage after kitchen installation", "2024-03-12", "2024-03-13T08:00:00Z", "liability", "CH", "CHF", 180000, 172400, 95000, "investigation", "high", "Claims Complex CH", "Water affected three apartments; causation between fitting defect and installation remains material for recourse.", "complex_loss_and_recourse", "Falk core_schaden SCH-00000318; operational workshop snapshot", "2024-03-13T08:00:00Z"],
     recommendation: ["ESCALATE_COMPLEX", null, "Reported amount exceeds delegated authority and causation affects supplier recourse. Preserve expert evidence and require team-lead review.", 0.93, "Complex-Claims-v1/R25K", "workshop-triage-agent", "pending_review", null, null, "2024-03-20T09:00:00Z"],
     events: [
       ["claim_reported", "broker", { channel: "broker" }, "2024-03-13T08:00:00Z"],
@@ -319,7 +319,7 @@ const seedClaims: SeedClaim[] = [
     tasks: [["RECOURSE_REVIEW", "Assess recovery against the fitting supplier after expert causation review.", "Claims Complex CH", null, "2024-08-01T09:00:00Z"]],
   },
   {
-    claim: ["SCH-00000918", "VTR-00000901", "PTR-00000009", "Water damage during transport", "2024-08-29", "2024-08-29T12:20:00Z", "liability", "DE", "EUR", 6800, 6800, 0, "investigation", "critical", "Special Investigation Unit", "Frequency, document-template similarity, and photo timing are signals for investigation, not proof of fraud.", "fraud_signals_and_fairness", "Falk persona PTR-00000009; workshop extension pending upstream claim wave", "2024-08-29T12:20:00Z"],
+    claim: ["SCH-00000918", "VTR-00000901", "PTR-00000009", "Water damage during transport", "2024-08-29", "2024-08-29T12:20:00Z", "liability", "DE", "EUR", 6800, 6800, 0, "investigation", "critical", "Special Investigation Unit", "Frequency, document-template similarity, and photo timing are signals for investigation, not proof of fraud.", "fraud_signals_and_fairness", "Falk core_schaden SCH-00000918; operational workshop snapshot", "2024-08-29T12:20:00Z"],
     recommendation: ["REFER_SIU", null, "Multiple claims and evidence inconsistencies warrant investigation. Do not treat postcode cluster as a standalone decision feature.", 0.87, "Fraud-Signals-v2/fairness-guard", "workshop-fraud-model", "pending_review", null, null, "2024-09-03T07:45:00Z"],
     events: [
       ["claim_reported", "customer-app", { channel: "app" }, "2024-08-29T12:20:00Z"],
@@ -329,9 +329,10 @@ const seedClaims: SeedClaim[] = [
   },
 ];
 
-/** Seed public persona storylines as an isolated workshop extension, never as upstream facts. */
+/** Project selected upstream claims into a mutable workshop workflow without changing Falk's imported facts. */
 export function ensureWorkshopClaims(db = getDatabase()) {
   const contractExists = db.prepare("SELECT 1 FROM core_vertrag WHERE vertrag_id = ?");
+  const sourceClaim = db.prepare("SELECT vertrag_id, partner_id FROM core_schaden WHERE schaden_id = ?");
   const insertClaim = db.prepare(`INSERT INTO workshop_claims
     (claim_id, contract_id, policyholder_id, title, event_date, notified_at, product_line, market, currency,
      reported_amount, reserve_amount, paid_amount, status, risk_level, assigned_team, summary, scenario, source_reference,
@@ -340,7 +341,14 @@ export function ensureWorkshopClaims(db = getDatabase()) {
     ON CONFLICT(claim_id) DO NOTHING`);
   for (const seed of seedClaims) {
     if (!contractExists.get(seed.claim[1])) throw new Error(`Cannot seed workshop claim; Falk contract is missing: ${seed.claim[1]}`);
+    const source = sourceClaim.get(seed.claim[0]) as { vertrag_id: string; partner_id: string } | undefined;
+    if (!source) throw new Error(`Cannot seed workshop claim; Falk claim is missing: ${seed.claim[0]}`);
+    if (source.vertrag_id !== seed.claim[1] || source.partner_id !== seed.claim[2]) {
+      throw new Error(`Cannot seed workshop claim; Falk claim linkage differs: ${seed.claim[0]}`);
+    }
     const result = insertClaim.run(...seed.claim, seed.claim[18]);
+    db.prepare("UPDATE workshop_claims SET source_reference = ? WHERE claim_id = ? AND workshop_extension = 1")
+      .run(seed.claim[17], seed.claim[0]);
     if (Number(result.changes) === 0) continue;
     const [action, amount, rationale, confidence, ruleVersion, proposedBy, status, reviewedBy, reviewerNote, createdAt] = seed.recommendation;
     db.prepare(`INSERT INTO workshop_claim_recommendations

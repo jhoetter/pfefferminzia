@@ -26,6 +26,7 @@ describe("synthetic workshop claims", () => {
     expect(getCustomer("PTR-00000008", db)?.claims.map((claim) => claim.claimId)).toContain("SCH-00000810");
     expect(getCustomer("PTR-00000008", db)?.timeline.some((item) => item.id === "claim-SCH-00000810")).toBe(true);
     expect(claims.every((claim) => claim.workshopExtension)).toBe(true);
+    expect(claims.every((claim) => claim.sourceReference.startsWith("Falk core_schaden"))).toBe(true);
     db.close();
   });
 
