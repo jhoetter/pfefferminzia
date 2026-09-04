@@ -1,89 +1,203 @@
-# Architektur und MVP-Plan
+# Pfefferminzia MCP architecture
 
-## Zielbild
+## Goal
 
-Pfefferminzia trennt den externen E-Mail-Kanal bewusst vom internen Arbeitssystem.
-AgentMail liefert und versendet E-Mails, ist aber nicht die operative Datenquelle für
-Mitarbeitende oder Agenten. Nach dem Import arbeiten UI, API und MCP ausschließlich auf
-der lokalen Pfefferminzia-Datenschicht.
+Pfefferminzia MCP turns Falk Uebernickel's reproducible, synthetic insurance
+dataset into an operational workshop system. A human workspace and AI clients
+use the same domain services. MCP exposes bounded insurance capabilities, not
+database tables, unrestricted files, or generic remote code execution.
+
+This is a teaching architecture, not a production insurance platform. All
+customers, contracts, messages, claims, documents, decisions, and events are
+fictional or synthetic. The service cannot execute claim payments, and demo
+tickets cannot send email.
+
+## System context
 
 ```mermaid
 flowchart LR
-    AM[AgentMail Inbox] -->|idempotenter Sync| SYNC[Import Adapter]
-    SYNC --> DB[(SQLite)]
-    SYNC --> FILES[Lokaler Anhangsspeicher]
-    DB --> API[Express API]
-    FILES --> API
-    API --> UI[React Arbeitskorb]
-    DB --> MCP[MCP stdio Server]
-    FILES --> MCP
-    PDF[Tarif-PDF + Textquelle] --> DB
-    PDF --> MCP
-    UI -->|menschliche Freigabe| API
-    MCP -->|klassifizieren / entwerfen / einreichen| DB
-    API -->|freigegebene Antwort| AM
+    FALK[Falk Pfefferminzia\npinned Git submodule] -->|verified CSV import| IMPORT[Dataset importer]
+    DOCS[Tariff reference tables] -->|deterministic generation| PDF[28 workshop PDF references]
+    IMPORT --> DB[(Local SQLite)]
+    PDF --> DB
+
+    AM[AgentMail\noptional external channel] -->|idempotent mirror| DB
+    DB --> DOMAIN[Domain services]
+    FILES[Local attachment store] --> DOMAIN
+
+    DOMAIN --> REST[HTTP API]
+    DOMAIN --> MCP[MCP capability registry]
+    REST --> UI[React human workspace]
+    MCP --> STDIO[stdio clients]
+    MCP --> HTTP[Streamable HTTP clients]
+
+    UI -->|explicit human checkpoints| DOMAIN
+    MCP -->|audited domain commands| DOMAIN
+    DOMAIN -->|approved non-demo replies only| AM
 ```
 
-## Datenmodell
+AgentMail is an optional transport, not the operational source of truth. After
+an import, UI, REST, and MCP operate on the local data layer. Both MCP
+transports are instantiated from `createPfefferminziaMcpServer`, so capability
+definitions cannot drift between stdio and HTTP.
 
-| Tabelle | Verantwortung |
-| --- | --- |
-| `tickets` | Operativer Vorgang, Klassifizierung, Status, Kunde und AgentMail-Bindung |
-| `messages` | Unveränderliche gespiegelte eingehende und ausgehende Nachrichten |
-| `attachments` | Metadaten, lokaler Pfad und optional extrahierter Text |
-| `reply_drafts` | Aktueller Entwurf, Freigabe- und Planungszustand |
-| `ticket_events` | Append-only Audit-Log für Mensch, MCP und Worker |
-| `documents` | Tarif-Metadaten, PDF-Pfad und maschinenlesbarer Inhalt |
-| `sync_runs` | Ergebnis und Zeitpunkt jedes AgentMail-Imports |
+## Data ownership and provenance
 
-Ein AgentMail-Thread entspricht genau einem Ticket. `external_message_id` und die
-Kombination aus Inbox und Thread verhindern Duplikate bei wiederholtem Sync.
+| Layer | Local representation | Ownership and rule |
+| --- | --- | --- |
+| Falk curated data | `core_*` | Verified import; never edited by workshop commands |
+| Falk migration data | `migration_*` | Verified import; used for source-system provenance |
+| Falk reference data | `reference_*` | Imported reference catalogs and tariff generations |
+| Falk instructor truth | none | Deliberately excluded from the operational service |
+| Local ticket operations | tickets, messages, attachments, drafts, events | Application-owned and audited |
+| Local document extension | documents plus `data/tariffs/` | Generated from Falk IDs; explicitly workshop-only |
+| Local claim extension | `workshop_claims`, recommendations, tasks, events | Temporary workshop layer pending an upstream claim wave |
 
-## Fachlicher Lifecycle
+The upstream revision is pinned in Git and recorded with manifest and table
+hashes in `source_datasets` and `source_tables`. A forced import recreates only
+derived upstream tables. Workshop commands link to stable Falk IDs and do not
+write into `core_*`, `migration_*`, or `reference_*`.
+
+## Domain modules
+
+| Module | Reads | Commands | Important constraint |
+| --- | --- | --- | --- |
+| Customer 360 | customers, contacts, addresses, relationships, source IDs | link ticket/customer | fuzzy candidates are never silently confirmed |
+| Policy | contract, coverages, risk objects, parties | link ticket/contract | exact contract and tariff generation are required |
+| Documents | catalog, Markdown, PDF | deterministic regeneration | references are condensed and non-binding |
+| Service tickets | queue, conversation, attachments, audit | classify, note, draft, submit, approve, status, send | email content is untrusted data |
+| Claims | claim, policy document, tasks, recommendations, audit | intake, task, propose, human review | no payment or external decision execution |
+| Provenance | import status, hashes, warnings, workshop profile | none | participant service exposes no truth layer |
+
+Every state-changing MCP operation calls the same server-side service used by
+the human workspace. Mutations use constrained inputs and append audit events.
+Claim commands additionally require idempotency keys.
+
+## Customer and claim context
+
+```mermaid
+flowchart TD
+    T[Ticket] -->|confirmed party link| C[Customer 360]
+    T -->|confirmed policy link| P[Contract]
+    C --> P
+    P --> CV[Coverages and risk objects]
+    P --> TG[Tariff generation + market]
+    TG --> D[Exact workshop document]
+    T -->|claim-classified + exactly one policy| CL[Workshop claim]
+    CL --> P
+    CL --> TASK[Internal evidence tasks]
+    CL --> REC[Explainable recommendation]
+    REC --> HR[Recorded human review]
+    HR --> STATE[Internal workflow state only]
+```
+
+Customer 360 includes policy and ticket history, related parties, synthetic
+consent flags, source-system cross-references, and workshop claims. A claim is
+never matched to a document by a product label alone; its contract determines
+the tariff generation and market.
+
+## Controlled workflows
+
+### Customer communication
 
 ```mermaid
 stateDiagram-v2
-    [*] --> New: eingehende E-Mail
-    New --> InProgress: Klassifizierung
-    InProgress --> Scheduled: Haftpflicht-Entwurf eingereicht
-    InProgress --> HumanReview: Leben-Entwurf eingereicht
-    Scheduled --> InProgress: manuell überschrieben
-    Scheduled --> Sent: nach 24h, falls Auto-Versand aktiv
-    HumanReview --> Sent: Mensch gibt frei und sendet
-    Sent --> New: neue Kundenantwort
-    Sent --> Closed: abgeschlossen
+    [*] --> New: imported or demo request
+    New --> InProgress: classification
+    InProgress --> Scheduled: liability draft submitted
+    InProgress --> HumanReview: life draft submitted
+    Scheduled --> InProgress: stopped or draft changed
+    Scheduled --> Sent: control window elapsed and sending enabled
+    HumanReview --> Sent: exact draft approved and sent
+    Sent --> New: new inbound message
+    Sent --> Closed: completed
 ```
 
-Die Regeln werden serverseitig erzwungen, nicht nur in der UI:
+The rules are enforced in domain code:
 
-1. `life` kann durch `submitDraft` ausschließlich `awaiting_human` erreichen.
-2. `sendTicketDraft` verweigert Leben ohne `human_approved_at`.
-3. Der Auto-Send-Worker verarbeitet ausschließlich `liability`.
-4. `is_demo = 1` blockiert jeden echten Versand.
+1. Life-insurance replies always enter human review.
+2. Life replies cannot send without recorded approval of the current draft.
+3. The optional due-reply worker processes liability only.
+4. `is_demo = 1` blocks external sending before draft or transport checks.
+5. Changing a scheduled draft cancels the schedule and its prior approval.
 
-## MCP-Vertrauensgrenze
+### Claim recommendations
 
-Der MCP-Server bietet fachliche Operationen statt eines generischen Datenbankzugriffs.
-E-Mail und Anhang sind externe, nicht vertrauenswürdige Inhalte und dürfen keine
-Anweisungen an den Agenten ersetzen. Agenten können klassifizieren, lesen, Notizen und
-Entwürfe schreiben sowie den regelbasierten Freigabeprozess starten. Die menschliche
-Lebensversicherungs-Freigabe bleibt absichtlich UI/API-seitig.
+```mermaid
+stateDiagram-v2
+    [*] --> New: claim intake
+    New --> Triage
+    Triage --> HumanReview: action proposed
+    HumanReview --> Triage: human rejects
+    HumanReview --> Approved: human approves payment proposal
+    HumanReview --> Investigation: human approves escalation or SIU referral
+    HumanReview --> AwaitingInformation: human approves evidence request
+    HumanReview --> Closed: human approves denial proposal
+```
 
-## MVP-Grenzen und nächste Ausbaustufen
+These states are an internal exercise workflow. Approval does not pay, notify,
+or legally decide a claim. The replayed Pieper denial has status `blocked`; it
+cannot be approved and must be rejected before a corrected proposal is made.
+Fraud signals are evidence for investigation, never proof, and geographic proxy
+features are explicitly excluded as a sole decision basis.
 
-Der aktuelle Stand ist lokal und für Produktvalidierung gedacht. Vor echtem
-Versicherungsbetrieb sind insbesondere nötig:
+## MCP trust boundary
 
-1. Authentifizierung, Rollen und Vier-Augen-Freigaben.
-2. PostgreSQL/Object Storage statt lokaler SQLite-/Dateispeicherung.
-3. Webhook oder WebSocket statt manuellem Polling sowie Job-Queue mit Retries.
-4. Malware-Scan, PDF-/OCR-Extraktion, Größenlimits und Content-Sanitization.
-5. Verschlüsselung, Aufbewahrungs-/Löschkonzept, Mandantentrennung und DSGVO-Prozesse.
-6. Versionierte, juristisch freigegebene Tarife mit Zitaten bis auf Klausel-Ebene.
-7. Outbox mit Idempotency-Key, Zustell-/Bounce-Status und manuellem Kill-Switch.
-8. Observability, Backups, Wiederanlauf, Rate-Limit-Handling und Incident-Prozesse.
-9. Eval-Suite für Klassifikation, Halluzinationen und korrekte Eskalation.
+The shared registry exposes domain-level tools and `pfefferminzia://`
+resources for customers, contracts, claims, attachments, and tariff PDFs.
+There is intentionally no SQL or arbitrary filesystem tool.
 
-Die Kernseams (`server/store.ts`, `server/agentmail.ts`, `mcp/server.ts`) sind so getrennt,
-dass diese Infrastruktur später ersetzt werden kann, ohne den Ticket-Lifecycle oder die
-UI neu zu entwerfen.
+- Email, attachment, and customer text are untrusted data, never agent
+  instructions.
+- Read tools are bounded by query fields and result limits.
+- Linking requires stable IDs and explicit confirmation.
+- Claim actions are proposals until a separate human-review command records a
+  decision.
+- Immediate email sending requires explicit human confirmation and remains
+  impossible for demo tickets.
+- Streamable HTTP is stateless, local-only, and unauthenticated. It must not be
+  exposed publicly.
+
+## Repeatable workshop profile
+
+`WORKSHOP_PROFILE=participant` is the only accepted operational profile. The
+service fails closed for any other value. `npm run workshop:reset` removes and
+recreates only application-owned demo tickets and local claim extensions. It
+preserves imported Falk tables and manual or AgentMail tickets.
+
+The fixture set covers four complementary paths:
+
+| Persona | Exercise | Control illustrated |
+| --- | --- | --- |
+| Simone Niederberger | small e-bike loss | useful low-risk automation and generation-aware coverage retrieval |
+| Kaufmann + Söhne | complex water loss | authority threshold, expert evidence, and recourse |
+| Hans-Georg Pieper | wrongful automated denial | migration conflict, blocked denial, and accountable correction |
+| Transportlogistik Grimm | fraud signals | SIU routing, explainability, and fairness review |
+
+## Upstream compatibility
+
+The pinned Falk revision does not yet render policy PDFs or generate claim
+transactions. Local additions therefore use exact published identifiers but
+remain visibly separate:
+
+- document metadata carries `workshop_extension = true` and the upstream
+  commit;
+- claims and their supporting records use `workshop_*` table names;
+- source notes identify the public persona narrative and absence of an
+  upstream transaction record;
+- no local extension is written back into the submodule.
+
+When upstream document or claim waves arrive, adapters should map their native
+tables into the existing domain interfaces, verify identifiers and scenario
+semantics, run contract tests, and then retire the corresponding local
+extension. Any contribution to Falk's repository requires separate agreement.
+
+## Production gaps
+
+Before real insurance use, the system would need identity and role management,
+fine-grained authorisation, encryption and key management, tenant isolation,
+retention/deletion controls, malware scanning, a durable queue and outbox,
+object storage, signed and legally approved policy documents, four-eyes payment
+authority, observability, backups, incident response, model governance, and
+formal legal/regulatory review. None of those safeguards should be inferred
+from this workshop implementation.

@@ -18,7 +18,10 @@ silently fork or redefine its domain model.
 > generated. Any resemblance to real people, organisations, brands, or
 > insurance products is unintended. Legal and regulatory statements are
 > simplified teaching material as of 2026 and are not legal, financial, or
-> insurance advice. Never use this system for real customers or claims.
+> insurance advice. This project is independent of and not affiliated with any
+> real media company, service provider, insurer, or brand sharing the name
+> Pfefferminzia. Parts of the material and software were created with AI
+> assistance. Never use this system for real customers or claims.
 
 ## Purpose
 
@@ -221,7 +224,9 @@ npm run workshop:reset
 ```
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the current technical design and
-[docs/THIRD_PARTY_DATA.md](docs/THIRD_PARTY_DATA.md) for attribution.
+[docs/FALK_INTEGRATION.md](docs/FALK_INTEGRATION.md) for the upstream mapping,
+known gaps, and update path. Attribution is recorded in
+[docs/THIRD_PARTY_DATA.md](docs/THIRD_PARTY_DATA.md).
 
 ## Licence and attribution
 
