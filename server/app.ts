@@ -2,9 +2,10 @@ import express, { type NextFunction, type Request, type Response } from "express
 import { z } from "zod";
 import { approveDraft, addInternalNote, dashboardMeta, getAttachmentRecord, getDocumentRecord, getTicket, listContractDocuments, listTariffs, listTickets, readStoredFile, resolveStoragePath, saveDraft, submitDraft, updateClassification, updateTicketStatus } from "./store";
 import { sendTicketDraft, syncAgentMail } from "./agentmail";
-import { categories, priorities, productLines, ticketStatuses } from "../src/types";
+import { categories, claimActions, claimStatuses, priorities, productLines, ticketStatuses } from "../src/types";
 import { getContract, getCustomer, linkTicketContract, linkTicketParty, resolveTicketCustomer, searchCustomers } from "./crm";
 import { getUpstreamStatus } from "./upstream";
+import { createClaimFromTicket, createClaimTask, getClaim, listClaims, proposeClaimAction, reviewClaimAction } from "./claims";
 
 const classificationSchema = z.object({
   productLine: z.enum(productLines),
@@ -44,6 +45,54 @@ export function createApp() {
   });
 
   app.get("/api/contracts/:contractId/documents", (req, res) => res.json(listContractDocuments(String(req.params.contractId))));
+
+  app.get("/api/claims", (req, res) => res.json(listClaims({
+    status: typeof req.query.status === "string" && claimStatuses.includes(req.query.status as never) ? req.query.status as (typeof claimStatuses)[number] : undefined,
+    riskLevel: typeof req.query.riskLevel === "string" && ["low", "medium", "high", "critical"].includes(req.query.riskLevel)
+      ? req.query.riskLevel as "low" | "medium" | "high" | "critical" : undefined,
+    partnerId: typeof req.query.partnerId === "string" ? req.query.partnerId : undefined,
+    contractId: typeof req.query.contractId === "string" ? req.query.contractId : undefined,
+    q: typeof req.query.q === "string" ? req.query.q : undefined,
+  })));
+
+  app.get("/api/claims/:claimId", (req, res) => {
+    const claim = getClaim(String(req.params.claimId));
+    if (!claim) return res.status(404).json({ error: "Claim not found" });
+    res.json(claim);
+  });
+
+  app.post("/api/tickets/:ticketNumber/claim", (req, res) => {
+    const input = z.object({
+      title: z.string().min(1).max(300), eventDate: z.string().date(), reportedAmount: z.number().nonnegative(),
+      idempotencyKey: z.string().min(8).max(200),
+    }).parse(req.body);
+    res.status(201).json(createClaimFromTicket({ ticketNumber: String(req.params.ticketNumber), ...input, actor: "human-ui" }));
+  });
+
+  app.post("/api/claims/:claimId/recommendations", (req, res) => {
+    const input = z.object({
+      action: z.enum(claimActions), amount: z.number().positive().optional(), rationale: z.string().min(1).max(5_000),
+      confidence: z.number().min(0).max(1), ruleVersion: z.string().min(1).max(100), idempotencyKey: z.string().min(8).max(200),
+    }).parse(req.body);
+    res.status(201).json(proposeClaimAction({ claimId: String(req.params.claimId), ...input, actor: "human-ui" }));
+  });
+
+  app.post("/api/claims/:claimId/recommendations/:recommendationId/review", (req, res) => {
+    const input = z.object({
+      decision: z.enum(["approve", "reject"]), note: z.string().min(1).max(2_000),
+      idempotencyKey: z.string().min(8).max(200),
+    }).parse(req.body);
+    res.json(reviewClaimAction({ claimId: String(req.params.claimId), recommendationId: Number(req.params.recommendationId),
+      ...input, actor: "human-ui" }));
+  });
+
+  app.post("/api/claims/:claimId/tasks", (req, res) => {
+    const input = z.object({
+      type: z.string().min(1).max(100), description: z.string().min(1).max(2_000), assignedTo: z.string().max(200).optional(),
+      dueAt: z.string().datetime().optional(), idempotencyKey: z.string().min(8).max(200),
+    }).parse(req.body);
+    res.status(201).json(createClaimTask({ claimId: String(req.params.claimId), ...input, actor: "human-ui" }));
+  });
 
   app.get("/api/tickets/:ticketNumber/customer-candidates", (req, res) => res.json(resolveTicketCustomer(String(req.params.ticketNumber))));
 

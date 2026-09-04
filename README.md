@@ -72,6 +72,23 @@ and application metadata all mark them as synthetic workshop extensions. A
 future contribution of richer documents to Falk's repository would require
 separate agreement and is not part of this repository's current integration.
 
+### Claims workshop extension
+
+Because the pinned upstream claim wave is still a schema stub, four public
+persona storylines are represented in local `workshop_*` tables: Niederberger's
+small e-bike loss, Kaufmann's complex water loss, the Pieper governance
+incident, and Grimm's fraud-signal/fairness scenario. They retain Falk's
+published partner, contract, claim, and storyline identifiers while being
+explicitly marked as local synthetic workshop extensions. No instructor truth
+tables are copied into the operational service.
+
+Claims are joined to Customer 360, the exact contract, and its matching tariff
+document. MCP and UI users may create internal tasks and explainable action
+proposals. Every new decision proposal requires recorded human review; approval
+only advances the internal demo workflow and never executes a payment, denies a
+real claim, or sends external communication. The replayed Pieper denial is
+technically blocked and cannot be approved.
+
 ## Repository structure
 
 - `vendor/falk-pfefferminzia/` — pinned upstream teaching dataset
@@ -151,8 +168,9 @@ classification, attachments, response drafts, internal notes, controlled
 submission, audited human-approved sending, data provenance, customer search,
 Customer 360, policy context, and version-aware tariff documents. Claims are
 kept as a separate workshop extension until Falk's planned claim wave is
-available. Domain modules remain available through both MCP and the human
-workspace.
+available. The local claims extension adds bounded claim retrieval, intake from
+a linked ticket, internal tasks, recommendations, and human review. Domain
+modules remain available through both MCP and the human workspace.
 
 Read operations are exposed as bounded tools or `pfefferminzia://` resources.
 State-changing tools validate inputs, enforce workflow rules, and append audit

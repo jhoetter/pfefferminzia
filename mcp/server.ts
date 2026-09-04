@@ -2,12 +2,15 @@ import "dotenv/config";
 import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { categories, priorities, productLines } from "../src/types";
+import { categories, claimActions, claimStatuses, priorities, productLines } from "../src/types";
 import { ensureSeedData } from "../server/seed";
 import { importFalkDataset } from "../server/upstream";
 import { sendTicketDraft } from "../server/agentmail";
 import { getContract, getCustomer, linkTicketContract, linkTicketParty, resolveTicketCustomer, searchCustomers } from "../server/crm";
 import { getUpstreamStatus } from "../server/upstream";
+import {
+  createClaimFromTicket, createClaimTask, ensureWorkshopClaims, getClaim, listClaims, proposeClaimAction, reviewClaimAction,
+} from "../server/claims";
 import {
   addInternalNote,
   approveDraft,
@@ -24,8 +27,9 @@ import {
   updateClassification,
 } from "../server/store";
 
-ensureSeedData();
 importFalkDataset();
+ensureSeedData();
+ensureWorkshopClaims();
 
 const server = new McpServer(
   { name: "pfefferminzia", version: "0.2.0" },
@@ -302,6 +306,87 @@ server.registerTool(
   },
 );
 
+server.registerTool(
+  "list_claims",
+  {
+    description: "List bounded synthetic workshop claims linked to Falk customer and contract IDs. These records extend, but never overwrite, the pinned upstream dataset.",
+    inputSchema: {
+      status: z.enum(claimStatuses).optional(), riskLevel: z.enum(["low", "medium", "high", "critical"]).optional(),
+      partnerId: z.string().regex(/^PTR-\d{8}$/u).optional(), contractId: z.string().regex(/^VTR-\d{8}$/u).optional(),
+      query: z.string().max(200).optional(), limit: z.number().int().min(1).max(100).default(50),
+    },
+    annotations: { readOnlyHint: true, openWorldHint: false },
+  },
+  async ({ query, ...filters }) => json(listClaims({ ...filters, q: query })),
+);
+
+server.registerTool(
+  "get_claim",
+  {
+    description: "Get a synthetic claim with customer, exact contract and policy-document context, recommendations, tasks, and append-only audit events.",
+    inputSchema: { claimId: z.string().min(4).max(80) },
+    annotations: { readOnlyHint: true, openWorldHint: false },
+  },
+  async ({ claimId }) => {
+    const claim = getClaim(claimId);
+    return claim ? json(claim) : error(`Claim not found: ${claimId}`);
+  },
+);
+
+server.registerTool(
+  "create_claim_from_ticket",
+  {
+    description: "Create a synthetic workshop claim from a claim-classified ticket linked to exactly one Falk contract. This is an internal record only and has no financial or communication side effect.",
+    inputSchema: {
+      ticketNumber: z.string().regex(/^PF-\d+$/u), title: z.string().min(1).max(300), eventDate: z.string().date(),
+      reportedAmount: z.number().nonnegative(), idempotencyKey: z.string().min(8).max(200),
+    },
+    annotations: { idempotentHint: true, openWorldHint: false },
+  },
+  async (input) => json(createClaimFromTicket({ ...input, actor: "mcp-agent" })),
+);
+
+server.registerTool(
+  "propose_claim_action",
+  {
+    description: "Record an explainable claim-action recommendation. Every proposal enters human review; this tool cannot decide, communicate, deny, or pay a claim.",
+    inputSchema: {
+      claimId: z.string().min(4).max(80), action: z.enum(claimActions), amount: z.number().positive().optional(),
+      rationale: z.string().min(1).max(5_000), confidence: z.number().min(0).max(1),
+      ruleVersion: z.string().min(1).max(100), idempotencyKey: z.string().min(8).max(200),
+    },
+    annotations: { idempotentHint: true, openWorldHint: false },
+  },
+  async (input) => json(proposeClaimAction({ ...input, actor: "mcp-agent" })),
+);
+
+server.registerTool(
+  "review_claim_action",
+  {
+    description: "Record a human review of one exact recommendation. Approval changes only internal workshop workflow state; it never executes payment or sends external communication.",
+    inputSchema: {
+      claimId: z.string().min(4).max(80), recommendationId: z.number().int().positive(),
+      decision: z.enum(["approve", "reject"]), note: z.string().min(1).max(2_000),
+      confirmHumanReview: z.literal(true), idempotencyKey: z.string().min(8).max(200),
+    },
+    annotations: { idempotentHint: true, openWorldHint: false },
+  },
+  async ({ confirmHumanReview: _confirm, ...input }) => json(reviewClaimAction({ ...input, actor: "mcp-human-reviewer" })),
+);
+
+server.registerTool(
+  "create_claim_task",
+  {
+    description: "Create an internal, audited claim task such as obtaining evidence, checking a source policy, or starting a fairness review. It sends no request externally.",
+    inputSchema: {
+      claimId: z.string().min(4).max(80), type: z.string().min(1).max(100), description: z.string().min(1).max(2_000),
+      assignedTo: z.string().max(200).optional(), dueAt: z.string().datetime().optional(), idempotencyKey: z.string().min(8).max(200),
+    },
+    annotations: { idempotentHint: true, openWorldHint: false },
+  },
+  async (input) => json(createClaimTask({ ...input, actor: "mcp-agent" })),
+);
+
 server.registerResource(
   "crm-customer",
   new ResourceTemplate("pfefferminzia://customers/{partnerId}", {
@@ -316,6 +401,23 @@ server.registerResource(
     const customer = getCustomer(String(variables.partnerId));
     if (!customer) throw new Error(`Customer not found: ${variables.partnerId}`);
     return { contents: [{ uri: uri.href, mimeType: "application/json", text: JSON.stringify(customer, null, 2) }] };
+  },
+);
+
+server.registerResource(
+  "workshop-claim",
+  new ResourceTemplate("pfefferminzia://claims/{claimId}", {
+    list: async () => ({ resources: listClaims({ limit: 100 }).map((claim) => ({
+      uri: `pfefferminzia://claims/${claim.claimId}`, name: `${claim.claimId} · ${claim.title}`,
+      description: `${claim.status} · ${claim.riskLevel} · synthetic workshop extension`, mimeType: "application/json",
+    })) }),
+    complete: { claimId: (value) => listClaims({ limit: 100 }).map((claim) => claim.claimId).filter((id) => id.startsWith(value)) },
+  }),
+  { description: "Synthetic claim extension linked to Falk customer and policy data", mimeType: "application/json" },
+  async (uri, variables) => {
+    const claim = getClaim(String(variables.claimId));
+    if (!claim) throw new Error(`Claim not found: ${variables.claimId}`);
+    return { contents: [{ uri: uri.href, mimeType: "application/json", text: JSON.stringify(claim, null, 2) }] };
   },
 );
 

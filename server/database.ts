@@ -156,12 +156,89 @@ function migrate(db: DatabaseSync) {
       PRIMARY KEY (ticket_id, vertrag_id)
     );
 
+    CREATE TABLE IF NOT EXISTS workshop_claims (
+      claim_id TEXT PRIMARY KEY,
+      contract_id TEXT NOT NULL,
+      policyholder_id TEXT NOT NULL,
+      ticket_id INTEGER UNIQUE REFERENCES tickets(id) ON DELETE SET NULL,
+      title TEXT NOT NULL,
+      event_date TEXT NOT NULL,
+      notified_at TEXT NOT NULL,
+      product_line TEXT NOT NULL CHECK(product_line IN ('liability', 'life')),
+      market TEXT NOT NULL CHECK(market IN ('CH', 'DE')),
+      currency TEXT NOT NULL CHECK(currency IN ('CHF', 'EUR')),
+      reported_amount REAL NOT NULL DEFAULT 0,
+      reserve_amount REAL NOT NULL DEFAULT 0,
+      paid_amount REAL NOT NULL DEFAULT 0,
+      status TEXT NOT NULL CHECK(status IN ('new', 'triage', 'awaiting_information', 'awaiting_human', 'investigation', 'approved', 'settled', 'closed')),
+      risk_level TEXT NOT NULL CHECK(risk_level IN ('low', 'medium', 'high', 'critical')),
+      assigned_team TEXT NOT NULL,
+      summary TEXT NOT NULL,
+      scenario TEXT NOT NULL,
+      source_reference TEXT NOT NULL,
+      workshop_extension INTEGER NOT NULL DEFAULT 1,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS workshop_claim_recommendations (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      claim_id TEXT NOT NULL REFERENCES workshop_claims(claim_id) ON DELETE CASCADE,
+      action TEXT NOT NULL CHECK(action IN ('PAY', 'DENY', 'REQUEST_INFORMATION', 'ESCALATE_COMPLEX', 'REFER_SIU')),
+      amount REAL,
+      rationale TEXT NOT NULL,
+      confidence REAL NOT NULL CHECK(confidence >= 0 AND confidence <= 1),
+      rule_version TEXT NOT NULL,
+      proposed_by TEXT NOT NULL,
+      status TEXT NOT NULL CHECK(status IN ('pending_review', 'approved', 'rejected', 'blocked')),
+      reviewed_by TEXT,
+      reviewer_note TEXT,
+      created_at TEXT NOT NULL,
+      reviewed_at TEXT,
+      idempotency_key TEXT NOT NULL UNIQUE
+    );
+
+    CREATE TABLE IF NOT EXISTS workshop_claim_tasks (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      claim_id TEXT NOT NULL REFERENCES workshop_claims(claim_id) ON DELETE CASCADE,
+      type TEXT NOT NULL,
+      description TEXT NOT NULL,
+      status TEXT NOT NULL CHECK(status IN ('open', 'completed', 'cancelled')) DEFAULT 'open',
+      assigned_to TEXT,
+      due_at TEXT,
+      created_by TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      completed_at TEXT,
+      idempotency_key TEXT NOT NULL UNIQUE
+    );
+
+    CREATE TABLE IF NOT EXISTS workshop_claim_events (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      claim_id TEXT NOT NULL REFERENCES workshop_claims(claim_id) ON DELETE CASCADE,
+      type TEXT NOT NULL,
+      actor TEXT NOT NULL,
+      details_json TEXT NOT NULL DEFAULT '{}',
+      created_at TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS workshop_claim_commands (
+      idempotency_key TEXT PRIMARY KEY,
+      claim_id TEXT NOT NULL REFERENCES workshop_claims(claim_id) ON DELETE CASCADE,
+      command TEXT NOT NULL,
+      actor TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    );
+
     CREATE INDEX IF NOT EXISTS idx_tickets_status ON tickets(status);
     CREATE INDEX IF NOT EXISTS idx_tickets_product_line ON tickets(product_line);
     CREATE INDEX IF NOT EXISTS idx_messages_ticket ON messages(ticket_id, sent_at);
     CREATE INDEX IF NOT EXISTS idx_events_ticket ON ticket_events(ticket_id, created_at);
     CREATE INDEX IF NOT EXISTS idx_ticket_parties_partner ON ticket_parties(partner_id, ticket_id);
     CREATE INDEX IF NOT EXISTS idx_ticket_contracts_contract ON ticket_contracts(vertrag_id, ticket_id);
+    CREATE INDEX IF NOT EXISTS idx_workshop_claims_customer ON workshop_claims(policyholder_id, event_date);
+    CREATE INDEX IF NOT EXISTS idx_workshop_claims_contract ON workshop_claims(contract_id, event_date);
+    CREATE INDEX IF NOT EXISTS idx_workshop_claims_status ON workshop_claims(status, risk_level);
+    CREATE INDEX IF NOT EXISTS idx_workshop_claim_events ON workshop_claim_events(claim_id, created_at);
   `);
   const documentColumns = new Set((db.prepare("PRAGMA table_info(documents)").all() as { name: string }[]).map((column) => column.name));
   const additions: Record<string, string> = {

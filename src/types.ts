@@ -166,9 +166,87 @@ export interface CustomerDetail extends CustomerSummary {
   addresses: CustomerAddress[];
   relationships: CustomerRelationship[];
   contracts: ContractSummary[];
+  claims: ClaimSummary[];
   tickets: Ticket[];
   timeline: CustomerTimelineItem[];
   sourceReferences: SourceReference[];
+}
+
+export const claimStatuses = ["new", "triage", "awaiting_information", "awaiting_human", "investigation", "approved", "settled", "closed"] as const;
+export type ClaimStatus = (typeof claimStatuses)[number];
+export const claimActions = ["PAY", "DENY", "REQUEST_INFORMATION", "ESCALATE_COMPLEX", "REFER_SIU"] as const;
+export type ClaimAction = (typeof claimActions)[number];
+
+export interface ClaimSummary {
+  claimId: string;
+  contractId: string;
+  policyholderId: string;
+  customerName: string;
+  productName: string;
+  tariffGenerationId: string;
+  policyDocumentIds: string[];
+  ticketNumber: string | null;
+  title: string;
+  eventDate: string;
+  notifiedAt: string;
+  productLine: "liability" | "life";
+  market: "CH" | "DE";
+  currency: "CHF" | "EUR";
+  reportedAmount: number;
+  reserveAmount: number;
+  paidAmount: number;
+  status: ClaimStatus;
+  riskLevel: "low" | "medium" | "high" | "critical";
+  assignedTeam: string;
+  summary: string;
+  scenario: string;
+  sourceReference: string;
+  workshopExtension: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ClaimRecommendation {
+  id: number;
+  action: ClaimAction;
+  amount: number | null;
+  rationale: string;
+  confidence: number;
+  ruleVersion: string;
+  proposedBy: string;
+  status: "pending_review" | "approved" | "rejected" | "blocked";
+  reviewedBy: string | null;
+  reviewerNote: string | null;
+  createdAt: string;
+  reviewedAt: string | null;
+}
+
+export interface ClaimTask {
+  id: number;
+  type: string;
+  description: string;
+  status: "open" | "completed" | "cancelled";
+  assignedTo: string | null;
+  dueAt: string | null;
+  createdBy: string;
+  createdAt: string;
+  completedAt: string | null;
+}
+
+export interface ClaimEvent {
+  id: number;
+  type: string;
+  actor: string;
+  details: Record<string, unknown>;
+  createdAt: string;
+}
+
+export interface ClaimDetail extends ClaimSummary {
+  recommendations: ClaimRecommendation[];
+  tasks: ClaimTask[];
+  events: ClaimEvent[];
+  humanReviewRequired: boolean;
+  automationBoundary: string;
 }
 
 export interface ContractDetail extends ContractSummary {

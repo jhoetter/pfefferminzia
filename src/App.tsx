@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { api } from "./api";
+import { ClaimsView } from "./ClaimsView";
 import { CrmView } from "./CrmView";
 import { categoryLabel, dateTime, fileSize, priorityLabel, productLabel, relativeTime, statusLabel } from "./labels";
 import {
@@ -44,7 +45,7 @@ export default function App() {
   const [search, setSearch] = useState("");
   const [selectedNumber, setSelectedNumber] = useState<string | null>(null);
   const [selected, setSelected] = useState<TicketDetail | null>(null);
-  const [view, setView] = useState<"tickets" | "crm" | "tariffs">("tickets");
+  const [view, setView] = useState<"tickets" | "crm" | "claims" | "tariffs">("tickets");
   const [tariffs, setTariffs] = useState<TariffDocument[]>([]);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
@@ -107,7 +108,7 @@ export default function App() {
       if (message) setNotice(message);
     } catch (cause) { setError(cause instanceof Error ? cause.message : String(cause)); }
   };
-  const navigate = (next: "tickets" | "crm" | "tariffs", nextQueue?: QueueKey) => {
+  const navigate = (next: "tickets" | "crm" | "claims" | "tariffs", nextQueue?: QueueKey) => {
     setView(next); if (nextQueue) setQueue(nextQueue); setSidebarOpen(false);
   };
   const activeCount = dashboard.counts.new + dashboard.counts.in_progress + dashboard.counts.awaiting_human + dashboard.counts.scheduled;
@@ -127,6 +128,7 @@ export default function App() {
         })}
         <div className="nav-heading nav-heading-spaced">Bestand</div>
         <button className={view === "crm" ? "active" : ""} onClick={() => navigate("crm")}><UsersRound size={16} /><span>Kunden 360°</span><em>1.000</em></button>
+        <button className={view === "claims" ? "active" : ""} onClick={() => navigate("claims")}><Shield size={16} /><span>Schäden</span><em>4</em></button>
         <div className="nav-heading nav-heading-spaced">Wissen</div>
         <button className={view === "tariffs" ? "active" : ""} onClick={() => navigate("tariffs")}><FileText size={16} /><span>Tarife</span><em>{tariffs.length}</em></button>
       </nav>
@@ -137,7 +139,7 @@ export default function App() {
     <main>
       <header className="topbar">
         <button className="menu-button" onClick={() => setSidebarOpen(true)} aria-label="Navigation öffnen"><Menu size={19} /></button>
-        <div className="breadcrumbs"><span>Pfefferminzia</span><ChevronRight size={14} /><strong>{view === "tickets" ? "Tickets" : view === "crm" ? "Kunden 360°" : "Tarife"}</strong></div>
+        <div className="breadcrumbs"><span>Pfefferminzia</span><ChevronRight size={14} /><strong>{view === "tickets" ? "Tickets" : view === "crm" ? "Kunden 360°" : view === "claims" ? "Schäden" : "Tarife"}</strong></div>
         <div className="topbar-actions">{view === "tickets" && <button className="sync-button" onClick={sync} disabled={syncing}><RefreshCw size={15} className={syncing ? "spin" : ""} />{syncing ? "Synchronisiert…" : "AgentMail Sync"}</button>}<div className="avatar">TH</div></div>
       </header>
       {notice && <div className="toast toast-success"><Check size={16} />{notice}<button onClick={() => setNotice(null)}><X size={14} /></button></div>}
@@ -154,7 +156,7 @@ export default function App() {
           <div className="toolbar"><div className="search"><Search size={16} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Tickets durchsuchen…" aria-label="Tickets durchsuchen" /></div><div className="filter-pills">{(["all", "liability", "life"] as const).map((value) => <button key={value} className={product === value ? "active" : ""} onClick={() => setProduct(value)}>{value === "all" ? "Alle Produkte" : productLabel[value]}</button>)}</div><span className="result-count">{filtered.length} Vorgänge</span></div>
           {loading ? <div className="empty-state"><RefreshCw className="spin" /><h3>Tickets werden geladen</h3></div> : groups.length ? groups.map((group) => <TicketGroup key={group.status} status={group.status} tickets={group.tickets} onSelect={setSelectedNumber} />) : <div className="empty-state"><CheckCircle2 /><h3>Dieser Arbeitskorb ist leer</h3><p>Es gibt keine Vorgänge für die aktuelle Auswahl.</p></div>}
         </section>
-      </div> : view === "crm" ? <CrmView /> : <TariffView tariffs={tariffs} />}
+      </div> : view === "crm" ? <CrmView /> : view === "claims" ? <ClaimsView /> : <TariffView tariffs={tariffs} />}
     </main>
 
     {selectedNumber && <button className="drawer-scrim" onClick={() => setSelectedNumber(null)} aria-label="Ticket schließen" />}

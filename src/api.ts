@@ -1,4 +1,4 @@
-import type { ContractDetail, CustomerDetail, CustomerResolutionCandidate, CustomerSummary, DashboardData, ProductLine, ReplyDraft, TariffDocument, TicketCategory, TicketDetail, TicketPriority, TicketStatus } from "./types";
+import type { ClaimAction, ClaimDetail, ClaimSummary, ContractDetail, CustomerDetail, CustomerResolutionCandidate, CustomerSummary, DashboardData, ProductLine, ReplyDraft, TariffDocument, TicketCategory, TicketDetail, TicketPriority, TicketStatus } from "./types";
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, {
@@ -18,6 +18,14 @@ export const api = {
   customer: (partnerId: string) => request<CustomerDetail>(`/api/customers/${partnerId}`),
   contract: (contractId: string) => request<ContractDetail>(`/api/contracts/${contractId}`),
   contractDocuments: (contractId: string) => request<TariffDocument[]>(`/api/contracts/${contractId}/documents`),
+  claims: (query = "") => request<ClaimSummary[]>(`/api/claims?q=${encodeURIComponent(query)}`),
+  claim: (claimId: string) => request<ClaimDetail>(`/api/claims/${claimId}`),
+  proposeClaimAction: (claimId: string, input: { action: ClaimAction; amount?: number; rationale: string; confidence: number; ruleVersion: string; idempotencyKey: string }) =>
+    request<ClaimDetail>(`/api/claims/${claimId}/recommendations`, { method: "POST", body: JSON.stringify(input) }),
+  reviewClaimAction: (claimId: string, recommendationId: number, decision: "approve" | "reject", note: string, idempotencyKey: string) =>
+    request<ClaimDetail>(`/api/claims/${claimId}/recommendations/${recommendationId}/review`, { method: "POST", body: JSON.stringify({ decision, note, idempotencyKey }) }),
+  createClaimTask: (claimId: string, input: { type: string; description: string; assignedTo?: string; dueAt?: string; idempotencyKey: string }) =>
+    request<ClaimDetail>(`/api/claims/${claimId}/tasks`, { method: "POST", body: JSON.stringify(input) }),
   customerCandidates: (ticketNumber: string) => request<CustomerResolutionCandidate[]>(`/api/tickets/${ticketNumber}/customer-candidates`),
   linkCustomer: (ticketNumber: string, partnerId: string) => request<TicketDetail>(`/api/tickets/${ticketNumber}/parties/${partnerId}`, {
     method: "PUT", body: JSON.stringify({ role: "CORRESPONDENT", primary: true, confidence: 1, matchMethod: "manual" }),

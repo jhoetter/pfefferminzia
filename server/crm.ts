@@ -10,6 +10,7 @@ import type {
 } from "../src/types";
 import { getDatabase } from "./database";
 import { addEvent, getTicket, listTickets } from "./store";
+import { listClaims } from "./claims";
 
 type Row = Record<string, unknown>;
 const rows = <T extends Row>(value: unknown) => value as T[];
@@ -120,6 +121,7 @@ export function getCustomer(partnerId: string, db = getDatabase()): CustomerDeta
   const contracts = rows(db.prepare(`${CONTRACT_SELECT} WHERE v.versicherungsnehmer_id = ? OR EXISTS
     (SELECT 1 FROM core_vertrag_partner_rolle r WHERE r.vertrag_id = v.vertrag_id AND r.partner_id = ?)
     ORDER BY v.status = 'AKTIV' DESC, v.beginn DESC`).all(partnerId, partnerId)).map(mapContract);
+  const claims = listClaims({ partnerId, limit: 100 }, db);
   const ticketIds = rows<{ ticket_id: number }>(db.prepare("SELECT DISTINCT ticket_id FROM ticket_parties WHERE partner_id = ?").all(partnerId)).map((item) => Number(item.ticket_id));
   const tickets = ticketIds.map((id) => listTickets({ limit: 500 }, db).find((ticket) => ticket.id === id)).filter((ticket): ticket is NonNullable<typeof ticket> => Boolean(ticket));
   const sourceReferences = rows(db.prepare("SELECT * FROM migration_partner_xref WHERE curated_id = ? ORDER BY quellsystem, gueltig_von").all(partnerId)).map((item) => ({
@@ -130,11 +132,13 @@ export function getCustomer(partnerId: string, db = getDatabase()): CustomerDeta
     ...contracts.map((contract) => ({ id: `contract-${contract.contractId}`, type: "contract", title: `${contract.productName} ${contract.status}`,
       date: contract.startDate, detail: `${contract.contractId} · ${contract.tariffGenerationId}` })),
     ...tickets.map((ticket) => ({ id: `ticket-${ticket.id}`, type: "ticket", title: ticket.subject, date: ticket.createdAt, detail: ticket.ticketNumber })),
+    ...claims.map((claim) => ({ id: `claim-${claim.claimId}`, type: "claim", title: claim.title, date: claim.eventDate,
+      detail: `${claim.claimId} · ${claim.status}` })),
   ].sort((a, b) => b.date.localeCompare(a.date));
   return {
     ...mapCustomerSummary(row), salutation: nullable(row.anrede), firstName: nullable(row.vorname), lastName: nullable(row.nachname),
     companyName: nullable(row.firmenname), birthDate: nullable(row.geburtsdatum), language: String(row.sprache),
-    marketingConsent: bool(row.datenschutz_werbung_ok), contacts, addresses, relationships, contracts, tickets, timeline, sourceReferences,
+    marketingConsent: bool(row.datenschutz_werbung_ok), contacts, addresses, relationships, contracts, claims, tickets, timeline, sourceReferences,
   };
 }
 
