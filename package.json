@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "data:init": "git submodule update --init --recursive",
+    "data:import": "tsx scripts/import-falk-data.ts --force",
     "dev": "tsx watch server/index.ts",
     "build": "tsc --noEmit && vite build",
     "start": "NODE_ENV=production tsx server/index.ts",
@@ -16,6 +17,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",
     "agentmail": "^0.5.23",
+    "csv-parse": "^6.2.1",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "lucide-react": "^0.542.0",

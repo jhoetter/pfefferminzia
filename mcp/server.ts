@@ -4,6 +4,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { categories, priorities, productLines } from "../src/types";
 import { ensureSeedData } from "../server/seed";
+import { importFalkDataset } from "../server/upstream";
 import { sendTicketDraft } from "../server/agentmail";
 import {
   addInternalNote,
@@ -21,6 +22,7 @@ import {
 } from "../server/store";
 
 ensureSeedData();
+importFalkDataset();
 
 const server = new McpServer(
   { name: "pfefferminzia", version: "0.2.0" },

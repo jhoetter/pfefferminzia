@@ -112,6 +112,27 @@ function migrate(db: DatabaseSync) {
       created_at TEXT NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS source_datasets (
+      id TEXT PRIMARY KEY,
+      upstream_commit TEXT NOT NULL,
+      manifest_sha256 TEXT NOT NULL,
+      dataset_version TEXT NOT NULL,
+      schema_version TEXT NOT NULL,
+      scale TEXT NOT NULL,
+      source_generated_at TEXT NOT NULL,
+      imported_at TEXT NOT NULL,
+      attribution TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS source_tables (
+      source_path TEXT PRIMARY KEY,
+      local_table TEXT NOT NULL UNIQUE,
+      layer TEXT NOT NULL,
+      row_count INTEGER NOT NULL,
+      sha256 TEXT NOT NULL,
+      imported_at TEXT NOT NULL
+    );
+
     CREATE INDEX IF NOT EXISTS idx_tickets_status ON tickets(status);
     CREATE INDEX IF NOT EXISTS idx_tickets_product_line ON tickets(product_line);
     CREATE INDEX IF NOT EXISTS idx_messages_ticket ON messages(ticket_id, sent_at);

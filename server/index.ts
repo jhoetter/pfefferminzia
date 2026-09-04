@@ -5,12 +5,15 @@ import { fileURLToPath } from "node:url";
 import { createApp } from "./app";
 import { dispatchDueReplies, syncAgentMail } from "./agentmail";
 import { ensureSeedData } from "./seed";
+import { importFalkDataset } from "./upstream";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const port = Number(process.env.PORT || 3004);
 const host = process.env.HOST || "127.0.0.1";
 
 ensureSeedData();
+const upstream = importFalkDataset();
+console.log(`Falk dataset: ${upstream.imported ? "imported" : "ready"} · ${upstream.tables} tables · ${upstream.rows} rows`);
 const app = createApp();
 
 if (process.env.NODE_ENV === "production") {
