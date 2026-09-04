@@ -17,6 +17,7 @@ export const api = {
   customers: (query = "") => request<CustomerSummary[]>(`/api/customers?q=${encodeURIComponent(query)}&limit=100`),
   customer: (partnerId: string) => request<CustomerDetail>(`/api/customers/${partnerId}`),
   contract: (contractId: string) => request<ContractDetail>(`/api/contracts/${contractId}`),
+  contractDocuments: (contractId: string) => request<TariffDocument[]>(`/api/contracts/${contractId}/documents`),
   customerCandidates: (ticketNumber: string) => request<CustomerResolutionCandidate[]>(`/api/tickets/${ticketNumber}/customer-candidates`),
   linkCustomer: (ticketNumber: string, partnerId: string) => request<TicketDetail>(`/api/tickets/${ticketNumber}/parties/${partnerId}`, {
     method: "PUT", body: JSON.stringify({ role: "CORRESPONDENT", primary: true, confidence: 1, matchMethod: "manual" }),

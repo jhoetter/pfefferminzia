@@ -51,10 +51,26 @@ Only the curated, migration, and reference CSV data is imported into the
 application. The `data/truth` instructor solution layer is deliberately not
 loaded or exposed through the operational MCP server.
 
-The upstream claim, finance, process, text, and document-rendering waves are not
-implemented yet. Until they arrive, this repository keeps workshop additions in
-a separate, explicitly labelled extension layer using the identifiers and
-planned schemas from the upstream project.
+The upstream claim, finance, process, text, and full document-rendering waves
+are not implemented yet. Until they arrive, this repository keeps workshop
+additions in a separate, explicitly labelled extension layer using the
+identifiers and planned schemas from the upstream project.
+
+### Tariff documents
+
+Falk's tariff reference tables already define 14 tariff generations and their
+canonical Swiss and German document IDs, but the pinned upstream revision does
+not contain the corresponding rendered policy PDFs. This repository therefore
+generates 28 short Markdown/PDF references from those tables: one per tariff
+generation and market. Contracts resolve documents by the exact upstream
+generation, product, and market rather than by a loose product-name match.
+
+These generated files are intentionally condensed workshop aids. They are not
+complete policy wordings, real tariffs, legally reviewed terms, or substitutes
+for the future upstream document wave. Their front matter, PDF footer, catalog,
+and application metadata all mark them as synthetic workshop extensions. A
+future contribution of richer documents to Falk's repository would require
+separate agreement and is not part of this repository's current integration.
 
 ## Repository structure
 
@@ -131,10 +147,12 @@ npm run mcp
 ```
 
 Core capabilities currently cover ticket queues, ticket details,
-classification, attachments, tariff documents, response drafts, internal
-notes, controlled submission, and audited human-approved sending. CRM, policy,
-claim, and data-provenance capabilities are added as domain modules and remain
-available through both MCP and the human workspace.
+classification, attachments, response drafts, internal notes, controlled
+submission, audited human-approved sending, data provenance, customer search,
+Customer 360, policy context, and version-aware tariff documents. Claims are
+kept as a separate workshop extension until Falk's planned claim wave is
+available. Domain modules remain available through both MCP and the human
+workspace.
 
 Read operations are exposed as bounded tools or `pfefferminzia://` resources.
 State-changing tools validate inputs, enforce workflow rules, and append audit

@@ -1,6 +1,6 @@
 import express, { type NextFunction, type Request, type Response } from "express";
 import { z } from "zod";
-import { approveDraft, addInternalNote, dashboardMeta, getAttachmentRecord, getDocumentRecord, getTicket, listTariffs, listTickets, readStoredFile, resolveStoragePath, saveDraft, submitDraft, updateClassification, updateTicketStatus } from "./store";
+import { approveDraft, addInternalNote, dashboardMeta, getAttachmentRecord, getDocumentRecord, getTicket, listContractDocuments, listTariffs, listTickets, readStoredFile, resolveStoragePath, saveDraft, submitDraft, updateClassification, updateTicketStatus } from "./store";
 import { sendTicketDraft, syncAgentMail } from "./agentmail";
 import { categories, priorities, productLines, ticketStatuses } from "../src/types";
 import { getContract, getCustomer, linkTicketContract, linkTicketParty, resolveTicketCustomer, searchCustomers } from "./crm";
@@ -42,6 +42,8 @@ export function createApp() {
     if (!contract) return res.status(404).json({ error: "Contract not found" });
     res.json(contract);
   });
+
+  app.get("/api/contracts/:contractId/documents", (req, res) => res.json(listContractDocuments(String(req.params.contractId))));
 
   app.get("/api/tickets/:ticketNumber/customer-candidates", (req, res) => res.json(resolveTicketCustomer(String(req.params.ticketNumber))));
 

@@ -196,6 +196,15 @@ export interface TariffDocument {
   summary: string;
   textContent: string;
   resourceUri: string;
+  documentType: string;
+  productIds: string[];
+  tariffGenerationId: string | null;
+  market: "CH" | "DE" | null;
+  validFrom: string | null;
+  validTo: string | null;
+  revision: string | null;
+  sourceCommit: string | null;
+  workshopExtension: boolean;
 }
 
 export interface DashboardData {

@@ -26,14 +26,15 @@ describe("Pfefferminzia workflow", () => {
   it("loads tariff knowledge without creating product tickets", () => {
     const db = seededDatabase();
     expect(listTickets({}, db)).toHaveLength(4);
-    expect(listTariffs(db).map((tariff) => tariff.productLine)).toEqual(["liability", "life"]);
+    expect(listTariffs(db)).toHaveLength(28);
+    expect(new Set(listTariffs(db).map((tariff) => tariff.productLine))).toEqual(new Set(["liability", "life"]));
     db.close();
   });
 
   it("moves a liability draft into the 24-hour control window", () => {
     const db = seededDatabase();
     const before = Date.now();
-    saveDraft("PF-9001", "Vielen Dank. Wir prüfen den Schaden.", "Tarif PHK-2026", "test-agent", db);
+    saveDraft("PF-9001", "Vielen Dank. Wir prüfen den Schaden.", "RW-HP-AHB-DE-2013", "test-agent", db);
     const result = submitDraft("PF-9001", "test-agent", 24, db);
     expect(result.status).toBe("scheduled");
     expect(result.draft?.status).toBe("scheduled");
@@ -43,7 +44,7 @@ describe("Pfefferminzia workflow", () => {
 
   it("always routes life-insurance drafts to human review", () => {
     const db = seededDatabase();
-    saveDraft("PF-9002", "Unser Beileid. Wir prüfen die Unterlagen.", "Tarif LS-2045", "test-agent", db);
+    saveDraft("PF-9002", "Unser Beileid. Wir prüfen die Unterlagen.", "RW-LV-AVB-DE-2025", "test-agent", db);
     const result = submitDraft("PF-9002", "test-agent", 24, db);
     expect(result.status).toBe("awaiting_human");
     expect(result.draft?.scheduledFor).toBeNull();

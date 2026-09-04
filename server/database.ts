@@ -163,6 +163,21 @@ function migrate(db: DatabaseSync) {
     CREATE INDEX IF NOT EXISTS idx_ticket_parties_partner ON ticket_parties(partner_id, ticket_id);
     CREATE INDEX IF NOT EXISTS idx_ticket_contracts_contract ON ticket_contracts(vertrag_id, ticket_id);
   `);
+  const documentColumns = new Set((db.prepare("PRAGMA table_info(documents)").all() as { name: string }[]).map((column) => column.name));
+  const additions: Record<string, string> = {
+    document_type: "TEXT NOT NULL DEFAULT 'BEDINGUNGSWERK'",
+    product_ids_json: "TEXT NOT NULL DEFAULT '[]'",
+    tariff_generation_id: "TEXT",
+    market: "TEXT",
+    valid_from: "TEXT",
+    valid_to: "TEXT",
+    revision: "TEXT",
+    source_commit: "TEXT",
+    workshop_extension: "INTEGER NOT NULL DEFAULT 1",
+  };
+  for (const [name, definition] of Object.entries(additions)) {
+    if (!documentColumns.has(name)) db.exec(`ALTER TABLE documents ADD COLUMN ${name} ${definition}`);
+  }
 }
 
 let singleton: DatabaseSync | undefined;

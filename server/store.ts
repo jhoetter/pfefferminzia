@@ -283,11 +283,26 @@ export function listTariffs(db = getDatabase()): TariffDocument[] {
     summary: String(row.summary),
     textContent: String(row.text_content),
     resourceUri: `pfefferminzia://tariffs/${row.id}`,
+    documentType: String(row.document_type),
+    productIds: JSON.parse(String(row.product_ids_json || "[]")) as string[],
+    tariffGenerationId: row.tariff_generation_id ? String(row.tariff_generation_id) : null,
+    market: row.market as "CH" | "DE" | null,
+    validFrom: row.valid_from ? String(row.valid_from) : null,
+    validTo: row.valid_to ? String(row.valid_to) : null,
+    revision: row.revision ? String(row.revision) : null,
+    sourceCommit: row.source_commit ? String(row.source_commit) : null,
+    workshopExtension: Boolean(row.workshop_extension),
   }));
 }
 
 export function getTariff(id: string, db = getDatabase()) {
   return listTariffs(db).find((document) => document.id === id) ?? null;
+}
+
+export function listContractDocuments(contractId: string, db = getDatabase()) {
+  const contract = one(db.prepare("SELECT tarifgeneration_id, markt FROM core_vertrag WHERE vertrag_id = ?").get(contractId));
+  if (!contract) throw new Error(`Contract not found: ${contractId}`);
+  return listTariffs(db).filter((document) => document.tariffGenerationId === contract.tarifgeneration_id && document.market === contract.markt);
 }
 
 export function getAttachmentRecord(id: number, db = getDatabase()) {

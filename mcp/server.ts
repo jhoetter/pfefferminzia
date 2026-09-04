@@ -15,6 +15,7 @@ import {
   getTariff,
   getTicket,
   listAttachmentRecords,
+  listContractDocuments,
   listTariffs,
   listTickets,
   readStoredFile,
@@ -185,9 +186,25 @@ server.registerTool(
   "list_tariffs",
   {
     description: "List the fictional MVP tariff documents available inside Pfefferminzia. Use read_tariff before drafting product-specific answers.",
-    inputSchema: { productLine: z.enum(["liability", "life"]).optional() },
+    inputSchema: {
+      productLine: z.enum(["liability", "life"]).optional(),
+      tariffGenerationId: z.string().optional(), market: z.enum(["CH", "DE"]).optional(),
+    },
+    annotations: { readOnlyHint: true, openWorldHint: false },
   },
-  async ({ productLine }) => json(listTariffs().filter((tariff) => !productLine || tariff.productLine === productLine).map(({ textContent: _text, ...tariff }) => tariff)),
+  async ({ productLine, tariffGenerationId, market }) => json(listTariffs().filter((tariff) =>
+    (!productLine || tariff.productLine === productLine) && (!tariffGenerationId || tariff.tariffGenerationId === tariffGenerationId)
+    && (!market || tariff.market === market)).map(({ textContent: _text, ...tariff }) => tariff)),
+);
+
+server.registerTool(
+  "list_contract_documents",
+  {
+    description: "Resolve the synthetic workshop conditions that apply to one exact Falk contract using tariff generation and market.",
+    inputSchema: { contractId: z.string().regex(/^VTR-\d{8}$/u) },
+    annotations: { readOnlyHint: true, openWorldHint: false },
+  },
+  async ({ contractId }) => json(listContractDocuments(contractId).map(({ textContent: _text, ...document }) => document)),
 );
 
 server.registerTool(
