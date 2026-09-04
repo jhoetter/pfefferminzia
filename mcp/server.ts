@@ -6,6 +6,7 @@ import { sendTicketDraft, syncAgentMail } from "../server/agentmail";
 import { getContract, getCustomer, linkTicketContract, linkTicketParty, resolveTicketCustomer, searchCustomers } from "../server/crm";
 import { getUpstreamStatus } from "../server/upstream";
 import { createClaimFromTicket, createClaimTask, getClaim, listClaims, proposeClaimAction, reviewClaimAction } from "../server/claims";
+import { getWorkshopStatus } from "../server/workshop";
 import {
   addInternalNote,
   approveDraft,
@@ -70,6 +71,16 @@ server.registerTool(
       automaticExternalSendEnabled: process.env.AUTO_SEND_ENABLED === "true",
     });
   },
+);
+
+server.registerTool(
+  "get_workshop_status",
+  {
+    description: "Confirm participant-profile isolation, synthetic-data status, fixture counts, truth-layer exclusion, and disabled real-world claim effects.",
+    inputSchema: {},
+    annotations: { readOnlyHint: true, openWorldHint: false },
+  },
+  async () => json(getWorkshopStatus()),
 );
 
 server.registerTool(

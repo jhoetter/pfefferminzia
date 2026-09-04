@@ -160,8 +160,9 @@ async function performAgentMailSync(db: DatabaseSync): Promise<SyncResult> {
 
 export async function sendTicketDraft(ticketNumber: string, actor = "human", db = getDatabase()) {
   const ticket = getTicket(ticketNumber, db);
-  if (!ticket?.draft) throw new Error(`Ticket or reply draft not found: ${ticketNumber}`);
+  if (!ticket) throw new Error(`Ticket not found: ${ticketNumber}`);
   if (ticket.isDemo) throw new Error("Demo tickets can never send real email");
+  if (!ticket.draft) throw new Error(`Reply draft not found: ${ticketNumber}`);
   if (!ticket.sourceInboxId) throw new Error("Ticket has no AgentMail inbox binding");
   if (ticket.productLine === "life" && !ticket.humanApprovedAt) {
     throw new Error("Life insurance replies require explicit human approval");

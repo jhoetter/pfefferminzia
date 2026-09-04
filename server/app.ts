@@ -8,6 +8,7 @@ import { categories, claimActions, claimStatuses, priorities, productLines, tick
 import { getContract, getCustomer, linkTicketContract, linkTicketParty, resolveTicketCustomer, searchCustomers } from "./crm";
 import { getUpstreamStatus } from "./upstream";
 import { createClaimFromTicket, createClaimTask, getClaim, listClaims, proposeClaimAction, reviewClaimAction } from "./claims";
+import { getWorkshopStatus } from "./workshop";
 
 const classificationSchema = z.object({
   productLine: z.enum(productLines),
@@ -45,6 +46,7 @@ export function createApp() {
   app.delete("/mcp", (_req, res) => res.status(405).json({ jsonrpc: "2.0", error: { code: -32000, message: "Method not allowed in stateless mode" }, id: null }));
 
   app.get("/api/data-source", (_req, res) => res.json(getUpstreamStatus()));
+  app.get("/api/workshop", (_req, res) => res.json(getWorkshopStatus()));
 
   app.get("/api/customers", (req, res) => res.json(searchCustomers({
     query: typeof req.query.q === "string" ? req.query.q : undefined,

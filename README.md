@@ -111,6 +111,7 @@ cd pfefferminzia
 npm install
 npm run data:import
 npm run generate:tariffs
+npm run workshop:reset
 npm run dev
 ```
 
@@ -127,6 +128,11 @@ mirrored attachments are stored under `.data/` and are not committed.
 The import verifies Falk's manifest hashes before replacing locally derived
 tables. It records the upstream commit, dataset/schema versions, hashes, source
 generation time, and required attribution in SQLite.
+
+`npm run workshop:reset` recreates four deterministic, non-sendable participant
+exercises for the Niederberger, Kaufmann, Pieper, and Grimm storylines. It
+deletes only records owned by the local demo/claims extension. Imported Falk
+tables and any manual or AgentMail tickets are preserved.
 
 To regenerate Falk's sample data from its master seed:
 
@@ -190,6 +196,8 @@ events. There is intentionally no generic SQL MCP tool.
 
 ## Safety and workshop profiles
 
+- `WORKSHOP_PROFILE=participant` is the only operational profile. Any other
+  value fails closed; instructor truth data is never loaded by the service.
 - `AUTO_SEND_ENABLED=false` is the safe default.
 - Demo tickets never send external messages.
 - Life-insurance decisions and communication require human approval.
@@ -209,6 +217,7 @@ npm test
 npm run build
 npm run data:import
 npm run generate:tariffs
+npm run workshop:reset
 ```
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the current technical design and

@@ -4,10 +4,12 @@ import { ensureWorkshopClaims } from "../server/claims";
 import { ensureSeedData } from "../server/seed";
 import { importFalkDataset } from "../server/upstream";
 import { createPfefferminziaMcpServer } from "./server";
+import { ensureWorkshopFixtures } from "../server/workshop";
 
 importFalkDataset();
 ensureSeedData();
 ensureWorkshopClaims();
+ensureWorkshopFixtures();
 
 const server = createPfefferminziaMcpServer();
 await server.connect(new StdioServerTransport());

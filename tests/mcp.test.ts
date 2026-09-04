@@ -8,7 +8,7 @@ import { createPfefferminziaMcpServer } from "../mcp/server";
 import { createApp } from "../server/app";
 
 const requiredTools = [
-  "get_data_source_status", "get_operations_summary", "list_tickets", "get_ticket", "classify_ticket",
+  "get_data_source_status", "get_operations_summary", "get_workshop_status", "list_tickets", "get_ticket", "classify_ticket",
   "set_ticket_status", "draft_ticket_reply", "add_internal_note", "submit_ticket_reply", "approve_ticket_reply",
   "send_ticket_reply", "sync_agentmail", "search_customers", "get_customer", "get_contract",
   "resolve_ticket_customer", "link_ticket_customer", "link_ticket_contract", "list_tariffs", "read_tariff",
