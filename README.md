@@ -157,11 +157,17 @@ always requires explicit human review.
 
 ## MCP
 
-The checked-in `.mcp.json` starts the stdio server:
+The checked-in `.mcp.json` starts the stdio transport:
 
 ```bash
 npm run mcp
 ```
+
+The application host exposes the same registry through stateless MCP
+Streamable HTTP at `POST http://127.0.0.1:3004/mcp`. Both transports are created
+from one server factory and are covered by a capability-parity test. The HTTP
+endpoint is intentionally local and unauthenticated for workshops; do not bind
+it to a public interface.
 
 Core capabilities currently cover ticket queues, ticket details,
 classification, attachments, response drafts, internal notes, controlled
@@ -171,6 +177,12 @@ kept as a separate workshop extension until Falk's planned claim wave is
 available. The local claims extension adds bounded claim retrieval, intake from
 a linked ticket, internal tasks, recommendations, and human review. Domain
 modules remain available through both MCP and the human workspace.
+
+MCP includes every business action used by the workspace: operational summary,
+ticket listing and status, customer/contract resolution, tariff and attachment
+reading, drafting and approval, AgentMail import, claim intake, internal claim
+tasks, decision proposals, and recorded human review. There is no generic SQL,
+arbitrary filesystem, direct payment, or unreviewed claim-decision tool.
 
 Read operations are exposed as bounded tools or `pfefferminzia://` resources.
 State-changing tools validate inputs, enforce workflow rules, and append audit

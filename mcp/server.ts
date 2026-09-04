@@ -1,16 +1,11 @@
 import "dotenv/config";
 import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { categories, claimActions, claimStatuses, priorities, productLines } from "../src/types";
-import { ensureSeedData } from "../server/seed";
-import { importFalkDataset } from "../server/upstream";
-import { sendTicketDraft } from "../server/agentmail";
+import { categories, claimActions, claimStatuses, priorities, productLines, ticketStatuses } from "../src/types";
+import { sendTicketDraft, syncAgentMail } from "../server/agentmail";
 import { getContract, getCustomer, linkTicketContract, linkTicketParty, resolveTicketCustomer, searchCustomers } from "../server/crm";
 import { getUpstreamStatus } from "../server/upstream";
-import {
-  createClaimFromTicket, createClaimTask, ensureWorkshopClaims, getClaim, listClaims, proposeClaimAction, reviewClaimAction,
-} from "../server/claims";
+import { createClaimFromTicket, createClaimTask, getClaim, listClaims, proposeClaimAction, reviewClaimAction } from "../server/claims";
 import {
   addInternalNote,
   approveDraft,
@@ -25,12 +20,11 @@ import {
   saveDraft,
   submitDraft,
   updateClassification,
+  updateTicketStatus,
+  dashboardMeta,
 } from "../server/store";
 
-importFalkDataset();
-ensureSeedData();
-ensureWorkshopClaims();
-
+export function createPfefferminziaMcpServer() {
 const server = new McpServer(
   { name: "pfefferminzia", version: "0.2.0" },
   {
@@ -56,6 +50,39 @@ server.registerTool(
     annotations: { readOnlyHint: true, openWorldHint: false },
   },
   async () => json(getUpstreamStatus()),
+);
+
+server.registerTool(
+  "get_operations_summary",
+  {
+    description: "Return bounded operational counts for tickets and synthetic workshop claims plus safe-send configuration.",
+    inputSchema: {},
+    annotations: { readOnlyHint: true, openWorldHint: false },
+  },
+  async () => {
+    const meta = dashboardMeta();
+    const claims = listClaims({ limit: 500 });
+    return json({
+      ticketCounts: meta.counts,
+      claimCounts: Object.fromEntries(claimStatuses.map((status) => [status, claims.filter((claim) => claim.status === status).length])),
+      connectedInbox: meta.connectedInbox,
+      lastSyncAt: meta.lastSyncAt,
+      automaticExternalSendEnabled: process.env.AUTO_SEND_ENABLED === "true",
+    });
+  },
+);
+
+server.registerTool(
+  "list_tickets",
+  {
+    description: "List bounded ticket summaries by workflow state, product, category, or search text. Customer message bodies are not included.",
+    inputSchema: {
+      statuses: z.array(z.enum(ticketStatuses)).max(6).optional(), productLine: z.enum(productLines).optional(),
+      category: z.enum(categories).optional(), query: z.string().max(200).optional(), limit: z.number().int().min(1).max(100).default(50),
+    },
+    annotations: { readOnlyHint: true, openWorldHint: false },
+  },
+  async ({ query, ...filters }) => json(listTickets({ ...filters, q: query })),
 );
 
 server.registerTool(
@@ -286,6 +313,42 @@ server.registerTool(
 );
 
 server.registerTool(
+  "set_ticket_status",
+  {
+    description: "Move a ticket to new, in-progress, or closed state. Repeating the same state is a no-op; all actual changes are audited.",
+    inputSchema: { ticketNumber: z.string().regex(/^PF-\d+$/u), status: z.enum(["new", "in_progress", "closed"]) },
+    annotations: { idempotentHint: true, openWorldHint: false },
+  },
+  async ({ ticketNumber, status }) => json(withoutBodies(updateTicketStatus(ticketNumber, status, "mcp-agent"))),
+);
+
+server.registerTool(
+  "approve_ticket_reply",
+  {
+    description: "Record explicit human approval of the current saved reply draft without sending it. This is an internal audited checkpoint.",
+    inputSchema: {
+      ticketNumber: z.string().regex(/^PF-\d+$/u), confirmHumanApproval: z.literal(true),
+      approvalNote: z.string().min(1).max(1_000),
+    },
+    annotations: { openWorldHint: false },
+  },
+  async ({ ticketNumber, approvalNote }) => {
+    addInternalNote(ticketNumber, `Reply approval recorded: ${approvalNote}`, "mcp-human-approval");
+    return json(withoutBodies(approveDraft(ticketNumber, "mcp-human-approval")));
+  },
+);
+
+server.registerTool(
+  "sync_agentmail",
+  {
+    description: "Explicitly import new messages and attachments from the configured AgentMail inbox. This reads an external service but never sends email.",
+    inputSchema: { confirmExternalRead: z.literal(true) },
+    annotations: { readOnlyHint: false, openWorldHint: true },
+  },
+  async () => json(await syncAgentMail()),
+);
+
+server.registerTool(
   "send_ticket_reply",
   {
     description: "Immediately send the saved draft through the ticket's AgentMail thread. Call only when a human explicitly approved this exact reply. Demo tickets remain blocked; life insurance requires this explicit human approval and is audited.",
@@ -294,7 +357,7 @@ server.registerTool(
       confirmHumanApproval: z.literal(true).describe("Must be true only after a human explicitly approves immediate sending"),
       approvalNote: z.string().min(1).max(1_000).describe("Audit note identifying the human instruction or approval"),
     },
-    annotations: { destructiveHint: false, openWorldHint: true },
+    annotations: { destructiveHint: true, openWorldHint: true },
   },
   async ({ ticketNumber, approvalNote }) => {
     const ticket = getTicket(ticketNumber);
@@ -484,6 +547,5 @@ server.registerResource(
   },
 );
 
-const transport = new StdioServerTransport();
-await server.connect(transport);
-console.error("Pfefferminzia MCP server ready (stdio)");
+return server;
+}

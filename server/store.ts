@@ -212,6 +212,7 @@ export function updateTicketStatus(ticketNumber: string, status: TicketStatus, a
   if (!ticketStatuses.includes(status)) throw new Error("Invalid status");
   const ticket = getTicket(ticketNumber, db);
   if (!ticket) throw new Error(`Ticket not found: ${ticketNumber}`);
+  if (ticket.status === status) return ticket;
   db.prepare("UPDATE tickets SET status = ?, updated_at = ? WHERE id = ?").run(status, now(), ticket.id);
   addEvent(ticket.id, "status_changed", actor, { from: ticket.status, to: status }, db);
   return getTicket(ticket.id, db)!;

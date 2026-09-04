@@ -1,5 +1,7 @@
 import express, { type NextFunction, type Request, type Response } from "express";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { z } from "zod";
+import { createPfefferminziaMcpServer } from "../mcp/server";
 import { approveDraft, addInternalNote, dashboardMeta, getAttachmentRecord, getDocumentRecord, getTicket, listContractDocuments, listTariffs, listTickets, readStoredFile, resolveStoragePath, saveDraft, submitDraft, updateClassification, updateTicketStatus } from "./store";
 import { sendTicketDraft, syncAgentMail } from "./agentmail";
 import { categories, claimActions, claimStatuses, priorities, productLines, ticketStatuses } from "../src/types";
@@ -22,6 +24,25 @@ export function createApp() {
   app.use(express.json({ limit: "2mb" }));
 
   app.get("/api/health", (_req, res) => res.json({ ok: true, service: "pfefferminzia" }));
+
+  app.post("/mcp", async (req, res) => {
+    const server = createPfefferminziaMcpServer();
+    const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+    res.setHeader("Cache-Control", "no-store");
+    try {
+      await server.connect(transport);
+      await transport.handleRequest(req, res, req.body);
+      res.on("close", () => { void transport.close(); void server.close(); });
+    } catch (error) {
+      await transport.close().catch(() => undefined);
+      await server.close().catch(() => undefined);
+      if (!res.headersSent) res.status(500).json({
+        jsonrpc: "2.0", error: { code: -32603, message: error instanceof Error ? error.message : "Internal MCP error" }, id: null,
+      });
+    }
+  });
+  app.get("/mcp", (_req, res) => res.status(405).json({ jsonrpc: "2.0", error: { code: -32000, message: "Method not allowed in stateless mode" }, id: null }));
+  app.delete("/mcp", (_req, res) => res.status(405).json({ jsonrpc: "2.0", error: { code: -32000, message: "Method not allowed in stateless mode" }, id: null }));
 
   app.get("/api/data-source", (_req, res) => res.json(getUpstreamStatus()));
 
