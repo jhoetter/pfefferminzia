@@ -3,6 +3,8 @@ import { z } from "zod";
 import { approveDraft, addInternalNote, dashboardMeta, getAttachmentRecord, getDocumentRecord, getTicket, listTariffs, listTickets, readStoredFile, resolveStoragePath, saveDraft, submitDraft, updateClassification, updateTicketStatus } from "./store";
 import { sendTicketDraft, syncAgentMail } from "./agentmail";
 import { categories, priorities, productLines, ticketStatuses } from "../src/types";
+import { getContract, getCustomer, linkTicketContract, linkTicketParty, resolveTicketCustomer, searchCustomers } from "./crm";
+import { getUpstreamStatus } from "./upstream";
 
 const classificationSchema = z.object({
   productLine: z.enum(productLines),
@@ -19,6 +21,42 @@ export function createApp() {
   app.use(express.json({ limit: "2mb" }));
 
   app.get("/api/health", (_req, res) => res.json({ ok: true, service: "pfefferminzia" }));
+
+  app.get("/api/data-source", (_req, res) => res.json(getUpstreamStatus()));
+
+  app.get("/api/customers", (req, res) => res.json(searchCustomers({
+    query: typeof req.query.q === "string" ? req.query.q : undefined,
+    country: typeof req.query.country === "string" ? req.query.country : undefined,
+    productId: typeof req.query.productId === "string" ? req.query.productId : undefined,
+    limit: typeof req.query.limit === "string" ? Number(req.query.limit) : undefined,
+  })));
+
+  app.get("/api/customers/:partnerId", (req, res) => {
+    const customer = getCustomer(String(req.params.partnerId));
+    if (!customer) return res.status(404).json({ error: "Customer not found" });
+    res.json(customer);
+  });
+
+  app.get("/api/contracts/:contractId", (req, res) => {
+    const contract = getContract(String(req.params.contractId));
+    if (!contract) return res.status(404).json({ error: "Contract not found" });
+    res.json(contract);
+  });
+
+  app.get("/api/tickets/:ticketNumber/customer-candidates", (req, res) => res.json(resolveTicketCustomer(String(req.params.ticketNumber))));
+
+  app.put("/api/tickets/:ticketNumber/parties/:partnerId", (req, res) => {
+    const input = z.object({
+      role: z.enum(["CORRESPONDENT", "VERSICHERUNGSNEHMER", "VERSICHERTE_PERSON", "GESCHAEDIGTER", "VERTRETER"]),
+      primary: z.boolean().default(true), confidence: z.number().min(0).max(1).default(1), matchMethod: z.string().default("manual"),
+    }).parse(req.body ?? {});
+    res.json(linkTicketParty({ ticketNumber: String(req.params.ticketNumber), partnerId: String(req.params.partnerId), ...input, actor: "human-ui" }));
+  });
+
+  app.put("/api/tickets/:ticketNumber/contracts/:contractId", (req, res) => {
+    const input = z.object({ confidence: z.number().min(0).max(1).default(1), matchMethod: z.string().default("manual") }).parse(req.body ?? {});
+    res.json(linkTicketContract({ ticketNumber: String(req.params.ticketNumber), contractId: String(req.params.contractId), ...input, actor: "human-ui" }));
+  });
 
   app.get("/api/dashboard", (_req, res) => {
     const meta = dashboardMeta();

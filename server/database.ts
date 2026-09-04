@@ -133,10 +133,35 @@ function migrate(db: DatabaseSync) {
       imported_at TEXT NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS ticket_parties (
+      ticket_id INTEGER NOT NULL REFERENCES tickets(id) ON DELETE CASCADE,
+      partner_id TEXT NOT NULL,
+      role TEXT NOT NULL CHECK(role IN ('CORRESPONDENT', 'VERSICHERUNGSNEHMER', 'VERSICHERTE_PERSON', 'GESCHAEDIGTER', 'VERTRETER')),
+      is_primary INTEGER NOT NULL DEFAULT 0,
+      match_method TEXT NOT NULL,
+      confidence REAL NOT NULL CHECK(confidence >= 0 AND confidence <= 1),
+      confirmed_by TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      PRIMARY KEY (ticket_id, partner_id, role)
+    );
+
+    CREATE TABLE IF NOT EXISTS ticket_contracts (
+      ticket_id INTEGER NOT NULL REFERENCES tickets(id) ON DELETE CASCADE,
+      vertrag_id TEXT NOT NULL,
+      relation TEXT NOT NULL DEFAULT 'BETRIFFT',
+      match_method TEXT NOT NULL,
+      confidence REAL NOT NULL CHECK(confidence >= 0 AND confidence <= 1),
+      confirmed_by TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      PRIMARY KEY (ticket_id, vertrag_id)
+    );
+
     CREATE INDEX IF NOT EXISTS idx_tickets_status ON tickets(status);
     CREATE INDEX IF NOT EXISTS idx_tickets_product_line ON tickets(product_line);
     CREATE INDEX IF NOT EXISTS idx_messages_ticket ON messages(ticket_id, sent_at);
     CREATE INDEX IF NOT EXISTS idx_events_ticket ON ticket_events(ticket_id, created_at);
+    CREATE INDEX IF NOT EXISTS idx_ticket_parties_partner ON ticket_parties(partner_id, ticket_id);
+    CREATE INDEX IF NOT EXISTS idx_ticket_contracts_contract ON ticket_contracts(vertrag_id, ticket_id);
   `);
 }
 

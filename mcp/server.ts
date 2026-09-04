@@ -6,6 +6,8 @@ import { categories, priorities, productLines } from "../src/types";
 import { ensureSeedData } from "../server/seed";
 import { importFalkDataset } from "../server/upstream";
 import { sendTicketDraft } from "../server/agentmail";
+import { getContract, getCustomer, linkTicketContract, linkTicketParty, resolveTicketCustomer, searchCustomers } from "../server/crm";
+import { getUpstreamStatus } from "../server/upstream";
 import {
   addInternalNote,
   approveDraft,
@@ -40,6 +42,95 @@ const withoutBodies = (ticket: ReturnType<typeof getTicket>) => ticket ? {
   messages: ticket.messages.map(({ textBody: _text, htmlBody: _html, ...message }) => message),
   events: ticket.events.slice(0, 10),
 } : null;
+
+server.registerTool(
+  "get_data_source_status",
+  {
+    description: "Return provenance for the pinned synthetic Falk Pfefferminzia workshop dataset. Instructor truth data is never imported.",
+    inputSchema: {},
+    annotations: { readOnlyHint: true, openWorldHint: false },
+  },
+  async () => json(getUpstreamStatus()),
+);
+
+server.registerTool(
+  "search_customers",
+  {
+    description: "Search synthetic CRM customers by stable partner ID, name, company, contact, city, or policy ID.",
+    inputSchema: {
+      query: z.string().max(200).optional(), country: z.enum(["CH", "DE"]).optional(),
+      productId: z.string().max(30).optional(), limit: z.number().int().min(1).max(100).default(25),
+    },
+    annotations: { readOnlyHint: true, openWorldHint: false },
+  },
+  async (input) => json(searchCustomers(input)),
+);
+
+server.registerTool(
+  "get_customer",
+  {
+    description: "Get a synthetic customer 360 view with contacts, addresses, relationships, policies, tickets, timeline, and source-system provenance.",
+    inputSchema: { partnerId: z.string().regex(/^PTR-\d{8}$/u) },
+    annotations: { readOnlyHint: true, openWorldHint: false },
+  },
+  async ({ partnerId }) => {
+    const customer = getCustomer(partnerId);
+    return customer ? json(customer) : error(`Customer not found: ${partnerId}`);
+  },
+);
+
+server.registerTool(
+  "get_contract",
+  {
+    description: "Get one synthetic insurance contract with its exact product, tariff generation, coverages, risk object, and parties.",
+    inputSchema: { contractId: z.string().regex(/^VTR-\d{8}$/u) },
+    annotations: { readOnlyHint: true, openWorldHint: false },
+  },
+  async ({ contractId }) => {
+    const contract = getContract(contractId);
+    return contract ? json(contract) : error(`Contract not found: ${contractId}`);
+  },
+);
+
+server.registerTool(
+  "resolve_ticket_customer",
+  {
+    description: "Return bounded customer candidates for a ticket. Exact synthetic contact matches score 1; name candidates always require human confirmation.",
+    inputSchema: { ticketNumber: z.string().regex(/^PF-\d+$/u) },
+    annotations: { readOnlyHint: true, openWorldHint: false },
+  },
+  async ({ ticketNumber }) => json(resolveTicketCustomer(ticketNumber)),
+);
+
+server.registerTool(
+  "link_ticket_customer",
+  {
+    description: "Auditably link a ticket to a confirmed synthetic CRM customer. This does not merge or modify upstream customer data.",
+    inputSchema: {
+      ticketNumber: z.string().regex(/^PF-\d+$/u), partnerId: z.string().regex(/^PTR-\d{8}$/u),
+      role: z.enum(["CORRESPONDENT", "VERSICHERUNGSNEHMER", "VERSICHERTE_PERSON", "GESCHAEDIGTER", "VERTRETER"]).default("CORRESPONDENT"),
+      confirmMatch: z.literal(true), confidence: z.number().min(0).max(1).default(1),
+    },
+    annotations: { idempotentHint: true, openWorldHint: false },
+  },
+  async ({ ticketNumber, partnerId, role, confidence }) => json(withoutBodies(linkTicketParty({
+    ticketNumber, partnerId, role, confidence, matchMethod: "mcp_confirmed", actor: "mcp-agent",
+  }))),
+);
+
+server.registerTool(
+  "link_ticket_contract",
+  {
+    description: "Auditably link a ticket to a confirmed Falk contract so later policy and claim checks use the correct tariff generation.",
+    inputSchema: {
+      ticketNumber: z.string().regex(/^PF-\d+$/u), contractId: z.string().regex(/^VTR-\d{8}$/u), confirmMatch: z.literal(true),
+    },
+    annotations: { idempotentHint: true, openWorldHint: false },
+  },
+  async ({ ticketNumber, contractId }) => json(withoutBodies(linkTicketContract({
+    ticketNumber, contractId, matchMethod: "mcp_confirmed", actor: "mcp-agent",
+  }))),
+);
 
 server.registerTool(
   "list_unprocessed_tickets",
@@ -191,6 +282,39 @@ server.registerTool(
     addInternalNote(ticketNumber, `Sofortversand menschlich bestätigt: ${approvalNote}`, "mcp-human-approval");
     approveDraft(ticketNumber, "mcp-human-approval");
     return json(withoutBodies(await sendTicketDraft(ticketNumber, "mcp-agent")));
+  },
+);
+
+server.registerResource(
+  "crm-customer",
+  new ResourceTemplate("pfefferminzia://customers/{partnerId}", {
+    list: async () => ({ resources: searchCustomers({ limit: 100 }).map((customer) => ({
+      uri: `pfefferminzia://customers/${customer.partnerId}`, name: `${customer.partnerId} · ${customer.displayName}`,
+      description: `Synthetic ${customer.country} customer with ${customer.contractCount} policies`, mimeType: "application/json",
+    })) }),
+    complete: { partnerId: (value) => searchCustomers({ query: value, limit: 30 }).map((customer) => customer.partnerId) },
+  }),
+  { description: "Synthetic CRM customer 360 view", mimeType: "application/json" },
+  async (uri, variables) => {
+    const customer = getCustomer(String(variables.partnerId));
+    if (!customer) throw new Error(`Customer not found: ${variables.partnerId}`);
+    return { contents: [{ uri: uri.href, mimeType: "application/json", text: JSON.stringify(customer, null, 2) }] };
+  },
+);
+
+server.registerResource(
+  "crm-contract",
+  new ResourceTemplate("pfefferminzia://contracts/{contractId}", {
+    list: async () => ({ resources: searchCustomers({ limit: 25 }).flatMap((customer) => getCustomer(customer.partnerId)?.contracts ?? []).map((contract) => ({
+      uri: `pfefferminzia://contracts/${contract.contractId}`, name: `${contract.contractId} · ${contract.productName}`,
+      description: `${contract.tariffGenerationId} · ${contract.market} · ${contract.status}`, mimeType: "application/json",
+    })) }),
+  }),
+  { description: "Synthetic policy with coverages, risk, and parties", mimeType: "application/json" },
+  async (uri, variables) => {
+    const contract = getContract(String(variables.contractId));
+    if (!contract) throw new Error(`Contract not found: ${variables.contractId}`);
+    return { contents: [{ uri: uri.href, mimeType: "application/json", text: JSON.stringify(contract, null, 2) }] };
   },
 );
 

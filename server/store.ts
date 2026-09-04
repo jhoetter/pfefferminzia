@@ -147,7 +147,24 @@ export function getTicket(identifier: string | number, db = getDatabase()): Tick
     details: JSON.parse(String(item.details_json)) as Record<string, unknown>,
     createdAt: String(item.created_at),
   }));
-  return { ...ticket, messages, attachments, draft, events };
+  const hasUpstreamData = Boolean(db.prepare("SELECT 1 FROM source_datasets LIMIT 1").get());
+  const parties = hasUpstreamData ? rows(db.prepare(`SELECT tp.*, p.vorname, p.nachname, p.firmenname
+    FROM ticket_parties tp JOIN core_partner p ON p.partner_id = tp.partner_id
+    WHERE tp.ticket_id = ? ORDER BY tp.is_primary DESC, tp.role`).all(ticket.id)).map((item) => ({
+      partnerId: String(item.partner_id),
+      displayName: item.firmenname ? String(item.firmenname) : [item.vorname, item.nachname].filter(Boolean).join(" "),
+      role: item.role as TicketDetail["parties"][number]["role"],
+      isPrimary: Boolean(item.is_primary),
+      matchMethod: String(item.match_method),
+      confidence: Number(item.confidence),
+    })) : [];
+  const linkedContracts = hasUpstreamData ? rows(db.prepare(`SELECT tc.*, v.produkt_id, v.tarifgeneration_id
+    FROM ticket_contracts tc JOIN core_vertrag v ON v.vertrag_id = tc.vertrag_id
+    WHERE tc.ticket_id = ? ORDER BY tc.created_at`).all(ticket.id)).map((item) => ({
+      contractId: String(item.vertrag_id), productId: String(item.produkt_id), tariffGenerationId: String(item.tarifgeneration_id),
+      relation: String(item.relation), matchMethod: String(item.match_method), confidence: Number(item.confidence),
+    })) : [];
+  return { ...ticket, messages, attachments, draft, events, parties, linkedContracts };
 }
 
 export function addEvent(ticketId: number, type: string, actor: string, details: Record<string, unknown> = {}, db = getDatabase()) {

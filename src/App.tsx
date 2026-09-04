@@ -1,10 +1,11 @@
 import {
   AlertTriangle, Archive, Bot, Check, CheckCircle2, ChevronRight, Clock3, FileText,
   HeartPulse, Inbox, Mail, Menu, Paperclip, RefreshCw, Search, Send, Shield,
-  SlidersHorizontal, Sparkles, UserCheck, UserRound, X,
+  SlidersHorizontal, Sparkles, UserCheck, UserRound, UsersRound, X,
 } from "lucide-react";
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { api } from "./api";
+import { CrmView } from "./CrmView";
 import { categoryLabel, dateTime, fileSize, priorityLabel, productLabel, relativeTime, statusLabel } from "./labels";
 import {
   categories, priorities, productLines, type DashboardData, type ProductLine,
@@ -43,7 +44,7 @@ export default function App() {
   const [search, setSearch] = useState("");
   const [selectedNumber, setSelectedNumber] = useState<string | null>(null);
   const [selected, setSelected] = useState<TicketDetail | null>(null);
-  const [view, setView] = useState<"tickets" | "tariffs">("tickets");
+  const [view, setView] = useState<"tickets" | "crm" | "tariffs">("tickets");
   const [tariffs, setTariffs] = useState<TariffDocument[]>([]);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
@@ -106,7 +107,7 @@ export default function App() {
       if (message) setNotice(message);
     } catch (cause) { setError(cause instanceof Error ? cause.message : String(cause)); }
   };
-  const navigate = (next: "tickets" | "tariffs", nextQueue?: QueueKey) => {
+  const navigate = (next: "tickets" | "crm" | "tariffs", nextQueue?: QueueKey) => {
     setView(next); if (nextQueue) setQueue(nextQueue); setSidebarOpen(false);
   };
   const activeCount = dashboard.counts.new + dashboard.counts.in_progress + dashboard.counts.awaiting_human + dashboard.counts.scheduled;
@@ -124,6 +125,8 @@ export default function App() {
             <Icon size={16} /><span>{item.label}</span><em>{count}</em>
           </button>;
         })}
+        <div className="nav-heading nav-heading-spaced">Bestand</div>
+        <button className={view === "crm" ? "active" : ""} onClick={() => navigate("crm")}><UsersRound size={16} /><span>Kunden 360°</span><em>1.000</em></button>
         <div className="nav-heading nav-heading-spaced">Wissen</div>
         <button className={view === "tariffs" ? "active" : ""} onClick={() => navigate("tariffs")}><FileText size={16} /><span>Tarife</span><em>{tariffs.length}</em></button>
       </nav>
@@ -134,7 +137,7 @@ export default function App() {
     <main>
       <header className="topbar">
         <button className="menu-button" onClick={() => setSidebarOpen(true)} aria-label="Navigation öffnen"><Menu size={19} /></button>
-        <div className="breadcrumbs"><span>Kundenservice</span><ChevronRight size={14} /><strong>{view === "tickets" ? "Tickets" : "Tarife"}</strong></div>
+        <div className="breadcrumbs"><span>Pfefferminzia</span><ChevronRight size={14} /><strong>{view === "tickets" ? "Tickets" : view === "crm" ? "Kunden 360°" : "Tarife"}</strong></div>
         <div className="topbar-actions">{view === "tickets" && <button className="sync-button" onClick={sync} disabled={syncing}><RefreshCw size={15} className={syncing ? "spin" : ""} />{syncing ? "Synchronisiert…" : "AgentMail Sync"}</button>}<div className="avatar">TH</div></div>
       </header>
       {notice && <div className="toast toast-success"><Check size={16} />{notice}<button onClick={() => setNotice(null)}><X size={14} /></button></div>}
@@ -151,7 +154,7 @@ export default function App() {
           <div className="toolbar"><div className="search"><Search size={16} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Tickets durchsuchen…" aria-label="Tickets durchsuchen" /></div><div className="filter-pills">{(["all", "liability", "life"] as const).map((value) => <button key={value} className={product === value ? "active" : ""} onClick={() => setProduct(value)}>{value === "all" ? "Alle Produkte" : productLabel[value]}</button>)}</div><span className="result-count">{filtered.length} Vorgänge</span></div>
           {loading ? <div className="empty-state"><RefreshCw className="spin" /><h3>Tickets werden geladen</h3></div> : groups.length ? groups.map((group) => <TicketGroup key={group.status} status={group.status} tickets={group.tickets} onSelect={setSelectedNumber} />) : <div className="empty-state"><CheckCircle2 /><h3>Dieser Arbeitskorb ist leer</h3><p>Es gibt keine Vorgänge für die aktuelle Auswahl.</p></div>}
         </section>
-      </div> : <TariffView tariffs={tariffs} />}
+      </div> : view === "crm" ? <CrmView /> : <TariffView tariffs={tariffs} />}
     </main>
 
     {selectedNumber && <button className="drawer-scrim" onClick={() => setSelectedNumber(null)} aria-label="Ticket schließen" />}
@@ -189,6 +192,7 @@ function TicketDrawer({ ticket, onClose, update }: { ticket: TicketDetail; onClo
   return <><header className="drawer-header"><div><span className="drawer-id">{ticket.ticketNumber}</span><Badge tone={statusTone(ticket.status)}>{statusLabel[ticket.status]}</Badge>{ticket.isDemo && <Badge tone="demo">Demo</Badge>}</div><button onClick={onClose} aria-label="Schließen"><X size={20} /></button></header><div className="drawer-body">
     <section className="ticket-title"><p>{ticket.customerName || ticket.customerEmail}</p><h2>{ticket.subject}</h2><div className="ticket-meta"><Mail size={14} />{ticket.customerEmail}<span>·</span>{dateTime(ticket.createdAt)}</div></section>
     <PolicyBox ticket={ticket} />
+    <CustomerContext ticket={ticket} update={update} />
     <section className="drawer-section"><div className="section-heading"><div><Sparkles size={16} /><h3>Klassifizierung</h3></div><span>{ticket.classificationSource === "mcp-agent" ? "via MCP" : ticket.classificationSource || "offen"}</span></div><form className="classification-grid" onSubmit={classify}>
       <label>Produkt<select value={productLine} onChange={(event) => setProductLine(event.target.value as ProductLine)}>{productLines.map((value) => <option key={value} value={value}>{productLabel[value]}</option>)}</select></label>
       <label>Art der Anfrage<select value={category} onChange={(event) => setCategory(event.target.value as TicketCategory)}>{categories.map((value) => <option key={value} value={value}>{categoryLabel[value]}</option>)}</select></label>
@@ -202,6 +206,23 @@ function TicketDrawer({ ticket, onClose, update }: { ticket: TicketDetail; onClo
     </section>
     <section className="drawer-section"><div className="section-heading"><div><SlidersHorizontal size={16} /><h3>Interne Notiz</h3></div></div><div className="note-composer"><input value={note} onChange={(event) => setNote(event.target.value)} placeholder="Prüfhinweis hinzufügen…" /><button disabled={!note.trim() || busy} onClick={() => void run(() => api.note(ticket.ticketNumber, note).then((result) => { setNote(""); return result; }), "Notiz hinzugefügt")}>Hinzufügen</button></div><div className="timeline">{ticket.events.slice(0, 8).map((event) => <div key={event.id}><span /><p><strong>{eventName(event.type)}</strong><small>{event.actor} · {relativeTime(event.createdAt)}</small>{event.type === "internal_note" && typeof event.details.body === "string" && <em>{event.details.body}</em>}</p></div>)}</div></section>
   </div></>;
+}
+
+function CustomerContext({ ticket, update }: { ticket: TicketDetail; update: (operation: () => Promise<TicketDetail>, message?: string) => Promise<void> }) {
+  const [candidates, setCandidates] = useState<Awaited<ReturnType<typeof api.customerCandidates>>>([]);
+  const [contracts, setContracts] = useState<Awaited<ReturnType<typeof api.customer>>["contracts"]>([]);
+  const [loading, setLoading] = useState(false);
+  const primary = ticket.parties.find((party) => party.isPrimary) || ticket.parties[0];
+  useEffect(() => {
+    if (primary) void api.customer(primary.partnerId).then((customer) => setContracts(customer.contracts));
+  }, [primary?.partnerId]);
+  const find = async () => { setLoading(true); try { setCandidates(await api.customerCandidates(ticket.ticketNumber)); } finally { setLoading(false); } };
+  return <section className="drawer-section customer-context"><div className="section-heading"><div><UsersRound size={16} /><h3>CRM-Kontext</h3></div><span>{primary ? "verknüpft" : "offen"}</span></div>
+    {primary ? <><div className="linked-customer"><span><strong>{primary.displayName}</strong><small>{primary.partnerId} · {primary.role} · {(primary.confidence * 100).toFixed(0)} %</small></span></div><div className="ticket-contract-links">{contracts.map((contract) => {
+      const linked = ticket.linkedContracts.some((item) => item.contractId === contract.contractId);
+      return <button key={contract.contractId} disabled={linked} onClick={() => void update(() => api.linkContract(ticket.ticketNumber, contract.contractId), "Vertrag verknüpft")}><span><strong>{contract.productName}</strong><small>{contract.contractId} · {contract.tariffGenerationId}</small></span><em>{linked ? "Verknüpft" : "Zuordnen"}</em></button>;
+    })}</div></> : <><p className="context-help">Ordne die Anfrage einem synthetischen Falk-Partner zu. Namensähnlichkeiten werden nie automatisch bestätigt.</p><button className="secondary-button" disabled={loading} onClick={() => void find()}><Search size={14} />{loading ? "Suche…" : "CRM-Treffer suchen"}</button>{candidates.map((candidate) => <button className="candidate-row" key={candidate.partnerId} onClick={() => void update(() => api.linkCustomer(ticket.ticketNumber, candidate.partnerId), "Kunde verknüpft")}><span><strong>{candidate.displayName}</strong><small>{candidate.partnerId} · {candidate.reason}</small></span><em>{Math.round(candidate.score * 100)} %</em></button>)}</>}
+  </section>;
 }
 
 function PolicyBox({ ticket }: { ticket: TicketDetail }) {

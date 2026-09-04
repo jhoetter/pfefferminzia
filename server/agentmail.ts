@@ -4,6 +4,7 @@ import type { DatabaseSync } from "node:sqlite";
 import { AgentMailClient } from "agentmail";
 import { getDatabase, ROOT } from "./database";
 import { addEvent, getTicket, listTickets } from "./store";
+import { autoLinkExactCustomer } from "./crm";
 
 function client() {
   const apiKey = process.env.AGENTMAIL_API_KEY;
@@ -89,6 +90,7 @@ async function performAgentMailSync(db: DatabaseSync): Promise<SyncResult> {
             );
           ticketRow = { id: Number(inserted.lastInsertRowid), ticket_number: ticketNumber };
           addEvent(ticketRow.id, "ticket_imported", "agentmail-sync", { inboxId: inbox.inboxId, threadId: message.threadId }, db);
+          autoLinkExactCustomer(ticketNumber, db);
           result.importedTickets += 1;
         }
 

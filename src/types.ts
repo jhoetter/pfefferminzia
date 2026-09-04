@@ -92,11 +92,100 @@ export interface TicketEvent {
   createdAt: string;
 }
 
+export interface TicketParty {
+  partnerId: string;
+  displayName: string;
+  role: "CORRESPONDENT" | "VERSICHERUNGSNEHMER" | "VERSICHERTE_PERSON" | "GESCHAEDIGTER" | "VERTRETER";
+  isPrimary: boolean;
+  matchMethod: string;
+  confidence: number;
+}
+
+export interface LinkedContract {
+  contractId: string;
+  productId: string;
+  tariffGenerationId: string;
+  relation: string;
+  matchMethod: string;
+  confidence: number;
+}
+
 export interface TicketDetail extends Ticket {
   messages: TicketMessage[];
   attachments: TicketAttachment[];
   draft: ReplyDraft | null;
   events: TicketEvent[];
+  parties: TicketParty[];
+  linkedContracts: LinkedContract[];
+}
+
+export interface CustomerSummary {
+  partnerId: string;
+  displayName: string;
+  partnerType: "NATUERLICH" | "JURISTISCH";
+  status: string;
+  country: string;
+  city: string | null;
+  segment: string;
+  primarySystem: string;
+  isPersona: boolean;
+  aiConsent: boolean;
+  contractCount: number;
+  activeContractCount: number;
+  openTicketCount: number;
+}
+
+export interface CustomerContact { id: string; type: string; value: string; primary: boolean }
+export interface CustomerAddress {
+  id: string; type: string; street: string; houseNumber: string; postalCode: string;
+  city: string; region: string; country: string; current: boolean;
+}
+export interface ContractSummary {
+  contractId: string; productId: string; productName: string; line: "HP" | "LV";
+  tariffGenerationId: string; tariffName: string; market: string; currency: string;
+  status: string; startDate: string; endDate: string | null; annualPremium: number;
+  insuredSum: number; sourceSystem: string; handlerId: string | null;
+}
+export interface ContractCoverage {
+  id: string; type: string; component: string | null; sum: number | null;
+  deductible: number | null; deductibleType: string | null;
+}
+export interface CustomerRelationship { partnerId: string; displayName: string; relationship: string; direction: "from" | "to" }
+export interface CustomerTimelineItem { id: string; type: string; title: string; date: string; detail: string | null }
+export interface SourceReference { system: string; sourceId: string; matchMethod: string; matchScore: number; validFrom: string | null; validTo: string | null }
+
+export interface CustomerDetail extends CustomerSummary {
+  salutation: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  companyName: string | null;
+  birthDate: string | null;
+  language: string;
+  marketingConsent: boolean;
+  contacts: CustomerContact[];
+  addresses: CustomerAddress[];
+  relationships: CustomerRelationship[];
+  contracts: ContractSummary[];
+  tickets: Ticket[];
+  timeline: CustomerTimelineItem[];
+  sourceReferences: SourceReference[];
+}
+
+export interface ContractDetail extends ContractSummary {
+  policyholderId: string;
+  intermediaryId: string | null;
+  channel: string;
+  paymentFrequency: string;
+  paymentMethod: string;
+  applicationId: string | null;
+  coverages: ContractCoverage[];
+  riskObjects: Record<string, string | null>[];
+  parties: { partnerId: string | null; displayName: string | null; role: string; share: number | null }[];
+}
+
+export interface CustomerResolutionCandidate extends CustomerSummary {
+  score: number;
+  reason: string;
 }
 
 export interface TariffDocument {
