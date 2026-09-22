@@ -10,6 +10,7 @@ from pydantic import Field
 
 from .agentmail_service import send_ticket_draft, sync_agentmail
 from .checkpoints import available_checkpoints, checkpoint_profile, drill_guide, verify_checkpoint
+from .checkpoint_loader import apply_checkpoint_load, plan_checkpoint_load
 from .claims import create_claim_from_ticket, create_claim_task, get_claim, list_claims, propose_claim_action, review_claim_action
 from .constants import CLAIM_STATUSES
 from .crm import get_contract, get_customer, link_ticket_contract, link_ticket_party, resolve_ticket_customer, search_customers
@@ -96,7 +97,10 @@ def create_mcp_server() -> MCPServer:
     @server.tool(annotations=ReadOnly)
     def list_workshop_checkpoints() -> list[dict[str, Any]]:
         """List official workshop boundaries without changing files or participant work."""
-        return available_checkpoints()
+        return [
+            {key: item[key] for key in ("name", "drill", "title")}
+            for item in available_checkpoints()
+        ]
 
     @server.tool(annotations=ReadOnly)
     def get_drill_guide(hintLevel: Annotated[int, Field(ge=0, le=3)] = 0) -> dict[str, Any]:
@@ -112,6 +116,22 @@ def create_mcp_server() -> MCPServer:
         if checkExternalInbox and not confirmExternalRead:
             raise ToolError("Ask the participant before probing AgentMail, then pass confirmExternalRead=true")
         return verify_checkpoint_impl(checkExternalInbox)
+
+    @server.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, openWorldHint=False))
+    def plan_checkpoint_load(
+        targetCheckpoint: Literal["drill-08-start", "drill-09-start", "drill-10-start", "drill-11-start", "drill-11-complete"],
+    ) -> dict[str, Any]:
+        """Prepare a short-lived, non-destructive recovery-worktree plan. Do not call apply yet; show the plan and ask the participant's confirmation."""
+        return plan_checkpoint_load_impl(targetCheckpoint)
+
+    @server.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, openWorldHint=False))
+    def apply_checkpoint_load(
+        confirmationToken: Annotated[str, Field(min_length=20, max_length=100)],
+        confirmCheckpointLoad: Literal[True],
+    ) -> dict[str, Any]:
+        """Create the separately planned official worktree. Call only after showing the plan and receiving a fresh explicit yes from the participant."""
+        del confirmCheckpointLoad
+        return apply_checkpoint_load_impl(confirmationToken)
 
     @server.tool(name="list_todos", annotations=ReadOnly)
     def list_todos_tool(status: Literal["open", "completed", "cancelled"] | None = None) -> list[dict[str, Any]]:
@@ -498,6 +518,8 @@ reject_draft_impl = reject_draft
 remove_from_send_queue_impl = remove_from_send_queue
 advance_workshop_clock_impl = advance_workshop_clock
 verify_checkpoint_impl = verify_checkpoint
+plan_checkpoint_load_impl = plan_checkpoint_load
+apply_checkpoint_load_impl = apply_checkpoint_load
 
 
 mcp = create_mcp_server()

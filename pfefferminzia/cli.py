@@ -45,6 +45,20 @@ def main() -> None:
     reset = subparsers.add_parser("workshop-reset", help="Reset only local workshop fixtures")
     reset.add_argument("--confirm-demo-reset", action="store_true", required=True)
     subparsers.add_parser("sync", help="Import new AgentMail messages once")
+    checkpoint = subparsers.add_parser("checkpoint", help="Inspect, verify, or safely prepare a workshop checkpoint")
+    checkpoint_commands = checkpoint.add_subparsers(dest="checkpoint_command", required=True)
+    checkpoint_commands.add_parser("list", help="List official checkpoint boundaries")
+    checkpoint_commands.add_parser("status", help="Show the active checkpoint")
+    verify = checkpoint_commands.add_parser("verify", help="Run the active checkpoint's fast checks")
+    verify.add_argument("--external", action="store_true", help="Also verify the configured AgentMail inbox")
+    activate = checkpoint_commands.add_parser("activate", help="Reset a fresh worktree to one checkpoint")
+    activate.add_argument("checkpoint")
+    activate.add_argument("--confirm-checkpoint-reset", action="store_true", required=True)
+    plan = checkpoint_commands.add_parser("plan", help="Plan a non-destructive recovery worktree")
+    plan.add_argument("checkpoint")
+    apply = checkpoint_commands.add_parser("apply", help="Apply a prepared recovery-worktree plan")
+    apply.add_argument("confirmation_token")
+    apply.add_argument("--confirm-checkpoint-load", action="store_true", required=True)
 
     args = parser.parse_args()
     if args.command == "serve":
@@ -75,6 +89,29 @@ def main() -> None:
 
         _initialize()
         _json(sync_agentmail())
+    elif args.command == "checkpoint":
+        from .checkpoint_loader import apply_checkpoint_load, plan_checkpoint_load
+        from .checkpoints import activate_checkpoint, available_checkpoints, checkpoint_profile, verify_checkpoint
+
+        if args.checkpoint_command == "list":
+            _json(available_checkpoints())
+        elif args.checkpoint_command == "status":
+            _initialize()
+            _json(checkpoint_profile())
+        elif args.checkpoint_command == "verify":
+            _initialize()
+            _json(verify_checkpoint(args.external))
+        elif args.checkpoint_command == "activate":
+            from .workshop import reset_workshop_fixtures
+
+            _initialize()
+            activate_checkpoint(args.checkpoint)
+            reset_workshop_fixtures()
+            _json(checkpoint_profile())
+        elif args.checkpoint_command == "plan":
+            _json(plan_checkpoint_load(args.checkpoint))
+        elif args.checkpoint_command == "apply":
+            _json(apply_checkpoint_load(args.confirmation_token))
 
 
 if __name__ == "__main__":

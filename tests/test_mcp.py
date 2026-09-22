@@ -13,6 +13,7 @@ REQUIRED_TOOLS = {
     "propose_claim_action", "review_claim_action", "create_claim_task",
     "list_workshop_checkpoints", "get_drill_guide", "list_todos", "create_todo", "update_todo",
     "route_ticket", "reject_ticket_reply", "remove_from_send_queue", "advance_workshop_clock",
+    "verify_workshop_checkpoint", "plan_checkpoint_load", "apply_checkpoint_load",
 }
 
 
