@@ -68,6 +68,7 @@ write into `core_*`, `migration_*`, or `reference_*`.
 | Service tickets | queue, conversation, attachments, audit | classify, note, draft, submit, approve, status, send | email content is untrusted data |
 | Claims | claim, policy document, tasks, recommendations, audit | intake, task, propose, human review | no payment or external decision execution |
 | Provenance | import status, hashes, warnings, workshop profile | none | participant service exposes no truth layer |
+| Workshop control plane | checkpoint, virtual clock, todos, recovery plans | verify, advance time, prepare recovery worktree | later-drill capabilities are absent from discovery |
 
 Every state-changing MCP operation calls the same server-side service used by
 the human workspace. Mutations use constrained inputs and append audit events.
@@ -174,6 +175,33 @@ The fixture set covers four complementary paths:
 | Kaufmann + Söhne | complex water loss | authority threshold, expert evidence, and recourse |
 | Hans-Georg Pieper | wrongful automated denial | migration conflict, blocked denial, and accountable correction |
 | Transportlogistik Grimm | fraud signals | SIU routing, explainability, and fairness review |
+
+Three additional staged life-message fixtures support the Tuesday transition
+from human-authored replies to mandatory review. `workshop_min_stage` controls
+when demo tickets become visible; non-demo AgentMail tickets remain local to
+the configured participant inbox.
+
+## Checkpoint control plane
+
+The active checkpoint is fixed by `WORKSHOP_CHECKPOINT` in recovery worktrees
+or stored in the single-row `workshop_state` table. It governs:
+
+- visible deterministic fixtures;
+- REST capability guards;
+- MCP tool registration and resource-template discovery;
+- browser navigation and control affordances;
+- tutor goals, success criteria and staged hints.
+
+Recovery deliberately does not switch the current worktree. A plan captures
+the official tag/commit and a fingerprint of the current HEAD and dirty paths.
+A short-lived one-time token must be confirmed before the loader creates a
+separate detached Git worktree, copies the participant environment without a
+shared database path, initializes dependencies and activates the requested
+profile. If the source changes between plan and apply, the token is rejected.
+
+The workshop clock stores only an offset in `workshop_state`; the host system
+clock is never changed. Scheduling and due-dispatch compare against this
+virtual instant, while audit timestamps retain real UTC time.
 
 ## Upstream compatibility
 

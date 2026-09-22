@@ -50,10 +50,10 @@ Die letzte Frage bildet bewusst die Brücke von Augmentation zu Automation.
 | Zeit | Programmpunkt | Inhalt und Ergebnis |
 | --- | --- | --- |
 | 08:30–09:45 | **Input – Vom Assistenten zum Agenten: Wenn KI handelt** | Rund 45–50 Minuten Input, danach Diskussion und Tagesbriefing. Johannes zeigt seine Arbeit mit Agententeams, erklärt das MCP-first-Betriebsmodell, führt Verifiability ein und stellt die beiden Kontrollmuster des Tages gegenüber. |
-| 10:00–11:15 | **Drill 1 – Die Kommandozentrale für Agenten** | Die Teilnehmenden starten eine eigene Pfefferminzia-Instanz, verbinden Claude über MCP und empfangen die erste Nachricht in einer persönlichen AgentMail-Inbox. Sie sehen, dass menschliche Oberfläche und Agent dieselben kontrollierten Fachfunktionen verwenden. |
-| 11:30–12:45 | **Drill 2 – Leben: Der Mensch bearbeitet, der Agent bereitet vor** | Das System ermittelt Kunde, Antrag oder Vertrag, Tarifgeneration und relevante Dokumente. Die Teilnehmenden prüfen den zusammengestellten Kontext und verfassen die Antwort selbst. Ziel ist Augmentation innerhalb eines operativen Prozesses, noch kein autonomer Versand. |
-| 13:45–15:00 | **Drill 3 – Leben: Der Agent bearbeitet, der Mensch gibt frei** | Ein neuer Lebensfall trifft per E-Mail ein. Der Agent erstellt die vollständige Antwort und erzeugt eine Review-Notification. Die Teilnehmenden können freigeben, editieren oder Kontext ergänzen. Neuer menschlicher Input führt zurück in den agentischen Loop; erst eine ausdrückliche Freigabe löst den tatsächlichen E-Mail-Versand aus. |
-| 15:15–16:30 | **Drill 4 – Haftpflicht: Automatisch, solange niemand widerspricht** | Der Agent bearbeitet eine einfache Haftpflichtanfrage und plant die Antwort für 24 Stunden später ein. Die Teilnehmenden lassen eine Antwort weiterlaufen, bearbeiten eine zweite und nehmen eine dritte aus der Queue oder brechen sie ab. Anschließend wird die Workshop-Zeit vorgespult und die verbliebene Nachricht tatsächlich versendet. |
+| 10:00–11:15 | **Drill 8 – Die Kommandozentrale für Agenten** | Die Teilnehmenden starten eine eigene Pfefferminzia-Instanz, verbinden Claude über MCP und empfangen die erste Nachricht in einer persönlichen AgentMail-Inbox. Sie sehen, dass menschliche Oberfläche und Agent dieselben kontrollierten Fachfunktionen verwenden. |
+| 11:30–12:45 | **Drill 9 – Leben: Der Mensch bearbeitet, der Agent bereitet vor** | Das System ermittelt Kunde, Antrag oder Vertrag, Tarifgeneration und relevante Dokumente. Die Teilnehmenden prüfen den zusammengestellten Kontext, lassen einen Entwurf vorbereiten, redigieren ihn und lösen den Versand selbst aus. Ziel ist Augmentation innerhalb eines operativen Prozesses. |
+| 13:45–15:00 | **Drill 10 – Leben: Der Agent bearbeitet, der Mensch gibt frei** | Ein neuer Lebens- bzw. Leistungsfall trifft per E-Mail ein. Der Agent erstellt die vollständige Entscheidungsvorlage und Antwort und erzeugt eine Review-Notification. Die Teilnehmenden können freigeben, ablehnen, editieren oder Kontext ergänzen. Neuer menschlicher Input führt zurück in den agentischen Loop; erst eine ausdrückliche Freigabe erlaubt Entscheidung und tatsächlichen E-Mail-Versand. |
+| 15:15–16:30 | **Drill 11 – Haftpflicht: Automatisch, solange niemand widerspricht** | Der Agent routet eine einfache Haftpflichtanfrage und plant die Antwort für 24 Stunden später ein. Die Teilnehmenden lassen eine Antwort weiterlaufen, bearbeiten eine zweite und nehmen eine dritte aus der Queue oder brechen sie ab. Anschließend wird die Workshop-Zeit vorgespult und die verbliebene Nachricht tatsächlich versendet. |
 | 16:45–18:00 | **Whiteboard-Abschluss – Wo darf der Agent handeln?** | Kein weiterer Foliensatz: mit geschlossenen Laptops, einem Getränk und im Halbkreis rekonstruiert die Gruppe das System und seine Kontrollpunkte am Whiteboard. Danach übertragen die Teilnehmenden das Muster auf einen eigenen Prozess und formulieren einen Automation Contract für Mittwoch. |
 
 ### Die zwei Kontrollmuster
@@ -83,11 +83,11 @@ erreichbar und schnellere Gruppen erhalten sinnvolle Vertiefungen.
 
 | Dauer | Phase |
 | --- | --- |
-| 10 Min. | Rolle, Fall und beobachtbare Erfolgskriterien |
-| 25–30 Min. | Kernpfad, den alle Teilnehmenden abschließen sollen |
-| 15 Min. | Kontext, Quellen, Tool-Aufrufe und Zustandsänderungen untersuchen und verifizieren |
-| 10–15 Min. | Optionale Challenge Card oder Verfeinerung |
-| 10 Min. | Gemeinsame Auswertung und Übergang zur nächsten Kontrollstufe |
+| 15 Min. | Rolle, Fall, Kontrollmuster und beobachtbare Erfolgskriterien |
+| 30 Min. | Kernpfad, den alle Teilnehmenden selbst mit Claude weiterentwickeln |
+| 15 Min. | Kontext, Quellen, Tool-Aufrufe und Zustandsänderungen untersuchen, verifizieren oder per Checkpoint aufholen |
+| 8 Min. | Optionale Challenge Card, Buddy-Unterstützung oder Verfeinerung |
+| 7 Min. | Gemeinsame Auswertung und Übergang zur nächsten Kontrollstufe |
 
 Die Teilnehmenden können in Paaren zusammenarbeiten, betreiben aber jeweils ein
 isoliertes lokales System mit eigener Inbox. Der Lehrende kann nach jeder Phase
@@ -165,3 +165,7 @@ ausschließlich fiktive Workshop-Inhalte enthalten.
   vorbereiten.
 - Das genaue Format des Mittwochs offenhalten, bis die Fälle der Teilnehmenden
   und die Ergebnisse vom Montag bekannt sind.
+
+Das technische und organisatorische Vorgehen für Checkpoints, Generalprobe,
+Reservezugänge und Instructor-Steuerung steht im
+[`WORKSHOP_RUNBOOK.md`](WORKSHOP_RUNBOOK.md).

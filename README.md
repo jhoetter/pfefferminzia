@@ -135,9 +135,9 @@ The import verifies Falk's manifest hashes before replacing locally derived
 tables. It records the upstream commit, dataset/schema versions, hashes, source
 generation time, and required attribution in SQLite.
 
-`uv run pfefferminzia workshop-reset --confirm-demo-reset` recreates four
-deterministic, non-sendable participant exercises for the Niederberger,
-Kaufmann, Pieper, and Grimm storylines. It deletes only records owned by the
+`uv run pfefferminzia workshop-reset --confirm-demo-reset` recreates seven
+deterministic, non-sendable participant exercises: three staged life requests
+plus the Niederberger, Kaufmann, Pieper, and Grimm liability/claims storylines. It deletes only records owned by the
 local demo/claims extension. Imported Falk tables and any manual or AgentMail
 tickets are preserved.
 
@@ -156,9 +156,12 @@ manifest timestamp must also be byte-identical.
 ## AgentMail
 
 AgentMail is an optional workshop transport for incoming and outgoing email.
-Copy `.env.example` to `.env` and set `AGENTMAIL_API_KEY`. The application then
-polls the configured inbox and mirrors messages and attachments into its local
-data layer.
+Copy `.env.example` to `.env` and set `AGENTMAIL_API_KEY`, the one personal
+`AGENTMAIL_INBOX_ID`, and `WORKSHOP_ALLOWED_RECIPIENTS`. The application polls
+only that configured inbox and mirrors messages and attachments into its local
+data layer. It fails closed rather than reading every inbox available to a key.
+If a key is present but the personal inbox ID or outbound allowlist is missing,
+startup fails with an actionable configuration error.
 
 ```bash
 uv run pfefferminzia sync
@@ -166,7 +169,42 @@ uv run pfefferminzia sync
 
 External email and attachment content is always treated as untrusted customer
 input. Demo records can never send real email. Life-insurance communication
-always requires explicit human review.
+always requires explicit human review. Outbound messages are blocked unless
+the exact recipient (or an explicitly configured domain suffix) is allowlisted.
+
+## Staged workshop checkpoints
+
+The Tuesday path is represented by five deterministic boundaries:
+
+```text
+drill-08-start → drill-09-start → drill-10-start → drill-11-start → drill-11-complete
+```
+
+Each profile limits fixtures, browser affordances, REST operations, MCP tools,
+resources, and tutor guidance to the current drill. Inspect and verify the
+active state with:
+
+```bash
+uv run pfefferminzia checkpoint status
+uv run pfefferminzia checkpoint verify
+uv run pfefferminzia checkpoint verify --external
+```
+
+Checkpoint recovery is non-destructive. A two-step MCP/CLI protocol first
+shows the planned official reference, detected participant changes and target
+directory, then—after explicit confirmation—creates a separate Git worktree.
+The original branch, uncommitted files and local database remain untouched.
+
+```bash
+uv run pfefferminzia checkpoint plan drill-10-start
+uv run pfefferminzia checkpoint apply TOKEN --confirm-checkpoint-load
+```
+
+The browser's **Workshop-Cockpit** shows the current learning goal, success
+criteria, general and workflow todos, mandatory reviews, the visible
+intervention-window countdown, checkpoint verification, and the local
+workshop-clock control. See [`docs/WORKSHOP_RUNBOOK.md`](docs/WORKSHOP_RUNBOOK.md)
+for facilitator setup, scenario delivery, challenge cards and continuity plans.
 
 ## MCP
 
@@ -197,6 +235,11 @@ reading, drafting and approval, AgentMail import, claim intake, internal claim
 tasks, decision proposals, and recorded human review. There is no generic SQL,
 arbitrary filesystem, direct payment, or unreviewed claim-decision tool.
 
+Workshop MCP also exposes drill guidance, todos, verification and safe
+checkpoint recovery. The active profile removes later-drill capabilities from
+tool and resource discovery; loading a checkpoint always requires a plan token
+and a separate explicit confirmation.
+
 Read operations are exposed as bounded tools or `pfefferminzia://` resources.
 State-changing tools validate inputs, enforce workflow rules, and append audit
 events. There is intentionally no generic SQL MCP tool.
@@ -206,6 +249,8 @@ events. There is intentionally no generic SQL MCP tool.
 - `WORKSHOP_PROFILE=participant` is the only operational profile. Any other
   value fails closed; instructor truth data is never loaded by the service.
 - `AUTO_SEND_ENABLED=false` is the safe default.
+- `AGENTMAIL_INBOX_ID` binds each instance to exactly one participant inbox.
+- `WORKSHOP_ALLOWED_RECIPIENTS` limits every external reply.
 - Demo tickets never send external messages.
 - Life-insurance decisions and communication require human approval.
 - Participant-facing services never expose instructor truth labels.
@@ -222,6 +267,7 @@ is intentionally outside this workshop system.
 ```bash
 uv sync --frozen
 uv run pytest
+uv run pytest tests/test_workshop_end_to_end.py -q
 uv run pfefferminzia data-import --force
 uv run pfefferminzia workshop-reset --confirm-demo-reset
 ```

@@ -1,4 +1,5 @@
 from fastapi.testclient import TestClient
+import pytest
 
 from pfefferminzia.database import close_database
 
@@ -27,6 +28,22 @@ def test_python_host_serves_api_and_browser_workspace(monkeypatch, tmp_path):
         assert client.get("/workshop.js").headers["content-type"].startswith("text/javascript")
         assert client.get("/workshop.css").headers["content-type"].startswith("text/css")
 
+    close_database()
+
+
+def test_partial_agentmail_configuration_fails_at_startup(monkeypatch, tmp_path):
+    monkeypatch.setenv("PFEFFERMINZIA_DB_PATH", str(tmp_path / "partial-agentmail.db"))
+    monkeypatch.setenv("AGENTMAIL_API_KEY", "configured-but-incomplete")
+    monkeypatch.delenv("AGENTMAIL_INBOX_ID", raising=False)
+    monkeypatch.delenv("WORKSHOP_ALLOWED_RECIPIENTS", raising=False)
+    monkeypatch.setenv("AUTO_SEND_ENABLED", "false")
+    close_database()
+
+    from pfefferminzia.app import create_app
+
+    with pytest.raises(RuntimeError, match="AGENTMAIL_INBOX_ID"):
+        with TestClient(create_app()):
+            pass
     close_database()
 
 

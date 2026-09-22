@@ -14,7 +14,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from .agentmail_service import dispatch_due_replies, send_ticket_draft, sync_agentmail
+from .agentmail_service import agentmail_configuration, dispatch_due_replies, send_ticket_draft, sync_agentmail
 from .checkpoints import require_capability, verify_checkpoint
 from .claims import create_claim_from_ticket, create_claim_task, ensure_workshop_claims, get_claim, list_claims, propose_claim_action, review_claim_action
 from .constants import ROOT
@@ -71,8 +71,16 @@ def _lifespan(mcp_server):
     async def lifespan(_: FastAPI):
         initialize_application()
         tasks: list[asyncio.Task[None]] = []
+        agentmail_ready = False
+        if os.getenv("AGENTMAIL_API_KEY"):
+            configuration = await asyncio.to_thread(agentmail_configuration, True)
+            if not configuration["ready"]:
+                raise RuntimeError(
+                    "AgentMail setup is incomplete; configure AGENTMAIL_INBOX_ID and WORKSHOP_ALLOWED_RECIPIENTS"
+                )
+            agentmail_ready = True
         async with mcp_server.session_manager.run():
-            if os.getenv("AGENTMAIL_API_KEY"):
+            if agentmail_ready:
                 tasks.append(asyncio.create_task(_periodic(max(15, int(os.getenv("AGENTMAIL_POLL_SECONDS", "30"))), sync_agentmail)))
             if os.getenv("AUTO_SEND_ENABLED") == "true":
                 tasks.append(asyncio.create_task(_periodic(60, dispatch_due_replies)))
