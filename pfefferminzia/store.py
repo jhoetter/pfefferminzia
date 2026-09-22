@@ -560,7 +560,12 @@ def read_stored_file(storage_path: str) -> bytes:
 def dashboard_meta(db: sqlite3.Connection | None = None) -> dict[str, Any]:
     db = db or get_database()
     counts = {status: 0 for status in TICKET_STATUSES}
-    for row in db.execute("SELECT status, COUNT(*) AS count FROM tickets GROUP BY status"):
+    stage = checkpoint_profile(db)["order"]
+    for row in db.execute(
+        """SELECT status, COUNT(*) AS count FROM tickets
+        WHERE is_demo = 0 OR workshop_min_stage <= ? GROUP BY status""",
+        (stage,),
+    ):
         counts[row["status"]] = int(row["count"])
     sync = db.execute("SELECT * FROM sync_runs WHERE status = 'success' ORDER BY created_at DESC LIMIT 1").fetchone()
     return {

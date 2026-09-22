@@ -150,8 +150,16 @@ def ensure_workshop_fixtures(db: sqlite3.Connection | None = None) -> dict[str, 
 
 def get_workshop_status(db: sqlite3.Connection | None = None) -> dict[str, Any]:
     db = db or get_database()
-    demo_tickets = db.execute("SELECT COUNT(*) AS count FROM tickets WHERE source = 'demo'").fetchone()["count"]
-    claims = db.execute("SELECT COUNT(*) AS count FROM workshop_claims").fetchone()["count"]
+    profile = checkpoint_profile(db)
+    demo_tickets = db.execute(
+        "SELECT COUNT(*) AS count FROM tickets WHERE source = 'demo' AND workshop_min_stage <= ?",
+        (profile["order"],),
+    ).fetchone()["count"]
+    claims = (
+        db.execute("SELECT COUNT(*) AS count FROM workshop_claims").fetchone()["count"]
+        if "claims" in profile["capabilities"]
+        else 0
+    )
     truth_tables = db.execute("SELECT COUNT(*) AS count FROM source_tables WHERE layer = 'truth'").fetchone()["count"]
     return {
         "profile": assert_participant_profile(),
@@ -160,14 +168,17 @@ def get_workshop_status(db: sqlite3.Connection | None = None) -> dict[str, Any]:
         "demoTickets": demo_tickets,
         "workshopClaims": claims,
         "importedTruthTables": truth_tables,
-        "checkpoint": checkpoint_profile(db),
+        "checkpoint": profile,
         "clock": clock_status(db),
         "agentMail": agentmail_configuration(probe=False),
         "todos": list_todos(db=db),
         "externalEffects": {
             "demoEmailSendBlocked": True,
-            "claimPaymentsImplemented": False,
-            "claimDecisionCommunicationImplemented": False,
+            **(
+                {"claimPaymentsImplemented": False, "claimDecisionCommunicationImplemented": False}
+                if "claims" in profile["capabilities"]
+                else {}
+            ),
         },
     }
 

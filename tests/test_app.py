@@ -63,6 +63,9 @@ def test_http_surface_follows_checkpoint(monkeypatch, tmp_path):
         dashboard = client.get("/api/dashboard").json()
         assert dashboard["workshop"]["checkpoint"]["name"] == "drill-08-start"
         assert dashboard["tickets"] == []
+        assert sum(dashboard["counts"].values()) == 0
+        assert dashboard["workshop"]["demoTickets"] == 0
+        assert dashboard["workshop"]["workshopClaims"] == 0
         assert client.get("/api/todos").status_code == 200
         blocked = client.get("/api/tariffs")
         assert blocked.status_code == 400

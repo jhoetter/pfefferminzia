@@ -80,14 +80,18 @@ def create_mcp_server() -> MCPServer:
     def get_operations_summary() -> dict[str, Any]:
         """Return bounded operational counts and the safe-send configuration."""
         meta = dashboard_meta()
-        claims = list_claims(limit=500)
-        return {
+        current = checkpoint_profile()
+        result = {
             "ticketCounts": meta["counts"],
-            "claimCounts": {status: sum(claim["status"] == status for claim in claims) for status in CLAIM_STATUSES},
             "connectedInbox": meta["connectedInbox"],
             "lastSyncAt": meta["lastSyncAt"],
-            "automaticExternalSendEnabled": os.getenv("AUTO_SEND_ENABLED") == "true",
         }
+        if "claims" in current["capabilities"]:
+            claims = list_claims(limit=500)
+            result["claimCounts"] = {status: sum(claim["status"] == status for claim in claims) for status in CLAIM_STATUSES}
+        if "intervention_queue" in current["capabilities"]:
+            result["automaticExternalSendEnabled"] = os.getenv("AUTO_SEND_ENABLED") == "true"
+        return result
 
     @server.tool(annotations=ReadOnly)
     def get_workshop_status() -> dict[str, Any]:
