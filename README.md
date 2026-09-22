@@ -35,9 +35,10 @@ business capability is available through Model Context Protocol (MCP):
 - claim recommendations and external communication retain human checkpoints;
 - every mutation is constrained by business rules and recorded in an audit log.
 
-The React interface is a human workspace over the same application services.
-MCP clients use domain-level tools and resources rather than generic SQL or
-unrestricted filesystem access.
+The browser interface is a human workspace over the same Python application
+services. It is shipped as static assets and needs no JavaScript toolchain or
+build step. MCP clients use domain-level tools and resources rather than
+generic SQL or unrestricted filesystem access.
 
 The current three-day workshop design is documented in
 [`docs/WORKSHOP_AGENDA.md`](docs/WORKSHOP_AGENDA.md).
@@ -98,46 +99,47 @@ technically blocked and cannot be approved.
 ## Repository structure
 
 - `vendor/falk-pfefferminzia/` — pinned upstream teaching dataset
-- `server/` — SQLite schema, domain services, AgentMail adapter, and HTTP host
-- `mcp/` — MCP transports, tools, and resources
-- `src/` — React workshop interface
+- `pfefferminzia/` — FastAPI host, SQLite services, MCP server, AgentMail
+  adapter, and CLI
+- `web/` — checked-in browser workspace served directly by FastAPI
 - `data/tariffs/catalog.json` — application index for Falk's upstream tariff documents
-- `scripts/` — reproducible import, document generation, and sync commands
-- `tests/` — domain-rule, data-contract, and workflow tests
+- `tests/` — pytest domain-rule, data-contract, MCP, and workflow tests
 - `docs/` — workshop agenda, architecture, and third-party attribution
 
 ## Setup
 
-Requirements: Node.js 22 or later. Python 3.12 and `uv` are only required when
-regenerating the upstream dataset itself.
+Requirements: Python 3.12 or later, `uv`, and Git. Node.js and npm are not
+required.
 
 ```bash
 git clone --recurse-submodules https://github.com/jhoetter/pfefferminzia.git
 cd pfefferminzia
-npm install
-npm run data:import
-npm run workshop:reset
-npm run dev
+uv sync --frozen
+uv run pfefferminzia serve
 ```
 
 For an existing clone without submodules:
 
 ```bash
-npm run data:init
-npm run data:import
+uv run pfefferminzia data-init
+uv run pfefferminzia serve
 ```
 
-The application runs at <http://127.0.0.1:3004>. Its local SQLite database and
-mirrored attachments are stored under `.data/` and are not committed.
+The first start verifies and imports the pinned dataset, indexes the tariff
+documents, and creates missing workshop fixtures. The application runs at
+<http://127.0.0.1:3004>. Its local SQLite database and mirrored attachments are
+stored under `.data/` and are not committed. Use
+`uv run pfefferminzia serve --reload` for auto-reload while editing Python.
 
 The import verifies Falk's manifest hashes before replacing locally derived
 tables. It records the upstream commit, dataset/schema versions, hashes, source
 generation time, and required attribution in SQLite.
 
-`npm run workshop:reset` recreates four deterministic, non-sendable participant
-exercises for the Niederberger, Kaufmann, Pieper, and Grimm storylines. It
-deletes only records owned by the local demo/claims extension. Imported Falk
-tables and any manual or AgentMail tickets are preserved.
+`uv run pfefferminzia workshop-reset --confirm-demo-reset` recreates four
+deterministic, non-sendable participant exercises for the Niederberger,
+Kaufmann, Pieper, and Grimm storylines. It deletes only records owned by the
+local demo/claims extension. Imported Falk tables and any manual or AgentMail
+tickets are preserved.
 
 To regenerate Falk's sample data from its master seed:
 
@@ -159,7 +161,7 @@ polls the configured inbox and mirrors messages and attachments into its local
 data layer.
 
 ```bash
-npm run sync
+uv run pfefferminzia sync
 ```
 
 External email and attachment content is always treated as untrusted customer
@@ -171,7 +173,7 @@ always requires explicit human review.
 The checked-in `.mcp.json` starts the stdio transport:
 
 ```bash
-npm run mcp
+uv run pfefferminzia mcp
 ```
 
 The application host exposes the same registry through stateless MCP
@@ -218,11 +220,15 @@ is intentionally outside this workshop system.
 ## Development
 
 ```bash
-npm test
-npm run build
-npm run data:import
-npm run workshop:reset
+uv sync --frozen
+uv run pytest
+uv run pfefferminzia data-import --force
+uv run pfefferminzia workshop-reset --confirm-demo-reset
 ```
+
+There is deliberately no frontend build command. FastAPI serves the checked-in
+assets under `web/`, so a workshop checkout remains runnable with only Python,
+`uv`, and Git.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the current technical design and
 [docs/FALK_INTEGRATION.md](docs/FALK_INTEGRATION.md) for the upstream mapping,

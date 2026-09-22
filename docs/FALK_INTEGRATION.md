@@ -86,8 +86,9 @@ declared storyline invariants.
 2. Update the submodule pointer on a dedicated branch.
 3. Update `FALK_UPSTREAM_COMMIT` and verify the tariff catalog against the
    upstream documents.
-4. Run `npm run data:import`; all manifest and CSV hashes must verify.
-5. Run `npm test` and `npm run build`.
+4. Run `uv run pfefferminzia data-import --force`; all manifest and CSV hashes
+   must verify.
+5. Run `uv run pytest`. There is no separate frontend build step.
 6. Compare row counts, persona invariants, contract/document resolution, and
    participant truth-layer exclusion.
 7. Review local `workshop_*` adapters for upstream replacements before merging.

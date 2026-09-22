@@ -1,0 +1,306 @@
+from __future__ import annotations
+
+import asyncio
+import os
+from contextlib import asynccontextmanager, suppress
+from datetime import date, datetime
+from pathlib import Path
+from typing import Annotated, Any, Literal
+
+from dotenv import load_dotenv
+from fastapi import FastAPI, Query, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel, Field
+
+from .agentmail_service import dispatch_due_replies, send_ticket_draft, sync_agentmail
+from .claims import create_claim_from_ticket, create_claim_task, ensure_workshop_claims, get_claim, list_claims, propose_claim_action, review_claim_action
+from .constants import ROOT
+from .crm import get_contract, get_customer, link_ticket_contract, link_ticket_party, resolve_ticket_customer, search_customers
+from .mcp_server import mcp
+from .seed import ensure_seed_data
+from .store import (
+    add_internal_note,
+    approve_draft,
+    dashboard_meta,
+    get_attachment_record,
+    get_document_record,
+    get_ticket,
+    list_contract_documents,
+    list_tariffs,
+    list_tickets,
+    resolve_storage_path,
+    save_draft,
+    submit_draft,
+    update_classification,
+    update_ticket_status,
+)
+from .upstream import get_upstream_status, import_falk_dataset
+from .workshop import ensure_workshop_fixtures, get_workshop_status
+
+load_dotenv(ROOT / ".env")
+WEB_ROOT = ROOT / "web"
+mcp_http_app = mcp.streamable_http_app(streamable_http_path="/mcp", stateless_http=True, json_response=True)
+
+
+def initialize_application() -> dict[str, Any]:
+    upstream = import_falk_dataset()
+    ensure_seed_data()
+    ensure_workshop_claims()
+    ensure_workshop_fixtures()
+    return upstream
+
+
+async def _periodic(seconds: int, function: Any) -> None:
+    while True:
+        try:
+            await asyncio.to_thread(function)
+        except Exception as error:  # pragma: no cover - background integration logging
+            print(f"Pfefferminzia background task failed: {error}", flush=True)
+        await asyncio.sleep(seconds)
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    initialize_application()
+    tasks: list[asyncio.Task[None]] = []
+    async with mcp.session_manager.run():
+        if os.getenv("AGENTMAIL_API_KEY"):
+            tasks.append(asyncio.create_task(_periodic(max(15, int(os.getenv("AGENTMAIL_POLL_SECONDS", "30"))), sync_agentmail)))
+        if os.getenv("AUTO_SEND_ENABLED") == "true":
+            tasks.append(asyncio.create_task(_periodic(60, dispatch_due_replies)))
+        yield
+        for task in tasks:
+            task.cancel()
+        for task in tasks:
+            with suppress(asyncio.CancelledError):
+                await task
+
+
+class ClassificationInput(BaseModel):
+    productLine: Literal["unknown", "liability", "life"]
+    category: Literal["unknown", "general_question", "coverage_question", "claim", "contract_change", "cancellation", "complaint"]
+    priority: Literal["low", "normal", "high", "urgent"] | None = None
+    summary: Annotated[str, Field(min_length=1, max_length=2000)]
+    confidence: Annotated[float | None, Field(ge=0, le=1)] = None
+
+
+class DraftInput(BaseModel):
+    body: Annotated[str, Field(min_length=1, max_length=50000)]
+    rationale: Annotated[str | None, Field(max_length=5000)] = None
+
+
+class ClaimInput(BaseModel):
+    title: Annotated[str, Field(min_length=1, max_length=300)]
+    eventDate: date
+    reportedAmount: Annotated[float, Field(ge=0)]
+    idempotencyKey: Annotated[str, Field(min_length=8, max_length=200)]
+
+
+class RecommendationInput(BaseModel):
+    action: Literal["PAY", "DENY", "REQUEST_INFORMATION", "ESCALATE_COMPLEX", "REFER_SIU"]
+    amount: Annotated[float | None, Field(gt=0)] = None
+    rationale: Annotated[str, Field(min_length=1, max_length=5000)]
+    confidence: Annotated[float, Field(ge=0, le=1)]
+    ruleVersion: Annotated[str, Field(min_length=1, max_length=100)]
+    idempotencyKey: Annotated[str, Field(min_length=8, max_length=200)]
+
+
+class ReviewInput(BaseModel):
+    decision: Literal["approve", "reject"]
+    note: Annotated[str, Field(min_length=1, max_length=2000)]
+    idempotencyKey: Annotated[str, Field(min_length=8, max_length=200)]
+
+
+class TaskInput(BaseModel):
+    type: Annotated[str, Field(min_length=1, max_length=100)]
+    description: Annotated[str, Field(min_length=1, max_length=2000)]
+    assignedTo: Annotated[str | None, Field(max_length=200)] = None
+    dueAt: datetime | None = None
+    idempotencyKey: Annotated[str, Field(min_length=8, max_length=200)]
+
+
+class PartyLinkInput(BaseModel):
+    role: Literal["CORRESPONDENT", "VERSICHERUNGSNEHMER", "VERSICHERTE_PERSON", "GESCHAEDIGTER", "VERTRETER"]
+    primary: bool = True
+    confidence: Annotated[float, Field(ge=0, le=1)] = 1
+    matchMethod: str = "manual"
+
+
+class ContractLinkInput(BaseModel):
+    confidence: Annotated[float, Field(ge=0, le=1)] = 1
+    matchMethod: str = "manual"
+
+
+def create_app() -> FastAPI:
+    app = FastAPI(title="Pfefferminzia", version="0.3.0", lifespan=lifespan)
+
+    @app.exception_handler(RequestValidationError)
+    async def validation_error(_: Request, error: RequestValidationError) -> JSONResponse:
+        return JSONResponse(status_code=400, content={"error": str(error)})
+
+    @app.exception_handler(ValueError)
+    async def value_error(_: Request, error: ValueError) -> JSONResponse:
+        status = 404 if "not found" in str(error).lower() else 400
+        return JSONResponse(status_code=status, content={"error": str(error)})
+
+    @app.get("/api/health")
+    async def health() -> dict[str, Any]:
+        return {"ok": True, "service": "pfefferminzia"}
+
+    @app.get("/api/data-source")
+    async def data_source() -> dict[str, Any]:
+        return get_upstream_status()
+
+    @app.get("/api/workshop")
+    async def workshop() -> dict[str, Any]:
+        return get_workshop_status()
+
+    @app.get("/api/customers")
+    async def customers(q: str | None = None, country: str | None = None, productId: str | None = None, limit: int = 50):
+        return search_customers(query=q, country=country, product_id=productId, limit=limit)
+
+    @app.get("/api/customers/{partner_id}")
+    async def customer(partner_id: str):
+        result = get_customer(partner_id)
+        return result if result else JSONResponse(status_code=404, content={"error": "Customer not found"})
+
+    @app.get("/api/contracts/{contract_id}")
+    async def contract(contract_id: str):
+        result = get_contract(contract_id)
+        return result if result else JSONResponse(status_code=404, content={"error": "Contract not found"})
+
+    @app.get("/api/contracts/{contract_id}/documents")
+    async def contract_documents(contract_id: str):
+        return list_contract_documents(contract_id)
+
+    @app.get("/api/claims")
+    async def claims(status: str | None = None, riskLevel: str | None = None, partnerId: str | None = None, contractId: str | None = None, q: str | None = None):
+        return list_claims(status=status, risk_level=riskLevel, partner_id=partnerId, contract_id=contractId, query=q)
+
+    @app.get("/api/claims/{claim_id}")
+    async def claim(claim_id: str):
+        result = get_claim(claim_id)
+        return result if result else JSONResponse(status_code=404, content={"error": "Claim not found"})
+
+    @app.post("/api/tickets/{ticket_number}/claim", status_code=201)
+    async def create_claim(ticket_number: str, data: ClaimInput):
+        return create_claim_from_ticket(ticket_number=ticket_number, title=data.title, event_date=str(data.eventDate), reported_amount=data.reportedAmount, idempotency_key=data.idempotencyKey, actor="human-ui")
+
+    @app.post("/api/claims/{claim_id}/recommendations", status_code=201)
+    async def propose(claim_id: str, data: RecommendationInput):
+        return propose_claim_action(claim_id=claim_id, action=data.action, amount=data.amount, rationale=data.rationale, confidence=data.confidence, rule_version=data.ruleVersion, idempotency_key=data.idempotencyKey, actor="human-ui")
+
+    @app.post("/api/claims/{claim_id}/recommendations/{recommendation_id}/review")
+    async def review(claim_id: str, recommendation_id: int, data: ReviewInput):
+        return review_claim_action(claim_id=claim_id, recommendation_id=recommendation_id, decision=data.decision, note=data.note, idempotency_key=data.idempotencyKey, actor="human-ui")
+
+    @app.post("/api/claims/{claim_id}/tasks", status_code=201)
+    async def task(claim_id: str, data: TaskInput):
+        return create_claim_task(claim_id=claim_id, task_type=data.type, description=data.description, assigned_to=data.assignedTo, due_at=data.dueAt.isoformat() if data.dueAt else None, idempotency_key=data.idempotencyKey, actor="human-ui")
+
+    @app.get("/api/tickets/{ticket_number}/customer-candidates")
+    async def customer_candidates(ticket_number: str):
+        return resolve_ticket_customer(ticket_number)
+
+    @app.put("/api/tickets/{ticket_number}/parties/{partner_id}")
+    async def link_party(ticket_number: str, partner_id: str, data: PartyLinkInput):
+        return link_ticket_party(ticket_number=ticket_number, partner_id=partner_id, role=data.role, primary=data.primary, confidence=data.confidence, match_method=data.matchMethod, actor="human-ui")
+
+    @app.put("/api/tickets/{ticket_number}/contracts/{contract_id}")
+    async def link_contract(ticket_number: str, contract_id: str, data: ContractLinkInput):
+        return link_ticket_contract(ticket_number=ticket_number, contract_id=contract_id, confidence=data.confidence, match_method=data.matchMethod, actor="human-ui")
+
+    @app.get("/api/dashboard")
+    async def dashboard():
+        return {"tickets": list_tickets(), **dashboard_meta(), "autoSendEnabled": os.getenv("AUTO_SEND_ENABLED") == "true"}
+
+    @app.get("/api/tickets")
+    async def tickets(status: str | None = None, productLine: str | None = None, category: str | None = None, q: str | None = None):
+        statuses = [value for value in status.split(",") if value] if status else None
+        return list_tickets(statuses=statuses, product_line=productLine, category=category, query=q)
+
+    @app.get("/api/tickets/{ticket_number}")
+    async def ticket(ticket_number: str):
+        result = get_ticket(ticket_number)
+        return result if result else JSONResponse(status_code=404, content={"error": "Ticket not found"})
+
+    @app.post("/api/tickets/{ticket_number}/classify")
+    async def classify(ticket_number: str, data: ClassificationInput):
+        return update_classification(ticket_number, data.productLine, data.category, data.summary, data.priority, data.confidence, "human-ui")
+
+    @app.patch("/api/tickets/{ticket_number}/status")
+    async def set_status(ticket_number: str, data: dict[str, Literal["new", "in_progress", "closed"]]):
+        if "status" not in data:
+            raise ValueError("status is required")
+        return update_ticket_status(ticket_number, data["status"], "human-ui")
+
+    @app.put("/api/tickets/{ticket_number}/draft")
+    async def draft(ticket_number: str, data: DraftInput):
+        return save_draft(ticket_number, data.body, data.rationale, "human-ui")
+
+    @app.post("/api/tickets/{ticket_number}/notes")
+    async def note(ticket_number: str, data: dict[str, str]):
+        return add_internal_note(ticket_number, data.get("body", ""), "human-ui")
+
+    @app.post("/api/tickets/{ticket_number}/submit")
+    async def submit(ticket_number: str, data: dict[str, int] | None = None):
+        return submit_draft(ticket_number, "human-ui", (data or {}).get("delayHours", 24))
+
+    @app.post("/api/tickets/{ticket_number}/approve")
+    async def approve(ticket_number: str):
+        return approve_draft(ticket_number, "human-ui")
+
+    @app.post("/api/tickets/{ticket_number}/send")
+    async def send(ticket_number: str):
+        ticket_data = get_ticket(ticket_number)
+        if not ticket_data:
+            return JSONResponse(status_code=404, content={"error": "Ticket not found"})
+        if ticket_data["isDemo"]:
+            return JSONResponse(status_code=400, content={"error": "Demo tickets can never send real email"})
+        approve_draft(ticket_number, "human-ui")
+        return await asyncio.to_thread(send_ticket_draft, ticket_number, "human-ui")
+
+    @app.post("/api/sync")
+    async def sync():
+        return await asyncio.to_thread(sync_agentmail)
+
+    @app.get("/api/tariffs")
+    async def tariffs():
+        return list_tariffs()
+
+    @app.get("/api/tariffs/{tariff_id}/download")
+    async def tariff_download(tariff_id: str, inline: Annotated[int, Query()] = 0):
+        record = get_document_record(tariff_id)
+        if not record:
+            return JSONResponse(status_code=404, content={"error": "Tariff not found"})
+        return FileResponse(resolve_storage_path(record["storage_path"]), media_type="application/pdf", filename=None if inline == 1 else record["filename"], content_disposition_type="inline" if inline == 1 else "attachment")
+
+    @app.get("/api/attachments/{attachment_id}/download")
+    async def attachment_download(attachment_id: int):
+        record = get_attachment_record(attachment_id)
+        if not record:
+            return JSONResponse(status_code=404, content={"error": "Attachment not found"})
+        return FileResponse(resolve_storage_path(record["storage_path"]), media_type=record["content_type"], filename=record["filename"])
+
+    if (WEB_ROOT / "assets").exists():
+        app.mount("/assets", StaticFiles(directory=WEB_ROOT / "assets"), name="assets")
+
+    @app.get("/favicon.svg", include_in_schema=False)
+    async def favicon():
+        return FileResponse(WEB_ROOT / "favicon.svg")
+
+    @app.get("/{path:path}", include_in_schema=False)
+    async def frontend(path: str):
+        del path
+        return FileResponse(WEB_ROOT / "index.html")
+
+    # The MCP ASGI app owns /mcp. Keep this mount last because mounting at /
+    # would otherwise shadow the API and browser routes above it.
+    app.mount("/", mcp_http_app, name="mcp")
+
+    return app
+
+
+app = create_app()

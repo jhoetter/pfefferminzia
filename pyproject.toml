@@ -1,12 +1,34 @@
 [project]
 name = "pfefferminzia"
-version = "0.1.0"
-description = "Small read-only AgentMail inbox reader"
-requires-python = ">=3.11"
+version = "0.3.0"
+description = "Python-only workshop system for synthetic insurance operations and MCP"
+requires-python = ">=3.12"
 dependencies = [
     "agentmail>=0.2.15",
+    "fastapi>=0.117.0",
+    "mcp>=2.0.0",
     "python-dotenv>=1.0.0",
+    "uvicorn>=0.35.0",
 ]
 
-[tool.uv]
-package = false
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pypdf>=6.0.0",
+    "pytest>=8.4.0",
+    "pytest-asyncio>=1.1.0",
+]
+
+[project.scripts]
+pfefferminzia = "pfefferminzia.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["pfefferminzia"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

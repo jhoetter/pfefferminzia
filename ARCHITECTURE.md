@@ -25,9 +25,9 @@ flowchart LR
     DB --> DOMAIN[Domain services]
     FILES[Local attachment store] --> DOMAIN
 
-    DOMAIN --> REST[HTTP API]
-    DOMAIN --> MCP[MCP capability registry]
-    REST --> UI[React human workspace]
+    DOMAIN --> REST[FastAPI HTTP API]
+    DOMAIN --> MCP[Python MCP capability registry]
+    REST --> UI[Static browser workspace]
     MCP --> STDIO[stdio clients]
     MCP --> HTTP[Streamable HTTP clients]
 
@@ -38,8 +38,8 @@ flowchart LR
 
 AgentMail is an optional transport, not the operational source of truth. After
 an import, UI, REST, and MCP operate on the local data layer. Both MCP
-transports are instantiated from `createPfefferminziaMcpServer`, so capability
-definitions cannot drift between stdio and HTTP.
+transports are instantiated from `create_mcp_server`, so capability definitions
+cannot drift between stdio and HTTP.
 
 ## Data ownership and provenance
 
@@ -161,9 +161,10 @@ There is intentionally no SQL or arbitrary filesystem tool.
 ## Repeatable workshop profile
 
 `WORKSHOP_PROFILE=participant` is the only accepted operational profile. The
-service fails closed for any other value. `npm run workshop:reset` removes and
-recreates only application-owned demo tickets and local claim extensions. It
-preserves imported Falk tables and manual or AgentMail tickets.
+service fails closed for any other value.
+`uv run pfefferminzia workshop-reset --confirm-demo-reset` removes and recreates
+only application-owned demo tickets and local claim extensions. It preserves
+imported Falk tables and manual or AgentMail tickets.
 
 The fixture set covers four complementary paths:
 

@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "pfefferminzia": {
-      "command": "npm",
-      "args": ["run", "mcp"]
+      "command": "uv",
+      "args": ["run", "pfefferminzia", "mcp"]
     }
   }
 }
