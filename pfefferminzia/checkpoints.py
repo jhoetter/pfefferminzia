@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import sqlite3
+import sys
 from typing import Any
 
 from .database import get_database
@@ -177,3 +178,56 @@ def drill_guide(hint_level: int = 0, db: sqlite3.Connection | None = None) -> di
         "hint": None if bounded == 0 else hints[profile["drill"]][bounded - 1],
         "instruction": "Gib zunächst nur den gewählten Hinweis. Liefere eine vollständige Lösung erst auf ausdrücklichen Wunsch.",
     }
+
+
+def verify_checkpoint(check_external_inbox: bool = False, db: sqlite3.Connection | None = None) -> dict[str, Any]:
+    from .agentmail_service import agentmail_configuration
+    from .store import list_tariffs, list_tickets
+
+    db = db or get_database()
+    profile = checkpoint_profile(db)
+    agentmail = agentmail_configuration(probe=check_external_inbox)
+    source = db.execute("SELECT upstream_commit FROM source_datasets LIMIT 1").fetchone()
+    visible = list_tickets(db=db)
+    checks: list[dict[str, Any]] = []
+
+    def check(name: str, passed: bool, detail: str, *, required: bool = True) -> None:
+        checks.append({"name": name, "passed": passed, "required": required, "detail": detail})
+
+    check("python", sys.version_info >= (3, 12), f"Python {sys.version_info.major}.{sys.version_info.minor}")
+    check("dataset", source is not None, "Pinned Falk dataset imported" if source else "Dataset import is missing")
+    check(
+        "agentmail-configuration",
+        agentmail["ready"],
+        "API key, one inbox ID and recipient allowlist configured" if agentmail["ready"] else "Configure API key, AGENTMAIL_INBOX_ID and WORKSHOP_ALLOWED_RECIPIENTS",
+    )
+    if check_external_inbox:
+        check("agentmail-reachability", agentmail["reachable"] is True, "Configured inbox is reachable")
+    check("checkpoint-profile", True, f"{profile['name']}: {profile['title']}")
+    check("todo-storage", _table_exists(db, "workshop_todos"), "Todo storage available")
+
+    if profile["order"] >= 9:
+        life = [ticket for ticket in visible if ticket["productLine"] == "life"]
+        check("life-scenario", bool(life), f"{len(life)} visible life scenario(s)")
+        check("tariff-library", len(list_tariffs(db)) == 28, f"{len(list_tariffs(db))} indexed tariff documents")
+    if profile["order"] >= 10:
+        check("life-review-capability", "life_review" in profile["capabilities"], "Mandatory review capability active")
+    if profile["order"] >= 11:
+        liabilities = [ticket for ticket in visible if ticket["productLine"] == "liability"]
+        check("liability-scenarios", len(liabilities) >= 3, f"{len(liabilities)} visible liability scenarios")
+        check("intervention-queue", "intervention_queue" in profile["capabilities"], "Queue controls and workshop clock active")
+        auto_send = os.getenv("AUTO_SEND_ENABLED", "").lower() == "true"
+        check("automatic-dispatch", auto_send, "AUTO_SEND_ENABLED=true" if auto_send else "Set AUTO_SEND_ENABLED=true before Drill 11")
+
+    failed = [item for item in checks if item["required"] and not item["passed"]]
+    return {
+        "ok": not failed,
+        "checkpoint": profile["name"],
+        "checkedExternalInbox": check_external_inbox,
+        "checks": checks,
+        "nextAction": None if not failed else failed[0]["detail"],
+    }
+
+
+def _table_exists(db: sqlite3.Connection, name: str) -> bool:
+    return db.execute("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?", (name,)).fetchone() is not None

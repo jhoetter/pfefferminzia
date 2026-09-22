@@ -15,11 +15,11 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from .agentmail_service import dispatch_due_replies, send_ticket_draft, sync_agentmail
-from .checkpoints import require_capability
+from .checkpoints import require_capability, verify_checkpoint
 from .claims import create_claim_from_ticket, create_claim_task, ensure_workshop_claims, get_claim, list_claims, propose_claim_action, review_claim_action
 from .constants import ROOT
 from .crm import get_contract, get_customer, link_ticket_contract, link_ticket_party, resolve_ticket_customer, search_customers
-from .mcp_server import mcp
+from .mcp_server import create_mcp_server
 from .seed import ensure_seed_data
 from .store import (
     add_internal_note,
@@ -47,7 +47,6 @@ from .workshop_clock import advance_workshop_clock
 
 load_dotenv(ROOT / ".env")
 WEB_ROOT = ROOT / "web"
-mcp_http_app = mcp.streamable_http_app(streamable_http_path="/mcp", stateless_http=True, json_response=True)
 
 
 def initialize_application() -> dict[str, Any]:
@@ -67,21 +66,24 @@ async def _periodic(seconds: int, function: Any) -> None:
         await asyncio.sleep(seconds)
 
 
-@asynccontextmanager
-async def lifespan(_: FastAPI):
-    initialize_application()
-    tasks: list[asyncio.Task[None]] = []
-    async with mcp.session_manager.run():
-        if os.getenv("AGENTMAIL_API_KEY"):
-            tasks.append(asyncio.create_task(_periodic(max(15, int(os.getenv("AGENTMAIL_POLL_SECONDS", "30"))), sync_agentmail)))
-        if os.getenv("AUTO_SEND_ENABLED") == "true":
-            tasks.append(asyncio.create_task(_periodic(60, dispatch_due_replies)))
-        yield
-        for task in tasks:
-            task.cancel()
-        for task in tasks:
-            with suppress(asyncio.CancelledError):
-                await task
+def _lifespan(mcp_server):
+    @asynccontextmanager
+    async def lifespan(_: FastAPI):
+        initialize_application()
+        tasks: list[asyncio.Task[None]] = []
+        async with mcp_server.session_manager.run():
+            if os.getenv("AGENTMAIL_API_KEY"):
+                tasks.append(asyncio.create_task(_periodic(max(15, int(os.getenv("AGENTMAIL_POLL_SECONDS", "30"))), sync_agentmail)))
+            if os.getenv("AUTO_SEND_ENABLED") == "true":
+                tasks.append(asyncio.create_task(_periodic(60, dispatch_due_replies)))
+            yield
+            for task in tasks:
+                task.cancel()
+            for task in tasks:
+                with suppress(asyncio.CancelledError):
+                    await task
+
+    return lifespan
 
 
 class ClassificationInput(BaseModel):
@@ -171,7 +173,9 @@ class RouteInput(BaseModel):
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="Pfefferminzia", version="0.3.0", lifespan=lifespan)
+    mcp_server = create_mcp_server()
+    mcp_http_app = mcp_server.streamable_http_app(streamable_http_path="/mcp", stateless_http=True, json_response=True)
+    app = FastAPI(title="Pfefferminzia", version="0.3.0", lifespan=_lifespan(mcp_server))
 
     @app.exception_handler(RequestValidationError)
     async def validation_error(_: Request, error: RequestValidationError) -> JSONResponse:
@@ -197,6 +201,10 @@ def create_app() -> FastAPI:
     @app.get("/api/workshop")
     async def workshop() -> dict[str, Any]:
         return get_workshop_status()
+
+    @app.get("/api/workshop/verify")
+    async def verify_workshop(external: bool = False) -> dict[str, Any]:
+        return await asyncio.to_thread(verify_checkpoint, external)
 
     @app.get("/api/customers")
     async def customers(q: str | None = None, country: str | None = None, productId: str | None = None, limit: int = 50):
@@ -405,6 +413,14 @@ def create_app() -> FastAPI:
     @app.get("/favicon.svg", include_in_schema=False)
     async def favicon():
         return FileResponse(WEB_ROOT / "favicon.svg")
+
+    @app.get("/workshop.js", include_in_schema=False)
+    async def workshop_script():
+        return FileResponse(WEB_ROOT / "workshop.js", media_type="text/javascript")
+
+    @app.get("/workshop.css", include_in_schema=False)
+    async def workshop_styles():
+        return FileResponse(WEB_ROOT / "workshop.css", media_type="text/css")
 
     @app.get("/{path:path}", include_in_schema=False)
     async def frontend(path: str):

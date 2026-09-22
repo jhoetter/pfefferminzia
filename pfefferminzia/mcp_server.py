@@ -9,7 +9,7 @@ from mcp.types import ToolAnnotations
 from pydantic import Field
 
 from .agentmail_service import send_ticket_draft, sync_agentmail
-from .checkpoints import available_checkpoints, checkpoint_profile, drill_guide
+from .checkpoints import available_checkpoints, checkpoint_profile, drill_guide, verify_checkpoint
 from .claims import create_claim_from_ticket, create_claim_task, get_claim, list_claims, propose_claim_action, review_claim_action
 from .constants import CLAIM_STATUSES
 from .crm import get_contract, get_customer, link_ticket_contract, link_ticket_party, resolve_ticket_customer, search_customers
@@ -102,6 +102,16 @@ def create_mcp_server() -> MCPServer:
     def get_drill_guide(hintLevel: Annotated[int, Field(ge=0, le=3)] = 0) -> dict[str, Any]:
         """Return the current learning goal and one requested hint level; avoid jumping directly to the solution."""
         return drill_guide_impl(hintLevel)
+
+    @server.tool(annotations=ReadOnly)
+    def verify_workshop_checkpoint(
+        checkExternalInbox: bool = False,
+        confirmExternalRead: bool = False,
+    ) -> dict[str, Any]:
+        """Run the current checkpoint's fast checks; external inbox probing requires explicit confirmation."""
+        if checkExternalInbox and not confirmExternalRead:
+            raise ToolError("Ask the participant before probing AgentMail, then pass confirmExternalRead=true")
+        return verify_checkpoint_impl(checkExternalInbox)
 
     @server.tool(name="list_todos", annotations=ReadOnly)
     def list_todos_tool(status: Literal["open", "completed", "cancelled"] | None = None) -> list[dict[str, Any]]:
@@ -487,6 +497,7 @@ route_ticket_impl = route_ticket
 reject_draft_impl = reject_draft
 remove_from_send_queue_impl = remove_from_send_queue
 advance_workshop_clock_impl = advance_workshop_clock
+verify_checkpoint_impl = verify_checkpoint
 
 
 mcp = create_mcp_server()
