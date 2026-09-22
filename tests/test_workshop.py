@@ -10,7 +10,7 @@ def test_participant_fixtures_are_linked_and_non_sendable(full_db):
     reset_workshop_fixtures(full_db)
     status = get_workshop_status(full_db)
     assert {key: status[key] for key in ("profile", "syntheticDataOnly", "demoTickets", "workshopClaims", "importedTruthTables")} == {
-        "profile": "participant", "syntheticDataOnly": True, "demoTickets": 4, "workshopClaims": 4, "importedTruthTables": 0
+        "profile": "participant", "syntheticDataOnly": True, "demoTickets": 7, "workshopClaims": 4, "importedTruthTables": 0
     }
     pieper = get_ticket("PF-10008", full_db)
     assert pieper["isDemo"] is True
@@ -33,4 +33,4 @@ def test_reset_preserves_non_demo_records(full_db):
     assert get_claim("SCH-00000810", full_db)["recommendations"][0]["status"] == "blocked"
     assert len(list_tickets(query="PF-99999", db=full_db)) == 1
     ensure_workshop_fixtures(full_db)
-    assert len([ticket for ticket in list_tickets(db=full_db) if ticket["source"] == "demo"]) == 4
+    assert len([ticket for ticket in list_tickets(db=full_db) if ticket["source"] == "demo"]) == 7

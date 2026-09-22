@@ -18,7 +18,9 @@ from .constants import ROOT
 from .crm import auto_link_exact_customer
 from .database import get_database
 from .store import add_event, get_ticket, list_tickets
+from .todos import complete_ticket_todos
 from .util import utc_now
+from .workshop_clock import workshop_now_iso
 
 
 def _mapping(value: Any) -> dict[str, Any]:
@@ -40,6 +42,60 @@ def _client() -> AgentMail:
     if not api_key:
         raise RuntimeError("AGENTMAIL_API_KEY is not configured")
     return AgentMail(api_key=api_key)
+
+
+def _configured_inbox_id() -> str:
+    inbox_id = os.getenv("AGENTMAIL_INBOX_ID", "").strip()
+    if not inbox_id:
+        raise RuntimeError("AGENTMAIL_INBOX_ID is not configured; workshop instances must bind exactly one inbox")
+    return inbox_id
+
+
+def _allowed_recipients() -> set[str]:
+    return {
+        _address_part(value)
+        for value in os.getenv("WORKSHOP_ALLOWED_RECIPIENTS", "").split(",")
+        if value.strip()
+    }
+
+
+def agentmail_configuration(probe: bool = False) -> dict[str, Any]:
+    api_key_configured = bool(os.getenv("AGENTMAIL_API_KEY", "").strip())
+    inbox_id = os.getenv("AGENTMAIL_INBOX_ID", "").strip()
+    allowed = _allowed_recipients()
+    result: dict[str, Any] = {
+        "apiKeyConfigured": api_key_configured,
+        "inboxIdConfigured": bool(inbox_id),
+        "inboxId": inbox_id or None,
+        "allowedRecipientCount": len(allowed),
+        "ready": api_key_configured and bool(inbox_id) and bool(allowed),
+        "reachable": None,
+    }
+    if probe:
+        configured = _configured_inbox_id()
+        inboxes = _value(_mapping(_client().inboxes.list(limit=100)), "inboxes", default=[])
+        found = next(
+            (
+                _mapping(value)
+                for value in inboxes
+                if str(_value(_mapping(value), "inbox_id", "inboxId")) == configured
+            ),
+            None,
+        )
+        if not found:
+            raise RuntimeError(f"Configured AgentMail inbox is not accessible: {configured}")
+        result["reachable"] = True
+        result["inboxEmail"] = str(_value(found, "email", default=configured))
+    return result
+
+
+def _assert_recipient_allowed(recipient: str) -> None:
+    allowed = _allowed_recipients()
+    address = _address_part(recipient)
+    if not allowed:
+        raise ValueError("WORKSHOP_ALLOWED_RECIPIENTS is empty; external workshop email is blocked")
+    if address not in allowed and not any(value.startswith("@") and address.endswith(value) for value in allowed):
+        raise ValueError(f"Recipient is not on the workshop allowlist: {address}")
 
 
 def _address_part(value: str) -> str:
@@ -79,8 +135,16 @@ def sync_agentmail(db: sqlite3.Connection | None = None) -> dict[str, Any]:
     result = {"inboxes": [], "importedTickets": 0, "importedMessages": 0, "importedAttachments": 0}
     active_inbox: str | None = None
     try:
+        configured_inbox_id = _configured_inbox_id()
         inboxes = _value(_mapping(client.inboxes.list(limit=100)), "inboxes", default=[])
-        for inbox_value in inboxes:
+        selected = [
+            inbox_value
+            for inbox_value in inboxes
+            if str(_value(_mapping(inbox_value), "inbox_id", "inboxId")) == configured_inbox_id
+        ]
+        if len(selected) != 1:
+            raise RuntimeError(f"Configured AgentMail inbox is not accessible: {configured_inbox_id}")
+        for inbox_value in selected:
             inbox = _mapping(inbox_value)
             active_inbox = str(_value(inbox, "inbox_id", "inboxId"))
             inbox_email = str(_value(inbox, "email", default=active_inbox))
@@ -191,6 +255,8 @@ def send_ticket_draft(
         raise ValueError(f"Reply draft not found: {ticket_number}")
     if not ticket["sourceInboxId"]:
         raise ValueError("Ticket has no AgentMail inbox binding")
+    if ticket["sourceInboxId"] != _configured_inbox_id():
+        raise ValueError("Ticket belongs to a different AgentMail inbox")
     if ticket["productLine"] == "life" and not ticket["humanApprovedAt"]:
         raise ValueError("Life insurance replies require explicit human approval")
     if ticket["draft"]["status"] == "sent":
@@ -201,6 +267,7 @@ def send_ticket_draft(
     )
     if not inbound:
         raise ValueError("No inbound AgentMail message available to reply to")
+    _assert_recipient_allowed(ticket["customerEmail"])
     body = ticket["draft"]["body"]
     response = _mapping(
         _client().inboxes.messages.reply(
@@ -227,6 +294,8 @@ def send_ticket_draft(
         (stamp, stamp, ticket["id"]),
     )
     add_event(ticket["id"], "reply_sent", actor, {"messageId": message_id}, db)
+    complete_ticket_todos(ticket_number, "review", db)
+    complete_ticket_todos(ticket_number, "queue_intervention", db)
     return get_ticket(ticket["id"], db)  # type: ignore[return-value]
 
 
@@ -236,7 +305,7 @@ def dispatch_due_replies(db: sqlite3.Connection | None = None) -> dict[str, Any]
         return {"enabled": False, "sent": 0, "skipped": 0}
     sent = 0
     skipped = 0
-    now = utc_now()
+    now = workshop_now_iso(db)
     due = [
         ticket
         for ticket in list_tickets(statuses=["scheduled"], db=db)

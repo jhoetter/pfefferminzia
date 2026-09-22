@@ -11,6 +11,8 @@ REQUIRED_TOOLS = {
     "link_ticket_customer", "link_ticket_contract", "list_tariffs", "read_tariff", "list_contract_documents",
     "list_ticket_attachments", "read_attachment", "list_claims", "get_claim", "create_claim_from_ticket",
     "propose_claim_action", "review_claim_action", "create_claim_task",
+    "list_workshop_checkpoints", "get_drill_guide", "list_todos", "create_todo", "update_todo",
+    "route_ticket", "reject_ticket_reply", "remove_from_send_queue", "advance_workshop_clock",
 }
 
 
@@ -25,3 +27,27 @@ async def test_mcp_capability_surface():
         templates = await client.list_resource_templates()
         uris = {str(resource.uri_template) for resource in templates.resource_templates}
         assert {"pfefferminzia://customers/{partnerId}", "pfefferminzia://contracts/{contractId}", "pfefferminzia://claims/{claimId}", "pfefferminzia://tariffs/{tariffId}"} <= uris
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("checkpoint", "present", "absent"),
+    [
+        ("drill-08-start", {"create_todo", "sync_agentmail"}, {"draft_ticket_reply", "list_tariffs", "submit_ticket_reply", "route_ticket"}),
+        ("drill-09-start", {"draft_ticket_reply", "list_tariffs", "send_ticket_reply"}, {"submit_ticket_reply", "approve_ticket_reply", "route_ticket"}),
+        ("drill-10-start", {"submit_ticket_reply", "approve_ticket_reply", "list_claims"}, {"route_ticket", "remove_from_send_queue"}),
+        ("drill-11-start", {"route_ticket", "remove_from_send_queue", "advance_workshop_clock"}, set()),
+    ],
+)
+async def test_checkpoint_capabilities_are_not_exposed(monkeypatch, checkpoint, present, absent):
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", checkpoint)
+    server = create_mcp_server()
+    async with Client(server) as client:
+        names = {tool.name for tool in (await client.list_tools()).tools}
+        assert present <= names
+        assert not (absent & names)
+        template_uris = {str(item.uri_template) for item in (await client.list_resource_templates()).resource_templates}
+        if checkpoint == "drill-08-start":
+            assert not template_uris
+        if checkpoint == "drill-09-start":
+            assert not any("claims" in uri for uri in template_uris)

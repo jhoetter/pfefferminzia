@@ -2,13 +2,16 @@ from __future__ import annotations
 
 import json
 import sqlite3
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
 from pathlib import Path
 from typing import Any
 
 from .constants import CATEGORIES, PRIORITIES, PRODUCT_LINES, ROOT, TICKET_STATUSES
+from .checkpoints import checkpoint_profile
 from .database import get_database
+from .todos import complete_ticket_todos, create_todo
 from .util import utc_now
+from .workshop_clock import workshop_now
 
 TICKET_SELECT = """
   SELECT t.*,
@@ -38,6 +41,7 @@ def _map_ticket(row: sqlite3.Row) -> dict[str, Any]:
         "classificationSource": row["classification_source"],
         "assignedTo": row["assigned_to"],
         "isDemo": bool(row["is_demo"]),
+        "workshopMinStage": int(row["workshop_min_stage"]),
         "humanApprovedAt": row["human_approved_at"],
         "createdAt": row["created_at"],
         "updatedAt": row["updated_at"],
@@ -60,7 +64,8 @@ def list_tickets(
 ) -> list[dict[str, Any]]:
     db = db or get_database()
     where: list[str] = []
-    params: dict[str, Any] = {}
+    params: dict[str, Any] = {"workshop_stage": checkpoint_profile(db)["order"]}
+    where.append("(t.is_demo = 0 OR t.workshop_min_stage <= :workshop_stage)")
     if statuses:
         if any(status not in TICKET_STATUSES for status in statuses):
             raise ValueError("Invalid status")
@@ -93,7 +98,10 @@ def list_tickets(
 def get_ticket(identifier: str | int, db: sqlite3.Connection | None = None) -> dict[str, Any] | None:
     db = db or get_database()
     field = "t.id" if isinstance(identifier, int) else "t.ticket_number"
-    row = db.execute(f"{TICKET_SELECT} WHERE {field} = ?", (identifier,)).fetchone()
+    row = db.execute(
+        f"{TICKET_SELECT} WHERE {field} = ? AND (t.is_demo = 0 OR t.workshop_min_stage <= ?)",
+        (identifier, checkpoint_profile(db)["order"]),
+    ).fetchone()
     if not row:
         return None
     ticket = _map_ticket(row)
@@ -241,6 +249,32 @@ def update_classification(
     return get_ticket(ticket["id"], db)  # type: ignore[return-value]
 
 
+def route_ticket(
+    ticket_number: str,
+    route: str,
+    category: str,
+    summary: str,
+    confidence: float,
+    actor: str = "agent",
+    db: sqlite3.Connection | None = None,
+) -> dict[str, Any]:
+    if route not in ("life_mandatory_review", "liability_intervention_window"):
+        raise ValueError("Invalid route")
+    product_line = "life" if route == "life_mandatory_review" else "liability"
+    db = db or get_database()
+    ticket = update_classification(
+        ticket_number, product_line, category, summary, None, confidence, actor, db
+    )
+    add_event(
+        ticket["id"],
+        "control_route_selected",
+        actor,
+        {"route": route, "controlPolicy": "mandatory_human_approval" if product_line == "life" else "intervention_window"},
+        db,
+    )
+    return get_ticket(ticket["id"], db)  # type: ignore[return-value]
+
+
 def update_ticket_status(
     ticket_number: str, status: str, actor: str = "human", db: sqlite3.Connection | None = None
 ) -> dict[str, Any]:
@@ -282,11 +316,15 @@ def save_draft(
     )
     db.execute(
         """UPDATE tickets SET updated_at = ?, human_approved_at = NULL,
-        status = CASE WHEN status = 'scheduled' THEN 'in_progress' ELSE status END WHERE id = ?""",
+        status = CASE WHEN status IN ('scheduled', 'awaiting_human') THEN 'in_progress' ELSE status END WHERE id = ?""",
         (stamp, ticket["id"]),
     )
     if ticket["status"] == "scheduled":
         add_event(ticket["id"], "schedule_cancelled", actor, {"reason": "draft_changed"}, db)
+        complete_ticket_todos(ticket_number, "queue_intervention", db)
+    if ticket["status"] == "awaiting_human":
+        add_event(ticket["id"], "review_invalidated", actor, {"reason": "draft_changed"}, db)
+        complete_ticket_todos(ticket_number, "review", db)
     add_event(ticket["id"], "draft_saved", actor, {"rationale": rationale.strip() if rationale else None}, db)
     return get_ticket(ticket["id"], db)  # type: ignore[return-value]
 
@@ -331,8 +369,17 @@ def submit_draft(
             (stamp, ticket["id"]),
         )
         add_event(ticket["id"], "human_review_required", actor, {"policy": "life-always-human"}, db)
+        create_todo(
+            f"Lebensantwort {ticket_number} prüfen",
+            "Entwurf freigeben, ablehnen oder bearbeiten. Versand bleibt bis zur expliziten Freigabe blockiert.",
+            kind="review",
+            ticket_number=ticket_number,
+            actor=actor,
+            idempotency_key=f"review:{ticket_number}:{ticket['draft']['updatedAt']}",
+            db=db,
+        )
     else:
-        scheduled = datetime.now(timezone.utc) + timedelta(hours=max(1, delay_hours))
+        scheduled = workshop_now(db) + timedelta(hours=max(1, delay_hours))
         scheduled_for = scheduled.isoformat(timespec="milliseconds").replace("+00:00", "Z")
         db.execute(
             "UPDATE reply_drafts SET status = 'scheduled', scheduled_for = ?, updated_at = ? WHERE ticket_id = ?",
@@ -348,6 +395,15 @@ def submit_draft(
             actor,
             {"scheduledFor": scheduled_for, "policy": "liability-delay-window"},
             db,
+        )
+        create_todo(
+            f"Eingriffsfenster {ticket_number}",
+            "Antwort läuft automatisch aus. Bei Bedarf bearbeiten, stoppen oder aus der Queue nehmen.",
+            kind="queue_intervention",
+            ticket_number=ticket_number,
+            actor=actor,
+            idempotency_key=f"queue:{ticket_number}:{scheduled_for}",
+            db=db,
         )
     return get_ticket(ticket["id"], db)  # type: ignore[return-value]
 
@@ -368,6 +424,63 @@ def approve_draft(
     )
     db.execute("UPDATE tickets SET human_approved_at = ?, updated_at = ? WHERE id = ?", (stamp, stamp, ticket["id"]))
     add_event(ticket["id"], "draft_approved", actor, {}, db)
+    complete_ticket_todos(ticket_number, "review", db)
+    return get_ticket(ticket["id"], db)  # type: ignore[return-value]
+
+
+def reject_draft(
+    ticket_number: str,
+    note: str,
+    actor: str = "human",
+    db: sqlite3.Connection | None = None,
+) -> dict[str, Any]:
+    db = db or get_database()
+    ticket = get_ticket(ticket_number, db)
+    if not ticket or not ticket["draft"]:
+        raise ValueError(f"Ticket or draft not found: {ticket_number}")
+    if ticket["status"] in ("sent", "closed"):
+        raise ValueError("Sent or closed tickets cannot be rejected")
+    if not note.strip():
+        raise ValueError("A rejection note is required")
+    stamp = utc_now()
+    db.execute(
+        "UPDATE reply_drafts SET status = 'draft', scheduled_for = NULL, updated_at = ? WHERE ticket_id = ?",
+        (stamp, ticket["id"]),
+    )
+    db.execute(
+        "UPDATE tickets SET status = 'in_progress', human_approved_at = NULL, updated_at = ? WHERE id = ?",
+        (stamp, ticket["id"]),
+    )
+    add_event(ticket["id"], "draft_rejected", actor, {"note": note.strip()}, db)
+    complete_ticket_todos(ticket_number, "review", db)
+    return get_ticket(ticket["id"], db)  # type: ignore[return-value]
+
+
+def remove_from_send_queue(
+    ticket_number: str,
+    reason: str,
+    actor: str = "human",
+    db: sqlite3.Connection | None = None,
+) -> dict[str, Any]:
+    db = db or get_database()
+    ticket = get_ticket(ticket_number, db)
+    if not ticket or not ticket["draft"]:
+        raise ValueError(f"Ticket or draft not found: {ticket_number}")
+    if ticket["status"] != "scheduled":
+        raise ValueError("Only scheduled tickets can be removed from the send queue")
+    if not reason.strip():
+        raise ValueError("A queue removal reason is required")
+    stamp = utc_now()
+    db.execute(
+        "UPDATE reply_drafts SET status = 'draft', scheduled_for = NULL, updated_at = ? WHERE ticket_id = ?",
+        (stamp, ticket["id"]),
+    )
+    db.execute(
+        "UPDATE tickets SET status = 'in_progress', human_approved_at = NULL, updated_at = ? WHERE id = ?",
+        (stamp, ticket["id"]),
+    )
+    add_event(ticket["id"], "queue_removed", actor, {"reason": reason.strip()}, db)
+    complete_ticket_todos(ticket_number, "queue_intervention", db)
     return get_ticket(ticket["id"], db)  # type: ignore[return-value]
 
 

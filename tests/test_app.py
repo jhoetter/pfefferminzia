@@ -16,7 +16,8 @@ def test_python_host_serves_api_and_browser_workspace(monkeypatch, tmp_path):
         assert client.get("/api/health").json() == {"ok": True, "service": "pfefferminzia"}
         dashboard = client.get("/api/dashboard")
         assert dashboard.status_code == 200
-        assert len(dashboard.json()["tickets"]) == 4
+        assert len(dashboard.json()["tickets"]) == 7
+        assert dashboard.json()["workshop"]["checkpoint"]["name"] == "drill-11-complete"
         page = client.get("/")
         assert page.status_code == 200
         assert '<div id="root"></div>' in page.text

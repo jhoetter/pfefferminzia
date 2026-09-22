@@ -236,6 +236,36 @@ def migrate(db: sqlite3.Connection) -> None:
           created_at TEXT NOT NULL
         );
 
+        CREATE TABLE IF NOT EXISTS workshop_state (
+          id INTEGER PRIMARY KEY CHECK(id = 1),
+          checkpoint TEXT NOT NULL DEFAULT 'drill-11-complete',
+          clock_offset_seconds INTEGER NOT NULL DEFAULT 0,
+          updated_at TEXT NOT NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS workshop_todos (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          title TEXT NOT NULL,
+          description TEXT NOT NULL DEFAULT '',
+          status TEXT NOT NULL CHECK(status IN ('open', 'completed', 'cancelled')) DEFAULT 'open',
+          kind TEXT NOT NULL CHECK(kind IN ('general', 'review', 'queue_intervention')) DEFAULT 'general',
+          ticket_id INTEGER REFERENCES tickets(id) ON DELETE CASCADE,
+          assigned_to TEXT,
+          created_by TEXT NOT NULL,
+          idempotency_key TEXT UNIQUE,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL,
+          completed_at TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS workshop_events (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          type TEXT NOT NULL,
+          actor TEXT NOT NULL,
+          details_json TEXT NOT NULL DEFAULT '{}',
+          created_at TEXT NOT NULL
+        );
+
         CREATE INDEX IF NOT EXISTS idx_tickets_status ON tickets(status);
         CREATE INDEX IF NOT EXISTS idx_tickets_product_line ON tickets(product_line);
         CREATE INDEX IF NOT EXISTS idx_messages_ticket ON messages(ticket_id, sent_at);
@@ -246,7 +276,12 @@ def migrate(db: sqlite3.Connection) -> None:
         CREATE INDEX IF NOT EXISTS idx_workshop_claims_contract ON workshop_claims(contract_id, event_date);
         CREATE INDEX IF NOT EXISTS idx_workshop_claims_status ON workshop_claims(status, risk_level);
         CREATE INDEX IF NOT EXISTS idx_workshop_claim_events ON workshop_claim_events(claim_id, created_at);
+        CREATE INDEX IF NOT EXISTS idx_workshop_todos_status ON workshop_todos(status, created_at);
         """
+    )
+    db.execute(
+        """INSERT OR IGNORE INTO workshop_state (id, checkpoint, clock_offset_seconds, updated_at)
+        VALUES (1, 'drill-11-complete', 0, strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))"""
     )
     existing = {row["name"] for row in db.execute("PRAGMA table_info(documents)")}
     additions = {
@@ -263,6 +298,9 @@ def migrate(db: sqlite3.Connection) -> None:
     for name, definition in additions.items():
         if name not in existing:
             db.execute(f'ALTER TABLE documents ADD COLUMN "{name}" {definition}')
+    ticket_columns = {row["name"] for row in db.execute("PRAGMA table_info(tickets)")}
+    if "workshop_min_stage" not in ticket_columns:
+        db.execute("ALTER TABLE tickets ADD COLUMN workshop_min_stage INTEGER NOT NULL DEFAULT 8")
 
 
 _singleton: sqlite3.Connection | None = None
