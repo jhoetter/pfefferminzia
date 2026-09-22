@@ -18,6 +18,10 @@ from .constants import ROOT
 PLAN_TTL_SECONDS = 15 * 60
 
 
+def _recovery_base_name() -> str:
+    return ROOT.name.split("-drill-", 1)[0]
+
+
 def _git_output(*args: str, cwd: Path = ROOT) -> str:
     result = subprocess.run(
         ["git", *args], cwd=cwd, check=True, capture_output=True, text=True
@@ -56,7 +60,7 @@ def plan_checkpoint_load(target_checkpoint: str) -> dict[str, Any]:
     dirty_paths = _dirty_paths()
     token = secrets.token_urlsafe(24)
     suffix = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
-    target = ROOT.parent / f"{ROOT.name}-{checkpoint}-{suffix}-{token[:6]}"
+    target = ROOT.parent / f"{_recovery_base_name()}-{checkpoint}-{suffix}-{token[:6]}"
     plan = {
         "token": token,
         "checkpoint": checkpoint,
@@ -115,7 +119,7 @@ def apply_checkpoint_load(confirmation_token: str) -> dict[str, Any]:
 
     target = Path(plan["targetPath"]).resolve()
     expected_parent = ROOT.parent.resolve()
-    expected_prefix = f"{ROOT.name}-{plan['checkpoint']}-"
+    expected_prefix = f"{_recovery_base_name()}-{plan['checkpoint']}-"
     if target.parent != expected_parent or not target.name.startswith(expected_prefix):
         raise ValueError("Checkpoint target path failed the safety check")
     if target.exists():

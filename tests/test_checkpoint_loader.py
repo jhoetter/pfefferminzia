@@ -63,3 +63,15 @@ def test_checkpoint_loader_rejects_changed_source(monkeypatch, tmp_path):
         loader.apply_checkpoint_load(plan["confirmationToken"])
     stored = json.loads((source / ".data" / "checkpoint-plans" / f"{plan['confirmationToken']}.json").read_text())
     assert stored["checkpoint"] == "drill-08-start"
+
+
+def test_recovery_worktree_names_do_not_grow_across_drills(monkeypatch, tmp_path):
+    recovery = tmp_path / "pfefferminzia-drill-09-start-20260922-token"
+    recovery.mkdir()
+    monkeypatch.setattr(loader, "ROOT", recovery)
+    monkeypatch.setattr(loader, "_plans_dir", lambda: recovery / ".data" / "checkpoint-plans")
+    monkeypatch.setattr(loader, "_official_ref", lambda checkpoint: ("HEAD", "abc123", False))
+    monkeypatch.setattr(loader, "_dirty_paths", lambda: [])
+    plan = loader.plan_checkpoint_load("drill-10-start")
+    assert Path(plan["targetPath"]).name.startswith("pfefferminzia-drill-10-start-")
+    assert "drill-09-start" not in Path(plan["targetPath"]).name
