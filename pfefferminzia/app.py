@@ -10,12 +10,12 @@ from typing import Annotated, Any, Literal
 from dotenv import load_dotenv
 from fastapi import FastAPI, Query, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from .agentmail_service import agentmail_configuration, dispatch_due_replies, send_ticket_draft, sync_agentmail
-from .checkpoints import require_capability, verify_checkpoint
+from .checkpoints import capability_enabled, checkpoint_profile, require_capability, verify_checkpoint
 from .claims import create_claim_from_ticket, create_claim_task, ensure_workshop_claims, get_claim, list_claims, propose_claim_action, review_claim_action
 from .constants import ROOT
 from .crm import get_contract, get_customer, link_ticket_contract, link_ticket_party, resolve_ticket_customer, search_customers
@@ -83,7 +83,7 @@ def _lifespan(mcp_server):
         async with mcp_server.session_manager.run():
             if agentmail_ready:
                 tasks.append(asyncio.create_task(_periodic(max(15, int(os.getenv("AGENTMAIL_POLL_SECONDS", "30"))), sync_agentmail)))
-            if os.getenv("AUTO_SEND_ENABLED") == "true":
+            if os.getenv("AUTO_SEND_ENABLED") == "true" and capability_enabled("intervention_queue"):
                 tasks.append(asyncio.create_task(_periodic(60, dispatch_due_replies)))
             yield
             for task in tasks:
@@ -375,7 +375,13 @@ def create_app() -> FastAPI:
             return JSONResponse(status_code=404, content={"error": "Ticket not found"})
         if ticket_data["isDemo"]:
             return JSONResponse(status_code=400, content={"error": "Demo tickets can never send real email"})
-        approve_draft(ticket_number, "human-ui")
+        if ticket_data["productLine"] == "life":
+            if capability_enabled("life_review"):
+                if not ticket_data["humanApprovedAt"]:
+                    raise ValueError("Approve the life draft in the mandatory review workflow before sending")
+            else:
+                # Drill 9: the human's explicit send action is the approval.
+                approve_draft(ticket_number, "human-ui")
         return await asyncio.to_thread(send_ticket_draft, ticket_number, "human-ui")
 
     @app.delete("/api/tickets/{ticket_number}/schedule")
@@ -433,6 +439,23 @@ def create_app() -> FastAPI:
     @app.get("/workshop.css", include_in_schema=False)
     async def workshop_styles():
         return FileResponse(WEB_ROOT / "workshop.css", media_type="text/css")
+
+    @app.get("/workshop-stage.js", include_in_schema=False)
+    async def workshop_stage():
+        order = checkpoint_profile()["order"]
+        return Response(
+            f"window.PFEFFERMINZIA_STAGE={order};document.documentElement.dataset.stage='{order}';",
+            media_type="text/javascript",
+            headers={"Cache-Control": "no-store"},
+        )
+
+    @app.get("/stage-bootstrap.js", include_in_schema=False)
+    async def stage_bootstrap():
+        return FileResponse(WEB_ROOT / "stage-bootstrap.js", media_type="text/javascript")
+
+    @app.get("/logo.svg", include_in_schema=False)
+    async def logo():
+        return FileResponse(WEB_ROOT / "logo.svg", media_type="image/svg+xml")
 
     @app.get("/{path:path}", include_in_schema=False)
     async def frontend(path: str):

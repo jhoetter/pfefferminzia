@@ -300,8 +300,10 @@ def send_ticket_draft(
 
 
 def dispatch_due_replies(db: sqlite3.Connection | None = None) -> dict[str, Any]:
+    from .checkpoints import capability_enabled
+
     db = db or get_database()
-    if os.getenv("AUTO_SEND_ENABLED") != "true":
+    if os.getenv("AUTO_SEND_ENABLED") != "true" or not capability_enabled("intervention_queue", db):
         return {"enabled": False, "sent": 0, "skipped": 0}
     sent = 0
     skipped = 0

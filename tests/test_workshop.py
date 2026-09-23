@@ -6,6 +6,11 @@ from pfefferminzia.store import get_ticket, list_tickets
 from pfefferminzia.workshop import ensure_workshop_fixtures, get_workshop_status, reset_workshop_fixtures
 
 
+@pytest.fixture(autouse=True)
+def complete_workshop_profile(monkeypatch):
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-11-complete")
+
+
 def test_participant_fixtures_are_linked_and_non_sendable(full_db):
     reset_workshop_fixtures(full_db)
     status = get_workshop_status(full_db)

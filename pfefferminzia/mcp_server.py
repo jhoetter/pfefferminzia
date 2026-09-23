@@ -9,7 +9,7 @@ from mcp.types import ToolAnnotations
 from pydantic import Field
 
 from .agentmail_service import send_ticket_draft, sync_agentmail
-from .checkpoints import available_checkpoints, checkpoint_profile, drill_guide, verify_checkpoint
+from .checkpoints import available_checkpoints, capability_enabled, checkpoint_profile, drill_guide, verify_checkpoint
 from .checkpoint_loader import apply_checkpoint_load, plan_checkpoint_load
 from .claims import create_claim_from_ticket, create_claim_task, get_claim, list_claims, propose_claim_action, review_claim_action
 from .constants import CLAIM_STATUSES
@@ -378,8 +378,14 @@ def create_mcp_server() -> MCPServer:
         if not ticket["draft"]:
             raise ToolError(f"No reply draft exists for {ticketNumber}")
         add_internal_note_impl(ticketNumber, f"Sofortversand menschlich bestätigt: {approvalNote}", "mcp-human-approval")
-        approve_draft(ticketNumber, "mcp-human-approval")
-        return _without_bodies(send_ticket_draft(ticketNumber, "mcp-agent"))
+        if ticket["productLine"] == "life":
+            if capability_enabled("life_review"):
+                if not ticket["humanApprovedAt"]:
+                    raise ToolError("Approve the life draft in the mandatory review workflow before sending")
+            else:
+                # Drill 9: an explicit human send confirmation doubles as approval.
+                approve_draft(ticketNumber, "mcp-human-approval")
+        return _without_bodies(send_ticket_draft(ticketNumber, "mcp-human-send"))
 
     @server.tool(name="list_claims", annotations=ReadOnly)
     def list_claims_tool(

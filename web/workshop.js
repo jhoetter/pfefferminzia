@@ -41,21 +41,29 @@ function applyStageVisibility() {
   document.body.classList.add(`checkpoint-${name}`);
 
   const order = workshopState.dashboard?.workshop?.checkpoint?.order || 12;
+  document.documentElement.dataset.stage = String(order);
   document.querySelectorAll(".sidebar nav button").forEach((button) => {
     const label = button.textContent || "";
     const hidden =
       (order < 9 && (label.includes("Kunden 360") || label.includes("Tarife"))) ||
-      (order < 10 && label.includes("Schäden"));
+      (order < 10 && (label.includes("Schäden") || label.includes("Prüfung"))) ||
+      (order < 11 && label.includes("Geplant"));
     button.style.display = hidden ? "none" : "";
   });
   document.querySelectorAll("button").forEach((button) => {
     if (button.closest(".workshop-panel")) return;
-    const label = button.textContent || "";
+    const label = (button.textContent || "").trim();
     if (order < 10 && label.includes("Prüfung anfordern")) button.style.display = "none";
+    if (order < 10 && (label === "Prüfung" || label === "Geplant")) button.style.display = "none";
+    if (order < 11 && label === "Haftpflicht") button.style.display = "none";
     if (order < 11 && (label.includes("In 24h einplanen") || label.includes("Jetzt senden"))) {
       button.style.display = "none";
     }
   });
+  const brandMark = document.querySelector(".sidebar .brand .brand-mark");
+  if (brandMark && !brandMark.querySelector("img")) {
+    brandMark.innerHTML = '<img src="/favicon.svg" alt="" width="30" height="30">';
+  }
 }
 
 async function refresh(render = true) {
@@ -73,7 +81,8 @@ async function refresh(render = true) {
   }
   applyStageVisibility();
   renderRibbon();
-  if (render && !document.querySelector(".workshop-panel input:focus")) renderPanel();
+  const panel = document.querySelector(".workshop-panel");
+  if (render && (!panel?.contains(document.activeElement) || render === "force")) renderPanel();
 }
 
 function renderRibbon() {
@@ -84,7 +93,7 @@ function renderRibbon() {
     document.body.append(ribbon);
   }
   const profile = workshopState.dashboard?.workshop?.checkpoint;
-  ribbon.innerHTML = `<span></span>${escapeHtml(profile ? `Drill ${profile.drill} · ${profile.title}` : "Workshop wird geladen…")}`;
+  ribbon.innerHTML = `<img src="/favicon.svg" alt="" width="20" height="20">${escapeHtml(profile ? `Drill ${profile.drill} · ${profile.title}` : "Workshop wird geladen…")}`;
 }
 
 function taskMarkup(todo) {
@@ -102,7 +111,7 @@ function queueMarkup(ticket) {
       <small>${escapeHtml(ticket.customerName || ticket.customerEmail)}</small>
       <span class="workshop-countdown" data-scheduled="${escapeHtml(ticket.scheduledFor)}">berechnet…</span>
     </div>
-    <div class="workshop-actions"><button class="action danger" data-action="remove-queue" data-ticket="${escapeHtml(ticket.ticketNumber)}">Entfernen</button></div>
+    <div class="workshop-actions"><button class="action" data-action="open-ticket" data-ticket="${escapeHtml(ticket.ticketNumber)}">Bearbeiten</button><button class="action danger" data-action="remove-queue" data-ticket="${escapeHtml(ticket.ticketNumber)}">Stoppen</button></div>
   </div>`;
 }
 
@@ -113,8 +122,8 @@ function reviewMarkup(ticket) {
     </div>
     <div class="workshop-actions">
       <button class="action danger" data-action="reject" data-ticket="${escapeHtml(ticket.ticketNumber)}">Ablehnen</button>
-      <button class="action" data-action="approve" data-ticket="${escapeHtml(ticket.ticketNumber)}">Freigeben</button>
-      <button class="action" data-action="send" data-ticket="${escapeHtml(ticket.ticketNumber)}" ${ticket.isDemo ? "disabled" : ""}>Senden</button>
+      ${ticket.humanApprovedAt ? '<span class="workshop-approved">Freigegeben</span>' : `<button class="action" data-action="approve" data-ticket="${escapeHtml(ticket.ticketNumber)}">Freigeben</button>`}
+      <button class="action" data-action="send" data-ticket="${escapeHtml(ticket.ticketNumber)}" ${ticket.isDemo || !ticket.humanApprovedAt ? "disabled" : ""}>Senden</button>
     </div>
   </div>`;
 }
@@ -165,9 +174,9 @@ function renderPanel() {
       ${hasCapability("intervention_queue") ? `<section class="workshop-card"><h3>Eingriffsfenster <small>${scheduled.length}</small></h3>${scheduled.length ? scheduled.map(queueMarkup).join("") : '<p class="empty">Keine Haftpflichtantwort ist eingeplant.</p>'}
         <div class="workshop-actions"><button class="action" data-action="advance-clock">Workshop-Zeit +24h</button></div>
       </section>` : ""}
-      <section class="workshop-card"><h3>Checkpoint prüfen</h3><p class="empty">Schneller lokaler Test; der externe Inbox-Test liest erst nach gesonderter Bestätigung.</p>
+      <section class="workshop-card"><h3>Startbereitschaft prüfen</h3><p class="empty">Prüft den Startzustand, nicht den Abschluss des Drills. Der externe Inbox-Test liest erst nach gesonderter Bestätigung.</p>
         <div class="workshop-actions"><button class="action" data-action="verify">Lokal prüfen</button><button class="action" data-action="verify-external">Inbox prüfen</button></div>
-        ${verificationMarkup()}${workshopState.error ? `<p class="workshop-error">${escapeHtml(workshopState.error)}</p>` : ""}
+        ${verificationMarkup()}${workshopState.error ? `<p class="workshop-error" role="alert">${escapeHtml(workshopState.error)}</p>` : ""}
       </section>
     </div>`;
   updateCountdowns();
@@ -192,18 +201,40 @@ async function perform(action) {
   } catch (error) {
     workshopState.error = error.message;
   }
-  await refresh();
+  await refresh("force");
 }
 
 function install() {
   const launcher = document.createElement("button");
   launcher.className = "workshop-launcher";
-  launcher.textContent = "Workshop-Cockpit";
+  launcher.innerHTML = '<img src="/favicon.svg" alt="" width="19" height="19"> Workshop-Cockpit';
+  launcher.setAttribute("aria-controls", "workshop-panel");
+  launcher.setAttribute("aria-expanded", "false");
   const panel = document.createElement("aside");
+  panel.id = "workshop-panel";
   panel.className = "workshop-panel";
+  panel.setAttribute("role", "dialog");
+  panel.setAttribute("aria-modal", "true");
   panel.setAttribute("aria-label", "Workshop-Cockpit");
+  panel.tabIndex = -1;
+  panel.inert = true;
   document.body.append(launcher, panel);
-  launcher.addEventListener("click", () => panel.classList.add("open"));
+  const openPanel = () => {
+    panel.inert = false;
+    panel.classList.add("open");
+    launcher.setAttribute("aria-expanded", "true");
+    (panel.querySelector("header button") || panel).focus();
+  };
+  const closePanel = () => {
+    panel.classList.remove("open");
+    panel.inert = true;
+    launcher.setAttribute("aria-expanded", "false");
+    launcher.focus();
+  };
+  launcher.addEventListener("click", openPanel);
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && panel.classList.contains("open")) closePanel();
+  });
 
   panel.addEventListener("submit", (event) => {
     if (!event.target.matches(".workshop-todo-form")) return;
@@ -217,7 +248,7 @@ function install() {
     if (!button) return;
     const ticket = button.dataset.ticket;
     const actions = {
-      close: () => panel.classList.remove("open"),
+      close: closePanel,
       todo: () => perform(() => request(`/api/todos/${button.dataset.id}`, { method: "PATCH", body: JSON.stringify({ status: button.dataset.status }) })),
       approve: () => perform(() => request(`/api/tickets/${ticket}/approve`, { method: "POST", body: "{}" })),
       reject: () => {
@@ -232,6 +263,17 @@ function install() {
       "remove-queue": () => {
         const reason = window.prompt("Warum wird die Antwort aus der Queue genommen?");
         if (reason) perform(() => request(`/api/tickets/${ticket}/schedule`, { method: "DELETE", body: JSON.stringify({ reason }) }));
+      },
+      "open-ticket": () => {
+        const row = [...document.querySelectorAll("button.ticket-row")]
+          .find((candidate) => candidate.querySelector(".ticket-id")?.textContent?.trim() === ticket);
+        if (!row) {
+          workshopState.error = `Ticket ${ticket} ist in der aktuellen Liste nicht sichtbar. Öffne die Eingangsübersicht.`;
+          renderPanel();
+          return;
+        }
+        closePanel();
+        row.click();
       },
       "advance-clock": () => {
         if (window.confirm("Die lokale Workshop-Uhr um 24 Stunden vorspulen und fällige Antworten verarbeiten?")) {

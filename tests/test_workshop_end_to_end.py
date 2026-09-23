@@ -78,6 +78,7 @@ class FakeAgentMail:
 
 
 def test_agentmail_life_and_liability_control_patterns(monkeypatch, full_db):
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-11-start")
     fake = FakeAgentMail()
     monkeypatch.setattr(agentmail_service, "_client", lambda: fake)
     monkeypatch.setenv("AGENTMAIL_API_KEY", "test-key")
@@ -112,6 +113,9 @@ def test_agentmail_life_and_liability_control_patterns(monkeypatch, full_db):
     scheduled = submit_draft(liability["ticketNumber"], "mcp-agent", 24, full_db)
     assert scheduled["status"] == "scheduled"
     assert dispatch_due_replies(full_db)["sent"] == 0
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-10-start")
+    assert dispatch_due_replies(full_db) == {"enabled": False, "sent": 0, "skipped": 0}
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-11-start")
 
     removed = remove_from_send_queue(liability["ticketNumber"], "Bewusster Eingriff", "human", full_db)
     assert removed["status"] == "in_progress"

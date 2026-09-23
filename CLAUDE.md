@@ -26,9 +26,16 @@ not around them.
 9. All customers, policies, claims, documents, and messages must remain
    synthetic workshop material.
 10. If AgentMail setup is incomplete, ask the participant whether they already
-    received their personal account and inbox ID. Guide them to edit `.env`
+    received their personal inbox ID, inbox-scoped key and exact scenario-sender
+    address. Guide them to edit `.env`
     locally; never ask them to paste an API key into the chat. Then call
     `verify_workshop_checkpoint` with external access only after confirmation.
+11. At the normal boundary between drills, use the same plan/confirmation/apply
+    flow as recovery. Tell the participant to stop the old app and restart both
+    app and Claude from the new worktree; the old work and database remain
+    untouched. `verify_workshop_checkpoint` is a start-readiness check, not
+    proof that the exercise was completed. Use `docs/DRILL_CARDS.md` for
+    drill-specific completion evidence and no-token fallback.
 
 Useful first prompts:
 

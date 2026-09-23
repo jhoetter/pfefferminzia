@@ -6,7 +6,7 @@ Drills 8–11 bis zur Whiteboard-Frage „Wo darf der Agent handeln?“.
 
 ## Präsentieren
 
-- Nach `uv run pfefferminzia serve` im Browser `http://127.0.0.1:8000/slides/`
+- Nach `uv run pfefferminzia serve` im Browser `http://127.0.0.1:3004/slides/`
   öffnen (bei abweichendem Port diesen verwenden).
 - Alternativ `slides/index.html` direkt im Browser öffnen. Die Datei und ihre
   beiden lokalen Ergänzungen funktionieren offline und benötigen **kein Node**.

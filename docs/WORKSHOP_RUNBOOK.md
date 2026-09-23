@@ -19,6 +19,8 @@ Four drills require five unambiguous boundaries:
 The codebase is complete in every boundary. Server-side capabilities, MCP tool
 registration, resources, scenarios and UI affordances are restricted by the
 active profile, so later behavior is neither visible nor usable early.
+The participant-facing [drill cards](DRILL_CARDS.md) are the concrete handout
+for commands, evidence, hints, code exercises, stretch work and token fallback.
 
 ## Participant setup
 
@@ -26,25 +28,50 @@ Each participant needs:
 
 - Python 3.12+, `uv`, Git and Claude Code;
 - their own clone of this repository;
-- their own AgentMail account/API key and exactly one personal inbox;
+- exactly one personal AgentMail inbox and an API key scoped to that inbox;
 - their inbox ID, not only its email address;
-- their own email address on the local outbound allowlist.
+- the instructor's exact scenario-sender address on the local outbound allowlist.
+
+Participants do not need individual AgentMail Console accounts when inboxes
+are provisioned centrally. The instructor keeps the organization-level key;
+each participant receives only their own inbox ID and inbox-scoped key through
+an individual, secure channel. Never put the organization key or participant
+keys in Git, slides, shared chats, or a common handout. The AgentMail Console
+login is not part of the participant workflow: they use their local
+Pfefferminzia cockpit and their own Claude Code login.
+
+The planned cohort is **16 participants plus one instructor**. During the
+free-tier pilot, use the three available inboxes as one instructor inbox and
+two isolated participant pilots; do not upgrade or provision the remaining
+inboxes yet. Before the course, increase capacity to at least 17 inboxes and
+then provision one scoped key per participant. Two or three additional reserve
+inboxes need capacity beyond those 17. First test one newly provisioned inbox
+and key with `checkpoint verify --external`, an isolated inbound scenario and
+a reply to an allowlisted workshop address; then roll out the rest.
+
+Pilot evidence (23 September 2026): both participant keys authenticated with
+`scope_type=inbox`; each listed only its own inbox and access to the other was
+denied. Both passed the external Drill-8 verifier and imported a synthetic
+message. The first pilot also sent an audited reply back to the instructor
+inbox. No paid upgrade was made. The two pilot secrets exist only as local,
+Git-ignored files on the instructor machine, not in this repository.
 
 Configure `.env` from `.env.example`:
 
 ```dotenv
 AGENTMAIL_API_KEY=...
 AGENTMAIL_INBOX_ID=...
-WORKSHOP_ALLOWED_RECIPIENTS=participant@example.com
+WORKSHOP_ALLOWED_RECIPIENTS=instructor-scenario-sender@agentmail.to
 AUTO_SEND_ENABLED=false
 WORKSHOP_CHECKPOINT=drill-08-start
 ```
 
-Use a separate instructor account/inbox to distribute scenario messages. Do
-not give participants a shared instructor key. Prepare two or three complete
-reserve participant accounts and inboxes.
+Use a separate instructor inbox to distribute scenario messages. Do not give
+participants a shared instructor or organization key. Once capacity is
+available, prepare two or three complete reserve inboxes and scoped keys.
 
-Preflight every machine/account combination:
+Preflight every machine/account combination (this checks readiness, not whether
+the participant has completed the drill):
 
 ```bash
 uv sync --frozen
@@ -81,6 +108,15 @@ uv run pfefferminzia checkpoint apply TOKEN --confirm-checkpoint-load
 
 Use `uv run pfefferminzia checkpoint status` and
 `uv run pfefferminzia checkpoint verify` inside the recovered worktree.
+
+The **normal transition** between drills uses the same plan/confirm/apply
+protocol. Stop the old webserver, start it in the returned worktree, and
+restart Claude there: the MCP tool set is registered at startup. Each new
+worktree has its own fresh SQLite database, while old work and old data stay
+in the previous folder. Inbox history may be imported again; participants
+should act only on the newly announced scenario tickets. Participant code
+changes do not silently migrate to the official next boundary. Invite them
+to explain and selectively carry over their own changes if they wish.
 
 ## Drill facilitation
 
@@ -145,7 +181,7 @@ Go only if:
 - all automated tests pass;
 - every personal inbox passes the external preflight;
 - each official checkpoint tag resolves and loads;
-- the instructor can send all six scenario messages;
+- the instructor can send all seven scenario messages;
 - the Drill-11 clock sends exactly the one untouched queued response;
 - reserve accounts are tested, not merely created.
 

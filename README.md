@@ -1,5 +1,24 @@
 # Pfefferminzia MCP
 
+![Pfefferminzia: Minzblätter im Schutzschild](web/logo.svg)
+
+**Dienstag, 29. September 2026:** Wenn du am Workshop teilnimmst, beginne mit
+den [vier Teilnehmerkarten](docs/DRILL_CARDS.md). Dort stehen der Start mit
+Python/`uv`/Git/Claude Code, die Aufgaben für Drill 8–11, Nachweise, Hinweise
+und sichere Übergänge. Node.js ist nicht nötig. Bitte trage deinen persönlichen
+Inbox-Schlüssel ausschließlich lokal in `.env` ein; niemals in Claude-Chat oder
+Git. `checkpoint verify` prüft die Startbereitschaft, nicht den Abschluss einer
+Übung.
+
+**Stand der Vorbereitung:** Das System und die vier Drills sind mit Fake-Mail
+automatisiert durchgespielt. Zwei isolierte Teilnehmer-Inboxen und eine
+Dozenten-Inbox sind im kostenlosen AgentMail-Pilot erprobt. Für den Kurs mit
+16 Teilnehmenden plus Dozent müssen vor Dienstag noch mindestens 14 weitere
+Inboxen samt inboxgebundenen Schlüsseln bereitgestellt und individuell
+verteilt werden; Reserve-Inboxen kommen zusätzlich hinzu. Ohne diese
+Kapazität ist der Kursbetrieb mit persönlicher Inbox pro Person noch nicht
+freigegeben.
+
 Pfefferminzia MCP is a fictional, MCP-first insurance operations system for
 executive workshops about AI in the insurance industry. It turns Falk
 Uebernickel's synthetic Pfefferminzia teaching dataset into an interactive
@@ -164,6 +183,8 @@ Copy `.env.example` to `.env` and set `AGENTMAIL_API_KEY`, the one personal
 `AGENTMAIL_INBOX_ID`, and `WORKSHOP_ALLOWED_RECIPIENTS`. The application polls
 only that configured inbox and mirrors messages and attachments into its local
 data layer. It fails closed rather than reading every inbox available to a key.
+For centrally provisioned workshops, each participant receives a key scoped
+to their own inbox; the instructor's organization-level key is never shared.
 If a key is present but the personal inbox ID or outbound allowlist is missing,
 startup fails with an actionable configuration error.
 
@@ -209,6 +230,8 @@ criteria, general and workflow todos, mandatory reviews, the visible
 intervention-window countdown, checkpoint verification, and the local
 workshop-clock control. See [`docs/WORKSHOP_RUNBOOK.md`](docs/WORKSHOP_RUNBOOK.md)
 for facilitator setup, scenario delivery, challenge cards and continuity plans.
+Participants should use the [drill cards](docs/DRILL_CARDS.md); the verifier
+is a readiness check, while the cards define the separate completion evidence.
 
 ## MCP
 
@@ -287,8 +310,10 @@ known gaps, and update path. Attribution is recorded in
 
 ## Licence and attribution
 
-Application code in this repository follows its repository licence. Upstream
-generator code is MIT licensed. Upstream data and documents are CC BY 4.0:
+The application code currently has no top-level licence grant; clarify reuse
+rights with the repository owner before redistributing or modifying it outside
+this workshop. Upstream generator code is MIT licensed. Upstream data and
+documents are CC BY 4.0:
 
 > Pfefferminzia – synthetischer Lehr-Datensatz, Falk Uebernickel, CC BY 4.0
 

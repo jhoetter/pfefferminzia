@@ -417,6 +417,10 @@ def approve_draft(
         raise ValueError(f"Ticket or draft not found: {ticket_number}")
     if ticket["status"] in ("sent", "closed") or ticket["draft"]["status"] == "sent":
         raise ValueError("Sent or closed tickets cannot be approved again")
+    from .checkpoints import capability_enabled
+
+    if ticket["productLine"] == "life" and capability_enabled("life_review", db) and ticket["status"] != "awaiting_human":
+        raise ValueError("Submit the life draft to mandatory human review before approval")
     stamp = utc_now()
     db.execute(
         "UPDATE reply_drafts SET status = 'approved', scheduled_for = NULL, updated_at = ? WHERE ticket_id = ?",

@@ -1,6 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 338 64" role="img" aria-labelledby="title desc">
   <title id="title">Pfefferminzia</title>
+  <desc id="desc">Ein Schutzschild mit zwei Minzblättern, daneben der Name Pfefferminzia.</desc>
   <rect width="64" height="64" rx="18" fill="#173d2c"/>
   <path d="M14 18h36v22c0 7-8 11-18 17-10-6-18-10-18-17V18Z" fill="#d9f1e1"/>
   <path d="M32 46V25M32 39c-7 0-12-5-12-12 7 0 12 5 12 12Zm0-7c0-7 5-12 12-12 0 7-5 12-12 12Z" fill="#52b986" stroke="#173d2c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="78" y="42" fill="#173d2c" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="750" letter-spacing="-1.2">Pfefferminzia</text>
 </svg>

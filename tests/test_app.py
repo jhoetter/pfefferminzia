@@ -19,14 +19,17 @@ def test_python_host_serves_api_and_browser_workspace(monkeypatch, tmp_path):
         assert client.get("/api/health").json() == {"ok": True, "service": "pfefferminzia"}
         dashboard = client.get("/api/dashboard")
         assert dashboard.status_code == 200
-        assert len(dashboard.json()["tickets"]) == 7
-        assert dashboard.json()["workshop"]["checkpoint"]["name"] == "drill-11-complete"
+        assert dashboard.json()["tickets"] == []
+        assert dashboard.json()["workshop"]["checkpoint"]["name"] == "drill-08-start"
         page = client.get("/")
         assert page.status_code == 200
         assert '<div id="root"></div>' in page.text
         assert '/workshop.js' in page.text
+        assert '/workshop-stage.js' in page.text
         assert client.get("/workshop.js").headers["content-type"].startswith("text/javascript")
         assert client.get("/workshop.css").headers["content-type"].startswith("text/css")
+        assert "PFEFFERMINZIA_STAGE=8" in client.get("/workshop-stage.js").text
+        assert client.get("/logo.svg").headers["content-type"].startswith("image/svg+xml")
 
     close_database()
 

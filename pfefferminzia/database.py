@@ -238,7 +238,7 @@ def migrate(db: sqlite3.Connection) -> None:
 
         CREATE TABLE IF NOT EXISTS workshop_state (
           id INTEGER PRIMARY KEY CHECK(id = 1),
-          checkpoint TEXT NOT NULL DEFAULT 'drill-11-complete',
+          checkpoint TEXT NOT NULL DEFAULT 'drill-08-start',
           clock_offset_seconds INTEGER NOT NULL DEFAULT 0,
           updated_at TEXT NOT NULL
         );
@@ -281,7 +281,7 @@ def migrate(db: sqlite3.Connection) -> None:
     )
     db.execute(
         """INSERT OR IGNORE INTO workshop_state (id, checkpoint, clock_offset_seconds, updated_at)
-        VALUES (1, 'drill-11-complete', 0, strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))"""
+        VALUES (1, 'drill-08-start', 0, strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))"""
     )
     existing = {row["name"] for row in db.execute("PRAGMA table_info(documents)")}
     additions = {

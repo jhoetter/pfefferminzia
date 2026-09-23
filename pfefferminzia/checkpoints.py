@@ -103,7 +103,7 @@ def current_checkpoint(db: sqlite3.Connection | None = None) -> str:
         return normalize_checkpoint(configured)
     db = db or get_database()
     row = db.execute("SELECT checkpoint FROM workshop_state WHERE id = 1").fetchone()
-    return normalize_checkpoint(row["checkpoint"] if row else "drill-11-complete")
+    return normalize_checkpoint(row["checkpoint"] if row else "drill-08-start")
 
 
 def checkpoint_profile(db: sqlite3.Connection | None = None) -> dict[str, Any]:

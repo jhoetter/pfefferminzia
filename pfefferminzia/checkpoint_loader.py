@@ -29,8 +29,14 @@ def _git_output(*args: str, cwd: Path = ROOT) -> str:
     return result.stdout.rstrip("\r\n")
 
 
-def _run(command: list[str], cwd: Path) -> None:
-    subprocess.run(command, cwd=cwd, check=True, capture_output=True, text=True)
+def _run(command: list[str], cwd: Path, *, clean_checkpoint_environment: bool = False) -> None:
+    environment = os.environ.copy()
+    if clean_checkpoint_environment:
+        # A running MCP server inherited the old worktree's .env. Let the
+        # child's own .env select its checkpoint and fresh SQLite database.
+        environment.pop("WORKSHOP_CHECKPOINT", None)
+        environment.pop("PFEFFERMINZIA_DB_PATH", None)
+    subprocess.run(command, cwd=cwd, env=environment, check=True, capture_output=True, text=True)
 
 
 def _plans_dir() -> Path:
@@ -44,9 +50,10 @@ def _official_ref(checkpoint: str) -> tuple[str, str, bool]:
     try:
         commit = _git_output("rev-parse", "--verify", f"{tag}^{{commit}}")
         return tag, commit, True
-    except subprocess.CalledProcessError:
-        commit = _git_output("rev-parse", "HEAD")
-        return "HEAD", commit, False
+    except subprocess.CalledProcessError as error:
+        raise ValueError(
+            f"Official checkpoint tag {tag} is missing. Run `git fetch --tags` and prepare a new plan."
+        ) from error
 
 
 def _dirty_paths() -> list[str]:
@@ -57,6 +64,7 @@ def _dirty_paths() -> list[str]:
 def plan_checkpoint_load(target_checkpoint: str) -> dict[str, Any]:
     checkpoint = normalize_checkpoint(target_checkpoint)
     reference, commit, official_tag = _official_ref(checkpoint)
+    source_head = _git_output("rev-parse", "HEAD")
     dirty_paths = _dirty_paths()
     token = secrets.token_urlsafe(24)
     suffix = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
@@ -66,12 +74,13 @@ def plan_checkpoint_load(target_checkpoint: str) -> dict[str, Any]:
         "checkpoint": checkpoint,
         "reference": reference,
         "commit": commit,
+        "sourceHead": source_head,
         "officialTag": official_tag,
         "sourcePath": str(ROOT),
         "targetPath": str(target),
         "dirtyPaths": dirty_paths,
         "createdAtEpoch": time.time(),
-        "sourceFingerprint": _source_fingerprint(commit, dirty_paths),
+        "sourceFingerprint": _source_fingerprint(source_head, dirty_paths),
     }
     plans_dir = _plans_dir()
     plans_dir.mkdir(parents=True, exist_ok=True)
@@ -95,7 +104,7 @@ def plan_checkpoint_load(target_checkpoint: str) -> dict[str, Any]:
             f"Soll ich den offiziellen Zustand {checkpoint} jetzt in {target} vorbereiten? "
             "Dein aktuelles Arbeitsverzeichnis bleibt unverändert."
         ),
-        "warning": None if official_tag else "Official checkpoint tag is not available yet; this development plan uses current HEAD.",
+        "warning": None,
     }
 
 
@@ -126,16 +135,23 @@ def apply_checkpoint_load(confirmation_token: str) -> dict[str, Any]:
         raise ValueError(f"Checkpoint target already exists: {target}")
 
     _run(["git", "worktree", "add", "--detach", str(target), plan["commit"]], ROOT)
-    _run(["git", "submodule", "update", "--init", "--recursive"], target)
-    _write_checkpoint_environment(target, plan["checkpoint"])
-    _run(["uv", "sync", "--frozen"], target)
-    _run(
-        [
-            "uv", "run", "pfefferminzia", "checkpoint", "activate", plan["checkpoint"],
-            "--confirm-checkpoint-reset",
-        ],
-        target,
-    )
+    try:
+        _run(["git", "submodule", "update", "--init", "--recursive"], target)
+        _write_checkpoint_environment(target, plan["checkpoint"])
+        _run(["uv", "sync", "--frozen"], target)
+        _run(
+            [
+                "uv", "run", "pfefferminzia", "checkpoint", "activate", plan["checkpoint"],
+                "--confirm-checkpoint-reset",
+            ],
+            target,
+            clean_checkpoint_environment=True,
+        )
+    except Exception:
+        # Only this unique, just-created worktree is removed. The participant's
+        # source directory and plan remain untouched for a safe retry.
+        _run(["git", "worktree", "remove", "--force", str(target)], ROOT)
+        raise
     plan_path.unlink(missing_ok=True)
     return {
         "checkpoint": plan["checkpoint"],
