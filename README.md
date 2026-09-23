@@ -42,6 +42,10 @@ generic SQL or unrestricted filesystem access.
 
 The current three-day workshop design is documented in
 [`docs/WORKSHOP_AGENDA.md`](docs/WORKSHOP_AGENDA.md).
+The Tuesday presentation is available at `/slides/` when the Python app runs,
+or directly as [`slides/index.html`](slides/index.html) offline. See
+[`docs/TUESDAY_SLIDES.md`](docs/TUESDAY_SLIDES.md) for presenter notes and the
+drill-to-slide map.
 
 ## Upstream dataset
 

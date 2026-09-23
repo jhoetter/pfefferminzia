@@ -47,6 +47,7 @@ from .workshop_clock import advance_workshop_clock
 
 load_dotenv(ROOT / ".env")
 WEB_ROOT = ROOT / "web"
+SLIDES_ROOT = ROOT / "slides"
 
 
 def initialize_application() -> dict[str, Any]:
@@ -417,6 +418,9 @@ def create_app() -> FastAPI:
 
     if (WEB_ROOT / "assets").exists():
         app.mount("/assets", StaticFiles(directory=WEB_ROOT / "assets"), name="assets")
+
+    if SLIDES_ROOT.exists():
+        app.mount("/slides", StaticFiles(directory=SLIDES_ROOT, html=True), name="slides")
 
     @app.get("/favicon.svg", include_in_schema=False)
     async def favicon():
