@@ -45,6 +45,7 @@
 
 .workshop-launcher { display: inline-flex; align-items: center; gap: 7px; }
 .workshop-launcher img { border-radius: 5px; }
+body:has(aside.ticket-drawer.open) .workshop-launcher { display: none; }
 .sidebar .brand .brand-mark { display: inline-flex; align-items: center; justify-content: center; background: transparent; }
 .sidebar .brand .brand-mark img { display: block; border-radius: 8px; }
 
@@ -221,7 +222,6 @@ html[data-stage="10"] section.metrics { grid-template-columns: repeat(2, minmax(
 @media (max-width: 760px) {
   .workshop-ribbon { display: none; }
   .workshop-launcher { right: 14px; bottom: 14px; }
-  body:has(aside.ticket-drawer.open) .workshop-launcher { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

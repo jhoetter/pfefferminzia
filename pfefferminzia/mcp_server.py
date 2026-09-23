@@ -8,7 +8,7 @@ from mcp.server.mcpserver.exceptions import ToolError
 from mcp.types import ToolAnnotations
 from pydantic import Field
 
-from .agentmail_service import send_ticket_draft, sync_agentmail
+from .agentmail_service import dispatch_due_replies, send_ticket_draft, sync_agentmail
 from .checkpoints import available_checkpoints, capability_enabled, checkpoint_profile, drill_guide, verify_checkpoint
 from .checkpoint_loader import apply_checkpoint_load, plan_checkpoint_load
 from .claims import create_claim_from_ticket, create_claim_task, get_claim, list_claims, propose_claim_action, review_claim_action
@@ -351,14 +351,15 @@ def create_mcp_server() -> MCPServer:
         del confirmRemoval
         return _without_bodies(remove_from_send_queue_impl(ticketNumber, reason, "mcp-human-intervention"))
 
-    @server.tool(annotations=ToolAnnotations(destructiveHint=True, openWorldHint=False))
+    @server.tool(annotations=ToolAnnotations(destructiveHint=True, openWorldHint=True))
     def advance_workshop_clock(
         hours: Annotated[int, Field(ge=1, le=168)],
         confirmTimeAdvance: Literal[True],
     ) -> dict[str, Any]:
-        """Advance only the local workshop clock after explicit confirmation; this never changes the system clock."""
+        """Advance the local workshop clock and immediately send any due allowlisted liability replies. Requires explicit human confirmation; never changes the system clock."""
         del confirmTimeAdvance
-        return advance_workshop_clock_impl(hours, "mcp-human-instructor")
+        clock = advance_workshop_clock_impl(hours, "mcp-human-instructor")
+        return {"clock": clock, "dispatch": dispatch_due_replies()}
 
     @server.tool(name="sync_agentmail", annotations=ToolAnnotations(readOnlyHint=False, openWorldHint=True))
     def sync_agentmail_tool(confirmExternalRead: Literal[True]) -> dict[str, Any]:

@@ -64,6 +64,16 @@ function applyStageVisibility() {
   if (brandMark && !brandMark.querySelector("img")) {
     brandMark.innerHTML = '<img src="/favicon.svg" alt="" width="30" height="30">';
   }
+  if (workshopState.dashboard?.workshop?.agentMail?.ready === false) {
+    const connectionLabel = document.querySelector(".sidebar-footer strong");
+    const connectionDetail = document.querySelector(".sidebar-footer small");
+    if (connectionLabel && connectionLabel.textContent !== "AgentMail nicht verbunden") {
+      connectionLabel.textContent = "AgentMail nicht verbunden";
+    }
+    if (connectionDetail && connectionDetail.textContent !== "Setup in .env prüfen") {
+      connectionDetail.textContent = "Setup in .env prüfen";
+    }
+  }
 }
 
 async function refresh(render = true) {

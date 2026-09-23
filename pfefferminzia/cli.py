@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import subprocess
+import sys
 from typing import Any
 
 from dotenv import load_dotenv
@@ -100,7 +101,10 @@ def main() -> None:
             _json(checkpoint_profile())
         elif args.checkpoint_command == "verify":
             _initialize()
-            _json(verify_checkpoint(args.external))
+            result = verify_checkpoint(args.external)
+            _json(result)
+            if not result["ok"]:
+                sys.exit(1)
         elif args.checkpoint_command == "activate":
             from .workshop import reset_workshop_fixtures
 
