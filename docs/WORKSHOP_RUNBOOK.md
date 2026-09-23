@@ -163,6 +163,9 @@ case, one `queue_removed` case and all actions in the audit history.
 
 ## Rehearsal and go/no-go
 
+Die [Generalprobe vom 23. September](REHEARSAL_2026-09-23.md) hält geprüfte
+Softwarepfade und noch offene organisatorische Voraussetzungen getrennt fest.
+
 Run before the workshop:
 
 ```bash

@@ -18,6 +18,11 @@ Inboxen samt inboxgebundenen Schlüsseln bereitgestellt und individuell
 verteilt werden; Reserve-Inboxen kommen zusätzlich hinzu. Ohne diese
 Kapazität ist der Kursbetrieb mit persönlicher Inbox pro Person noch nicht
 freigegeben.
+Der genaue Prüfstand und die verbleibenden Go/No-Go-Punkte stehen in der
+[Generalprobe](docs/REHEARSAL_2026-09-23.md). Ein bestehender Klon muss nach
+dem Pull die aktualisierten offiziellen Tags mit
+`git fetch origin --tags --force` übernehmen; frische Klone erhalten sie
+automatisch.
 
 Pfefferminzia MCP is a fictional, MCP-first insurance operations system for
 executive workshops about AI in the insurance industry. It turns Falk

@@ -18,7 +18,8 @@ REQUIRED_TOOLS = {
 
 
 @pytest.mark.asyncio
-async def test_mcp_capability_surface():
+async def test_mcp_capability_surface(monkeypatch):
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-11-complete")
     server = create_mcp_server()
     async with Client(server) as client:
         tools = await client.list_tools()

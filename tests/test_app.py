@@ -9,6 +9,7 @@ def test_python_host_serves_api_and_browser_workspace(monkeypatch, tmp_path):
     monkeypatch.setenv("AGENTMAIL_API_KEY", "")
     monkeypatch.setenv("AUTO_SEND_ENABLED", "false")
     monkeypatch.setenv("WORKSHOP_PROFILE", "participant")
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-08-start")
     close_database()
 
     from pfefferminzia.app import create_app
