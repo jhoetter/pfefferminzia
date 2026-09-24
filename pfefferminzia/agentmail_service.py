@@ -17,6 +17,7 @@ from agentmail import AgentMail
 from .constants import ROOT
 from .crm import auto_link_exact_customer
 from .database import get_database
+from .runtime_config import reload_agentmail_environment_if_changed
 from .store import add_event, get_ticket, list_tickets
 from .todos import complete_ticket_todos
 from .util import utc_now
@@ -38,6 +39,7 @@ def _value(data: Mapping[str, Any], snake: str, camel: str | None = None, defaul
 
 
 def _client() -> AgentMail:
+    reload_agentmail_environment_if_changed()
     api_key = os.getenv("AGENTMAIL_API_KEY")
     if not api_key:
         raise RuntimeError("AGENTMAIL_API_KEY is not configured")
@@ -45,6 +47,7 @@ def _client() -> AgentMail:
 
 
 def _configured_inbox_id() -> str:
+    reload_agentmail_environment_if_changed()
     inbox_id = os.getenv("AGENTMAIL_INBOX_ID", "").strip()
     if not inbox_id:
         raise RuntimeError("AGENTMAIL_INBOX_ID is not configured; workshop instances must bind exactly one inbox")
@@ -52,6 +55,7 @@ def _configured_inbox_id() -> str:
 
 
 def _allowed_recipients() -> set[str]:
+    reload_agentmail_environment_if_changed()
     return {
         _address_part(value)
         for value in os.getenv("WORKSHOP_ALLOWED_RECIPIENTS", "").split(",")
@@ -60,6 +64,7 @@ def _allowed_recipients() -> set[str]:
 
 
 def agentmail_configuration(probe: bool = False) -> dict[str, Any]:
+    reload_agentmail_environment_if_changed()
     api_key_configured = bool(os.getenv("AGENTMAIL_API_KEY", "").strip())
     inbox_id = os.getenv("AGENTMAIL_INBOX_ID", "").strip()
     allowed = _allowed_recipients()

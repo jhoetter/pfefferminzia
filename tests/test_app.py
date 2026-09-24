@@ -1,5 +1,4 @@
 from fastapi.testclient import TestClient
-import pytest
 
 from pfefferminzia.database import close_database
 
@@ -35,7 +34,7 @@ def test_python_host_serves_api_and_browser_workspace(monkeypatch, tmp_path):
     close_database()
 
 
-def test_partial_agentmail_configuration_fails_at_startup(monkeypatch, tmp_path):
+def test_partial_agentmail_configuration_keeps_app_available(monkeypatch, tmp_path):
     monkeypatch.setenv("PFEFFERMINZIA_DB_PATH", str(tmp_path / "partial-agentmail.db"))
     monkeypatch.setenv("AGENTMAIL_API_KEY", "configured-but-incomplete")
     monkeypatch.delenv("AGENTMAIL_INBOX_ID", raising=False)
@@ -45,9 +44,42 @@ def test_partial_agentmail_configuration_fails_at_startup(monkeypatch, tmp_path)
 
     from pfefferminzia.app import create_app
 
-    with pytest.raises(RuntimeError, match="AGENTMAIL_INBOX_ID"):
-        with TestClient(create_app()):
-            pass
+    with TestClient(create_app()) as client:
+        assert client.get("/api/health").status_code == 200
+        assert client.get("/api/dashboard").json()["workshop"]["agentMail"]["ready"] is False
+        response = client.post("/api/sync")
+        assert response.status_code == 400
+        assert "AGENTMAIL_INBOX_ID" in response.json()["error"]
+    close_database()
+
+
+def test_agentmail_config_becomes_visible_without_restart(monkeypatch, tmp_path):
+    from pfefferminzia import runtime_config
+    from pfefferminzia.app import create_app
+
+    env_path = tmp_path / ".env"
+    monkeypatch.setattr(runtime_config, "ENV_PATH", env_path)
+    monkeypatch.setattr(runtime_config, "_last_signature", None)
+    monkeypatch.setattr(runtime_config, "_last_file_keys", set())
+    monkeypatch.setenv("PFEFFERMINZIA_DB_PATH", str(tmp_path / "hot-reload.db"))
+    monkeypatch.setenv("AGENTMAIL_API_KEY", "")
+    monkeypatch.setenv("AGENTMAIL_INBOX_ID", "")
+    monkeypatch.setenv("WORKSHOP_ALLOWED_RECIPIENTS", "")
+    monkeypatch.setenv("AUTO_SEND_ENABLED", "false")
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-08-start")
+    close_database()
+
+    with TestClient(create_app()) as client:
+        assert client.get("/api/dashboard").json()["workshop"]["agentMail"]["ready"] is False
+        env_path.write_text(
+            "AGENTMAIL_API_KEY=inbox-scoped-test-key\n"
+            "AGENTMAIL_INBOX_ID=participant@agentmail.to\n"
+            "WORKSHOP_ALLOWED_RECIPIENTS=instructor@agentmail.to\n",
+            encoding="utf-8",
+        )
+        configuration = client.get("/api/dashboard").json()["workshop"]["agentMail"]
+        assert configuration["ready"] is True
+        assert configuration["inboxId"] == "participant@agentmail.to"
     close_database()
 
 

@@ -217,7 +217,11 @@ def verify_checkpoint(check_external_inbox: bool = False, db: sqlite3.Connection
         check("liability-scenarios", len(liabilities) >= 3, f"{len(liabilities)} visible liability scenarios")
         check("intervention-queue", "intervention_queue" in profile["capabilities"], "Queue controls and workshop clock active")
         auto_send = os.getenv("AUTO_SEND_ENABLED", "").lower() == "true"
-        check("automatic-dispatch", auto_send, "AUTO_SEND_ENABLED=true" if auto_send else "Set AUTO_SEND_ENABLED=true before Drill 11")
+        check(
+            "automatic-dispatch", auto_send,
+            "Eingriffsfenster und automatischer Versand aktiv" if auto_send else
+            "Der Auto-Versand ist aus: offiziellen Drill-11-Checkpoint neu laden oder Lehrperson fragen",
+        )
 
     failed = [item for item in checks if item["required"] and not item["passed"]]
     return {

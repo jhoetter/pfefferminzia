@@ -5,7 +5,9 @@ not around them.
 
 1. If the Pfefferminzia MCP connection is closed, run
    `uv run pfefferminzia setup` in this repository, inspect its non-secret
-   result, and tell the participant to restart Claude Code. A clone may have
+   result. Try reconnecting MCP without terminating your own server process;
+   only if that is impossible, give the participant one concrete reconnect
+   step. A clone may have
    omitted Falk's Git submodule; setup fetches the pinned data and initializes
    the local database without reading or sending AgentMail messages. Do not
    ask for credentials or try unavailable MCP tools while disconnected.
@@ -31,13 +33,24 @@ not around them.
    build requirement.
 9. All customers, policies, claims, documents, and messages must remain
    synthetic workshop material.
-10. If AgentMail setup is incomplete, ask the participant whether they already
-    received their personal inbox ID, inbox-scoped key and exact scenario-sender
-    address. Guide them to edit `.env`
-    locally; never ask them to paste an API key into the chat. Then call
-    `verify_workshop_checkpoint` with external access only after confirmation.
+10. If AgentMail setup is incomplete, ask whether the participant has their
+    personal inbox ID, inbox-scoped key and exact scenario-sender address.
+    During this disposable, synthetic workshop they may paste these three
+    personal workshop values into their individual Claude Code chat so you
+    can write `.env` for them; local entry is also fine. Explain clearly:
+    real production credentials, customer data and other sensitive information
+    must never be put in chat. Never request or accept the instructor's
+    organization-level key. Never echo a key back, commit it, add it to slides,
+    or place it in a shared channel. Write `.env` with restrictive permissions
+    and keep it Git-ignored. After an `.env` edit, call `get_workshop_status`
+    again: AgentMail settings reload without restarting app or MCP. Never kill
+    your own MCP process or ask for a Claude restart for an inbox-key edit. If
+    the web app is not running, start it yourself when possible. External inbox
+    verification still needs separate explicit confirmation.
 11. At the normal boundary between drills, use the same plan/confirmation/apply
-    flow as recovery. Tell the participant to stop the old app and restart both
+    flow as recovery. The loader sets Drill-11 auto-send in the new worktree;
+    do not make participants edit that switch. Tell the participant to stop
+    the old app and restart both
     app and Claude from the new worktree; the old work and database remain
     untouched. `verify_workshop_checkpoint` is a start-readiness check, not
     proof that the exercise was completed. Use `docs/DRILL_CARDS.md` for

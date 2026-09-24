@@ -36,6 +36,7 @@ def _run(command: list[str], cwd: Path, *, clean_checkpoint_environment: bool = 
         # child's own .env select its checkpoint and fresh SQLite database.
         environment.pop("WORKSHOP_CHECKPOINT", None)
         environment.pop("PFEFFERMINZIA_DB_PATH", None)
+        environment.pop("AUTO_SEND_ENABLED", None)
     subprocess.run(command, cwd=cwd, env=environment, check=True, capture_output=True, text=True)
 
 
@@ -63,6 +64,7 @@ def _dirty_paths() -> list[str]:
 
 def plan_checkpoint_load(target_checkpoint: str) -> dict[str, Any]:
     checkpoint = normalize_checkpoint(target_checkpoint)
+    automatic_dispatch = checkpoint in ("drill-11-start", "drill-11-complete")
     reference, commit, official_tag = _official_ref(checkpoint)
     source_head = _git_output("rev-parse", "HEAD")
     dirty_paths = _dirty_paths()
@@ -98,11 +100,16 @@ def plan_checkpoint_load(target_checkpoint: str) -> dict[str, Any]:
         "participantChangePaths": dirty_paths[:30],
         "participantChangesPreserved": True,
         "environmentCopied": (ROOT / ".env").exists(),
+        "automaticDispatchWillBeEnabled": automatic_dispatch,
         "confirmationToken": token,
         "expiresInSeconds": PLAN_TTL_SECONDS,
         "confirmationQuestion": (
             f"Soll ich den offiziellen Zustand {checkpoint} jetzt in {target} vorbereiten? "
             "Dein aktuelles Arbeitsverzeichnis bleibt unverändert."
+            + (
+                " In Drill 11 wird Auto-Versand für später eingereichte Haftpflichtantworten nach dem sichtbaren Zeitfenster aktiviert."
+                if automatic_dispatch else ""
+            )
         ),
         "warning": None,
     }
@@ -171,12 +178,10 @@ def _source_fingerprint(commit: str, dirty_paths: list[str]) -> str:
 def _write_checkpoint_environment(target: Path, checkpoint: str) -> None:
     source = ROOT / ".env"
     lines = source.read_text(encoding="utf-8").splitlines() if source.exists() else []
-    retained = [
-        line
-        for line in lines
-        if not line.startswith("WORKSHOP_CHECKPOINT=") and not line.startswith("PFEFFERMINZIA_DB_PATH=")
-    ]
+    replaced = {"WORKSHOP_CHECKPOINT", "PFEFFERMINZIA_DB_PATH", "AUTO_SEND_ENABLED"}
+    retained = [line for line in lines if line.partition("=")[0].strip() not in replaced]
     retained.append(f"WORKSHOP_CHECKPOINT={checkpoint}")
+    retained.append(f"AUTO_SEND_ENABLED={'true' if checkpoint in ('drill-11-start', 'drill-11-complete') else 'false'}")
     destination = target / ".env"
     destination.write_text("\n".join(retained) + "\n", encoding="utf-8")
     destination.chmod(0o600)

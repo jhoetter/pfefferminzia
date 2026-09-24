@@ -36,7 +36,12 @@ Participants do not need individual AgentMail Console accounts when inboxes
 are provisioned centrally. The instructor keeps the organization-level key;
 each participant receives only their own inbox ID and inbox-scoped key through
 an individual, secure channel. Never put the organization key or participant
-keys in Git, slides, shared chats, or a common handout. The AgentMail Console
+keys in Git, slides, shared chats, or a common handout. For this disposable,
+synthetic workshop, a participant may give their own inbox-scoped key, inbox
+ID and sender address to their individual Claude Code chat so Claude can write
+`.env` for them. The instructor must explain that real credentials, customer
+data and other sensitive material must never be put in a chat. The
+organization-level key is never shared. The AgentMail Console
 login is not part of the participant workflow: they use their local
 Pfefferminzia cockpit and their own Claude Code login.
 
@@ -80,8 +85,11 @@ uv run pfefferminzia checkpoint verify --external
 uv run pfefferminzia serve
 ```
 
-Drill 11 additionally needs `AUTO_SEND_ENABLED=true`. Keep it false before
-that drill; the checkpoint verifier makes the difference visible.
+The official Drill-11 checkpoint writes `AUTO_SEND_ENABLED=true` into its own
+worktree after the participant confirms the checkpoint plan. Earlier stages
+remain false; participants do not edit the switch. The verifier makes the
+difference visible. AgentMail `.env` changes hot-reload in an already running
+app/MCP process, so no restart is needed for a newly entered inbox key.
 
 ## Safe checkpoint recovery
 
@@ -217,8 +225,11 @@ drill. Keep three continuity layers:
 3. Rescue mode: load the official next boundary in a separate worktree and
    continue with the verifier and browser cockpit.
 
-Record who controls reserve access and how it is reassigned. Never paste API
-keys into chat, slides, shared documents or Git.
+Record who controls reserve access and how it is reassigned. Workshop-only,
+inbox-scoped keys may be handled in an individual Claude chat as described
+above; never paste real credentials, the instructor organization key, or
+customer data into any chat, and never place keys in slides, shared documents
+or Git.
 
 ## Whiteboard handoff
 

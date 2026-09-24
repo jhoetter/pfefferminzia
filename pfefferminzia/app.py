@@ -73,17 +73,8 @@ def _lifespan(mcp_server):
     async def lifespan(_: FastAPI):
         initialize_application()
         tasks: list[asyncio.Task[None]] = []
-        agentmail_ready = False
-        if os.getenv("AGENTMAIL_API_KEY"):
-            configuration = await asyncio.to_thread(agentmail_configuration, True)
-            if not configuration["ready"]:
-                raise RuntimeError(
-                    "AgentMail setup is incomplete; configure AGENTMAIL_INBOX_ID and WORKSHOP_ALLOWED_RECIPIENTS"
-                )
-            agentmail_ready = True
         async with mcp_server.session_manager.run():
-            if agentmail_ready:
-                tasks.append(asyncio.create_task(_periodic(max(15, int(os.getenv("AGENTMAIL_POLL_SECONDS", "30"))), sync_agentmail)))
+            tasks.append(asyncio.create_task(_periodic(max(15, int(os.getenv("AGENTMAIL_POLL_SECONDS", "30"))), _sync_if_ready)))
             if os.getenv("AUTO_SEND_ENABLED") == "true" and capability_enabled("intervention_queue"):
                 tasks.append(asyncio.create_task(_periodic(60, dispatch_due_replies)))
             yield
@@ -94,6 +85,12 @@ def _lifespan(mcp_server):
                     await task
 
     return lifespan
+
+
+def _sync_if_ready() -> dict[str, Any] | None:
+    if agentmail_configuration(probe=False)["ready"]:
+        return sync_agentmail()
+    return None
 
 
 class ClassificationInput(BaseModel):

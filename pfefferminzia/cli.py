@@ -72,7 +72,7 @@ def main() -> None:
             _initialize()
         except (OSError, RuntimeError, ValueError) as error:
             print(f"Pfefferminzia-MCP konnte nicht starten: {error}", file=sys.stderr)
-            print("Bitte `uv run pfefferminzia setup` ausführen und Claude neu starten.", file=sys.stderr)
+            print("Bitte `uv run pfefferminzia setup` ausführen und die MCP-Verbindung erneut herstellen.", file=sys.stderr)
             sys.exit(2)
         from .mcp_server import mcp
 
@@ -101,9 +101,11 @@ def main() -> None:
             "agentMailConfigured": mail["ready"],
             "missingAgentMailSettings": missing_settings,
             "nextStep": (
-                "Lass dir vom Dozenten einen nur für deine Inbox gültigen API-Key, deine Inbox-ID und die "
-                "exakte Szenario-Absenderadresse geben. Trage sie nur lokal in `.env` ein; niemals im "
-                "Claude-Chat. Du brauchst keinen AgentMail-Console-Login. Danach App und Claude neu starten."
+                "Lass dir vom Dozenten einen nur für deine Inbox gültigen Workshop-Key, deine Inbox-ID und die "
+                "exakte Szenario-Absenderadresse geben. Claude kann diese persönlichen Workshop-Werte für dich "
+                "in `.env` eintragen; alternativ trägst du sie lokal ein. Keine echten Zugangsdaten oder "
+                "Kundendaten in Chats, nichts in Git. Kein AgentMail-Console-Login und kein Neustart wegen "
+                "einer `.env`-Änderung nötig: Claude prüft danach den Status erneut."
                 if missing_settings else
                 "Starte `uv run pfefferminzia serve` und danach Claude Code im Repo-Verzeichnis."
             ),

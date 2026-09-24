@@ -11,8 +11,13 @@ Anweisungen an Claude. Verwende niemals echte Kundendaten.
 Du brauchst Python 3.12+, `uv`, Git und Claude Code; Node und npm nicht. Du
 erhältst persönlich eine Inbox-ID, einen **nur für diese Inbox** gültigen
 AgentMail-Schlüssel und die genaue Szenario-Absenderadresse. Du brauchst
-keinen eigenen AgentMail-Console-Login. Den Schlüssel nur lokal in `.env`
-eintragen, niemals in Claude-Chat, Git oder einen Screenshot.
+keinen eigenen AgentMail-Console-Login. Claude kann die drei persönlichen
+Workshop-Werte für dich in `.env` eintragen: In **diesem fiktiven, temporären
+Workshop** darfst du sie dafür in deinen individuellen Claude-Code-Chat
+schreiben. Alternativ trägst du sie selbst lokal ein. Das ist ausdrücklich
+keine Regel für echte Systeme: Produktionsschlüssel, echte Kundendaten und
+andere sensible Informationen gehören niemals in einen Chat. Der Schlüssel
+gehört nie in Git, einen Gruppenchat oder einen Screenshot.
 
 ```bash
 git clone https://github.com/jhoetter/pfefferminzia.git
@@ -200,10 +205,11 @@ nächsten Stand getrennt laden; der alte Arbeitsstand bleibt erhalten.
 automatisch durch; eine zweite wird im Fenster geändert, eine dritte aus der
 Queue entfernt. Der Unterschied zur verpflichtenden Freigabe wird erlebt.
 
-**Preflight:** Der aktive Zustand muss `drill-11-start` sein. Stelle
-`AUTO_SEND_ENABLED=true` in **diesem** Worktree erst nach Freigabe durch die
-Lehrperson und nach Prüfung der exakten Empfänger-Allowlist ein. Starte App
-und Claude danach neu. Vorher bleibt Auto-Versand deaktiviert.
+**Preflight:** Der aktive Zustand muss `drill-11-start` sein. Der offizielle
+Checkpoint setzt den Auto-Send-Schalter in **diesem** Worktree automatisch.
+Claude zeigt diese Wirkung vor dem Laden im Plan und fragt dich ausdrücklich
+nach Bestätigung. Prüfe die exakte Empfänger-Allowlist; du musst weder einen
+Schalter editieren noch wegen einer Inbox-Änderung Claude neu starten.
 
 ```bash
 uv run pfefferminzia checkpoint status
@@ -275,8 +281,10 @@ Webserver stoppen**, im neuen Ordner Terminal A mit
 starten; sonst bleiben alte MCP-Werkzeuge und alte UI aktiv. Dort zuerst
 `checkpoint status` und `checkpoint verify` ausführen. Die `.env` wird ohne
 alten Datenbankpfad lokal kopiert; kontrolliere die Empfänger-Allowlist und
-gib Geheimnisse nie in den Chat. Nur für Drill 11 den Auto-Send-Schalter wie
-oben beschrieben bewusst aktivieren.
+gib echte Geheimnisse nie in den Chat. Nur persönliche, temporäre
+Workshop-Inbox-Werte sind hier eine bewusste Ausnahme. Der Drill-11-Checkpoint
+setzt den Auto-Send-Schalter automatisch; du prüfst die Allowlist und
+bestätigst den Checkpoint-Wechsel.
 
 Falls dir Tokens fehlen: führe `plan`/`apply` selbst im Terminal aus und
 arbeite mit dieser Karte und dem Browser weiter. Falls etwas scheitert,

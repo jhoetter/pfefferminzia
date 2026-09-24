@@ -19,24 +19,28 @@ und legt die lokale Workshop-Datenbank an. Es ist wiederholbar und braucht
 noch keinen AgentMail-Schlüssel. Wenn es scheitert, zeigt die Fehlermeldung
 den nächsten Schritt. Die Lehrperson gibt jeder Person eine eigene Inbox-ID,
 einen nur dafür gültigen API-Key und die exakte Szenario-Absenderadresse; ein
-eigener AgentMail-Console-Login ist nicht nötig. Diese Werte **nur lokal** in
-`.env` eintragen (`cp .env.example .env`; vorhandene `.env` nicht
-überschreiben): inboxgebundener Schlüssel, Inbox-ID und exakte
-Szenario-Absenderadresse als Empfänger-Allowlist.
+eigener AgentMail-Console-Login ist nicht nötig. Im Workshop darfst du diese
+drei **persönlichen, wegwerfbaren Workshop-Werte** in deinem individuellen
+Claude-Code-Chat nennen, damit Claude `.env` für dich anlegt; alternativ trägst
+du sie selbst lokal ein (`cp .env.example .env`; vorhandene `.env` nicht
+überschreiben). Für echte Zugangsdaten und Kundendaten gilt das ausdrücklich
+**nicht**: Solche sensiblen Daten gehören niemals in einen Chat. Den
+Organisationsschlüssel der Lehrperson nie teilen. `.env` bleibt Git-ignoriert.
 
 In Terminal A `uv run pfefferminzia serve` starten, dann in Terminal B im
 **selben Repo-Ordner** `claude` starten. Die App ist unter
 <http://127.0.0.1:3004> erreichbar. Claude bindet den MCP-Server über
-`.mcp.json` automatisch ein. Falls Claude bereits vor `setup` geöffnet war,
-Claude neu starten. Der erste Test lautet: „Prüfe meinen Workshop-Status und
+`.mcp.json` automatisch ein. Falls Claude bereits vor `setup` geöffnet war
+und MCP nicht verbunden ist, die MCP-Verbindung neu aufbauen; Claude führt
+die Diagnose. Der erste Test lautet: „Prüfe meinen Workshop-Status und
 gib mir nur den ersten Hinweis.“
 
 **Dienstag, 29. September 2026:** Wenn du am Workshop teilnimmst, beginne mit
 den [vier Teilnehmerkarten](docs/DRILL_CARDS.md). Dort stehen der Start mit
 Python/`uv`/Git/Claude Code, die Aufgaben für Drill 8–11, Nachweise, Hinweise
 und sichere Übergänge. Node.js ist nicht nötig. Bitte trage deinen persönlichen
-Inbox-Schlüssel ausschließlich lokal in `.env` ein; niemals in Claude-Chat oder
-Git. `checkpoint verify` prüft die Startbereitschaft, nicht den Abschluss einer
+Inbox-Schlüssel nur in `.env` und optional im **eigenen Workshop-Chat** angeben,
+niemals in Git oder einem Gruppenchat. `checkpoint verify` prüft die Startbereitschaft, nicht den Abschluss einer
 Übung.
 
 **Stand der Vorbereitung:** Das System und die vier Drills sind mit Fake-Mail
@@ -95,10 +99,10 @@ generic SQL or unrestricted filesystem access.
 
 The current three-day workshop design is documented in
 [`docs/WORKSHOP_AGENDA.md`](docs/WORKSHOP_AGENDA.md).
-The Tuesday presentation is available at `/slides/` when the Python app runs,
-or directly as [`slides/index.html`](slides/index.html) offline. See
-[`docs/TUESDAY_SLIDES.md`](docs/TUESDAY_SLIDES.md) for presenter notes and the
-drill-to-slide map.
+The short Tuesday decks are linked from `/slides/decks.html` when the Python
+app runs, or directly from [`slides/decks.html`](slides/decks.html) offline.
+The set includes a separate remake of Johannes' agentic-working talk. See
+[`docs/TUESDAY_SLIDES.md`](docs/TUESDAY_SLIDES.md) for the presenter map.
 
 ## Upstream dataset
 
@@ -223,7 +227,10 @@ data layer. It fails closed rather than reading every inbox available to a key.
 For centrally provisioned workshops, each participant receives a key scoped
 to their own inbox; the instructor's organization-level key is never shared.
 If a key is present but the personal inbox ID or outbound allowlist is missing,
-startup fails with an actionable configuration error.
+the app remains available while external sync and sending stay disabled.
+The dashboard and checkpoint verifier identify what is missing. Updating
+AgentMail values in `.env` takes effect in the running app and MCP process;
+do not restart Claude Code just to make a newly entered inbox key visible.
 
 ```bash
 uv run pfefferminzia sync
