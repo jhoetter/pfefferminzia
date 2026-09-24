@@ -129,15 +129,25 @@ to explain and selectively carry over their own changes if they wish.
 
 ## Drill facilitation
 
-Each 75-minute block uses one repeated rhythm: 15 minutes framing, 30 minutes
-participant build, 15 minutes inspection/verification or recovery, 8 minutes
-stretch/buddy work, and 7 minutes joint debrief.
+Each 75-minute block has a concrete case mission, a small participant-built
+change and observable evidence. Use the drill-specific timeboxes in
+`docs/DRILL_CARDS.md` / `get_drill_guide`; don't let a green readiness check or
+an arbitrary completed todo stand in for learning. The instructor should ask
+each participant to show the same ticket in MCP and cockpit, explain their own
+code change, and say what they verified.
 
 ### Drill 8 — command centre
 
-Core path: clone, `uv sync`, app start, MCP status, inbox preflight, receive one
-message, create and complete one todo with Claude. Do not discuss tariffs,
-approval or delayed sending yet.
+Core path: clone, `uv sync`, app start, MCP status, inbox preflight, send one
+message to the full personal AgentMail address, and trace the new ticket in
+MCP and cockpit. Create a ticket-linked todo for a real next step, close it
+only after inspection, then add a small idempotent inbound-triage improvement
+with Claude and test it. Do not discuss tariffs, approval or delayed sending.
+
+Normal external senders, including Gmail, can mail the inbox. The configured
+`WORKSHOP_ALLOWED_RECIPIENTS` restricts **outbound replies only**. A zero-new
+sync means nothing arrived by that check; inspect last sync time and retry
+after delivery. Never suggest the allowlist blocked incoming mail.
 
 Checkpoint evidence: health is green, external inbox verification succeeds,
 one incoming ticket appears, and the todo lifecycle is visible in the cockpit.

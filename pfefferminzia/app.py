@@ -151,6 +151,7 @@ class ContractLinkInput(BaseModel):
 class TodoInput(BaseModel):
     title: Annotated[str, Field(min_length=1, max_length=300)]
     description: Annotated[str, Field(max_length=2000)] = ""
+    ticketNumber: Annotated[str | None, Field(max_length=50)] = None
     assignedTo: Annotated[str | None, Field(max_length=200)] = None
     idempotencyKey: Annotated[str | None, Field(min_length=8, max_length=200)] = None
 
@@ -301,6 +302,7 @@ def create_app() -> FastAPI:
         return create_todo(
             data.title,
             data.description,
+            ticket_number=data.ticketNumber,
             assigned_to=data.assignedTo,
             actor="human-ui",
             idempotency_key=data.idempotencyKey,

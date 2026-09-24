@@ -17,9 +17,11 @@ class FakeMessages:
     def __init__(self):
         self.available = []
         self.sent = []
+        self.sender = "learner@example.test"
 
     def list(self, inbox_id, **kwargs):
         assert inbox_id == "inbox-rehearsal"
+        assert kwargs["ascending"] is False
         return {"messages": [{"message_id": mid} for mid in self.available]}
 
     def get(self, inbox_id, message_id):
@@ -27,7 +29,7 @@ class FakeMessages:
         return {
             "message_id": message_id,
             "thread_id": "thread-" + message_id,
-            "from": "Learner <learner@example.test>",
+            "from": f"Learner <{self.sender}>",
             "to": ["participant@agentmail.to"],
             "subject": message_id,
             "text": "Synthetic request: " + message_id,
@@ -84,17 +86,23 @@ def test_realistic_drills_8_to_11_without_network(monkeypatch, tmp_path, request
         assert response.status_code == 200, response.text
 
     with client_for("drill-08-start") as client:
+        fake.messages.sender = "personal-gmail@example.test"  # Inbound is not governed by the outbound allowlist.
         fake.messages.available = ["Drill 8 onboarding"]
         assert client.post("/api/sync").json()["importedTickets"] == 1
-        assert find(client, "Drill 8 onboarding")
-        todo = client.post("/api/todos", json={"title": "Inbox prüfen"})
+        assert client.get("/api/workshop").json()["lastInboxSync"]["importedMessages"] == 1
+        number = find(client, "Drill 8 onboarding")
+        status = client.get("/api/workshop").json()
+        assert status["drillBrief"]["timeboxMinutes"]["selbstBauen"] == 25
+        todo = client.post("/api/todos", json={"title": "Absender und Anliegen prüfen", "ticketNumber": number})
         assert todo.status_code == 201
+        assert todo.json()["ticketNumber"] == number
         done = client.patch(f"/api/todos/{todo.json()['id']}", json={"status": "completed"})
         assert done.json()["status"] == "completed"
         assert client.get("/api/tariffs").status_code == 400
         assert not any(t["productLine"] == "life" for t in client.get("/api/tickets").json())
 
     with client_for("drill-09-start") as client:
+        fake.messages.sender = "learner@example.test"
         fake.messages.available = ["Drill 9 life"]
         assert client.post("/api/sync").json()["importedTickets"] == 1
         number = find(client, "Drill 9 life")

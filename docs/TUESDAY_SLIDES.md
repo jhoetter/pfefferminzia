@@ -5,9 +5,12 @@ Präsentationen. Im laufenden Workshop beginnt jede Session mit ihrem eigenen
 Deck; die [Gesamtpräsentation](../slides/index.html?deck=gesamt) ist vor allem
 für Vorbereitung und Nacharbeit gedacht. Der separate Vortrag
 [„Jede Aufgabe zuerst agentisch“](../slides/index.html?deck=agentisch)
-überträgt Johannes’ PDF `input-agentisches-arbeiten (2).pdf` in Falks
-Golden-Age-Design. Persönliche Einschätzungen sind als solche formuliert;
-kurzlebige Benchmarkzahlen wurden nicht übernommen.
+überträgt Johannes’ 35-seitige PDF `input-agentisches-arbeiten (2).pdf` als
+36-Folien-Vortrag in Falks Golden-Age-Design. HLE- und METR-Folien sowie alle
+15 Bildbeispiele inklusive Token-Dashboard, Produkt-Screenshots, Personas und
+Council sind enthalten. Persönliche Einschätzungen und illustrative
+Benchmarkreihen sind als solche gekennzeichnet; die Originalbilder lassen sich
+auf der Folie zur Detailansicht öffnen.
 
 | Deck | Live-Einsatz | Folien |
 | --- | --- | ---: |
@@ -35,7 +38,12 @@ und Kapitelstarts, damit Arbeitsfolien luftig bleiben.
 Die Präsentationen verwenden Falk Uebernickels
 [AI-Studio-Vorlagen-Foliensatz](https://github.com/falkue/ai-studio-foliensatz)
 als Basis. Reveal.js, Schriften, HSG-Logo und SVG-Comic sind in
-`slides/index.html` eingebettet; die Inhalte und App-Mockups liegen in
-`slides/dienstag.js` und `slides/dienstag.css`. Das HSG-Logo ist nur für die
+`slides/index.html` eingebettet; die Workshop-Inhalte liegen in
+`slides/dienstag.js`, der neu gesetzte Originalvortrag in
+`slides/agentisch.js` und die aus der vom Nutzer bereitgestellten PDF
+mechanisch extrahierten Bilder in `slides/assets/agentisch/`. Alle Bilder
+bleiben lokal; beim Präsentieren wird nichts nachgeladen. HLE und METR sind
+in den Referentennotizen mit Primärquellen und Messgrenzen erläutert.
+Das HSG-Logo ist nur für die
 Veranstaltung der Universität St.Gallen zu verwenden. Die übernommene
 Vorlage entspricht dem Upstream-Stand `f196f78`.

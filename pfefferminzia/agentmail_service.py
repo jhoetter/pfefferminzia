@@ -155,7 +155,9 @@ def sync_agentmail(db: sqlite3.Connection | None = None) -> dict[str, Any]:
             inbox_email = str(_value(inbox, "email", default=active_inbox))
             result["inboxes"].append(inbox_email)
             inbox_address = _address_part(inbox_email)
-            response = client.inboxes.messages.list(active_inbox, limit=100, ascending=True)
+            # Inspect the newest messages first, so a recent workshop test is
+            # never hidden behind an older 100-message history.
+            response = client.inboxes.messages.list(active_inbox, limit=100, ascending=False)
             for item_value in _value(_mapping(response), "messages", default=[]):
                 item = _mapping(item_value)
                 message_id = str(_value(item, "message_id", "messageId"))

@@ -132,6 +132,7 @@ body:has(aside.ticket-drawer.open) .workshop-launcher { display: none; }
 .workshop-card h3 { margin: 0 0 10px; font-size: 14px; }
 .workshop-card h3 small { float: right; color: #829087; font-size: 11px; font-weight: 500; }
 .workshop-card p.empty { margin: 0; color: #6b7b70; font-size: 12px; }
+.workshop-card p.empty + p.empty { margin-top: 7px; }
 .workshop-card ol { margin: 0; padding-left: 20px; color: #56665d; font-size: 12px; }
 .workshop-card ol li + li { margin-top: 5px; }
 
@@ -169,12 +170,11 @@ body:has(aside.ticket-drawer.open) .workshop-launcher { display: none; }
 .workshop-launcher:active, .workshop-panel button.action:not(:disabled):active,
 .workshop-panel form button:active, .workshop-panel header button:active { transform: scale(.97); }
 .workshop-launcher:focus-visible, .workshop-panel button:focus-visible,
-.workshop-panel input:focus-visible { outline: 3px solid #246b48; outline-offset: 2px; }
+.workshop-panel input:focus-visible, .workshop-panel select:focus-visible { outline: 3px solid #246b48; outline-offset: 2px; }
 
-.workshop-todo-form { margin-top: 10px; display: flex; gap: 6px; }
-.workshop-todo-form input {
+.workshop-todo-form { margin-top: 10px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; }
+.workshop-todo-form input, .workshop-todo-form select {
   min-width: 0;
-  flex: 1;
   height: 36px;
   padding: 0 9px;
   border: 1px solid #d5ddd7;
@@ -182,6 +182,7 @@ body:has(aside.ticket-drawer.open) .workshop-launcher { display: none; }
   font: inherit;
   font-size: 12px;
 }
+.workshop-todo-form input, .workshop-todo-form select { grid-column: 1 / -1; }
 
 .workshop-countdown {
   display: inline-block;

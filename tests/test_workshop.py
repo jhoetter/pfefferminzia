@@ -39,3 +39,14 @@ def test_reset_preserves_non_demo_records(full_db):
     assert len(list_tickets(query="PF-99999", db=full_db)) == 1
     ensure_workshop_fixtures(full_db)
     assert len([ticket for ticket in list_tickets(db=full_db) if ticket["source"] == "demo"]) == 7
+
+
+def test_status_explains_inbound_policy_and_latest_sync(full_db):
+    full_db.execute(
+        "INSERT INTO sync_runs (inbox_id, imported_messages, imported_tickets, status, created_at) "
+        "VALUES ('test@agentmail.to', 1, 1, 'success', '2026-09-24T21:14:22Z')"
+    )
+    status = get_workshop_status(full_db)
+    assert status["lastInboxSync"]["importedTickets"] == 1
+    assert status["lastInboxSync"]["at"] == "2026-09-24T21:14:22Z"
+    assert "outbound replies only" in status["inboundSenderPolicy"]

@@ -35,13 +35,15 @@ und MCP nicht verbunden ist, die MCP-Verbindung neu aufbauen; Claude führt
 die Diagnose. Der erste Test lautet: „Prüfe meinen Workshop-Status und
 gib mir nur den ersten Hinweis.“
 
-**Dienstag, 29. September 2026:** Wenn du am Workshop teilnimmst, beginne mit
-den [vier Teilnehmerkarten](docs/DRILL_CARDS.md). Dort stehen der Start mit
-Python/`uv`/Git/Claude Code, die Aufgaben für Drill 8–11, Nachweise, Hinweise
-und sichere Übergänge. Node.js ist nicht nötig. Bitte trage deinen persönlichen
-Inbox-Schlüssel nur in `.env` und optional im **eigenen Workshop-Chat** angeben,
-niemals in Git oder einem Gruppenchat. `checkpoint verify` prüft die Startbereitschaft, nicht den Abschluss einer
-Übung.
+**Dienstag, 29. September 2026:** Beginne mit den
+[vier Teilnehmerkarten](docs/DRILL_CARDS.md). Jeder 75-Minuten-Drill hat ein
+Lernziel, einen konkreten Fall, eine kleine eigene Codeverbesserung und einen
+Abschlussbeleg. Claude nennt diese Aufgabe über `get_drill_guide` schon bei
+Hinweis-Level 0; du kannst schrittweise Hilfe erfragen, ohne dass Claude die
+Übung sofort für dich löst. Node.js ist nicht nötig. Den persönlichen
+Inbox-Schlüssel nur in `.env` und optional im **eigenen Workshop-Chat**
+angeben, niemals in Git oder einem Gruppenchat. `checkpoint verify` prüft
+die Startbereitschaft, nicht den Abschluss einer Übung.
 
 **Stand der Vorbereitung:** Das System und die vier Drills sind mit Fake-Mail
 automatisiert durchgespielt. Zwei isolierte Teilnehmer-Inboxen und eine
@@ -231,6 +233,12 @@ the app remains available while external sync and sending stay disabled.
 The dashboard and checkpoint verifier identify what is missing. Updating
 AgentMail values in `.env` takes effect in the running app and MCP process;
 do not restart Claude Code just to make a newly entered inbox key visible.
+Send a test mail to the complete configured inbox address, then use **Jetzt
+synchronisieren** in the Workshop-Cockpit or `uv run pfefferminzia sync`.
+The cockpit shows the last sync time and newly imported ticket IDs. A sync with
+zero new messages can precede delivery; retry after a short wait. Normal
+external senders can write to the inbox: `WORKSHOP_ALLOWED_RECIPIENTS` restricts
+only outbound replies, not incoming mail.
 
 ```bash
 uv run pfefferminzia sync
@@ -269,8 +277,9 @@ uv run pfefferminzia checkpoint plan drill-10-start
 uv run pfefferminzia checkpoint apply TOKEN --confirm-checkpoint-load
 ```
 
-The browser's **Workshop-Cockpit** shows the current learning goal, success
-criteria, general and workflow todos, mandatory reviews, the visible
+The browser's **Workshop-Cockpit** shows the current learning goal, concrete
+mission, small build task, recent inbound tickets, ticket-linked todos,
+mandatory reviews, the visible
 intervention-window countdown, checkpoint verification, and the local
 workshop-clock control. See [`docs/WORKSHOP_RUNBOOK.md`](docs/WORKSHOP_RUNBOOK.md)
 for facilitator setup, scenario delivery, challenge cards and continuity plans.

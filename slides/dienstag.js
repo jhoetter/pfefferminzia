@@ -90,10 +90,10 @@
       notes: 'ZEIT: 4 Minuten. SAGEN: Checkpoints sind keine Musterlösung zum Anschauen. Jeder Startzustand zeigt nur die Fähigkeiten des aktuellen Drills. Die Teilnehmenden bauen im eigenen Branch weiter; eine Recovery liegt getrennt, ohne ihre Arbeit zu überschreiben.'
     },
     {
-      id: 'Arbeitsrhythmus', type: 'Inhalt', eyebrow: 'So arbeiten wir', title: 'Bauen, prüfen, erklären – in jedem Drill gleich.',
+      id: 'Arbeitsrhythmus', type: 'Inhalt', eyebrow: 'So arbeiten wir', title: 'Jeder Drill hat einen Fall, einen Mini-Build und einen Beleg.',
       subtitle: 'Claude darf helfen; die fachliche Entscheidung und der Nachweis bleiben bei Ihnen.',
       body: grid([
-        card('75 Minuten', `<p><strong>15′</strong> Fall und Erfolgskriterium<br><strong>30′</strong> selbst bauen<br><strong>15′</strong> prüfen oder aufholen<br><strong>8′</strong> Challenge oder Buddy<br><strong>7′</strong> Debrief</p>`),
+        card('75 Minuten', `<p><strong>1.</strong> Einen echten Workshop-Fall durchlaufen.<br><strong>2.</strong> Eine kleine Verbesserung selbst mit Claude coden.<br><strong>3.</strong> Zustand und Test belegen.</p><p>Die Zeitanteile stehen auf der jeweiligen Drill-Karte.</p>`),
         card('Wenn es hakt', `<p>Claude nach dem nächsten kleinen Schritt fragen. Tool-Resultat und Cockpit vergleichen.</p><p>Offiziellen Checkpoint erst planen, erhaltenen Pfad lesen und <strong>nach Rückfrage</strong> laden.</p>`, 'mint-card')
       ]),
       notes: 'ZEIT: 3 Minuten. SAGEN: Paararbeit ist möglich, jede Person behält ihre lokale Instanz und Inbox. Vor dem Reset wird der eigene Stand nicht überschrieben. Wer schnell ist, vertieft den aktuellen Drill, statt künftige Stufen vorwegzunehmen.'
@@ -113,13 +113,13 @@
       notes: 'ZEIT: 3 Minuten. SAGEN: Diese Folie ist eine schematische App-Ansicht, keine Live-Verbindung. Danach zur echten Instanz wechseln. Die genaue Kundenzuordnung ist erst Drill 9.'
     },
     {
-      id: 'Drill8Auftrag', type: 'Drill', eyebrow: 'Drill 8 · Arbeitsauftrag', title: 'Wenn die Inbox grün ist, ist Drill 8 geschafft.',
-      subtitle: 'Versuchen Sie den Kernpfad selbst. Claude hilft beim nächsten Schritt, nicht beim Überspringen der Stufe.', study: true,
+      id: 'Drill8Auftrag', type: 'Drill', eyebrow: 'Drill 8 · Arbeitsauftrag', title: 'Eine Mail. Ein Ticket. Eine eigene Verbesserung.',
+      subtitle: 'Lernziel: dieselbe Nachricht an der Grenze zwischen AgentMail, Cockpit und MCP wiederfinden.', study: true,
       body: grid([
-        card('An Claude sagen', `${prompt('„Starte Pfefferminzia lokal. Prüfe, ob mein MCP verbunden ist und meine persönliche AgentMail-Inbox Nachrichten empfangen kann.“')}<p class="day-small">Danach: eine fiktive Nachricht empfangen und ein Todo anlegen.</p>`, 'mint-card'),
-        card('Nachweis', `<p>App läuft. Persönliche Inbox-ID ist korrekt. Eine eingehende Nachricht steht im Cockpit.</p><p>Ein Todo wurde erstellt und abgeschlossen; der Zustandswechsel ist sichtbar.</p>${pill('verify --external', 'blue')}`)
+        card('Mission · 30′', `<p>Sende eine Testmail an deine vollständige Inbox-Adresse. Synchronisiere und finde <strong>dieselbe Ticket-ID</strong> im Cockpit und per MCP.</p><p>Lege erst nach dem Lesen ein konkretes, ticketbezogenes Todo an.</p>`, 'mint-card'),
+        card('Mini-Build · 25′', `<p>Verbessere mit Claude den Import: pro neuem Ticket genau ein verknüpftes Prüfen-Todo, auch nach erneutem Sync.</p><p>Teste zweimaliges Synchronisieren und zeige den grünen Test.</p>${pill('Nachweis + Rückblick · 20′', 'blue')}`)
       ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: Keine echten Kundendaten. Eine persönliche Inbox, kein geteilter Schlüssel. Den temporären inboxgebundenen Workshop-Key darf Claude im individuellen Workshop-Chat erhalten und lokal eintragen; für echte Geheimnisse wäre das tabu. Nach dem Eintrag Status erneut prüfen, ohne MCP oder App zu killen. Wenn das Setup scheitert, den Verifier ausführen.'
+      notes: 'ZEIT: 2 Minuten. SAGEN: Keine echten Kundendaten. Eine persönliche Inbox, kein geteilter Schlüssel. Den temporären inboxgebundenen Workshop-Key darf Claude im individuellen Workshop-Chat erhalten und lokal eintragen; für echte Geheimnisse wäre das tabu. Die Outbound-Allowlist ist kein Eingangsfilter. Ein grüner Preflight ist nur Startbereitschaft. Nach dem Eintrag Status erneut prüfen, ohne MCP oder App zu killen. 20 Minuten Setup/Mail, 10 Minuten Ticket erkunden, 25 Minuten selbst bauen, 15 Minuten nachweisen, 5 Minuten reflektieren.'
     },
     {
       id: 'Drill9Start', type: 'Kapitel', eyebrow: '11:30–12:45 · Meilenstein 2', title: 'Der Mensch bearbeitet', study: true,
@@ -137,10 +137,10 @@
     },
     {
       id: 'Drill9Auftrag', type: 'Drill', eyebrow: 'Drill 9 · Arbeitsauftrag', title: 'Sie redigieren – und nur Sie lösen den Versand aus.',
-      subtitle: 'Der Agent soll Kontext und Entwurf vorbereiten, nicht den Lebensfall autonom entscheiden.', study: true,
+      subtitle: 'Lernziel: Kundenaussage und belegte Tarifquelle trennen; Textänderung und Versand bleiben bei dir.', study: true,
       body: grid([
-        card('An Claude sagen', `${prompt('„Ordne diese Lebensanfrage der richtigen Person und Police zu. Prüfe die gültige Tarifgeneration und erstelle einen begründeten Antwortentwurf mit Belegen. Versende nichts.“')}<p class="day-small">Den Entwurf selbst ändern und bewusst senden.</p>`, 'mint-card'),
-        card('Nachweis', `<p>Richtiger Kunde und Vertrag verlinkt. Exaktes Tarifdokument sichtbar. Entwurf gespeichert.</p><p>Menschliche Textänderung und menschlicher Versand stehen im Activity Log.</p>${pill('1 Fall vollständig', 'blue')}`)
+        card('Mission', `${prompt('„Ordne diese Lebensanfrage der richtigen Person und Police zu. Prüfe die gültige Tarifgeneration und erstelle einen begründeten Antwortentwurf mit Belegen. Versende nichts.“')}<p class="day-small">Den Entwurf selbst ändern und bewusst senden.</p>`, 'mint-card'),
+        card('Mini-Build + Beleg', `<p>Teste eine falsche oder fehlende Tarifgeneration und verbessere Fehlermeldung oder Schutzregel.</p><p>Danach: menschliche Änderung und Versand im Activity Log zeigen.</p>${pill('20′ eigener Code', 'blue')}`)
       ]),
       notes: 'ZEIT: 2 Minuten. SAGEN: Hier endet Augmentation im operativen Prozess. Challenge Card für Schnelle: ähnliche Namen oder veraltete Tarifgeneration. Keine Freigabe-Queue aus Drill 10 vorwegnehmen.'
     },
@@ -158,10 +158,10 @@
     },
     {
       id: 'Drill10Auftrag', type: 'Drill', eyebrow: 'Drill 10 · Arbeitsauftrag', title: 'Eine Freigabe und eine Ablehnung beweisen den Workflow.',
-      subtitle: 'Entscheidung und Kommunikation brauchen eine gültige menschliche Freigabe.', study: true,
+      subtitle: 'Lernziel: Agentenarbeit kann vollständig sein; externe Wirkung braucht eine aktuelle menschliche Freigabe.', study: true,
       body: grid([
-        card('An Claude sagen', `${prompt('„Bearbeite zwei Lebensfälle vollständig bis zur Review-Notification. Lege Entscheidung, Belege und Antwort vor. Löse keine externe Wirkung ohne meine ausdrückliche Freigabe aus.“')}<p class="day-small">Einen Fall freigeben; den anderen begründet ablehnen.</p>`, 'mint-card'),
-        card('Nachweis', `<p>Zwei Review-Fälle. Ein Fall ausdrücklich genehmigt. Ein Fall abgelehnt und zurück in Bearbeitung.</p><p>Nach einer Textänderung ist eine alte Freigabe nicht mehr gültig.</p>${pill('kein Send ohne Approval', 'red')}`)
+        card('Mission', `${prompt('„Bearbeite zwei Lebensfälle vollständig bis zur Review-Notification. Lege Entscheidung, Belege und Antwort vor. Löse keine externe Wirkung ohne meine ausdrückliche Freigabe aus.“')}<p class="day-small">Einen freigeben, einen begründet ablehnen.</p>`, 'mint-card'),
+        card('Mini-Build + Beleg', `<p>Zeige Ablehnungsgrund oder erloschene Freigabe im Cockpit deutlicher und teste den Zustand.</p><p>Nach einer Textänderung darf die alte Freigabe nicht gelten.</p>${pill('25′ eigener Code', 'red')}`)
       ]),
       notes: 'ZEIT: 2 Minuten. SAGEN: Nicht nur den Happy Path testen. Die Ablehnung muss dokumentiert sein und einen neuen Agenten-Loop auslösen. Challenge: Freigabe durch Änderung invalidieren.'
     },
@@ -182,10 +182,10 @@
     },
     {
       id: 'Drill11Auftrag', type: 'Drill', eyebrow: 'Drill 11 · Arbeitsauftrag', title: 'Ein Auto-Versand, ein Edit und ein Stopp sind Pflicht.',
-      subtitle: 'Die Workshop-Uhr erspart 24 Stunden Wartezeit; die realen Kontrollregeln bleiben dieselben.', study: true,
+      subtitle: 'Lernziel: Pflichtfreigabe mit dem automatischen Versand nach einer sichtbaren Eingriffsfrist vergleichen.', study: true,
       body: grid([
-        card('An Claude sagen', `${prompt('„Route drei fiktive Haftpflichtfälle. Bereite Antworten vor und plane sie sichtbar für +24 Stunden. Zeige mir, wie ich eine bearbeiten und eine aus der Queue nehmen kann.“')}<p class="day-small">Erst nach Eingriffen: Uhr mit Bestätigung vorspulen.</p>`, 'mint-card'),
-        card('Nachweis', `<p>Eine Antwort läuft automatisch durch. Eine wurde bearbeitet. Eine wurde entfernt oder abgebrochen.</p><p>Countdown, tatsächlicher Versand und alle Eingriffe stehen in der Historie.</p>${pill('Auto-Send + Audit', 'red')}`)
+        card('Mission', `${prompt('„Route drei fiktive Haftpflichtfälle. Bereite Antworten vor und plane sie sichtbar für +24 Stunden. Zeige mir, wie ich eine bearbeiten und eine aus der Queue nehmen kann.“')}<p class="day-small">Erst nach Eingriffen: Uhr mit Bestätigung vorspulen.</p>`, 'mint-card'),
+        card('Mini-Build + Beleg', `<p>Zeige einen Stopp deutlicher an oder teste, dass nach Edit und erneuter Prüfung kein Duplikat rausgeht.</p><p>Ein Auto-Versand, ein Edit und ein Stopp müssen im Audit stehen.</p>${pill('20′ eigener Code', 'red')}`)
       ]),
       notes: 'ZEIT: 2 Minuten. SAGEN: Der offizielle Drill-11-Checkpoint aktiviert Auto-Send im neuen Worktree; niemand editiert dafür manuell .env. Auto-Send nur an freigegebene Workshop-Adressen. Den 24-Stunden-Sprung erst nach sichtbarer Queue und expliziter Bestätigung ausführen. Challenge: idempotentes Handling oder Timer-Reset nach Edit.'
     },
@@ -224,107 +224,7 @@
     }
   ];
 
-  const agentisch = [
-    {
-      id: 'AgentischTitel', type: 'Titel', eyebrow: 'Johannes Hötter · Impuls', cover: true,
-      body: `<div class="day-cover-title">JEDE AUFGABE<br>ZUERST AGENTISCH</div><div class="day-cover-sub">Arbeiten in agentischen Teams.</div><div class="day-cover-ribbon">EIN MENSCH · VIELE AGENTEN</div>`,
-      notes: 'Quelle: Johannes Hötter, Präsentation „Arbeiten in Agentischen Teams“, Juni 2026. Einstieg: Ich spreche aus meiner eigenen Praxis, nicht über ein allgemeingültiges Organisationsmodell.'
-    },
-    {
-      id: 'AgentischProfil', type: 'Inhalt', eyebrow: 'Kurz zu mir · Stand Juni 2026', title: 'Ich habe Kern AI gebaut – und 2025 verkauft.',
-      subtitle: 'Heute interessiert mich, wie Menschen und Agenten zusammenarbeiten.',
-      body: `<div class="day-hero-line">Gründer. Builder. Lernender.</div>`,
-      notes: 'Persönlicher Hintergrund aus der PDF von Juni 2026. Spätere Rollen bewusst nicht als aktuelle Tatsache behaupten.'
-    },
-    {
-      id: 'AgentischPraxis', type: 'Statement', eyebrow: 'Meine Praxis', title: 'Früher 15 Mitarbeitende. Heute ich – und viele Agenten.',
-      subtitle: 'Weniger Übergaben. Mehr Experimente. Mehr eigene Verantwortung.',
-      body: `<div class="day-hero-line">„Ich führe Arbeit, nicht nur Prompts.“</div>`,
-      notes: 'Persönliche Beobachtung aus dem Originalvortrag. Nicht als empirische Produktivitätsmessung präsentieren. Fragen: Was ist für euch der Unterschied zwischen Assistenz und Arbeitsführung?'
-    },
-    {
-      id: 'AgentischVolvo', type: 'Statement', eyebrow: 'Der Preis der Experimente', title: 'Zwei Jahre KI-Kosten: ein gebrauchter Volvo.',
-      subtitle: 'Eine persönliche Rechnung – und ein ziemlich aktives Testlabor.', avatar: true,
-      avatarBubble: 'Immerhin: kein Parkplatz nötig.',
-      body: `<div class="day-hero-line">Viel investiert. Viel gelernt.</div>`,
-      notes: 'Humorvolle Kosten-Metapher aus der Original-PDF. Dort ist ein gebrauchter Volvo XC40 als Größenordnung genannt. Nicht als Empfehlung für Teilnehmende verstehen.'
-    },
-    {
-      id: 'AgentischFrage', type: 'Statement', eyebrow: 'Die Gewohnheit', title: 'Kann ich diesen Teil nicht mit KI lösen?',
-      subtitle: 'Nicht alles delegieren. Aber jede Aufgabe zunächst darauf prüfen.',
-      body: `<div class="day-hero-line">Eine Frage vor jedem Schritt.</div>`,
-      notes: 'Das ist die zentrale Regel des ursprünglichen Vortrags. Ein Versuch kann auch ergeben: nein, hier braucht es fachliches Urteil oder menschliche Beziehung.'
-    },
-    {
-      id: 'AgentischVerifizieren', type: 'Inhalt', eyebrow: 'Die Gegenregel', title: 'Agentisch wird erst gut, wenn der Erfolg prüfbar ist.',
-      subtitle: 'Je leichter ein Ergebnis zu verifizieren ist, desto weiter kann Delegation gehen.',
-      body: grid([
-        card('Auftrag', `<p class="day-emphasis">Was soll am Ende wahr sein?</p><p>Ein überprüfbarer Zustand statt einer vagen Aktivität.</p>`),
-        card('Beleg', `<p class="day-emphasis">Woran sehe ich es?</p><p>Test, Quelle, diff, Status oder menschliche Abnahme.</p>`, 'mint-card')
-      ]),
-      notes: 'Bezug zum im Original genannten Verifier’s Law von Jason Wei. Paraphrase, kein automatischer Freifahrtschein für riskante Handlungen.'
-    },
-    {
-      id: 'AgentischIterieren', type: 'Statement', eyebrow: 'Die neue Geschwindigkeit', title: 'Aufbauen. Abreißen. Besser neu bauen.',
-      subtitle: 'Wenn Varianten billig werden, wird gutes Urteil wertvoller.',
-      body: `<div class="day-hero-line">Mut zum zweiten Entwurf.</div>`,
-      notes: 'Im Original die Hausbau-Metapher. Ein schnelles Ergebnis ist eine Einladung zur nächsten Iteration, nicht die Aufforderung, ungeprüft live zu gehen.'
-    },
-    {
-      id: 'AgentischFelder', type: 'Statement', eyebrow: 'Nicht nur Software', title: 'Entwürfe, Analysen, Prozesse – alles wächst.',
-      subtitle: 'Agentisches Arbeiten verschiebt sich quer durch die Wissensarbeit.',
-      body: `<div class="day-hero-line">Vom Einzelfall zum System.</div>`,
-      notes: 'Die vielen Bildbeispiele der Original-PDF werden hier zu einer These verdichtet. Bei Live-Vortrag bei Bedarf ein eigenes, aktuelles Beispiel erzählen.'
-    },
-    {
-      id: 'AgentischSystem', type: 'Inhalt', eyebrow: 'System statt Einzelprompt', title: 'Viele Agenten brauchen eine gemeinsame Arbeitsfläche.',
-      subtitle: 'Sonst produziert Geschwindigkeit nur Widersprüche.',
-      body: `<div class="day-flow"><div class="day-flow-step"><b>Design-System</b><span>eine Sprache</span></div><div class="day-arrow">+</div><div class="day-flow-step"><b>Aufgaben-Tracker</b><span>sichtbare Zustände</span></div><div class="day-arrow">+</div><div class="day-flow-step"><b>Verifier</b><span>prüfbare Ergebnisse</span></div></div>`,
-      notes: 'Die drei Elemente des Originalvortrags für die Workshop-Logik übersetzen. Bei Pfefferminzia entsprechen ihnen UI, Audit/Queue und Checkpoint-Verifier.'
-    },
-    {
-      id: 'AgentischNeuBauen', type: 'Inhalt', eyebrow: 'Zwei Arten von Arbeit', title: 'Bekanntes neu bauen ist leichter als Neues erfinden.',
-      subtitle: 'Bei neuen Produkten bleiben Konzept, Gefühl und Verantwortung die harte Arbeit.',
-      body: grid([
-        card('Bekanntes', `<p class="day-emphasis">Die Form ist schon da.</p><p>Agenten können Struktur und Umsetzung schnell variieren.</p>`),
-        card('Neues', `<p class="day-emphasis">Die Frage ist noch offen.</p><p>Menschen müssen Ziel, Geschmack und Grenzen klären.</p>`, 'mint-card')
-      ]),
-      notes: 'Cleanroom Engineering versus etwas Neues erschaffen aus der Original-PDF. Die Trennlinie ist eine Arbeitshypothese, keine absolute technische Grenze.'
-    },
-    {
-      id: 'AgentischSchnittstelle', type: 'Statement', eyebrow: 'Meine Produktregel', title: 'Neue Software muss agentisch bedienbar sein.',
-      subtitle: 'Mensch und Agent brauchen dieselben klar begrenzten Fachfunktionen.',
-      body: `<div class="day-hero-line">API · MCP · CLI</div>`,
-      notes: 'Persönliche Designregel aus der Vorlage. Pfefferminzia zeigt das praktisch: Cockpit und Claude arbeiten auf derselben Python-Fachlogik.'
-    },
-    {
-      id: 'AgentischQualitaet', type: 'Statement', eyebrow: 'Die unbequeme Frage', title: 'Wenn der Durchsatz steigt: Wer prüft die Qualität?',
-      subtitle: 'Mehr erzeugen ist nicht dasselbe wie mehr Verantwortung übernehmen.',
-      body: `<div class="day-hero-line">Der Engpass wandert.</div>`,
-      notes: 'Die Law-of-Amplification-Frage aus dem Original ohne ungesicherte 100×-Prognose. Kurz diskutieren: Welche Kontrolle skaliert, welche nicht?'
-    },
-    {
-      id: 'AgentischSprache', type: 'Statement', eyebrow: 'Die Schnittstelle verschiebt sich', title: 'Manchmal ist Sprechen schneller als Klicken.',
-      subtitle: 'Kontext und Absicht lassen sich oft besser diktieren als in Menüs zusammensuchen.',
-      body: `<div class="day-hero-line">Mehr Gespräch. Weniger Formular.</div>`,
-      notes: 'Persönliche Arbeitsweise aus dem Originalvortrag, nicht als universelle Bedienungsregel. Zugänglichkeit und stille Arbeitsumgebungen mitdenken.'
-    },
-    {
-      id: 'AgentischTeam', type: 'Inhalt', eyebrow: 'Nächste Organisationsfrage', title: 'Ein Mensch, viele Agenten – und dann?',
-      subtitle: 'Sobald mehrere Menschen beteiligt sind, müssen Rollen und Stopplinien explizit werden.',
-      body: grid([
-        card('Koordination', `<p class="day-emphasis">Wer arbeitet woran?</p><p>Aufträge, Status und Übergaben bleiben sichtbar.</p>`),
-        card('Verantwortung', `<p class="day-emphasis">Wer darf wirken?</p><p>Rechte, Freigaben und Ausnahmen sind technische Regeln.</p>`, 'red-card')
-      ]),
-      notes: 'Offene Frage aus dem Originalvortrag. In der Versicherung wird sie besonders konkret, weil eine Nachricht oder Entscheidung den Arbeitsraum verlässt.'
-    },
-    {
-      id: 'AgentischBruecke', type: 'Schluss', eyebrow: 'Übergang zu Pfefferminzia', title: 'Jetzt bauen wir die Stopplinie selbst.',
-      subtitle: 'Leben: explizite Freigabe. Haftpflicht: sichtbares Eingriffsfenster.',
-      body: `<div class="day-hero-line">Wo darf der Agent handeln?</div>`,
-      notes: 'Überleitung in den Dienstag-Input und die Drills. Keine automatische Produktregel für die echte Versicherungswelt behaupten; es sind synthetische Workshopfälle.'
-    }
-  ];
+  const agentisch = window.PFEFFERMINZIA_AGENTISCH_SLIDES || [];
 
   const deckIds = {
     gesamt: ['Titel', 'Bruecke', 'Wirkung', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus', 'Tempo', 'Whiteboard', 'Contract'],
@@ -350,7 +250,7 @@
       : '';
     const frame = slide.cover
       ? `<div class="day-frame"><div class="day-head"><div class="caption">${slide.eyebrow}</div><img class="day-logo" src="${logo}" alt="Universität St.Gallen"></div>${slide.body}${avatar}<div class="day-foot"><div>${footerLabel}</div><div>${slide.type} · <strong>${String(index + 1).padStart(2, '0')} / ${selectedSlides.length}</strong></div></div></div>`
-      : `<div class="day-frame">${slide.study ? '<div class="day-stripe"></div>' : ''}<div class="day-head"><div class="caption ${slide.study ? 'mint' : ''}">${slide.eyebrow}</div><img class="day-logo" src="${logo}" alt="Universität St.Gallen"></div><div class="day-heading"><h2>${slide.title}</h2>${slide.subtitle ? `<p>${slide.subtitle}</p>` : ''}</div><div class="day-content">${slide.body}</div>${avatar}<div class="day-source">${source}</div><div class="day-foot"><div>${footerLabel}</div><div>${slide.type} · <strong>${String(index + 1).padStart(2, '0')} / ${selectedSlides.length}</strong></div></div></div>`;
+      : `<div class="day-frame ${slide.visual ? 'visual' : ''}">${slide.study ? '<div class="day-stripe"></div>' : ''}<div class="day-head"><div class="caption ${slide.study ? 'mint' : ''}">${slide.eyebrow}</div><img class="day-logo" src="${logo}" alt="Universität St.Gallen"></div><div class="day-heading"><h2>${slide.title}</h2>${slide.subtitle ? `<p>${slide.subtitle}</p>` : ''}</div><div class="day-content">${slide.body}</div>${avatar}<div class="day-source">${slide.source || source}</div><div class="day-foot"><div>${footerLabel}</div><div>${slide.type} · <strong>${String(index + 1).padStart(2, '0')} / ${selectedSlides.length}</strong></div></div></div>`;
     return `<section data-id="${slide.id}">${frame}<aside class="notes"><p>${slide.notes}</p></aside></section>`;
   }
 

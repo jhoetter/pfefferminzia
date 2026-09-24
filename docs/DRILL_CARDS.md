@@ -27,12 +27,16 @@ uv run pfefferminzia setup  # lädt bei Bedarf das gepinnte Falk-Submodul und di
 cp .env.example .env  # nur beim ersten Start; vorhandene .env nie überschreiben
 ```
 
-Trage in `.env` deine `AGENTMAIL_API_KEY`, deine `AGENTMAIL_INBOX_ID` (nicht
-die E-Mail-Adresse) und unter `WORKSHOP_ALLOWED_RECIPIENTS` **exakt** die dir
+Trage in `.env` deine `AGENTMAIL_API_KEY`, deine `AGENTMAIL_INBOX_ID` genau
+wie ausgegeben (bei AgentMail kann sie zugleich die vollständige E-Mail-Adresse sein) und unter `WORKSHOP_ALLOWED_RECIPIENTS` **exakt** die dir
 genannte Szenario-Absenderadresse ein. Lass
 `WORKSHOP_CHECKPOINT=drill-08-start` und `AUTO_SEND_ENABLED=false` stehen.
 Eine Antwort geht technisch an die Absenderadresse der Eingangsnachricht;
 deshalb muss gerade diese Adresse freigegeben sein. Keine Domain-Wildcard.
+**Wichtig:** An deine vollständige `AGENTMAIL_INBOX_ID` können auch normale
+externe Adressen wie Gmail schreiben. `WORKSHOP_ALLOWED_RECIPIENTS` ist **kein
+Eingangsfilter**; die Liste sperrt nur ausgehende Antworten. Eine private
+Testmail dient nur der Verbindungskontrolle, nicht als fiktiver Versicherungsfall.
 
 Benutze zwei Terminals **im selben Checkout**:
 
@@ -61,8 +65,13 @@ Ticket, den sichtbaren Zustandswechseln und dem Activity Log.
 
 ## Drill 8 – Die Kommandozentrale
 
-**Ziel:** Eine persönliche Inbox, eine eingehende fiktive Nachricht und ein
-Todo sind im lokalen Cockpit und über MCP nachvollziehbar.
+**Lernziel:** Du verfolgst eine Nachricht durch die Grenze zwischen externem
+Postfach und lokalem System. Du erkennst, dass Cockpit und MCP dasselbe Ticket
+sehen, leitest daraus einen sinnvollen nächsten Arbeitsschritt ab und baust
+mit Claude selbst eine kleine Verbesserung des Eingangs-Workflows.
+
+**75 Minuten:** 20′ Setup und erste Mail · 10′ Ticket in Cockpit/MCP erkunden ·
+25′ selbst mit Claude erweitern · 15′ prüfen · 5′ erklären, was sich geändert hat.
 
 **Preflight:** Prüfe in Terminal B (außerhalb von Claude) oder lass Claude
 nach deiner Zustimmung die externe Prüfung ausführen:
@@ -74,24 +83,34 @@ uv run pfefferminzia sync
 ```
 
 `status` muss `drill-08-start` zeigen; `verify` muss `ok: true` und die
-erreichbare **eigene** Inbox melden. Die Lehrperson schickt dann die fiktive
-Startnachricht. Falls sie nicht erscheint, `sync` erneut ausführen und das
-Cockpit aktualisieren. Ein grüner Preflight allein ist noch kein Abschluss.
+erreichbare **eigene** Inbox melden. Sende eine kurze Testmail an die
+vollständige persönliche AgentMail-Adresse (oder lass dir die fiktive
+Startnachricht von der Lehrperson senden). Sie erscheint gegebenenfalls erst
+nach einer Zustellverzögerung: im Cockpit „Jetzt synchronisieren“ klicken,
+Zeitpunkt und neue Ticket-ID prüfen, bei Bedarf nach kurzer Wartezeit erneut.
+Ein Sync mit „0 neu“ beweist nicht, dass die Mail nie ankommt. Ein grüner
+Preflight allein ist noch kein Abschluss.
 
-**Dein Auftrag:** Bitte Claude: „Zeig mir die neue Nachricht über MCP und
-hilf mir, ein Todo *Eingang geprüft* anzulegen. Gib mir erst einen Hinweis.“
-Prüfe Nachricht und Todo im Cockpit und schließe das Todo selbst ab. Kleine
-Python-Entwicklungsaufgabe: Ergänze mit Claude einen Test für den Todo-Wechsel
-`open → completed` und den gesetzten Abschlusszeitpunkt; Orientierung:
-`pfefferminzia/todos.py`, `tests/test_workshop.py`. Danach `uv run pytest -q`.
+**Dein Auftrag:** Bitte Claude: „Finde die gerade eingegangene Nachricht in
+MCP und Cockpit. Zeig mir dieselbe Ticket-ID und hilf mir, den nächsten
+sinnvollen Prüfschritt zu formulieren — noch keine Lösung vorwegnehmen.“ Lege
+ein **ticketbezogenes** Todo an, z. B. „PF-…: Absender und Anliegen prüfen“.
+Schließe es erst nach dem Lesen der Nachricht ab. Dann vibe-code mit Claude
+eine kleine Änderung: Beim ersten Import eines Tickets automatisch genau ein
+verknüpftes „Eingang prüfen“-Todo erzeugen, ohne Duplikat beim zweiten Sync.
+Dein zuvor manuell angelegtes Todo ist davon getrennt.
+Einstieg: `pfefferminzia/agentmail_service.py`, `pfefferminzia/todos.py` und
+ein kleiner Test. Danach `uv run pytest -q`.
 
-**Abschlussnachweis:** Eingehendes Ticket aus deiner Inbox, ein neu angelegtes
-und abgeschlossenes Todo sowie der sichtbare Statuswechsel. Es geht hier
-noch **keine** Antwort raus.
+**Abschlussnachweis:** Die neue Mail hat dieselbe Ticket-ID in Cockpit und
+MCP. Ein konkretes ticketbezogenes Todo ist nach Prüfung abgeschlossen. Deine
+kleine Codeänderung hat einen grünen Test. Es geht **keine** Antwort raus.
 
-**Hinweise, nacheinander:** (1) Ist es die richtige Inbox und wurde schon
-synchronisiert? (2) Suche in Claude nach `list_tickets`, `create_todo` und
-`update_todo`. (3) Vergleiche Todo-ID und Status im MCP-Ergebnis und Cockpit.
+**Hinweise, nacheinander:** (1) Prüfe vollständige Inbox-Adresse, letzten
+Sync-Zeitpunkt und Zustellverzögerung; die Allowlist betrifft den Eingang
+nicht. (2) Suche in Claude nach `list_tickets`, `create_todo` und
+`update_todo`. (3) Vergleiche Ticket-ID und Todo-Status in MCP und Cockpit;
+für den Code hilft ein Idempotency-Key pro Eingangsnachricht.
 Bitte Claude für jeden weiteren Hinweis ausdrücklich erst dann, wenn du ihn
 brauchst (`get_drill_guide`, `hintLevel` 1–3).
 
@@ -110,6 +129,11 @@ teilen.
 **Ziel:** Claude bereitet Kontext und Entwurf vor. Du prüfst, redigierst und
 versendest die Antwort ausdrücklich selbst.
 
+**Lernziel und 75 Minuten:** Du trennst Kundenaussage von belegter Quelle und
+behältst letzte Textänderung und Versand in Menschenhand. 20′ Fall/Quellen ·
+20′ Entwurf/Edit/Versand · 20′ selbst Belegprüfung verbessern · 10′ Test/Audit ·
+5′ Rückblick.
+
 **Preflight:** Der aktive Zustand muss `drill-09-start` sein. Prüfe:
 
 ```bash
@@ -126,10 +150,11 @@ AgentMail-Ticket**, nicht einen nicht versendbaren Demofall.
 Vertrag; bestätige die Zuordnung. Lass die **exakte** Tarifgeneration und den
 Beleg lesen, dann einen begründeten Antwortentwurf speichern. Bearbeite den
 Wortlaut selbst im Cockpit. Prüfe Empfänger, Text und Quellen und bestätige
-den Versand erst dann. Kleine Python-Entwicklungsaufgabe: Ergänze einen Test,
-der für den gewählten Vertrag die passende Tarifgeneration verlangt;
-Orientierung: `tests/test_workflow.py`, `pfefferminzia/store.py`. Danach
-`uv run pytest -q`.
+den Versand erst dann. Vibe-code mit Claude eine kleine Belegkontrolle:
+Ergänze einen Test, der falsche oder fehlende Tarifgeneration im Antwortpfad
+sichtbar macht, und verbessere eine Fehlermeldung oder Schutzregel, falls sie
+fehlt. Orientierung: `tests/test_workflow.py`, `pfefferminzia/store.py`.
+Danach `uv run pytest -q`.
 
 **Abschlussnachweis:** Ticket mit bestätigter Person, Vertrag und
 Tarifgeneration, gespeicherter Entwurf, nachvollziehbare menschliche Änderung
@@ -159,6 +184,11 @@ gelingt, den offiziellen nächsten Stand wie unten beschrieben vorbereiten.
 Antwort bereit. Ohne **aktuelle, ausdrückliche** menschliche Freigabe darf
 weder die Entscheidung noch eine Nachricht den Fall verlassen.
 
+**Lernziel und 75 Minuten:** Vollständige Agentenvorbereitung ist erlaubt,
+externe Wirkung bleibt bis zur aktuellen Freigabe gesperrt. 20′ zwei Fälle ·
+25′ Review-Pfad selbst verbessern · 20′ Freigabe/Ablehnung/Edit · 5′ Audit ·
+5′ Rückblick.
+
 **Preflight:** Der aktive Zustand muss `drill-10-start` sein:
 
 ```bash
@@ -175,10 +205,11 @@ Entscheidungsbegründung und Antwort vollständig vorbereiten und zur Prüfung
 einreichen. Prüfe einen Vorschlag und gib ihn ausdrücklich frei; lehne den
 anderen mit konkreter Begründung ab und lass ihn überarbeiten. Eine
 Textänderung muss die frühere Freigabe aufheben. Senden ist ein eigener,
-ausdrücklich bestätigter Schritt. Kleine Python-Entwicklungsaufgabe:
-Ergänze einen Test für „Freigabe → Textänderung → Freigabe ungültig“;
-Orientierung: `tests/test_workshop_end_to_end.py`, `pfefferminzia/store.py`.
-Danach `uv run pytest -q`.
+ausdrücklich bestätigter Schritt. Vibe-code mit Claude eine kleine
+Review-Verbesserung: Zeige den Ablehnungsgrund oder den Verlust einer
+Freigabe im Cockpit deutlicher und sichere den Zustand mit einem Test ab.
+Orientierung: `web/workshop.js`, `tests/test_workshop_end_to_end.py`;
+kein Node-Build nötig. Danach `uv run pytest -q`.
 
 **Abschlussnachweis:** Zwei Review-Fälle, eine Freigabe und eine begründete
 Ablehnung im Activity Log; der abgelehnte Fall ist wieder in Bearbeitung.
@@ -205,6 +236,10 @@ nächsten Stand getrennt laden; der alte Arbeitsstand bleibt erhalten.
 automatisch durch; eine zweite wird im Fenster geändert, eine dritte aus der
 Queue entfernt. Der Unterschied zur verpflichtenden Freigabe wird erlebt.
 
+**Lernziel und 75 Minuten:** Du vergleichst „Mensch muss freigeben“ mit
+„Mensch kann im Fenster eingreifen“. 20′ Routing/Queue · 20′ selbst Queue
+verbessern · 20′ Edit/Stopp · 10′ Uhr/Versand/Audit · 5′ Rückblick.
+
 **Preflight:** Der aktive Zustand muss `drill-11-start` sein. Der offizielle
 Checkpoint setzt den Auto-Send-Schalter in **diesem** Worktree automatisch.
 Claude zeigt diese Wirkung vor dem Laden im Plan und fragt dich ausdrücklich
@@ -225,10 +260,11 @@ für jedes eine belegte Antwort vorbereiten. Reiche alle drei für das
 24-Stunden-Fenster ein. Prüfe den Countdown: Fall A bleibt unverändert; Fall
 B wird im Fenster bearbeitet (damit entfällt sein alter Termin); Fall C wird
 mit Begründung aus der Queue genommen. Erst wenn das sichtbar ist, den Sprung
-der **lokalen Workshop-Uhr** um 24 Stunden ausdrücklich bestätigen. Kleine
-Python-Entwicklungsaufgabe: Ergänze einen Test, dass ein Edit einen geplanten
-Versand aufhebt; Orientierung: `tests/test_workshop_end_to_end.py`,
-`pfefferminzia/store.py`. Danach `uv run pytest -q`.
+der **lokalen Workshop-Uhr** um 24 Stunden ausdrücklich bestätigen. Vibe-code
+mit Claude eine kleine Queue-Verbesserung: Zeige einen abgebrochenen Termin
+deutlicher an oder teste, dass Edit und erneuter Versandlauf kein Duplikat
+erzeugen. Orientierung: `tests/test_workshop_end_to_end.py`,
+`pfefferminzia/store.py`, `web/workshop.js`. Danach `uv run pytest -q`.
 
 **Abschlussnachweis:** Genau ein unverändert geplanter Fall wurde automatisch
 an die freigegebene Workshop-Adresse versendet. Der geänderte Fall zeigt

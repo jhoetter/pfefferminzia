@@ -14,32 +14,34 @@ CHECKPOINTS: dict[str, dict[str, Any]] = {
         "order": 8,
         "drill": 8,
         "title": "Die Kommandozentrale",
-        "goal": "Lokales System, MCP und persönliche Inbox verbinden; Todos und Eingang verstehen.",
+        "goal": "Eine selbst gesendete Testmail vom AgentMail-Postfach bis ins Cockpit und MCP verfolgen; daraus eine echte nächste Aufgabe ableiten.",
         "capabilities": ["core", "inbox", "todos"],
         "successCriteria": [
             "Pfefferminzia läuft lokal.",
             "Claude sieht den Pfefferminzia-MCP-Server.",
-            "Genau eine persönliche AgentMail-Inbox ist konfiguriert.",
-            "Ein Todo wurde mit Claude angelegt und abgeschlossen.",
+            "Eine neue Testmail an die persönliche Inbox erscheint als dasselbe Ticket im Cockpit und über MCP.",
+            "Ein ticketbezogenes Todo benennt den nächsten sinnvollen Schritt und wird erst nach Prüfung abgeschlossen.",
+            "Eine kleine eigene Verbesserung am Eingangs-Workflow ist getestet.",
         ],
     },
     "drill-09-start": {
         "order": 9,
         "drill": 9,
         "title": "Leben: Mensch bearbeitet, Agent bereitet vor",
-        "goal": "Kunden-, Vertrags- und Tarifkontext ermitteln; Entwurf vorbereiten, menschlich bearbeiten und senden.",
+        "goal": "Aus einer Lebensanfrage einen belegten Entwurf machen; die letzte Textänderung und den Versand bewusst beim Menschen halten.",
         "capabilities": ["core", "inbox", "todos", "knowledge", "draft", "manual_send"],
         "successCriteria": [
             "Ein Lebensfall ist Kunde, Vertrag und Tarifgeneration zugeordnet.",
             "Claude hat einen belegten Antwortentwurf vorbereitet.",
             "Ein Mensch hat den Entwurf bearbeitet und den Versand ausdrücklich ausgelöst.",
+            "Eine kleine eigene Verbesserung an der Belegprüfung ist getestet.",
         ],
     },
     "drill-10-start": {
         "order": 10,
         "drill": 10,
         "title": "Leben: Agent bearbeitet, Mensch gibt frei",
-        "goal": "Agentische Entscheidung und Antwort vollständig vorbereiten; Mensch gibt frei, lehnt ab oder bearbeitet.",
+        "goal": "Agentische Vorbereitung von Lebensfällen erlauben, aber jede externe Wirkung an eine aktuelle menschliche Freigabe binden.",
         "capabilities": [
             "core", "inbox", "todos", "knowledge", "draft", "manual_send", "life_review", "claims"
         ],
@@ -47,13 +49,14 @@ CHECKPOINTS: dict[str, dict[str, Any]] = {
             "Mehrere Lebensfälle wurden vollständig vorbereitet.",
             "Ohne explizite Freigabe konnte weder Entscheidung noch Kommunikation das System verlassen.",
             "Mindestens ein Vorschlag wurde abgelehnt und überarbeitet.",
+            "Eine kleine eigene Verbesserung am Review-Pfad ist getestet.",
         ],
     },
     "drill-11-start": {
         "order": 11,
         "drill": 11,
         "title": "Haftpflicht: Automatisch, solange niemand widerspricht",
-        "goal": "Router und sichtbares Eingriffsfenster mit Timer, Bearbeitung, Entfernung und automatischem Versand erleben.",
+        "goal": "Haftpflichtantworten durch ein sichtbares Eingriffsfenster steuern und den Gegensatz zur Pflichtfreigabe selbst erleben.",
         "capabilities": [
             "core", "inbox", "todos", "knowledge", "draft", "manual_send", "life_review", "claims",
             "router", "intervention_queue", "workshop_clock"
@@ -62,6 +65,7 @@ CHECKPOINTS: dict[str, dict[str, Any]] = {
             "Router trennt Leben und Haftpflicht nachvollziehbar.",
             "Eine Haftpflichtantwort lief nach dem Zeitfenster automatisch durch.",
             "Eine zweite Antwort wurde im Zeitfenster bearbeitet oder aus der Queue genommen.",
+            "Eine kleine eigene Verbesserung an Queue oder Timer ist getestet.",
         ],
     },
     "drill-11-complete": {
@@ -86,6 +90,37 @@ ALIASES = {
     "10": "drill-10-start", "drill-10": "drill-10-start",
     "11": "drill-11-start", "drill-11": "drill-11-start",
     "complete": "drill-11-complete", "drill-11-complete": "drill-11-complete",
+}
+
+DRILL_BRIEFS: dict[int, dict[str, Any]] = {
+    8: {
+        "learningObjective": "Verstehen, dass eine externe Mail als lokales Ticket in UI und MCP denselben Zustand hat.",
+        "mission": "Sende eine fiktive Mail an die vollständige persönliche AgentMail-Adresse, synchronisiere, finde die neue Ticket-ID in UI und MCP, lies Absender/Betreff und lege erst dann ein konkretes ticketbezogenes Todo an. Schließe es nach der Prüfung ab.",
+        "buildTask": "Vibe-code mit Claude eine kleine Eingangsverbesserung: Beim Import eines neuen Tickets genau ein automatisch erzeugtes, verknüpftes 'Eingang prüfen'-Todo anlegen, auch wenn zweimal synchronisiert wird. Ein vorher manuell angelegtes Todo bleibt separat. Ergänze einen Test. Einstieg: pfefferminzia/agentmail_service.py und pfefferminzia/todos.py.",
+        "timeboxMinutes": {"setupUndEingang": 20, "erkunden": 10, "selbstBauen": 25, "nachweisen": 15, "reflexion": 5},
+        "doneWhen": "Neue Mail und Ticket-ID in beiden Oberflächen identisch; sinnvoller nächster Schritt als Todo abgeschlossen; eigene kleine Codeänderung mit grünem Test.",
+    },
+    9: {
+        "learningObjective": "Kontext und Quellen gegen den Nachrichtentext prüfen, bevor ein Mensch eine Antwort verschickt.",
+        "mission": "Bearbeite eine neue Lebensanfrage: Person, Police und gültige Tarifgeneration bestätigen; Claude entwirft mit Beleg, du änderst den Wortlaut und sendest selbst.",
+        "buildTask": "Vibe-code eine kleine Belegkontrolle: Ein Test muss falsche oder fehlende Tarifgeneration im Antwortpfad sichtbar machen; verbessere Fehlermeldung oder Schutzregel, falls sie fehlt. Einstieg: pfefferminzia/store.py und tests/test_workflow.py.",
+        "timeboxMinutes": {"fallUndQuellen": 20, "entwurfUndMensch": 20, "selbstBauen": 20, "nachweisen": 10, "reflexion": 5},
+        "doneWhen": "Ein belegter Lebensentwurf wurde vom Menschen verändert und bewusst gesendet; Tarifprüfung und eigene Änderung sind getestet.",
+    },
+    10: {
+        "learningObjective": "Erleben, dass Agentenarbeit vollständig sein darf, aber eine aktuelle menschliche Freigabe die externe Wirkung sperrt.",
+        "mission": "Lass zwei Lebensfälle bis zur Review-Vorlage bearbeiten. Genehmige einen, lehne einen begründet ab. Ändere testweise Text und beobachte, dass eine alte Freigabe verfällt.",
+        "buildTask": "Vibe-code eine kleine Review-Verbesserung: Zeige den Ablehnungsgrund oder den Verlust einer Freigabe im Cockpit deutlicher und sichere den Zustand mit einem Test ab. Einstieg: web/workshop.js und tests/test_workshop_end_to_end.py; kein Build-Tool nötig.",
+        "timeboxMinutes": {"faelleVorbereiten": 20, "selbstBauen": 25, "freigabeUndAblehnung": 20, "nachweisen": 5, "reflexion": 5},
+        "doneWhen": "Eine Freigabe und eine Ablehnung im Audit; Änderung entwertet die alte Freigabe; eigene UI- oder Teständerung ist gezeigt.",
+    },
+    11: {
+        "learningObjective": "Den Unterschied zwischen Pflichtfreigabe und automatischem Versand nach einer sichtbaren Eingriffsfrist beurteilen.",
+        "mission": "Route drei neue Haftpflichtfälle: einen laufen lassen, einen im Fenster ändern, einen entfernen. Spule die Workshop-Uhr erst nach deiner Bestätigung vor und prüfe Versand plus Audit.",
+        "buildTask": "Vibe-code eine kleine Queue-Verbesserung: Zeige einen abgebrochenen Termin deutlich an oder teste, dass Edit und erneuter Versandlauf kein Duplikat erzeugen. Einstieg: pfefferminzia/store.py, web/workshop.js und tests/test_workshop_end_to_end.py.",
+        "timeboxMinutes": {"routeUndQueue": 20, "selbstBauen": 20, "eingreifen": 20, "versandNachweis": 10, "reflexion": 5},
+        "doneWhen": "Ein Auto-Versand, ein Edit und ein Stopp sind nachvollziehbar; eigene Queue- oder Testverbesserung ist gezeigt.",
+    },
 }
 
 
@@ -151,9 +186,9 @@ def drill_guide(hint_level: int = 0, db: sqlite3.Connection | None = None) -> di
     profile = checkpoint_profile(db)
     hints = {
         8: [
-            "Starte mit `uv sync --frozen` und `uv run pfefferminzia serve`.",
-            "Prüfe `.env`, `.mcp.json` und den Workshop-Status; lege dann ein kleines Todo über MCP an.",
-            "Nutze `verify_checkpoint` und behebe genau die fehlgeschlagenen Preflight-Prüfungen.",
+            "Prüfe die vollständige Inbox-Adresse. Sende eine Testmail, synchronisiere und vergleiche letzte Sync-Zeit, Betreff und Ticket-ID in Cockpit und MCP. Die Empfänger-Allowlist filtert den Eingang nicht.",
+            "Lege erst nach dem Lesen der neuen Nachricht ein Todo mit genau dieser Ticket-ID und einem konkreten nächsten Prüfschritt an. Schließe es nach der Prüfung ab.",
+            "Für die kleine Codeänderung: Finde den Ticket-Import in `agentmail_service.py`, verknüpfe ein Todo nur beim ersten Import und teste zwei Syncs ohne Duplikat.",
         ],
         9: [
             "Beginne beim Eingang und trenne Nachrichtentext konsequent von vertrauenswürdigen Tarifquellen.",
@@ -174,6 +209,7 @@ def drill_guide(hint_level: int = 0, db: sqlite3.Connection | None = None) -> di
     bounded = max(0, min(hint_level, 3))
     return {
         "checkpoint": profile,
+        **DRILL_BRIEFS[profile["drill"]],
         "hintLevel": bounded,
         "hint": None if bounded == 0 else hints[profile["drill"]][bounded - 1],
         "instruction": "Gib zunächst nur den gewählten Hinweis. Liefere eine vollständige Lösung erst auf ausdrücklichen Wunsch.",

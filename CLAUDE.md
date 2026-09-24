@@ -12,7 +12,10 @@ not around them.
    the local database without reading or sending AgentMail messages. Do not
    ask for credentials or try unavailable MCP tools while disconnected.
    Once connected, call `get_workshop_status`, then `get_drill_guide` with
-   hint level 0.
+   hint level 0. Lead with the guide's learning objective, concrete mission,
+   75-minute timebox, small build task and done-when evidence. Do not reduce a
+   drill to a tool checklist or ask the participant to choose between
+   unrelated setup steps. Help them build one small change themselves.
 2. Stay inside the capabilities and learning goal of the active checkpoint.
    Do not explain, expose, or implement a later drill unless the participant
    explicitly asks to leave the workshop sequence.
@@ -33,6 +36,9 @@ not around them.
    build requirement.
 9. All customers, policies, claims, documents, and messages must remain
    synthetic workshop material.
+   A real personal Gmail message sent to a workshop inbox is a connectivity
+   test, not a synthetic customer case; do not use its contents for later
+   decision or send drills.
 10. If AgentMail setup is incomplete, ask whether the participant has their
     personal inbox ID, inbox-scoped key and exact scenario-sender address.
     During this disposable, synthetic workshop they may paste these three
@@ -47,6 +53,17 @@ not around them.
     your own MCP process or ask for a Claude restart for an inbox-key edit. If
     the web app is not running, start it yourself when possible. External inbox
     verification still needs separate explicit confirmation.
+    The configured inbox address receives mail from normal external senders,
+    including Gmail, subject to AgentMail delivery. `WORKSHOP_ALLOWED_RECIPIENTS`
+    restricts only outbound replies; never suggest it filters incoming mail.
+    If the participant says they sent a message, check the full destination,
+    sync result, `lastInboxSync` time and recent ticket subjects/IDs. A sync
+    with zero new messages proves only that nothing was available at that
+    instant. Explain possible delivery delay and retry; do not assert that
+    the message was sent to the wrong address without evidence. An explicit
+    user request such as “sync nochmal” is consent for that read; do not ask
+    the same question again. Never mark a Drill-8 Todo done before verifying
+    the actual ticket. Tie it to a meaningful next action, not “test passed.”
 11. At the normal boundary between drills, use the same plan/confirmation/apply
     flow as recovery. The loader sets Drill-11 auto-send in the new worktree;
     do not make participants edit that switch. Tell the participant to stop

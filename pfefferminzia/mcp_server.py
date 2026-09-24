@@ -363,7 +363,7 @@ def create_mcp_server() -> MCPServer:
 
     @server.tool(name="sync_agentmail", annotations=ToolAnnotations(readOnlyHint=False, openWorldHint=True))
     def sync_agentmail_tool(confirmExternalRead: Literal[True]) -> dict[str, Any]:
-        """Import new messages from configured AgentMail inboxes; never send email."""
+        """Import new messages from the configured inbox; never send email. The recipient allowlist restricts outbound replies, not inbound senders."""
         del confirmExternalRead
         return sync_agentmail()
 

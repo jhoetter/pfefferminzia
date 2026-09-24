@@ -7,7 +7,7 @@ from typing import Any
 
 from .claims import ensure_workshop_claims
 from .agentmail_service import agentmail_configuration
-from .checkpoints import checkpoint_profile
+from .checkpoints import DRILL_BRIEFS, checkpoint_profile
 from .database import get_database
 from .todos import list_todos
 from .workshop_clock import clock_status
@@ -151,6 +151,10 @@ def ensure_workshop_fixtures(db: sqlite3.Connection | None = None) -> dict[str, 
 def get_workshop_status(db: sqlite3.Connection | None = None) -> dict[str, Any]:
     db = db or get_database()
     profile = checkpoint_profile(db)
+    last_sync = db.execute(
+        "SELECT inbox_id, imported_messages, imported_tickets, status, error, created_at "
+        "FROM sync_runs ORDER BY id DESC LIMIT 1"
+    ).fetchone()
     demo_tickets = db.execute(
         "SELECT COUNT(*) AS count FROM tickets WHERE source = 'demo' AND workshop_min_stage <= ?",
         (profile["order"],),
@@ -169,8 +173,21 @@ def get_workshop_status(db: sqlite3.Connection | None = None) -> dict[str, Any]:
         "workshopClaims": claims,
         "importedTruthTables": truth_tables,
         "checkpoint": profile,
+        "drillBrief": DRILL_BRIEFS[profile["drill"]],
         "clock": clock_status(db),
         "agentMail": agentmail_configuration(probe=False),
+        "lastInboxSync": (
+            {
+                "inboxId": last_sync["inbox_id"],
+                "importedMessages": last_sync["imported_messages"],
+                "importedTickets": last_sync["imported_tickets"],
+                "status": last_sync["status"],
+                "error": last_sync["error"],
+                "at": last_sync["created_at"],
+            }
+            if last_sync else None
+        ),
+        "inboundSenderPolicy": "Any sender may write to the configured inbox, subject to AgentMail delivery. WORKSHOP_ALLOWED_RECIPIENTS restricts outbound replies only.",
         "todos": list_todos(db=db),
         "externalEffects": {
             "demoEmailSendBlocked": True,

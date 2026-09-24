@@ -78,16 +78,21 @@ Eingriffe und das endgültige Ergebnis fest.
 
 ### Rhythmus der Drills
 
-Jeder 75-minütige Drill folgt derselben Struktur. Damit bleibt der Kern für alle
-erreichbar und schnellere Gruppen erhalten sinnvolle Vertiefungen.
+Jeder Drill hat eine beobachtbare Produktmission **und** eine kleine eigene
+Codeänderung. Der Verifier prüft nur die Startbereitschaft; abgeschlossen ist
+ein Drill erst mit einem Fallnachweis und einem getesteten eigenen Beitrag.
 
-| Dauer | Phase |
-| --- | --- |
-| 15 Min. | Rolle, Fall, Kontrollmuster und beobachtbare Erfolgskriterien |
-| 30 Min. | Kernpfad, den alle Teilnehmenden selbst mit Claude weiterentwickeln |
-| 15 Min. | Kontext, Quellen, Tool-Aufrufe und Zustandsänderungen untersuchen, verifizieren oder per Checkpoint aufholen |
-| 8 Min. | Optionale Challenge Card, Buddy-Unterstützung oder Verfeinerung |
-| 7 Min. | Gemeinsame Auswertung und Übergang zur nächsten Kontrollstufe |
+| Drill | Kernpfad | Selbst bauen | Nachweis + Rückblick |
+| --- | ---: | ---: | ---: |
+| 8 · Eingang verstehen | 30 Min. | 25 Min. | 20 Min. |
+| 9 · Belegter Entwurf | 40 Min. | 20 Min. | 15 Min. |
+| 10 · Pflichtfreigabe | 40 Min. | 25 Min. | 10 Min. |
+| 11 · Eingriffsfenster | 40 Min. | 20 Min. | 15 Min. |
+
+Die genauen Teilziele, Dateieinstiege und 75-Minuten-Zeitboxen stehen in den
+[Drill-Karten](DRILL_CARDS.md) und im MCP-Werkzeug `get_drill_guide` schon bei
+Hinweis-Level 0. Claude soll zuerst Lernziel, Mission und Bauaufgabe nennen,
+nicht bloß ein zufälliges Todo vorschlagen.
 
 Die Teilnehmenden können in Paaren zusammenarbeiten, betreiben aber jeweils ein
 isoliertes lokales System mit eigener Inbox. Der Lehrende kann nach jeder Phase

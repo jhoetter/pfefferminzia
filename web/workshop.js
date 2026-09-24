@@ -159,7 +159,13 @@ function renderPanel() {
   if (!panel || !workshopState.dashboard) return;
   const workshop = workshopState.dashboard.workshop;
   const profile = workshop.checkpoint;
+  const brief = workshop.drillBrief;
   const openTodos = workshopState.todos.filter((todo) => todo.status === "open");
+  const inboxTickets = workshopState.dashboard.tickets
+    .filter((ticket) => ticket.source === "agentmail")
+    .sort((a, b) => String(b.lastMessageAt).localeCompare(String(a.lastMessageAt)))
+    .slice(0, 3);
+  const lastSync = workshop.lastInboxSync;
   const scheduled = workshopState.dashboard.tickets.filter((ticket) => ticket.status === "scheduled");
   const reviews = workshopState.dashboard.tickets.filter((ticket) => ticket.status === "awaiting_human" && ticket.productLine === "life");
   const manualOutbox = workshopState.dashboard.tickets.filter((ticket) => ticket.hasDraft && ticket.productLine === "life" && !["sent", "closed", "awaiting_human"].includes(ticket.status));
@@ -174,10 +180,23 @@ function renderPanel() {
         <span>AgentMail<strong class="${workshop.agentMail.ready ? "ok" : "warn"}">${workshop.agentMail.ready ? "konfiguriert" : "Setup fehlt"}</strong></span>
         <span>Auto-Versand<strong class="${workshopState.dashboard.autoSendEnabled ? "ok" : "warn"}">${workshopState.dashboard.autoSendEnabled ? "aktiv" : "deaktiviert"}</strong></span>
       </div>
+      <section class="workshop-card"><h3>Deine AgentMail-Inbox</h3>
+        <p class="empty">${workshop.agentMail.inboxId ? `Nachrichten an <strong>${escapeHtml(workshop.agentMail.inboxId)}</strong> können aus normalen Postfächern gesendet werden.` : "Noch keine persönliche Inbox eingerichtet. Trage Inbox-ID und Schlüssel in .env ein."} Die Empfänger-Allowlist begrenzt nur ausgehende Antworten, nicht eingehende Mails.</p>
+        <div class="workshop-actions"><button class="action" data-action="sync-inbox" ${workshop.agentMail.ready ? "" : "disabled"}>Jetzt synchronisieren</button></div>
+        <p class="empty">${lastSync ? `Letzter Abgleich: ${escapeHtml(lastSync.at)} · ${lastSync.importedMessages} neue Nachricht(en) · ${lastSync.importedTickets} neue Tickets${lastSync.status === "error" ? ` · Fehler: ${escapeHtml(lastSync.error || "unbekannt")}` : ""}` : "Noch kein Inbox-Abgleich. Nach dem Senden kann die Zustellung kurz dauern."}</p>
+        ${inboxTickets.length ? `<ol>${inboxTickets.map((ticket) => `<li>${escapeHtml(ticket.ticketNumber)} · ${escapeHtml(ticket.subject)}</li>`).join("")}</ol>` : '<p class="empty">Noch kein importiertes Ticket. Nach einer Testmail synchronisieren und erneut prüfen.</p>'}
+      </section>
+      <section class="workshop-card"><h3>Dein Lernziel</h3><p>${escapeHtml(brief?.learningObjective || profile.goal)}</p>
+        <p class="empty"><strong>Mission:</strong> ${escapeHtml(brief?.mission || profile.goal)}</p>
+        <p class="empty"><strong>Selbst bauen:</strong> ${escapeHtml(brief?.buildTask || "")}</p>
+        <p class="empty"><strong>Fertig, wenn:</strong> ${escapeHtml(brief?.doneWhen || "")}</p>
+      </section>
       <section class="workshop-card"><h3>Erfolgskriterien</h3><ol>${profile.successCriteria.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ol></section>
       <section class="workshop-card"><h3>Todos <small>${openTodos.length} offen</small></h3>
-        ${workshopState.todos.length ? workshopState.todos.map(taskMarkup).join("") : '<p class="empty">Noch keine Todos. Lege das erste mit Claude oder hier an.</p>'}
-        <form class="workshop-todo-form"><input name="title" maxlength="300" placeholder="Neues Workshop-Todo…" required><button>Anlegen</button></form>
+        ${workshopState.todos.length ? workshopState.todos.map(taskMarkup).join("") : '<p class="empty">Noch keine Todos. Lege eine konkrete Aufgabe zu einem eingegangenen Ticket an.</p>'}
+        <form class="workshop-todo-form"><input name="title" maxlength="300" placeholder="Nächster Prüfschritt…" required>
+          <select name="ticketNumber" aria-label="Todo mit Ticket verknüpfen"><option value="">Ohne Ticket</option>${inboxTickets.map((ticket) => `<option value="${escapeHtml(ticket.ticketNumber)}">${escapeHtml(ticket.ticketNumber)} · ${escapeHtml(ticket.subject)}</option>`).join("")}</select>
+          <button>Anlegen</button></form>
       </section>
       ${hasCapability("manual_send") && !hasCapability("life_review") ? `<section class="workshop-card"><h3>Menschlicher Postausgang</h3>${manualOutbox.length ? manualOutbox.map(manualOutboxMarkup).join("") : '<p class="empty">Noch kein versandbereiter Lebensentwurf.</p>'}</section>` : ""}
       ${hasCapability("life_review") ? `<section class="workshop-card"><h3>Verpflichtende Freigabe <small>${reviews.length}</small></h3>${reviews.length ? reviews.map(reviewMarkup).join("") : '<p class="empty">Keine Lebensantwort wartet auf Prüfung.</p>'}</section>` : ""}
@@ -249,8 +268,10 @@ function install() {
   panel.addEventListener("submit", (event) => {
     if (!event.target.matches(".workshop-todo-form")) return;
     event.preventDefault();
-    const title = new FormData(event.target).get("title");
-    perform(() => request("/api/todos", { method: "POST", body: JSON.stringify({ title }) }));
+    const formData = new FormData(event.target);
+    const title = formData.get("title");
+    const ticketNumber = formData.get("ticketNumber") || null;
+    perform(() => request("/api/todos", { method: "POST", body: JSON.stringify({ title, ticketNumber }) }));
   });
 
   panel.addEventListener("click", (event) => {
@@ -290,6 +311,7 @@ function install() {
           perform(() => request("/api/workshop/clock/advance", { method: "POST", body: JSON.stringify({ hours: 24, confirmAdvance: true }) }));
         }
       },
+      "sync-inbox": () => perform(() => request("/api/sync", { method: "POST", body: "{}" })),
       verify: () => perform(async () => { workshopState.verification = await request("/api/workshop/verify"); }),
       "verify-external": () => {
         if (window.confirm("Darf Pfefferminzia die konfigurierte AgentMail-Inbox jetzt erreichen und lesen?")) {
