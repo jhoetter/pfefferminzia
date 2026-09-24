@@ -1,4 +1,4 @@
-# Generalprobe vom 23. September 2026
+# Generalprobe vom 23.–24. September 2026
 
 Diese Notiz trennt **geprüfte Software** von **noch nötiger Kursorganisation**.
 Sie ist kein Nachweis für ein bereits provisioniertes 17-Personen-Setup.
@@ -7,7 +7,8 @@ Sie ist kein Nachweis für ein bereits provisioniertes 17-Personen-Setup.
 
 | Probe | Ergebnis |
 | --- | --- |
-| `uv run pytest -q` | 30 Tests grün; eine externe Starlette-Deprecation-Warnung |
+| `uv run pytest -q` | 33 Tests grün; eine externe Starlette-Deprecation-Warnung |
+| Kaltstart ohne Submodul am 24. September | Normaler Remote-Clone ohne `--recurse-submodules`: `setup` lädt den gepinnten Datensatz und richtet Drill 8 ein. Ein zweiter solcher Clone startete den MCP-Server direkt; auch dort wurde das Submodul automatisch nachgeladen und `checkpoint status` meldete Drill 8. |
 | HTTP-Drill 8–11 mit isolierter SQLite-DB und Fake-AgentMail | Inbox/Todo, menschlich editierte Lebensantwort, separate Freigabe und Ablehnung, Haftpflicht-Queue mit Auto-Send/Edit/Stopp durchgelaufen; keine Netz-Mails |
 | MCP-Checkpoint-Wechsel aus aktivem Drill 8 | Vorheriger Worktree mit geänderter und unversionierter Datei blieb unverändert; Drill-9-Ziel hatte richtige `.env` **und** SQLite-Stufe; ohne Bestätigung kein Apply |
 | Fehler beim Worktree-Aufbau | Teil-Worktree entfernt, Quelle und Plan erhalten; erneuter Versuch erfolgreich |
