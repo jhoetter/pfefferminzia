@@ -7,13 +7,16 @@ Sie ist kein Nachweis für ein bereits provisioniertes 17-Personen-Setup.
 
 | Probe | Ergebnis |
 | --- | --- |
-| `uv run pytest -q` | 33 Tests grün; eine externe Starlette-Deprecation-Warnung |
+| `uv run pytest -q` am 24. September | 40 Tests grün; eine externe Starlette-Deprecation-Warnung |
 | Kaltstart ohne Submodul am 24. September | Normaler Remote-Clone ohne `--recurse-submodules`: `setup` lädt den gepinnten Datensatz und richtet Drill 8 ein. Ein zweiter solcher Clone startete den MCP-Server direkt; auch dort wurde das Submodul automatisch nachgeladen und `checkpoint status` meldete Drill 8. |
 | HTTP-Drill 8–11 mit isolierter SQLite-DB und Fake-AgentMail | Inbox/Todo, menschlich editierte Lebensantwort, separate Freigabe und Ablehnung, Haftpflicht-Queue mit Auto-Send/Edit/Stopp durchgelaufen; keine Netz-Mails |
 | MCP-Checkpoint-Wechsel aus aktivem Drill 8 | Vorheriger Worktree mit geänderter und unversionierter Datei blieb unverändert; Drill-9-Ziel hatte richtige `.env` **und** SQLite-Stufe; ohne Bestätigung kein Apply |
 | Fehler beim Worktree-Aufbau | Teil-Worktree entfernt, Quelle und Plan erhalten; erneuter Versuch erfolgreich |
 | Browser bei 1440 px und 390 px | Stufengrenzen 8–11, Fokus/Escape, Logo, Queue-Timer, Bearbeiten/Stopp und geöffneter Ticket-Drawer geprüft |
 | AgentMail-Pilot mit drei Free-Tier-Inboxen | Zwei Teilnehmer-Keys sind auf jeweils ihre Inbox beschränkt; externe Drill-8-Prüfung und synthetischer Eingang klappten; aus einer Pilot-Inbox ging eine geprüfte Antwort an die Dozenten-Inbox |
+| Inbox-Konfiguration im laufenden Prozess | TestClient-App blieb geöffnet: Nach neuer `.env` wurde AgentMail ohne Neustart als bereit angezeigt; unvollständige Konfiguration lässt das Cockpit offen, blockiert aber externe Aktionen. |
+| Drill-11-Schalter beim Recovery | Testet fünf offizielle Zustände: 8–10 schreiben `false`, 11 Start und Complete `true`; geerbte Umgebungswerte werden nicht übernommen. |
+| Foliensätze | Acht Deck-Links erreichbar; Inhalte nach Deck gefiltert und mit lokaler JavaScript-Ausführung auf 9/15/8/4/4/4/4/2 Folien geprüft. Kein Browser-Screenshot-Test der neuen Folien. |
 
 Die Browser- und Fake-Mail-Proben haben **keinen externen Versand** ausgelöst.
 Der Pilot-Versand war eine separate, zuvor freigegebene synthetische Probe
@@ -31,8 +34,9 @@ zwischen eigenen Workshop-Inboxen. Die konkrete Testfolge liegt in
 - Exakte Dozenten-Szenarioadresse in jede Empfänger-Allowlist eintragen und
   zunächst einen Pilot-Roundtrip testen; kein Domain-Wildcard nötig.
 - Sieben synthetische Szenarionachrichten pro Teilnehmer vorbereiten und
-  gestaffelt senden. Drill 11 erst mit geprüfter Allowlist und bewusst
-  aktiviertem `AUTO_SEND_ENABLED=true` starten.
+  gestaffelt senden. Drill 11 erst mit geprüfter Allowlist und bestätigtem
+  offiziellen Checkpoint starten; der Loader setzt `AUTO_SEND_ENABLED=true`
+  selbst im neuen Worktree.
 - Claude-Sitzplätze/Tokenverbrauch und zwei bis drei genehmigte Reserve-Zugänge
   organisatorisch klären; die [Teilnehmerkarten](DRILL_CARDS.md) funktionieren
   als Offline-/Buddy-Fallback.
