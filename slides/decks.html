@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pfefferminzia · Präsentationen</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, sans-serif; background: #f6ebd0; color: #171717; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    main { max-width: 1120px; margin: 0 auto; padding: 56px 24px 80px; }
+    .eyebrow { display: inline-block; padding: 7px 12px; border: 2px solid #171717; background: #f9d949; font-size: .82rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+    h1 { margin: 24px 0 12px; font-size: clamp(2.5rem, 7vw, 5rem); line-height: .98; letter-spacing: -.045em; }
+    .intro { max-width: 720px; margin-bottom: 38px; color: #4a3d24; font-size: 1.2rem; line-height: 1.45; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+    a { display: block; min-height: 172px; padding: 23px; border: 3px solid #171717; background: #fffbed; color: inherit; text-decoration: none; box-shadow: 6px 6px 0 #171717; transition: transform 160ms cubic-bezier(.23,1,.32,1), box-shadow 160ms cubic-bezier(.23,1,.32,1); }
+    a:hover { transform: translate(-2px,-2px); box-shadow: 8px 8px 0 #171717; }
+    a:active { transform: scale(.97); }
+    a:focus-visible { outline: 3px solid #2456c7; outline-offset: 5px; }
+    a small { color: #2456c7; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+    a strong { display: block; margin: 18px 0 8px; font-size: 1.55rem; line-height: 1.05; }
+    a span { color: #4a3d24; line-height: 1.35; }
+    .featured { background: #d7ebdd; }
+    footer { margin-top: 30px; color: #6b5b3a; font-size: .95rem; }
+    @media (prefers-reduced-motion: reduce) { a { transition: none; } }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">AI Studio · Insurance Edition</div>
+    <h1>Eine Bühne. Acht kleine Decks.</h1>
+    <p class="intro">Gesamtkontext zum Vor- und Nacharbeiten, ein eigener Impuls zu agentischer Arbeit und kurze Vorträge für jede Dienstagssession. Die Drill-Decks zeigen nur ihre eigene Stufe.</p>
+    <div class="grid">
+      <a class="featured" href="./index.html?deck=gesamt"><small>Vorbereitung / Nacharbeit</small><strong>Gesamtkontext</strong><span>Zielbild, Kontrollmuster und Reflexion in neun Folien.</span></a>
+      <a href="./index.html?deck=agentisch"><small>Separater Vortrag</small><strong>Jede Aufgabe zuerst agentisch</strong><span>Johannes’ Impuls aus der früheren Präsentation, neu gestaltet.</span></a>
+      <a href="./index.html?deck=input"><small>Dienstag · Input</small><strong>Vom Agenten zum System</strong><span>MCP, prüfbare Wirkung und die zwei Kontrollmuster.</span></a>
+      <a href="./index.html?deck=drill-08"><small>Session 08</small><strong>Die Kommandozentrale</strong><span>Lokaler Start, MCP und persönliche Inbox.</span></a>
+      <a href="./index.html?deck=drill-09"><small>Session 09</small><strong>Der Mensch bearbeitet</strong><span>Leben: Belege, Entwurf, menschlicher Versand.</span></a>
+      <a href="./index.html?deck=drill-10"><small>Session 10</small><strong>Der Mensch gibt frei</strong><span>Leben: vollständiger Vorschlag und explizite Freigabe.</span></a>
+      <a href="./index.html?deck=drill-11"><small>Session 11</small><strong>Das Eingriffsfenster</strong><span>Haftpflicht: sichtbare Queue, Timer und Stopp.</span></a>
+      <a href="./index.html?deck=abschluss"><small>Whiteboard</small><strong>Wo darf der Agent handeln?</strong><span>Zwei Schlussfolien als Gesprächsauftakt, dann Beamer aus.</span></a>
+    </div>
+    <footer>Funktioniert lokal und offline · Python, uv und Git genügen · keine Node-Installation</footer>
+  </main>
+</body>
+</html>

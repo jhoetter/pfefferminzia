@@ -14,10 +14,12 @@ def test_tuesday_deck_is_served_without_a_build_step() -> None:
     html = client.get("/slides/")
     script = client.get("/slides/dienstag.js")
     styles = client.get("/slides/dienstag.css")
+    launcher = client.get("/slides/decks.html")
 
-    assert html.status_code == script.status_code == styles.status_code == 200
+    assert html.status_code == script.status_code == styles.status_code == launcher.status_code == 200
     assert "AI Studio — Dienstag: Vom Agenten zum System" in html.text
     assert 'src="./dienstag.js"' in html.text
+    assert "deck=agentisch" in launcher.text
     assert "application/javascript" in script.headers["content-type"] or "text/javascript" in script.headers["content-type"]
     assert "text/css" in styles.headers["content-type"]
 
@@ -26,8 +28,11 @@ def test_tuesday_deck_covers_all_four_milestones() -> None:
     script = (ROOT / "slides" / "dienstag.js").read_text(encoding="utf-8")
     ids = re.findall(r"\bid: '([^']+)'", script)
 
-    assert len(ids) == 25
+    assert len(ids) == 40
     assert len(ids) == len(set(ids))
     for milestone in ("Drill8Start", "Drill9Start", "Drill10Start", "Drill11Start"):
         assert milestone in ids
     assert "keine echte Aktion" in script
+    for deck in ("gesamt", "input", "drill-08", "drill-09", "drill-10", "drill-11", "abschluss", "agentisch"):
+        assert f"{deck}:" in script or f"'{deck}':" in script
+    assert 'svg[aria-label^="Comicfigur Johannes"]' in script
