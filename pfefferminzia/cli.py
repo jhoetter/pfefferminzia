@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import subprocess
 import sys
 from typing import Any
 
@@ -19,14 +18,15 @@ def _json(value: Any) -> None:
 def _initialize() -> dict[str, Any]:
     from .claims import ensure_workshop_claims
     from .seed import ensure_seed_data
-    from .upstream import import_falk_dataset
+    from .upstream import ensure_falk_submodule, import_falk_dataset
     from .workshop import ensure_workshop_fixtures
 
+    initialized = ensure_falk_submodule()
     upstream = import_falk_dataset()
     ensure_seed_data()
     ensure_workshop_claims()
     ensure_workshop_fixtures()
-    return upstream
+    return {**upstream, "submoduleInitialized": initialized}
 
 
 def main() -> None:
@@ -40,7 +40,8 @@ def main() -> None:
     serve.add_argument("--reload", action="store_true", help="Reload when Python files change")
 
     subparsers.add_parser("mcp", help="Run the MCP server over stdio")
-    subparsers.add_parser("data-init", help="Initialize the pinned Falk Git submodule")
+    subparsers.add_parser("setup", help="Prepare the pinned Falk dataset and local workshop DB before starting Claude")
+    subparsers.add_parser("data-init", help="Alias for setup; kept for existing workshop instructions")
     data_import = subparsers.add_parser("data-import", help="Verify and import the Falk dataset")
     data_import.add_argument("--force", action="store_true")
     reset = subparsers.add_parser("workshop-reset", help="Reset only local workshop fixtures")
@@ -67,21 +68,57 @@ def main() -> None:
 
         uvicorn.run("pfefferminzia.app:app", host=args.host, port=args.port, reload=args.reload)
     elif args.command == "mcp":
-        _initialize()
+        try:
+            _initialize()
+        except (OSError, RuntimeError, ValueError) as error:
+            print(f"Pfefferminzia-MCP konnte nicht starten: {error}", file=sys.stderr)
+            print("Bitte `uv run pfefferminzia setup` ausführen und Claude neu starten.", file=sys.stderr)
+            sys.exit(2)
         from .mcp_server import mcp
 
         mcp.run()
-    elif args.command == "data-init":
-        subprocess.run(["git", "submodule", "update", "--init", "--recursive"], cwd=ROOT, check=True)
-    elif args.command == "data-import":
-        from .upstream import import_falk_dataset
+    elif args.command in ("setup", "data-init"):
+        try:
+            result = _initialize()
+        except (OSError, RuntimeError, ValueError) as error:
+            print(f"Pfefferminzia-Setup fehlgeschlagen: {error}", file=sys.stderr)
+            sys.exit(2)
+        from .agentmail_service import agentmail_configuration
+        from .checkpoints import checkpoint_profile
 
+        mail = agentmail_configuration(probe=False)
+        missing_settings = [
+            name for name, configured in (
+                ("AGENTMAIL_API_KEY", mail["apiKeyConfigured"]),
+                ("AGENTMAIL_INBOX_ID", mail["inboxIdConfigured"]),
+                ("WORKSHOP_ALLOWED_RECIPIENTS", mail["allowedRecipientCount"] > 0),
+            ) if not configured
+        ]
+        _json({
+            "ok": True,
+            "dataset": result,
+            "checkpoint": checkpoint_profile()["name"],
+            "agentMailConfigured": mail["ready"],
+            "missingAgentMailSettings": missing_settings,
+            "nextStep": (
+                "Lass dir vom Dozenten einen nur für deine Inbox gültigen API-Key, deine Inbox-ID und die "
+                "exakte Szenario-Absenderadresse geben. Trage sie nur lokal in `.env` ein; niemals im "
+                "Claude-Chat. Du brauchst keinen AgentMail-Console-Login. Danach App und Claude neu starten."
+                if missing_settings else
+                "Starte `uv run pfefferminzia serve` und danach Claude Code im Repo-Verzeichnis."
+            ),
+        })
+    elif args.command == "data-import":
+        from .upstream import ensure_falk_submodule, import_falk_dataset
+
+        ensure_falk_submodule()
         _json(import_falk_dataset(force=args.force))
     elif args.command == "workshop-reset":
         from .seed import ensure_seed_data
-        from .upstream import import_falk_dataset
+        from .upstream import ensure_falk_submodule, import_falk_dataset
         from .workshop import reset_workshop_fixtures
 
+        ensure_falk_submodule()
         import_falk_dataset()
         ensure_seed_data()
         _json(reset_workshop_fixtures())

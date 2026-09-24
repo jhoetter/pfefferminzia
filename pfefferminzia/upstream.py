@@ -5,6 +5,8 @@ import hashlib
 import json
 import re
 import sqlite3
+import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -17,6 +19,32 @@ FALK_UPSTREAM_COMMIT = "53a80bf49176a5066b80f0d4d509f096c16f57e7"
 FALK_ATTRIBUTION = "Pfefferminzia – synthetischer Lehr-Datensatz, Falk Uebernickel, CC BY 4.0"
 FALK_ROOT = ROOT / "vendor" / "falk-pfefferminzia"
 MANIFEST_PATH = FALK_ROOT / "data" / "manifest_S.json"
+
+
+def ensure_falk_submodule() -> bool:
+    """Fetch only the pinned teaching submodule when a clone omitted it.
+
+    Return True if this call had to initialize the submodule. Never update an
+    already-present checkout, so participant edits inside it stay untouched.
+    """
+    if MANIFEST_PATH.is_file():
+        return False
+    print("Pfefferminzia: Falk-Datensatz fehlt; initialisiere das Git-Submodul …", file=sys.stderr)
+    command = ["git", "submodule", "update", "--init", "--recursive", "--", "vendor/falk-pfefferminzia"]
+    try:
+        subprocess.run(command, cwd=ROOT, check=True, capture_output=True, text=True, timeout=180)
+    except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired) as error:
+        raise RuntimeError(
+            "Der Falk-Datensatz konnte nicht geladen werden. Prüfe Git und die Internetverbindung, "
+            "dann starte `uv run pfefferminzia setup` erneut. "
+            f"Technische Ursache: {error}"
+        ) from error
+    if not MANIFEST_PATH.is_file():
+        raise RuntimeError(
+            "Das Git-Submodul wurde geladen, aber data/manifest_S.json fehlt. "
+            "Prüfe den Submodul-Checkout und starte `uv run pfefferminzia setup` erneut."
+        )
+    return True
 
 
 def _quoted(identifier: str) -> str:

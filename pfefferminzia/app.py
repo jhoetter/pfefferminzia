@@ -41,7 +41,7 @@ from .store import (
     update_ticket_status,
 )
 from .todos import create_todo, list_todos, update_todo
-from .upstream import get_upstream_status, import_falk_dataset
+from .upstream import ensure_falk_submodule, get_upstream_status, import_falk_dataset
 from .workshop import ensure_workshop_fixtures, get_workshop_status
 from .workshop_clock import advance_workshop_clock
 
@@ -51,6 +51,7 @@ SLIDES_ROOT = ROOT / "slides"
 
 
 def initialize_application() -> dict[str, Any]:
+    ensure_falk_submodule()
     upstream = import_falk_dataset()
     ensure_seed_data()
     ensure_workshop_claims()

@@ -75,6 +75,7 @@ the participant has completed the drill):
 
 ```bash
 uv sync --frozen
+uv run pfefferminzia setup
 uv run pfefferminzia checkpoint verify --external
 uv run pfefferminzia serve
 ```

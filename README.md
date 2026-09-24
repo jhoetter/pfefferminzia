@@ -2,6 +2,35 @@
 
 ![Pfefferminzia: Minzblätter im Schutzschild](web/logo.svg)
 
+## In drei Schritten startklar
+
+Du brauchst Python 3.12+, `uv`, Git und für die Übungen Claude Code; **kein
+Node.js**. Auch ein normaler Clone ohne Submodul-Option funktioniert:
+
+```bash
+git clone https://github.com/jhoetter/pfefferminzia.git
+cd pfefferminzia
+uv sync --frozen
+uv run pfefferminzia setup
+```
+
+`setup` lädt bei Bedarf automatisch Falks fest gepinnten Datensatz, prüft ihn
+und legt die lokale Workshop-Datenbank an. Es ist wiederholbar und braucht
+noch keinen AgentMail-Schlüssel. Wenn es scheitert, zeigt die Fehlermeldung
+den nächsten Schritt. Die Lehrperson gibt jeder Person eine eigene Inbox-ID,
+einen nur dafür gültigen API-Key und die exakte Szenario-Absenderadresse; ein
+eigener AgentMail-Console-Login ist nicht nötig. Diese Werte **nur lokal** in
+`.env` eintragen (`cp .env.example .env`; vorhandene `.env` nicht
+überschreiben): inboxgebundener Schlüssel, Inbox-ID und exakte
+Szenario-Absenderadresse als Empfänger-Allowlist.
+
+In Terminal A `uv run pfefferminzia serve` starten, dann in Terminal B im
+**selben Repo-Ordner** `claude` starten. Die App ist unter
+<http://127.0.0.1:3004> erreichbar. Claude bindet den MCP-Server über
+`.mcp.json` automatisch ein. Falls Claude bereits vor `setup` geöffnet war,
+Claude neu starten. Der erste Test lautet: „Prüfe meinen Workshop-Status und
+gib mir nur den ersten Hinweis.“
+
 **Dienstag, 29. September 2026:** Wenn du am Workshop teilnimmst, beginne mit
 den [vier Teilnehmerkarten](docs/DRILL_CARDS.md). Dort stehen der Start mit
 Python/`uv`/Git/Claude Code, die Aufgaben für Drill 8–11, Nachweise, Hinweise
@@ -137,24 +166,27 @@ technically blocked and cannot be approved.
 ## Setup
 
 Requirements: Python 3.12 or later, `uv`, and Git. Node.js and npm are not
-required.
+required. The short participant path is at the top of this README.
 
 ```bash
-git clone --recurse-submodules https://github.com/jhoetter/pfefferminzia.git
+git clone https://github.com/jhoetter/pfefferminzia.git
 cd pfefferminzia
 uv sync --frozen
+uv run pfefferminzia setup
 uv run pfefferminzia serve
 ```
 
-For an existing clone without submodules:
+For an existing clone without submodules, `setup` is enough:
 
 ```bash
-uv run pfefferminzia data-init
+uv run pfefferminzia setup
 uv run pfefferminzia serve
 ```
 
-The first start verifies and imports the pinned dataset, indexes the tariff
-documents, and creates missing workshop fixtures. The application runs at
+`data-init` remains an alias for `setup`. The app and MCP server also initialize
+the missing pinned submodule automatically as a safety net. `setup` verifies
+and imports the dataset, indexes the tariff documents, and creates missing
+workshop fixtures. It does **not** contact AgentMail. The application runs at
 <http://127.0.0.1:3004>. Its local SQLite database and mirrored attachments are
 stored under `.data/` and are not committed. Use
 `uv run pfefferminzia serve --reload` for auto-reload while editing Python.

@@ -3,8 +3,14 @@
 This repository is a staged learning environment. Work with the participant,
 not around them.
 
-1. Start by calling the Pfefferminzia MCP tool `get_workshop_status`, then
-   `get_drill_guide` with hint level 0.
+1. If the Pfefferminzia MCP connection is closed, run
+   `uv run pfefferminzia setup` in this repository, inspect its non-secret
+   result, and tell the participant to restart Claude Code. A clone may have
+   omitted Falk's Git submodule; setup fetches the pinned data and initializes
+   the local database without reading or sending AgentMail messages. Do not
+   ask for credentials or try unavailable MCP tools while disconnected.
+   Once connected, call `get_workshop_status`, then `get_drill_guide` with
+   hint level 0.
 2. Stay inside the capabilities and learning goal of the active checkpoint.
    Do not explain, expose, or implement a later drill unless the participant
    explicitly asks to leave the workshop sequence.

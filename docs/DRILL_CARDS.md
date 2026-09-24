@@ -15,9 +15,10 @@ keinen eigenen AgentMail-Console-Login. Den Schlüssel nur lokal in `.env`
 eintragen, niemals in Claude-Chat, Git oder einen Screenshot.
 
 ```bash
-git clone --recurse-submodules https://github.com/jhoetter/pfefferminzia.git
+git clone https://github.com/jhoetter/pfefferminzia.git
 cd pfefferminzia
 uv sync --frozen
+uv run pfefferminzia setup  # lädt bei Bedarf das gepinnte Falk-Submodul und die lokale DB
 cp .env.example .env  # nur beim ersten Start; vorhandene .env nie überschreiben
 ```
 
@@ -42,8 +43,10 @@ Das Cockpit liegt unter <http://127.0.0.1:3004>. `.mcp.json` verbindet
 Claude beim Start mit dem lokalen Pfefferminzia-MCP-Server. Frage Claude:
 „Welcher Workshop-Checkpoint ist aktiv? Gib mir zunächst nur das Lernziel.“
 Wenn Claude den MCP-Server nicht sieht: Claude **im Repo-Verzeichnis neu
-starten**, `.mcp.json` prüfen und das Ergebnis von
-`uv run pfefferminzia checkpoint status` zeigen. Keine Secrets zeigen.
+starten**. Bleibt „Connection closed“, im Terminal nochmals
+`uv run pfefferminzia setup` ausführen, die Fehlermeldung ohne Geheimnisse
+ansehen, `.mcp.json` prüfen und Claude erneut starten. Das Setup liest und
+versendet keine E-Mails. Keine Secrets zeigen.
 
 `checkpoint verify` ist ein **Start-/Bereitschaftscheck**, kein Beleg, dass du
 die Übung schon geschafft hast. `--external` liest zur Prüfung deine
