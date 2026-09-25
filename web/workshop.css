@@ -159,7 +159,9 @@ body:has(aside.ticket-drawer.open) .workshop-launcher { display: none; }
 .workshop-todo small, .workshop-queue-item small { display: block; margin-top: 3px; color: #6b7b70; font-size: 11px; }
 .workshop-todo.completed strong { color: #839088; text-decoration: line-through; }
 
-.workshop-panel button.action, .workshop-panel form button {
+.workshop-panel button.action, .workshop-panel a.action, .workshop-panel form button {
+  display: inline-flex;
+  align-items: center;
   min-height: 34px;
   padding: 0 9px;
   border: 1px solid #cfdcd3;
@@ -168,6 +170,7 @@ body:has(aside.ticket-drawer.open) .workshop-launcher { display: none; }
   background: #f3f8f4;
   cursor: pointer;
   font: 650 12px system-ui, sans-serif;
+  text-decoration: none;
 }
 
 .workshop-panel button.action.danger { color: #93483f; border-color: #e6c7c2; background: #fff5f3; }
@@ -175,11 +178,13 @@ body:has(aside.ticket-drawer.open) .workshop-launcher { display: none; }
 .workshop-approved { align-self: center; color: #27734a; font-size: 11px; font-weight: 700; }
 .workshop-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 5px; }
 
-.workshop-launcher, .workshop-panel button.action, .workshop-panel form button,
+.workshop-launcher, .workshop-panel button.action, .workshop-panel a.action, .workshop-panel form button,
 .workshop-panel header button { transition: transform 160ms ease-out, box-shadow 160ms ease-out; }
 .workshop-launcher:active, .workshop-panel button.action:not(:disabled):active,
+.workshop-panel a.action:active,
 .workshop-panel form button:active, .workshop-panel header button:active { transform: scale(.97); }
 .workshop-launcher:focus-visible, .workshop-panel button:focus-visible,
+.workshop-panel a.action:focus-visible,
 .workshop-panel input:focus-visible, .workshop-panel select:focus-visible { outline: 3px solid #246b48; outline-offset: 2px; }
 
 .workshop-todo-form { margin-top: 10px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; }

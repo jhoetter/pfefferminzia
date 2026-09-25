@@ -16,7 +16,7 @@ Offizielle Modulseite:
 | Tag | Thema | Leitung | Leitfrage | Ergebnis für die Teilnehmenden |
 | --- | --- | --- | --- | --- |
 | Montag | Von der Tabelle zum Agenten: AI Augmentation | Falk Uebernickel | Wie kann KI Menschen dabei unterstützen, fragmentierte Versicherungsdaten zu verstehen und zu bearbeiten? | Die Teilnehmenden untersuchen den Datensatz aus fachlichen Rollen heraus, bauen Kundensichten zusammen, analysieren Bestände und treffen assistierte Entscheidungen. |
-| Dienstag | Vom eigenen Code zum Agentensystem: Vibe Coding, MCP, Automation | Johannes Hötter | Wie baue ich mit Claude Code einen prüfbaren Prozess, und wo darf er selbst handeln? | Jede Person forkt, baut, testet und pusht ihre Pfefferminzia-Version; alle erleben Pflichtfreigabe und Eingriffsfenster. |
+| Dienstag | Vom eigenen Code zum Agentensystem: Vibe Coding, MCP, Automation | Johannes Hötter | Wie baue ich mit Claude Code einen prüfbaren Prozess, und wo darf er selbst handeln? | Jede Person forkt, baut, testet und pusht ihre Pfefferminzia-Version; alle erleben Pflichtfreigabe und Eingriffsfenster und verdichten den Befund in einem Management-Report. |
 | Mittwoch | Vom System in die eigene Firma: Bring Your Own Case | Falk Uebernickel | Wo lassen sich die Muster verantwortbar in der eigenen Organisation einsetzen? | Die Teilnehmenden übertragen die Muster auf eigene Fälle und formulieren einen konkreten Umsetzungspfad. |
 
 Ulrike Baumöl begleitet den Workshop als Programmmanagerin. Der Arbeitsstand
@@ -50,11 +50,13 @@ Die letzte Frage bildet bewusst die Brücke von Augmentation zu Automation.
 | Zeit | Programmpunkt | Inhalt und Ergebnis |
 | --- | --- | --- |
 | 08:30–09:45 | **Input – Vom Assistenten zum Agenten: Wenn KI handelt** | Johannes zeigt seine fertigen Anwendungen live (app/design/tracker.sonaloop.com), erklärt Vibe Coding mit Claude Code, MCP, Verifizierbarkeit und die zwei Kontrollmuster. Danach Fork-/Tagesbriefing. |
-| 10:00–11:15 | **Drill 8 – Die Kommandozentrale für Agenten** | Eigenen Fork/Branch anlegen, Python-App und MCP starten, persönliche Mail bis zum Ticket verfolgen, eine erste Eingangsverbesserung mit Claude bauen, testen, committen und pushen. |
-| 11:30–12:45 | **Drill 9 – Leben: Der Mensch bearbeitet, der Agent bereitet vor** | Das System ermittelt Kunde, Antrag oder Vertrag, Tarifgeneration und relevante Dokumente. Die Teilnehmenden prüfen den zusammengestellten Kontext, lassen einen Entwurf vorbereiten, redigieren ihn und lösen den Versand selbst aus. Ziel ist Augmentation innerhalb eines operativen Prozesses. |
-| 13:45–15:00 | **Drill 10 – Leben: Der Agent bearbeitet, der Mensch gibt frei** | Ein neuer Lebens- bzw. Leistungsfall trifft per E-Mail ein. Der Agent erstellt die vollständige Entscheidungsvorlage und Antwort und erzeugt eine Review-Notification. Die Teilnehmenden können freigeben, ablehnen, editieren oder Kontext ergänzen. Neuer menschlicher Input führt zurück in den agentischen Loop; erst eine ausdrückliche Freigabe erlaubt Entscheidung und tatsächlichen E-Mail-Versand. |
-| 15:15–16:30 | **Drill 11 – Haftpflicht: Automatisch, solange niemand widerspricht** | Der Agent routet eine einfache Haftpflichtanfrage und plant die Antwort für 24 Stunden später ein. Die Teilnehmenden lassen eine Antwort weiterlaufen, bearbeiten eine zweite und nehmen eine dritte aus der Queue oder brechen sie ab. Anschließend wird die Workshop-Zeit vorgespult und die verbliebene Nachricht tatsächlich versendet. |
-| 16:45–18:00 | **Whiteboard-Abschluss – Wo darf der Agent handeln?** | Laptops zu: Gruppen rekonstruieren Pflichtfreigabe und Eingriffsfenster. Dann vergleichen sie Terminal-Prompts mit Event-/Cron-Triggern samt Retry, Rechten, Audit und verantwortlicher Person und formulieren einen Automation Contract. |
+| 10:00–11:00 | **Drill 8 – Die Kommandozentrale für Agenten** | Eigenen Fork/Branch anlegen, Python-App und MCP starten, persönliche Mail bis zum Ticket verfolgen, eine erste Eingangsverbesserung mit Claude bauen, testen, committen und pushen. |
+| 11:15–12:15 | **Drill 9 – Leben: Der Mensch bearbeitet, der Agent bereitet vor** | Kunde, Vertrag und Tarifgeneration prüfen; belegten Entwurf redigieren und bewusst selbst versenden. Einen Beleg-Guard mit Claude bauen. |
+| 12:15–13:15 | **Mittagspause** | Abstand vor den Automationsmustern. |
+| 13:15–14:15 | **Drill 10 – Leben: Der Agent bearbeitet, der Mensch gibt frei** | Zwei Entscheidungsvorlagen prüfen; eine freigeben, eine ablehnen. Review-Zustand selbst verbessern und belegen, dass ein Edit die Freigabe entwertet. |
+| 14:30–15:30 | **Drill 11 – Haftpflicht: Automatisch, solange niemand widerspricht** | Haftpflichtfälle routen; einen laufen lassen, einen ändern, einen stoppen. Workshop-Uhr nach Bestätigung vorspulen und die Wirkung im Audit prüfen. |
+| 15:45–16:30 | **Mini-Drill 12 – Management-Report** | Aus einem aggregierten Schnappschuss der eigenen Drill-11-Instanz mit reveal.js und D3 maximal vier Folien bauen: Beobachtung, Grafik, Kontrollentscheidung und Grenze der Aussage. |
+| 16:45–18:00 | **Whiteboard-Abschluss – Wo darf der Agent handeln?** | Laptops zu: Den Report als Gesprächsauftakt nutzen, Pflichtfreigabe und Eingriffsfenster vergleichen. Terminal-Prompts gegen Event-/Cron-Trigger samt Retry, Rechten, Audit und Verantwortung halten; Automation Contract formulieren. |
 
 ### Die zwei Kontrollmuster
 
@@ -78,7 +80,8 @@ Eingriffe und das endgültige Ergebnis fest.
 
 ### Rhythmus der Drills
 
-Jeder Drill hat eine beobachtbare Produktmission **und** eigenen Code. Der
+Vier operative Drills dauern je 60 Minuten; der Report-Mini-Drill dauert
+45 Minuten. Jeder hat eine beobachtbare Produktmission **und** eigenen Code. Der
 Verifier prüft nur die Startbereitschaft; abgeschlossen ist ein Drill erst
 mit Fallnachweis, getesteter Änderung und eigenem Commit/Push. Geführte
 Teilnehmende verändern eine klar abgegrenzte Stelle; Bauende implementieren
@@ -89,12 +92,13 @@ ein sicherer Rückweg, keine Musterlösungspflicht. Details:
 
 | Drill | Kernpfad | Selbst bauen | Nachweis + Rückblick |
 | --- | ---: | ---: | ---: |
-| 8 · Eingang verstehen | 30 Min. | 25 Min. | 20 Min. |
-| 9 · Belegter Entwurf | 40 Min. | 20 Min. | 15 Min. |
-| 10 · Pflichtfreigabe | 40 Min. | 25 Min. | 10 Min. |
-| 11 · Eingriffsfenster | 40 Min. | 20 Min. | 15 Min. |
+| 8 · Eingang verstehen | 20 Min. | 25 Min. | 15 Min. |
+| 9 · Belegter Entwurf | 30 Min. | 20 Min. | 10 Min. |
+| 10 · Pflichtfreigabe | 30 Min. | 20 Min. | 10 Min. |
+| 11 · Eingriffsfenster | 30 Min. | 15 Min. | 15 Min. |
+| 12 · Management-Report | 5 Min. | 20 Min. | 20 Min. |
 
-Die genauen Teilziele, Dateieinstiege und 75-Minuten-Zeitboxen stehen in den
+Die genauen Teilziele, Dateieinstiege und Zeitboxen stehen in den
 [Drill-Karten](DRILL_CARDS.md) und im MCP-Werkzeug `get_drill_guide` schon bei
 Hinweis-Level 0. Jeder Drill ist dort als vier **aufeinanderfolgende
 Dialogetappen** beschrieben: Claude fragen, menschlich prüfen/entscheiden,
@@ -128,7 +132,9 @@ in einem neuen Worktree laden. Diese Wahl wird nie über einen Reset erzwungen.
 
 ### Whiteboard-Abschluss
 
-Der Abschlussblock ist bewusst elastisch und kann 40 bis 75 Minuten dauern.
+Der Abschlussblock behält seine 75 Minuten; bei Verzögerungen bleibt der
+Report-Vortrag auf zwei Minuten pro Gruppe begrenzt, damit die Diskussion
+nicht entfällt.
 Die Gruppe zeichnet zunächst den gemeinsam erlebten Prozess nach:
 
 `E-Mail → Kunde und Vertrag → Tarif und Dokumente → agentische Bearbeitung → Kontrollregel → externe Wirkung → Audit-Historie`

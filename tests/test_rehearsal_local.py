@@ -11,6 +11,7 @@ from pfefferminzia.store import get_ticket
 from pfefferminzia.agentmail_service import send_ticket_draft
 from pfefferminzia.checkpoints import current_checkpoint
 from pfefferminzia.database import close_database
+from pfefferminzia.management_report import capture_report_snapshot, read_report_snapshot
 
 
 class FakeMessages:
@@ -168,3 +169,13 @@ def test_realistic_drills_8_to_11_without_network(monkeypatch, tmp_path, request
         assert get_ticket(numbers["Drill 11 edit"])["status"] == "in_progress"
         assert get_ticket(numbers["Drill 11 remove"])["status"] == "in_progress"
         assert len(fake.messages.sent) == 3
+
+    source = tmp_path / "report-source"
+    target = tmp_path / "report-target"
+    (source / ".data").mkdir(parents=True)
+    # Rehearsal used an explicit database path. Capture it without copying the
+    # underlying database into the report worktree.
+    capture_report_snapshot(source, target, "drill-11-start", tmp_path / "rehearsal.db")
+    report = read_report_snapshot(target)
+    assert sum(item["count"] for item in report["tickets"] if not item["demo"]) >= 7
+    assert any(item["type"] == "reply_sent" and item["mode"] == "automatic" for item in report["events"])

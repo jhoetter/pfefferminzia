@@ -31,17 +31,18 @@
       notes: 'ZEIT: 3 Minuten. SAGEN: Das Ende von Drill 7 war die wöchentliche Storno-Frühwarnliste. Wenn sie ohne menschlichen Start läuft, ist der Kontrollpunkt neu zu verhandeln. FRAGE: Welche Aktion würde bei Ihnen erstmals jemand anderem auffallen?'
     },
     {
-      id: 'Agenda', type: 'Agenda · Tag', eyebrow: 'Der Dienstag in einem Blick', title: 'Wir bauen vier Stufen auf dasselbe Zielsystem.',
+      id: 'Agenda', type: 'Agenda · Tag', eyebrow: 'Der Dienstag in einem Blick', title: 'Fünf kurze Builds. Ein gemeinsamer Befund.',
       subtitle: 'Jeder Drill startet an einer offiziellen Grenze – die Teilnehmenden entwickeln den nächsten Schritt selbst.',
       body: `<div class="day-timeline">
         <div class="day-timeline-row"><strong>08:30–09:45</strong><em>Input</em><span>Live-Apps; Vibe Coding, MCP, Kontrolle</span></div>
-        <div class="day-timeline-row"><strong>10:00–11:15</strong><em>Drill 8</em><span>Eigener Fork, Kommandozentrale und Inbox</span></div>
-        <div class="day-timeline-row"><strong>11:30–12:45</strong><em>Drill 9</em><span>Leben: Agent bereitet vor, Mensch bearbeitet und sendet</span></div>
-        <div class="day-timeline-row"><strong>13:45–15:00</strong><em>Drill 10</em><span>Leben: Agent bearbeitet, Mensch gibt frei oder lehnt ab</span></div>
-        <div class="day-timeline-row"><strong>15:15–16:30</strong><em>Drill 11</em><span>Haftpflicht: sichtbares Eingriffsfenster vor Auto-Versand</span></div>
+        <div class="day-timeline-row"><strong>10:00–11:00</strong><em>Drill 8</em><span>Eigener Fork, Cockpit und Inbox</span></div>
+        <div class="day-timeline-row"><strong>11:15–12:15</strong><em>Drill 9</em><span>Leben: belegter Entwurf, Mensch sendet</span></div>
+        <div class="day-timeline-row"><strong>13:15–14:15</strong><em>Drill 10</em><span>Leben: Freigabe oder Ablehnung</span></div>
+        <div class="day-timeline-row"><strong>14:30–15:30</strong><em>Drill 11</em><span>Haftpflicht: Queue mit Eingriffsfenster</span></div>
+        <div class="day-timeline-row"><strong>15:45–16:30</strong><em>Mini-Drill 12</em><span>Management-Report mit reveal.js und D3</span></div>
         <div class="day-timeline-row"><strong>16:45–18:00</strong><em>Whiteboard</em><span>Event/Cron oder Prompt? Automation Contract</span></div>
       </div>`,
-      notes: 'ZEIT: 2 Minuten. SAGEN: Vier 75-Minuten-Drills. Jede Person arbeitet im eigenen Fork, baut und pusht Code. Die Stufen sind keine vorgeführte Featureliste. Schnelle können nach dem Kernnachweis vorausbauen; der offizielle Checkpoint bleibt das Rettungsnetz. Am Ende gehen die Laptops zu.'
+      notes: 'ZEIT: 2 Minuten. SAGEN: Vier 60-Minuten-Drills plus 45-Minuten-Mini-Drill, dazwischen Puffer und Mittagspause 12:15–13:15. Jede Person arbeitet im eigenen Fork, baut und pusht Code. Nach den operativen Kontrollmustern wird ein kurzer Report daraus; die 75 Minuten Whiteboard bleiben erhalten.'
     },
     {
       id: 'LiveBeispiele', type: 'Input', eyebrow: 'Morgens · Blick nach vorn', title: 'Erst das Ziel sehen. Dann selbst bauen.',
@@ -109,7 +110,7 @@
       notes: 'ZEIT: 3 Minuten. SAGEN: Claude passt den Hilfsgrad an, ohne die Person zu etikettieren. Persönlicher Fork und Inbox. Schnelle dürfen ausdrücklich vorausbauen; andere laden nach Rückfrage den offiziellen Checkpoint. Fallnachweis und Sicherheitsgrenzen bleiben für alle gleich.'
     },
     {
-      id: 'Drill8Start', type: 'Kapitel', eyebrow: '10:00–11:15 · Meilenstein 1', title: 'Die Kommandozentrale', study: true,
+      id: 'Drill8Start', type: 'Kapitel', eyebrow: '10:00–11:00 · Meilenstein 1', title: 'Die Kommandozentrale', study: true,
       body: stage('8', 'Vom eigenen Fork zur ersten Nachricht.', 'Branch anlegen, Python-App und MCP starten, Inbox prüfen, ersten Codebeitrag testen und pushen.', ['Start: drill-08-start', 'Ziel: Mail + eigenes Werk']),
       notes: 'ZEIT: 1 Minute. SAGEN: Bis zum Ende dieses Drills muss jede Person die eigene Inbox sehen und eine Nachricht empfangen haben. Noch kein CRM, kein Entwurf, keine Freigabe, kein Timer.'
     },
@@ -129,10 +130,10 @@
         card('1–2 · Eingang', `${dialogueStep(1, 'Start', 'Was fehlt für App, MCP und Inbox?', 'Eigene Werte eintragen; externen Test erlauben.')}${dialogueStep(2, 'Mail', 'Zeig mir dieselbe Ticket-ID in MCP und Cockpit.', 'Vorher Testmail senden; danach Ticket-Todo prüfen.')}`, 'mint-card'),
         card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Wo entsteht ein Ticket? Gib mir zuerst einen Test.', 'Automatisches Prüfen-Todo selbst mit Claude coden.')}${dialogueStep(4, 'Belegen', 'Prüfe zwei Syncs und den Todo-Status.', 'Gleiche Ticket-ID und grünen Test zeigen.')}`)
       ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: Die vier kurzen Prompts sind Gesprächsetappen, nicht ein Block. Nach jeder Antwort handelt oder prüft die Person selbst. Eine persönliche Inbox, kein geteilter Schlüssel. Temporären inboxgebundenen Workshop-Key nur im individuellen Chat/lokal, nie echte Geheimnisse. Outbound-Allowlist ist kein Eingangsfilter. Grüner Preflight ist nur Startbereitschaft. Nach dem eigenen Test Diff prüfen, committen und zum eigenen Fork pushen. 20 Minuten Setup/Mail, 10 Minuten Ticket erkunden, 25 Minuten bauen, 15 Minuten nachweisen, 5 Minuten reflektieren.'
+      notes: 'ZEIT: 2 Minuten. SAGEN: Die vier Prompts sind Gesprächsetappen. Persönliche Inbox, kein geteilter Schlüssel. Temporären inboxgebundenen Workshop-Key nur im individuellen Chat/lokal, nie echte Geheimnisse. Outbound-Allowlist ist kein Eingangsfilter. Grüner Preflight ist nur Startbereitschaft. Nach eigenem Test Diff prüfen, committen und zum eigenen Fork pushen. 15 Minuten Setup/Mail, 5 Minuten Ticket erkunden, 25 Minuten bauen, 10 Minuten nachweisen, 5 Minuten reflektieren.'
     },
     {
-      id: 'Drill9Start', type: 'Kapitel', eyebrow: '11:30–12:45 · Meilenstein 2', title: 'Der Mensch bearbeitet', study: true,
+      id: 'Drill9Start', type: 'Kapitel', eyebrow: '11:15–12:15 · Meilenstein 2', title: 'Der Mensch bearbeitet', study: true,
       body: stage('9', 'Der Agent bereitet vor; der Mensch versendet.', 'Leben-Fall zu Kunde, Vertrag und Tarifgeneration auflösen, Antwortentwurf redigieren und bewusst selbst senden.', ['Start: drill-09-start', 'Ziel: menschlicher Versand']),
       notes: 'ZEIT: 1 Minute. SAGEN: Wir gewinnen operative Geschwindigkeit, aber die Entscheidung und der Versand bleiben in der Hand des Menschen.'
     },
@@ -155,7 +156,7 @@
       notes: 'ZEIT: 2 Minuten. SAGEN: Nicht alle Fragen zugleich eingeben. Die Person bestätigt erst Quelle und Identität. Schnelle können einen Kantenfall vertiefen oder nach eigenem Wunsch den Review-Pfad für Drill 10 im Branch vorbauen; der aktuelle Checkpoint schaltet ihn noch nicht live frei.'
     },
     {
-      id: 'Drill10Start', type: 'Kapitel', eyebrow: '13:45–15:00 · Meilenstein 3', title: 'Der Mensch gibt frei', study: true,
+      id: 'Drill10Start', type: 'Kapitel', eyebrow: '13:15–14:15 · Meilenstein 3', title: 'Der Mensch gibt frei', study: true,
       body: stage('10', 'Der Agent bearbeitet; der Mensch kontrolliert.', 'Entscheidungsvorlage und Antwort stehen fertig bereit. Freigabe, Ablehnung oder neuer Kontext starten den nächsten Schritt.', ['Start: drill-10-start', 'Ziel: explizite Freigabe']),
       notes: 'ZEIT: 1 Minute. SAGEN: Der Mensch schreibt nicht mehr jeden Satz. Er verantwortet die Stopplinie vor jeder externen Wirkung. Eine Ablehnung ist ein vollwertiger Erfolgspfad.'
     },
@@ -176,7 +177,7 @@
       notes: 'ZEIT: 2 Minuten. SAGEN: Das sind vier Gesprächsetappen mit menschlichem Stopp dazwischen, kein einmaliger Auftrag. Nicht nur den Happy Path testen. Die Ablehnung muss dokumentiert sein und einen neuen Agenten-Loop auslösen. Versand bleibt eine eigene Bestätigung. Challenge: Freigabe durch Änderung invalidieren.'
     },
     {
-      id: 'Drill11Start', type: 'Kapitel', eyebrow: '15:15–16:30 · Meilenstein 4', title: 'Das Eingriffsfenster', study: true,
+      id: 'Drill11Start', type: 'Kapitel', eyebrow: '14:30–15:30 · Meilenstein 4', title: 'Das Eingriffsfenster', study: true,
       body: stage('11', 'Automatisch, solange niemand widerspricht.', 'Der Router erkennt Haftpflicht. Antworten stehen sichtbar in einer Queue und gehen nach der Frist automatisch raus.', ['Start: drill-11-start', 'Ziel: Timer + Eingriff']),
       notes: 'ZEIT: 1 Minute. SAGEN: Jetzt ändert sich die Voreinstellung. Ohne Eingriff findet eine externe Wirkung statt. Darum müssen Queue und Frist für Menschen sichtbar und beeinflussbar sein.'
     },
@@ -198,6 +199,26 @@
         card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Wie machen wir Stopp oder Duplikatschutz klarer?', 'Erst Test, dann kleine Änderung selbst coden.')}${dialogueStep(4, 'Wirkung', 'Was geht nach dem Zeitsprung wirklich raus?', 'Uhr ausdrücklich bestätigen; Audit prüfen.')}`)
       ]),
       notes: 'ZEIT: 2 Minuten. SAGEN: Jede Frage stoppt vor einer menschlichen Prüfung. Der offizielle Drill-11-Checkpoint aktiviert Auto-Send im neuen Worktree; niemand editiert dafür manuell .env. Auto-Send nur an freigegebene Workshop-Adressen. Den 24-Stunden-Sprung erst nach sichtbarer Queue und expliziter Bestätigung ausführen. Challenge: idempotentes Handling oder Timer-Reset nach Edit.'
+    },
+    {
+      id: 'Drill12Start', type: 'Kapitel', eyebrow: '15:45–16:30 · Mini-Drill 5', title: 'Der Management-Report', study: true,
+      body: stage('12', 'Aus Erlebnissen wird eine Entscheidung.', 'Mit reveal.js und D3 zeigen wir nur, was der lokale Workshop-Schnappschuss tatsächlich belegt.', ['Start: drill-12-start', 'Ziel: 3 klare Folien']),
+      notes: 'ZEIT: 1 Minute. SAGEN: Der Report ist selbst gebaut, aber kein Konzern-Dashboard. Beim Checkpoint-Wechsel werden nur aggregierte Zählwerte kopiert, keine Mailtexte oder Namen. Auto-Versand ist wieder aus.'
+    },
+    {
+      id: 'Drill12Daten', type: 'Inhalt', eyebrow: 'Drill 12 · Datenweg', title: 'Aus Audit-Ereignissen wird ein belegter Befund.',
+      subtitle: 'Eine lokale Simulation – kein Beweis für Zeitersparnis oder Produktivqualität.', study: true,
+      body: `<div class="day-flow"><div class="day-flow-step"><b>Drill 11</b><span>eigene Fälle<br>und Audit</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Snapshot</b><span>nur gruppierte<br>Zählwerte</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>D3</b><span>lesbare Grafik<br>mit Nullfällen</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Report</b><span>Beleg · Grenze<br>Empfehlung</span></div></div>`,
+      notes: 'ZEIT: 2 Minuten. SAGEN: Claude kann Code und Formulierung helfen; die Management-Aussage wählt und verantwortet der Mensch. Im Snapshot gibt es nur Sparte/Status/Herkunft und ausgewählte Kontrollereignisse als Zählwerte.'
+    },
+    {
+      id: 'Drill12Auftrag', type: 'Drill', eyebrow: 'Drill 12 · Dialog statt Zauberprompt', title: 'Ein Chart. Eine Empfehlung. Eine Grenze.',
+      subtitle: 'Die Report-Basis steht; die Aussage und eine D3-Verbesserung baut ihr selbst.', study: true,
+      body: grid([
+        card('1–2 · Beobachten', `${dialogueStep(1, 'Befund', 'Welche Zahl ist wirklich belegt?', 'Demo- und Inbox-Fälle trennen.')}${dialogueStep(2, 'D3', 'Erst Skizze, dann Grafik-Code.', 'Beschriftung, Zählwerte und Nullfälle prüfen.')}`, 'mint-card'),
+        card('3–4 · Entscheiden', `${dialogueStep(3, 'Empfehlung', 'Verdichte Beleg, Kontrolle und Unsicherheit.', 'Eigene Aussage formulieren; maximal vier Folien.')}${dialogueStep(4, 'Vorführen', 'Prüfe Snapshot, Datenschutz und Diff.', 'Zwei Minuten zeigen, testen, committen, pushen.')}`)
+      ]),
+      notes: 'ZEIT: 2 Minuten. SAGEN: Im eigenen Fork slides/management.js bearbeiten. Der Report läuft über den lokalen Python-Server; reveal.js und D3 sind bereits eingebettet, kein Node und kein CDN. Der Basis-Chart ist das Sicherheitsnetz, nicht das Endprodukt.'
     },
     {
       id: 'Checkpoints', type: 'Code', eyebrow: 'Sicheres Aufholen', title: 'Ein Checkpoint rettet den Tag, nicht auf Kosten Ihrer Arbeit.',
@@ -235,6 +256,7 @@
   ];
 
   const agentisch = window.PFEFFERMINZIA_AGENTISCH_SLIDES || [];
+  const management = window.PFEFFERMINZIA_MANAGEMENT_SLIDES || [];
 
   const deckIds = {
     gesamt: ['Titel', 'Bruecke', 'LiveBeispiele', 'Agenda', 'Wirkung', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus', 'Tempo', 'Whiteboard', 'Contract'],
@@ -243,10 +265,12 @@
     'drill-09': ['Drill9Start', 'Drill9Kontext', 'Drill9Auftrag', 'Checkpoints'],
     'drill-10': ['Drill10Start', 'Drill10Review', 'Drill10Auftrag', 'Checkpoints'],
     'drill-11': ['Drill11Start', 'Drill11Queue', 'Drill11Auftrag', 'Checkpoints'],
+    'drill-12': ['Drill12Start', 'Drill12Daten', 'Drill12Auftrag'],
     abschluss: ['Whiteboard', 'Contract'],
-    agentisch: agentisch.map(slide => slide.id)
+    agentisch: agentisch.map(slide => slide.id),
+    management: management.map(slide => slide.id)
   };
-  const allSlides = [...slides, ...agentisch];
+  const allSlides = [...slides, ...agentisch, ...management];
   const selectedIds = deckIds[deckName] || deckIds.gesamt;
   const selectedSlides = selectedIds.map(id => allSlides.find(slide => slide.id === id));
   document.title = `Pfefferminzia · ${deckName === 'agentisch' ? 'Agentisch arbeiten' : deckName === 'gesamt' ? 'Gesamtkontext' : deckName}`;

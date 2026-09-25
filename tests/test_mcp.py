@@ -14,12 +14,13 @@ REQUIRED_TOOLS = {
     "list_workshop_checkpoints", "get_drill_guide", "list_todos", "create_todo", "update_todo",
     "route_ticket", "reject_ticket_reply", "remove_from_send_queue", "advance_workshop_clock",
     "verify_workshop_checkpoint", "plan_checkpoint_load", "apply_checkpoint_load",
+    "get_management_report_data",
 }
 
 
 @pytest.mark.asyncio
 async def test_mcp_capability_surface(monkeypatch):
-    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-11-complete")
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-12-complete")
     server = create_mcp_server()
     async with Client(server) as client:
         tools = await client.list_tools()
@@ -42,6 +43,7 @@ async def test_mcp_capability_surface(monkeypatch):
         ("drill-09-start", {"draft_ticket_reply", "list_tariffs", "send_ticket_reply"}, {"submit_ticket_reply", "approve_ticket_reply", "route_ticket"}),
         ("drill-10-start", {"submit_ticket_reply", "approve_ticket_reply", "list_claims"}, {"route_ticket", "remove_from_send_queue"}),
         ("drill-11-start", {"route_ticket", "remove_from_send_queue", "advance_workshop_clock"}, set()),
+        ("drill-12-start", {"get_management_report_data"}, set()),
     ],
 )
 async def test_checkpoint_capabilities_are_not_exposed(monkeypatch, checkpoint, present, absent):
@@ -51,6 +53,8 @@ async def test_checkpoint_capabilities_are_not_exposed(monkeypatch, checkpoint, 
         names = {tool.name for tool in (await client.list_tools()).tools}
         assert present <= names
         assert not (absent & names)
+        if checkpoint != "drill-12-start":
+            assert "get_management_report_data" not in names
         template_uris = {str(item.uri_template) for item in (await client.list_resource_templates()).resource_templates}
         if checkpoint == "drill-08-start":
             assert not template_uris

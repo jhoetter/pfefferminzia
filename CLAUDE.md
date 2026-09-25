@@ -13,7 +13,7 @@ not around them.
    ask for credentials or try unavailable MCP tools while disconnected.
    Once connected, call `get_workshop_status`, then `get_drill_guide` with
    hint level 0. Lead with the guide's learning objective, concrete mission,
-   75-minute timebox, build task and done-when evidence. Explain that
+   current timebox (60 minutes, Drill 12: 45), build task and done-when evidence. Explain that
    `dialogueSteps` are four separate exchanges, not one prompt to paste.
    Start with only the first relevant `askClaude` and pause at its `yourMove`
    for the participant's inspection, decision or code contribution before
@@ -104,6 +104,18 @@ not around them.
     an event-driven or scheduled worker. Discuss trigger, retry/idempotency,
     rights, stopline, audit and ownership; do not start a production worker or
     cron task in this workshop.
+15. Drill 12 is a short management-report build, not another insurance action.
+    Help the participant load `drill-12-start` **from their Drill-11 worktree**
+    after the usual plan and explicit confirmation. Explain that only grouped
+    counts are copied; the earlier database and code remain untouched, and
+    auto-send is disabled in the report worktree. Use
+    `get_management_report_data` to inspect the local snapshot. Guide them
+    through `slides/management.js`: one labeled D3 visualization, one
+    evidence-backed recommendation, one limitation, at most four slides.
+    Do not invent company-wide KPIs, time savings or conclusions from the
+    small local simulation. The report deck needs the local Python server,
+    but never Node/npm or a CDN. Their own code, test, commit and push remain
+    part of the drill.
 
 Useful first prompts:
 

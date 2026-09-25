@@ -197,6 +197,7 @@ function renderPanel() {
       </section>
       <section class="workshop-card"><h3>Dein Lernziel</h3><p>${escapeHtml(brief?.learningObjective || profile.goal)}</p>
         <p class="empty"><strong>Fertig, wenn:</strong> ${escapeHtml(brief?.doneWhen || "")}</p>
+        ${profile.drill === 12 ? '<p><a class="action" href="/slides/index.html?deck=management" target="_blank" rel="noopener">Management-Report öffnen ↗</a></p>' : ''}
       </section>
       <section class="workshop-card"><h3>Dialog in Etappen <small>nicht alles auf einmal</small></h3>
         <p class="empty">Claude hilft beim nächsten Schritt. Nach jeder Antwort prüfst oder entscheidest du selbst.</p>

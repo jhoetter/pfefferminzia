@@ -13,6 +13,7 @@ from .checkpoints import available_checkpoints, capability_enabled, checkpoint_p
 from .checkpoint_loader import apply_checkpoint_load, plan_checkpoint_load
 from .claims import create_claim_from_ticket, create_claim_task, get_claim, list_claims, propose_claim_action, review_claim_action
 from .constants import CLAIM_STATUSES
+from .management_report import read_report_snapshot
 from .crm import get_contract, get_customer, link_ticket_contract, link_ticket_party, resolve_ticket_customer, search_customers
 from .store import (
     add_internal_note,
@@ -99,6 +100,11 @@ def create_mcp_server() -> MCPServer:
         return get_workshop_status_impl()
 
     @server.tool(annotations=ReadOnly)
+    def get_management_report_data() -> dict[str, Any]:
+        """Return aggregate counts from the prior local drill; no names, messages or credentials."""
+        return read_report_snapshot()
+
+    @server.tool(annotations=ReadOnly)
     def list_workshop_checkpoints() -> list[dict[str, Any]]:
         """List official workshop boundaries without changing files or participant work."""
         return [
@@ -126,7 +132,7 @@ def create_mcp_server() -> MCPServer:
 
     @server.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, openWorldHint=False))
     def plan_checkpoint_load(
-        targetCheckpoint: Literal["drill-08-start", "drill-09-start", "drill-10-start", "drill-11-start", "drill-11-complete"],
+        targetCheckpoint: Literal["drill-08-start", "drill-09-start", "drill-10-start", "drill-11-start", "drill-11-complete", "drill-12-start", "drill-12-complete"],
     ) -> dict[str, Any]:
         """Prepare a short-lived, non-destructive recovery-worktree plan. Do not call apply yet; show the plan and ask the participant's confirmation."""
         return plan_checkpoint_load_impl(targetCheckpoint)
@@ -502,6 +508,7 @@ def create_mcp_server() -> MCPServer:
         "propose_claim_action": "claims", "review_claim_action": "claims", "create_claim_task": "claims",
         "route_ticket": "router", "remove_from_send_queue": "intervention_queue",
         "advance_workshop_clock": "workshop_clock",
+        "get_management_report_data": "management_report",
     }
     enabled = set(profile["capabilities"])
     for tool_name, capability in tool_capabilities.items():

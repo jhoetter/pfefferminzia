@@ -6,15 +6,17 @@ the learning arc is described in `WORKSHOP_AGENDA.md`.
 
 ## Backward-designed boundary states
 
-Four drills require five unambiguous boundaries:
+Five drills use six canonical boundaries; the legacy `drill-11-complete`
+tag remains for existing clones:
 
 | State | Observable outcome | Intentionally unavailable |
 | --- | --- | --- |
 | `drill-08-start` | Python app and MCP start; personal inbox and general todos can be exercised | CRM/tariff work, drafting, review and automation |
 | `drill-09-start` | One life request can be resolved to customer, contract and exact tariff; Claude can prepare a draft and the human sends | Agent-owned decision, review workflow, liability automation |
 | `drill-10-start` | Several life cases can be prepared, rejected, reworked and explicitly approved | Liability router, intervention queue and workshop clock |
-| `drill-11-start` | Router selects mandatory life review or liability intervention window; countdown queue is active | Nothing from the target system is hidden |
-| `drill-11-complete` | Both control patterns, external effect and audit evidence work side by side | Final reference state |
+| `drill-11-start` | Router selects mandatory life review or liability intervention window; countdown queue is active | Management report |
+| `drill-12-start` | Aggregated Drill-11 evidence feeds a local reveal.js/D3 management deck; auto-send is off | Nothing from the reporting exercise is hidden |
+| `drill-12-complete` | Report and both control patterns are ready for the whiteboard | Final reference state |
 
 The codebase is complete in every boundary. Server-side capabilities, MCP tool
 registration, resources, scenarios and UI affordances are restricted by the
@@ -139,12 +141,35 @@ to explain and selectively carry over their own changes if they wish.
 
 ## Drill facilitation
 
-Each 75-minute block has a concrete case mission, a small participant-built
+Each operational block is 60 minutes; the report mini-drill is 45. Both have
+a concrete case mission, a participant-built
 change and observable evidence. Use the drill-specific timeboxes in
 `docs/DRILL_CARDS.md` / `get_drill_guide`; don't let a green readiness check or
 an arbitrary completed todo stand in for learning. The instructor should ask
 each participant to show the same ticket in MCP and cockpit, explain their own
 code change, and say what they verified.
+
+Preflight before the first block: confirm GitHub fork/push access, Python/uv,
+Claude Code and the scoped inbox key for each participant. Drill 8 has only
+15 minutes for setup and first mail; late account creation must not consume
+its 25-minute coding block. Keep the printed drill cards available for a
+token-free path.
+
+### Drill 12 — management report
+
+Transition **from the Drill-11 worktree** with the normal two-step checkpoint
+confirmation. The loader writes only grouped ticket and audit-event counts
+to the new worktree's ignored `.data/management-report.json`. The report
+artifact contains no message text, identity fields or credentials, and the
+old database is not copied. The ignored `.env` is copied separately as in
+every checkpoint. The
+new stage disables automatic dispatch. The participant opens
+`/slides/index.html?deck=management`, edits `slides/management.js` and
+adds a labeled D3 visualization and management recommendation. The deck
+inherits the locally embedded reveal.js and D3 assets, so no Node, npm or
+CDN is needed. Require an explicit limitation: this is one local synthetic
+simulation, not a company KPI or measured time saving. Two minutes per
+report, then move to the whiteboard.
 
 ### Drill 8 — command centre
 
@@ -208,10 +233,12 @@ uv run pytest tests/test_workshop_end_to_end.py -q
 uv run pfefferminzia checkpoint verify --external
 ```
 
-Then personally play Drill 8 → 11. During Drill 9 deliberately change a file
+Then personally play Drill 8 → 12. During Drill 9 deliberately change a file
 and create an untracked note. Ask Claude to load `drill-10-start`; confirm that
 the new worktree works and the original changes still exist. Do one real email
-round-trip only to a pre-approved workshop address.
+round-trip only to a pre-approved workshop address. From the worked Drill-11
+directory, load Drill 12 and confirm that the report retains grouped counts
+while the new worktree contains neither raw mail content nor the old DB.
 
 Go only if:
 
@@ -222,6 +249,8 @@ Go only if:
 - each official checkpoint tag resolves and loads;
 - the instructor can send all seven scenario messages;
 - the Drill-11 clock sends exactly the one untouched queued response;
+- the Drill-12 deck shows the captured counts, has a readable D3 chart and
+  auto-send is off;
 - reserve accounts are tested, not merely created.
 
 ## Fast participants

@@ -82,6 +82,33 @@ CHECKPOINTS: dict[str, dict[str, Any]] = {
             "Kontrollregel, Eingriffe und externe Wirkung sind im Audit Log sichtbar.",
         ],
     },
+    "drill-12-start": {
+        "order": 13,
+        "drill": 12,
+        "title": "Management-Report: Was darf der Agent?",
+        "goal": "Die erlebten Kontrollmuster als kurze, überprüfbare Management-Präsentation mit reveal.js und D3 erklären.",
+        "capabilities": [
+            "core", "inbox", "todos", "knowledge", "draft", "manual_send", "life_review", "claims",
+            "router", "intervention_queue", "workshop_clock", "management_report"
+        ],
+        "successCriteria": [
+            "Ein aggregierter Schnappschuss aus dem bisherigen Drill-11-Arbeitsstand ist vorhanden.",
+            "Eine D3-Grafik in einer reveal.js-Präsentation zeigt echte lokale Workshop-Zählwerte.",
+            "Eine Management-Aussage nennt Beleg, Kontrollgrenze und Unsicherheit.",
+            "Eigener Folien-/Chart-Code ist getestet, committet und im Fork gepusht.",
+        ],
+    },
+    "drill-12-complete": {
+        "order": 14,
+        "drill": 12,
+        "title": "Management-Report abgeschlossen",
+        "goal": "Report, Grenzen und Automation Contract sind bereit für die Whiteboard-Diskussion.",
+        "capabilities": [
+            "core", "inbox", "todos", "knowledge", "draft", "manual_send", "life_review", "claims",
+            "router", "intervention_queue", "workshop_clock", "management_report"
+        ],
+        "successCriteria": ["Der Bericht ist lokal präsentierbar und trennt Beobachtung, Interpretation und Empfehlung."],
+    },
 }
 
 ALIASES = {
@@ -89,7 +116,9 @@ ALIASES = {
     "9": "drill-09-start", "drill-9": "drill-09-start", "drill-09": "drill-09-start",
     "10": "drill-10-start", "drill-10": "drill-10-start",
     "11": "drill-11-start", "drill-11": "drill-11-start",
-    "complete": "drill-11-complete", "drill-11-complete": "drill-11-complete",
+    "12": "drill-12-start", "drill-12": "drill-12-start",
+    "complete": "drill-12-complete", "drill-11-complete": "drill-11-complete",
+    "drill-12-complete": "drill-12-complete",
 }
 
 DRILL_BRIEFS: dict[int, dict[str, Any]] = {
@@ -103,7 +132,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
             {"phase": "Selbst bauen", "askClaude": "Wo wird ein neues Ticket importiert? Gib mir einen kleinen Test für genau ein automatisches Prüfen-Todo pro Ticket; ich ändere den Code mit dir.", "yourMove": "Import und Test selbst mit Claude bearbeiten; manuelles Todo bleibt separat."},
             {"phase": "Beleg zeigen", "askClaude": "Prüfe zwei Syncs und den Todo-Status. Was ist belegt, was noch nicht?", "yourMove": "Ticket-ID in UI/MCP und grünen Test zeigen; keine Antwort versenden."},
         ],
-        "timeboxMinutes": {"setupUndEingang": 20, "erkunden": 10, "selbstBauen": 25, "nachweisen": 15, "reflexion": 5},
+        "timeboxMinutes": {"setupUndEingang": 15, "erkunden": 5, "selbstBauen": 25, "nachweisen": 10, "reflexion": 5},
         "doneWhen": "Neue Mail und Ticket-ID in beiden Oberflächen identisch; sinnvoller nächster Schritt als Todo abgeschlossen; eigene kleine Codeänderung mit grünem Test.",
     },
     9: {
@@ -116,7 +145,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
             {"phase": "Selbst bauen", "askClaude": "Wo kann eine falsche oder fehlende Tarifgeneration auffallen? Hilf mir zuerst mit einem kleinen fehlschlagenden Test.", "yourMove": "Test und kleine Fehlermeldung oder Schutzregel mit Claude implementieren."},
             {"phase": "Beleg zeigen", "askClaude": "Zeig mir Quelle, menschliche Textänderung, Versandereignis und Testergebnis. Was fehlt noch?", "yourMove": "Activity Log und grünen Test kontrollieren; keinen zweiten Versand auslösen."},
         ],
-        "timeboxMinutes": {"fallUndQuellen": 20, "entwurfUndMensch": 20, "selbstBauen": 20, "nachweisen": 10, "reflexion": 5},
+        "timeboxMinutes": {"fallUndQuellen": 15, "entwurfUndMensch": 15, "selbstBauen": 20, "nachweisen": 5, "reflexion": 5},
         "doneWhen": "Ein belegter Lebensentwurf wurde vom Menschen verändert und bewusst gesendet; Tarifprüfung und eigene Änderung sind getestet.",
     },
     10: {
@@ -129,7 +158,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
             {"phase": "Selbst bauen", "askClaude": "Wo kann ich Ablehnungsgrund oder erloschene Freigabe klarer zeigen? Hilf mir zuerst mit einem Test.", "yourMove": "Eine kleine Review-Verbesserung selbst mit Claude umsetzen und testen."},
             {"phase": "Beleg zeigen", "askClaude": "Prüfe im Audit Freigabe und Ablehnung; was passiert, wenn ich den genehmigten Text ändere?", "yourMove": "Freigabeverlust nach Edit prüfen; keine alte Freigabe für neuen Text verwenden."},
         ],
-        "timeboxMinutes": {"faelleVorbereiten": 20, "selbstBauen": 25, "freigabeUndAblehnung": 20, "nachweisen": 5, "reflexion": 5},
+        "timeboxMinutes": {"faelleVorbereiten": 15, "selbstBauen": 20, "freigabeUndAblehnung": 15, "nachweisen": 5, "reflexion": 5},
         "doneWhen": "Eine Freigabe und eine Ablehnung im Audit; Änderung entwertet die alte Freigabe; eigene UI- oder Teständerung ist gezeigt.",
     },
     11: {
@@ -142,8 +171,21 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
             {"phase": "Selbst bauen", "askClaude": "Wie machen wir Stopp oder Duplikatschutz in der Queue klarer? Zeig mir zuerst einen kleinen Test.", "yourMove": "Kleine Queue- oder Testverbesserung selbst mit Claude umsetzen."},
             {"phase": "Wirkung belegen", "askClaude": "Zeig mir vor dem Zeitsprung, was automatisch rausgehen würde. Spule erst nach meiner ausdrücklichen Bestätigung vor.", "yourMove": "Uhrsprung bestätigen und danach genau einen Auto-Versand, Edit, Stopp und Audit prüfen."},
         ],
-        "timeboxMinutes": {"routeUndQueue": 20, "selbstBauen": 20, "eingreifen": 20, "versandNachweis": 10, "reflexion": 5},
+        "timeboxMinutes": {"routeUndQueue": 15, "selbstBauen": 15, "eingreifen": 15, "versandNachweis": 10, "reflexion": 5},
         "doneWhen": "Ein Auto-Versand, ein Edit und ein Stopp sind nachvollziehbar; eigene Queue- oder Testverbesserung ist gezeigt.",
+    },
+    12: {
+        "learningObjective": "Aus operativen Ereignissen einen knappen, belegten Management-Befund machen – ohne aus einer lokalen Simulation Unternehmens-KPIs abzuleiten.",
+        "mission": "Lade den aggregierten Schnappschuss aus Drill 11, baue mit reveal.js und D3 einen maximal vierseitigen Management-Report und erkläre Kontrolle, Ergebnis und Grenze der Aussage.",
+        "buildTask": "Vibe-code in slides/management.js eine zweite aussagekräftige D3-Ansicht oder verbessere die bestehende Grafik. Nutze nur /api/management-report mit aggregierten Zahlen; keine Mailtexte, Namen, Secrets oder erfundenen Wirkungs-KPIs.",
+        "dialogueSteps": [
+            {"phase": "Befund wählen", "askClaude": "Welche aggregierten Beobachtungen aus unserem Drill-11-Schnappschuss sind wirklich belegt? Bitte keine Management-Aussage erfinden.", "yourMove": "Eine Aussage und ihre Grenze selbst wählen; Demo- und echte Workshop-Tickets unterscheiden."},
+            {"phase": "Visualisieren", "askClaude": "Zeig mir in slides/management.js eine kleine D3-Grafik für diese Aussage. Erst Datenform und Skizze, dann Code.", "yourMove": "Grafik selbst mit Claude bauen; Achsen, Beschriftung und Nullfälle prüfen."},
+            {"phase": "Entscheidung formulieren", "askClaude": "Hilf mir, eine Management-Empfehlung mit Beleg, Kontrollregel und Unsicherheit auf eine Folie zu verdichten.", "yourMove": "Empfehlung und Einschränkung selbst verantworten; maximal vier Folien."},
+            {"phase": "Vorführen", "askClaude": "Prüfe, ob die Folien lokal über den Python-Server ohne Node/CDN starten, die Zahlen zum Snapshot passen und keine persönlichen Daten enthalten.", "yourMove": "Report zeigen, Test ausführen, Diff prüfen, committen und in den eigenen Fork pushen."},
+        ],
+        "timeboxMinutes": {"snapshotUndFrage": 5, "selbstBauen": 20, "interpretation": 10, "nachweisen": 5, "reflexion": 5},
+        "doneWhen": "Maximal vier präsentierbare Folien; D3-Grafik mit lokalen Zählwerten; belegte Empfehlung mit Limit; eigener getesteter Commit im Fork.",
     },
 }
 
@@ -151,7 +193,8 @@ ADVANCE_TASKS = {
     8: "Drill 9 selbst vorbauen: Kunden-/Tarifkontext und belegten Lebensentwurf entwickeln; ein Mensch muss Text und Versand behalten.",
     9: "Drill 10 selbst vorbauen: Review-Zustand mit Freigabe, Ablehnung und Freigabeverlust nach Edit; ohne neue menschliche Freigabe keine Wirkung.",
     10: "Drill 11 selbst vorbauen: Haftpflicht-Routing und sichtbare Eingriffs-Queue mit Timer, Edit und Stopp; Auto-Versand nur im bestätigten Drill-11-Checkpoint.",
-    11: "Einen begrenzten Event- oder Zeit-Trigger als Prototyp entwerfen und seine Rechte, Retry-Regel und menschliche Stopplinie erklären; keinen Produktiv-Worker starten.",
+    11: "Drill 12 selbst vorbauen: aus aggregierten lokalen Workshop-Zahlen einen knappen reveal.js-/D3-Management-Report entwickeln; keine erfundenen KPIs.",
+    12: "Für das Whiteboard einen begrenzten Event- oder Zeit-Trigger mit Rechten, Retry-Regel und menschlicher Stopplinie skizzieren; keinen Produktiv-Worker starten.",
 }
 
 
@@ -238,6 +281,11 @@ def drill_guide(
             "Plane Haftpflichtantworten ein und beobachte Countdown sowie Queue-Aktionen.",
             "Lass einen Fall laufen, bearbeite einen zweiten, entferne einen dritten und spule erst danach die Workshop-Uhr vor.",
         ],
+        12: [
+            "Der Snapshot zählt nur lokale Workshop-Fälle; lies /api/management-report und unterscheide demo=true von echten Workshop-Tickets.",
+            "Nutze die vorhandene reveal.js-/D3-Basis in slides/index.html?deck=management; ändere den kleinen Einstieg in slides/management.js.",
+            "Zeige Beobachtung, Kontrollgrenze, Empfehlung und Unsicherheit; ein schöner Chart ohne richtige Beschriftung ist kein Management-Befund.",
+        ],
     }
     bounded = max(0, min(hint_level, 3))
     return {
@@ -276,6 +324,7 @@ def verify_checkpoint(check_external_inbox: bool = False, db: sqlite3.Connection
         "agentmail-configuration",
         agentmail["ready"],
         "API key, one inbox ID and recipient allowlist configured" if agentmail["ready"] else "Configure API key, AGENTMAIL_INBOX_ID and WORKSHOP_ALLOWED_RECIPIENTS",
+        required=profile["drill"] != 12,
     )
     if check_external_inbox:
         check("agentmail-reachability", agentmail["reachable"] is True, "Configured inbox is reachable")
@@ -292,12 +341,17 @@ def verify_checkpoint(check_external_inbox: bool = False, db: sqlite3.Connection
         liabilities = [ticket for ticket in visible if ticket["productLine"] == "liability"]
         check("liability-scenarios", len(liabilities) >= 3, f"{len(liabilities)} visible liability scenarios")
         check("intervention-queue", "intervention_queue" in profile["capabilities"], "Queue controls and workshop clock active")
-        auto_send = os.getenv("AUTO_SEND_ENABLED", "").lower() == "true"
-        check(
-            "automatic-dispatch", auto_send,
-            "Eingriffsfenster und automatischer Versand aktiv" if auto_send else
-            "Der Auto-Versand ist aus: offiziellen Drill-11-Checkpoint neu laden oder Lehrperson fragen",
-        )
+        if profile["drill"] == 11:
+            auto_send = os.getenv("AUTO_SEND_ENABLED", "").lower() == "true"
+            check(
+                "automatic-dispatch", auto_send,
+                "Eingriffsfenster und automatischer Versand aktiv" if auto_send else
+                "Der Auto-Versand ist aus: offiziellen Drill-11-Checkpoint neu laden oder Lehrperson fragen",
+            )
+    if profile["drill"] == 12:
+        from .management_report import REPORT_SNAPSHOT
+        from .constants import ROOT
+        check("management-report-snapshot", (ROOT / REPORT_SNAPSHOT).is_file(), "Aggregierter Report-Schnappschuss vorhanden")
 
     failed = [item for item in checks if item["required"] and not item["passed"]]
     return {

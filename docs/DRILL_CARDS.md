@@ -1,4 +1,4 @@
-# Dienstag: Teilnehmerkarten für Drill 8–11
+# Dienstag: Teilnehmerkarten für Drill 8–12
 
 Lies während eines Drills nur dessen Karte. Die Anwendung ist absichtlich in
 Stufen freigeschaltet. Du bearbeitest fiktive Fälle, triffst die menschlichen
@@ -77,8 +77,8 @@ Postfach und lokalem System. Du erkennst, dass Cockpit und MCP dasselbe Ticket
 sehen, leitest daraus einen sinnvollen nächsten Arbeitsschritt ab und baust
 mit Claude selbst eine kleine Verbesserung des Eingangs-Workflows.
 
-**75 Minuten:** 20′ Setup und erste Mail · 10′ Ticket in Cockpit/MCP erkunden ·
-25′ selbst mit Claude erweitern · 15′ prüfen · 5′ erklären, was sich geändert hat.
+**60 Minuten:** 15′ Setup und erste Mail · 5′ Ticket in Cockpit/MCP erkunden ·
+25′ selbst mit Claude erweitern · 10′ prüfen · 5′ erklären, was sich geändert hat.
 
 **Preflight:** Prüfe in Terminal B (außerhalb von Claude) oder lass Claude
 nach deiner Zustimmung die externe Prüfung ausführen:
@@ -136,9 +136,9 @@ teilen.
 **Ziel:** Claude bereitet Kontext und Entwurf vor. Du prüfst, redigierst und
 versendest die Antwort ausdrücklich selbst.
 
-**Lernziel und 75 Minuten:** Du trennst Kundenaussage von belegter Quelle und
-behältst letzte Textänderung und Versand in Menschenhand. 20′ Fall/Quellen ·
-20′ Entwurf/Edit/Versand · 20′ selbst Belegprüfung verbessern · 10′ Test/Audit ·
+**Lernziel und 60 Minuten:** Du trennst Kundenaussage von belegter Quelle und
+behältst letzte Textänderung und Versand in Menschenhand. 15′ Fall/Quellen ·
+15′ Entwurf/Edit/Versand · 20′ selbst Belegprüfung verbessern · 5′ Test/Audit ·
 5′ Rückblick.
 
 **Preflight:** Der aktive Zustand muss `drill-09-start` sein. Prüfe:
@@ -191,9 +191,9 @@ gelingt, den offiziellen nächsten Stand wie unten beschrieben vorbereiten.
 Antwort bereit. Ohne **aktuelle, ausdrückliche** menschliche Freigabe darf
 weder die Entscheidung noch eine Nachricht den Fall verlassen.
 
-**Lernziel und 75 Minuten:** Vollständige Agentenvorbereitung ist erlaubt,
-externe Wirkung bleibt bis zur aktuellen Freigabe gesperrt. 20′ zwei Fälle ·
-25′ Review-Pfad selbst verbessern · 20′ Freigabe/Ablehnung/Edit · 5′ Audit ·
+**Lernziel und 60 Minuten:** Vollständige Agentenvorbereitung ist erlaubt,
+externe Wirkung bleibt bis zur aktuellen Freigabe gesperrt. 15′ zwei Fälle ·
+20′ Review-Pfad selbst verbessern · 15′ Freigabe/Ablehnung/Edit · 5′ Audit ·
 5′ Rückblick.
 
 **Preflight:** Der aktive Zustand muss `drill-10-start` sein:
@@ -243,9 +243,9 @@ nächsten Stand getrennt laden; der alte Arbeitsstand bleibt erhalten.
 automatisch durch; eine zweite wird im Fenster geändert, eine dritte aus der
 Queue entfernt. Der Unterschied zur verpflichtenden Freigabe wird erlebt.
 
-**Lernziel und 75 Minuten:** Du vergleichst „Mensch muss freigeben“ mit
-„Mensch kann im Fenster eingreifen“. 20′ Routing/Queue · 20′ selbst Queue
-verbessern · 20′ Edit/Stopp · 10′ Uhr/Versand/Audit · 5′ Rückblick.
+**Lernziel und 60 Minuten:** Du vergleichst „Mensch muss freigeben“ mit
+„Mensch kann im Fenster eingreifen“. 15′ Routing/Queue · 15′ selbst Queue
+verbessern · 15′ Edit/Stopp · 10′ Uhr/Versand/Audit · 5′ Rückblick.
 
 **Preflight:** Der aktive Zustand muss `drill-11-start` sein. Der offizielle
 Checkpoint setzt den Auto-Send-Schalter in **diesem** Worktree automatisch.
@@ -284,9 +284,9 @@ entferne einen anderen mit `remove_from_send_queue` und lasse vor dem
 bestätigten Zeitsprung nur **einen** geplanten Fall übrig.
 
 **Wenn du früh fertig bist:** Prüfe Idempotenz: Wiederholen darf keine
-zweite Nachricht erzeugen. Oder entwirf einen eigenen **begrenzten**
-Event-/Zeit-Trigger als Prototyp und diskutiere dessen Stopplinie; keinen
-Produktiv-Worker oder Cronjob starten.
+zweite Nachricht erzeugen. Oder beginne auf ausdrücklichen Wunsch den
+Management-Report für Drill 12 im eigenen Branch; nutze ausschließlich
+aggregierte Zahlen, keine Mailtexte oder Namen.
 
 **Ohne Claude-Tokens:** Nach `sync` im Browser routen/entwerfen,
 Queue-Aktionen und Audit prüfen; der Zeitsprung bleibt eine bewusste
@@ -294,13 +294,62 @@ menschliche Entscheidung. Ein Buddy darf den Countdown gegenprüfen, aber
 nicht die Bestätigung übernehmen. Bei technischen Problemen nicht mehrfach
 blind senden; Status und Activity Log zuerst prüfen.
 
+## Drill 12 – Management-Report mit reveal.js und D3
+
+**Lernziel:** Du übersetzt den selbst erlebten Prozess in eine knappe,
+prüfbare Management-Entscheidung. Eine schöne Grafik reicht nicht: Aussage,
+Quelle, Kontrollgrenze und Unsicherheit müssen zusammenpassen.
+
+**45 Minuten:** 5′ Zahlen und Leitfrage · 20′ mit Claude Folien/Grafik bauen ·
+10′ Empfehlung und Grenzen formulieren · 5′ lokal prüfen · 5′ Kurzvortrag.
+
+**Preflight:** Bitte Claude: „Plane den offiziellen Checkpoint für Drill 12,
+zeige mir insbesondere, welche Daten übernommen werden, und frage mich vor
+dem Laden.“ Lade ihn aus dem **Drill-11-Arbeitsordner** nach Bestätigung. Der
+neue Worktree hat eine frische Datenbank, übernimmt aber einen lokalen,
+aggregierten Zählwert-Schnappschuss aus dem bisherigen Drill. Namen,
+Mailtexte und Schlüssel gehören nicht hinein. Auto-Versand ist hier aus.
+Starte App und Claude im neuen Ordner, dann prüfe:
+
+```bash
+uv run pfefferminzia checkpoint verify
+```
+
+Öffne <http://127.0.0.1:3004/slides/index.html?deck=management> oder den
+Link im Cockpit. Die bestehende Folienbasis enthält reveal.js und D3 bereits;
+**kein Node, npm oder CDN**. `slides/management.js` ist dein kleiner,
+bearbeitbarer Einstieg. `/api/management-report` und das MCP-Werkzeug
+`get_management_report_data` liefern denselben rein aggregierten Snapshot.
+
+| Etappe | Frage an Claude | Dein Stopp |
+| --- | --- | --- |
+| 1 · Befund | „Welche Beobachtung aus dem Drill-11-Snapshot ist wirklich belegt? Trenne Demo- und Inbox-Fälle.“ | Eine Leitfrage wählen; nicht aus einer lokalen Simulation auf den Konzern schließen. |
+| 2 · Visualisieren | „Hilf mir, dafür in `slides/management.js` eine D3-Grafik zu bauen. Erst Datenform und Skizze, dann Code.“ | Grafik selbst prüfen: Achsen/Balken, Zählwert, Beschriftung und Nullfälle. |
+| 3 · Entscheiden | „Verdichte Beleg, Kontrollregel, Empfehlung und Unsicherheit auf eine Management-Folie.“ | Empfehlung selbst verantworten; maximal vier Folien, keine erfundenen Einsparungen. |
+| 4 · Vorführen | „Prüfe lokale Folien, Snapshot, Datenschutz und Diff. Was ist belegt, was fehlt?“ | Kurz zeigen, `uv run pytest -q` ausführen, eigenen Code committen und in den Fork pushen. |
+
+**Abschlussnachweis:** Ein maximal vierseitiger Report mit mindestens einer
+selbst veränderten D3-Visualisierung, einer überprüfbaren Zahl, einer
+Management-Empfehlung und einer klaren Aussagegrenze. Die lokale Folie
+funktioniert ohne externe Dienste. Zwei Minuten Präsentation genügen.
+
+**Wenn du früh fertig bist:** Zweite D3-Ansicht, verständlicher Nullfall oder
+eine Gegenhypothese. Keine zusätzlichen sensiblen Daten. Als Brücke zum
+Whiteboard: Wie sähe derselbe Report aus, wenn ein Event oder Cron ihn
+regelmäßig auslösen würde – und wer prüfte ihn dann?
+
+**Ohne Claude-Tokens:** Vorhandene Folien mit der Karte und Browser-DevTools
+anpassen; Buddy kann Daten und Beschriftungen gegenprüfen. Fertige
+Referenzgrafik und Kontrollereignisse bleiben als Gerüst verfügbar.
+
 ## Offizieller Übergang und Rettung – immer ohne Verlust des eigenen Stands
 
 Für den **normalen Übergang** zum nächsten Drill und für „Ich hänge fest,
 bitte offiziellen Stand laden“ gilt derselbe sichere Ablauf. Er erzeugt
 einen **neuen** Git-Worktree **auf einem eigenen Branch** aus dem offiziellen
-Tag mit frischer lokaler
-SQLite-Datenbank. Dein bisheriger Ordner, Branch, uncommittete Dateien und
+Tag mit frischer lokaler SQLite-Datenbank. Beim Übergang zu Drill 12 wird
+zusätzlich ein **aggregierter Snapshot** aus dem alten Drill-11-Ordner
+übernommen. Dein bisheriger Ordner, Branch, uncommittierte Dateien und
 alte Datenbank bleiben unverändert. Fortschritt im alten Ordner wird nicht
 automatisch in den neuen übernommen; erzähle Claude, was du weiterverwenden
 möchtest. Alte Inbox-Nachrichten sind extern weiter vorhanden und können im
@@ -309,7 +358,7 @@ angekündigten Fälle. Offizielle Tags sind Kurs-Referenzen, nicht dein
 persönlicher Commit.
 
 ```bash
-# Beispiel für den Übergang nach Drill 8; entsprechend 10 oder 11 einsetzen.
+# Beispiel für den Übergang nach Drill 8; entsprechend 10, 11 oder 12 einsetzen.
 uv run pfefferminzia checkpoint plan drill-09-start
 # Plan lesen: Quelle, Zielordner und eigene Änderungen. Erst dann entscheiden.
 uv run pfefferminzia checkpoint apply TOKEN --confirm-checkpoint-load
@@ -339,5 +388,5 @@ Fork vor dem nächsten Plan `git fetch upstream --tags --force` nutzen.
 Falls dir Tokens fehlen: führe `plan`/`apply` selbst im Terminal aus und
 arbeite mit dieser Karte und dem Browser weiter. Falls etwas scheitert,
 **keinen** `git reset --hard` ausführen; zeige der Lehrperson die Fehlermeldung
-ohne Schlüssel. Für den finalen Referenzstand nach Drill 11 heißt der
-Checkpoint `drill-11-complete`.
+ohne Schlüssel. Der finale Referenzstand heißt nun `drill-12-complete`;
+`drill-11-complete` bleibt für bestehende Klone als alter Endzustand erhalten.

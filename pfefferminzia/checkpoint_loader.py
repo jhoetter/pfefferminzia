@@ -13,6 +13,7 @@ from typing import Any
 
 from .checkpoints import normalize_checkpoint
 from .constants import ROOT
+from .management_report import capture_report_snapshot
 
 
 PLAN_TTL_SECONDS = 15 * 60
@@ -65,6 +66,11 @@ def _dirty_paths() -> list[str]:
 def plan_checkpoint_load(target_checkpoint: str) -> dict[str, Any]:
     checkpoint = normalize_checkpoint(target_checkpoint)
     automatic_dispatch = checkpoint in ("drill-11-start", "drill-11-complete")
+    report_snapshot = checkpoint in ("drill-12-start", "drill-12-complete")
+    configured_database = os.getenv("PFEFFERMINZIA_DB_PATH")
+    source_database = (
+        (ROOT / configured_database).resolve() if configured_database else ROOT / ".data" / "pfefferminzia.db"
+    )
     reference, commit, official_tag = _official_ref(checkpoint)
     source_head = _git_output("rev-parse", "HEAD")
     dirty_paths = _dirty_paths()
@@ -85,6 +91,8 @@ def plan_checkpoint_load(target_checkpoint: str) -> dict[str, Any]:
         "dirtyPaths": dirty_paths,
         "createdAtEpoch": time.time(),
         "sourceFingerprint": _source_fingerprint(source_head, dirty_paths),
+        "sourceCheckpoint": os.getenv("WORKSHOP_CHECKPOINT", "drill-08-start"),
+        "sourceDatabase": str(source_database),
     }
     plans_dir = _plans_dir()
     plans_dir.mkdir(parents=True, exist_ok=True)
@@ -104,6 +112,8 @@ def plan_checkpoint_load(target_checkpoint: str) -> dict[str, Any]:
         "participantChangesPreserved": True,
         "environmentCopied": (ROOT / ".env").exists(),
         "automaticDispatchWillBeEnabled": automatic_dispatch,
+        "aggregateReportWillBeCopied": report_snapshot,
+        "reportSourceDatabasePresent": source_database.is_file() if report_snapshot else None,
         "confirmationToken": token,
         "expiresInSeconds": PLAN_TTL_SECONDS,
         "confirmationQuestion": (
@@ -112,6 +122,10 @@ def plan_checkpoint_load(target_checkpoint: str) -> dict[str, Any]:
             + (
                 " In Drill 11 wird Auto-Versand für später eingereichte Haftpflichtantworten nach dem sichtbaren Zeitfenster aktiviert."
                 if automatic_dispatch else ""
+            )
+            + (
+                " Für den Drill-12-Report werden nur aggregierte Zählwerte aus deiner bisherigen Datenbank übernommen; keine Mailtexte, Namen oder Schlüssel im Report. Die lokale .env wird wie bei jedem Checkpoint separat kopiert. Auto-Versand ist dort aus."
+                if report_snapshot else ""
             )
         ),
         "warning": None,
@@ -148,6 +162,8 @@ def apply_checkpoint_load(confirmation_token: str) -> dict[str, Any]:
     try:
         _run(["git", "submodule", "update", "--init", "--recursive"], target)
         _write_checkpoint_environment(target, plan["checkpoint"])
+        if plan["checkpoint"] in ("drill-12-start", "drill-12-complete"):
+            capture_report_snapshot(ROOT, target, plan["sourceCheckpoint"], Path(plan["sourceDatabase"]))
         _run(["uv", "sync", "--frozen"], target)
         _run(
             [

@@ -113,14 +113,15 @@ selbst zu bauen.“ Wenn du hängst: „Zeig mir die Dateistelle und einen minim
 Test. Übernimm nur nach meiner Bitte mehr.“ Eine fertige, grüne App allein
 ist **kein** Lernnachweis; ein Prompt allein ist **kein** gebauter Beitrag.
 
-## Vier 75-Minuten-Schleifen
+## Vier 60-Minuten-Schleifen und ein 45-Minuten-Mini-Drill
 
 | Drill | Gemeinsam erlebter Fall | Bauender Kern | Vorausbau nach frühem Nachweis |
 | --- | --- | --- | --- |
 | 8 · Eingang | Mail → Ticket in Cockpit und MCP → sinnvolles Todo | Import- oder Todo-Verknüpfung idempotent machen | Kunden-/Tarifkontext und belegten Entwurf für Drill 9 angehen |
 | 9 · Leben | Quelle prüfen → Entwurf → Mensch redigiert und sendet | Belegprüfung/Fehlerfall verbessern | Review-Zustand mit Freigabe/Ablehnung für Drill 10 bauen |
 | 10 · Freigabe | Zwei Fälle → Freigabe und Ablehnung → Audit | Review-Komponente und Freigabeverlust absichern | Haftpflicht-Routing und Eingriffs-Queue für Drill 11 bauen |
-| 11 · Eingriffsfenster | Auto-Versand, Edit und Stopp unterscheiden | Countdown, Duplikatschutz oder Queue-Eingriff verbessern | Eigenen begrenzten Trigger/Automationsvertrag prototypisieren |
+| 11 · Eingriffsfenster | Auto-Versand, Edit und Stopp unterscheiden | Countdown, Duplikatschutz oder Queue-Eingriff verbessern | Management-Report für Drill 12 vorbereiten |
+| 12 · Management-Report | Erlebte Kontrolle als Management-Befund verdichten | reveal.js-Folien und D3-Grafik aus aggregierten Zählwerten bauen | Zweite Grafik, Nullfall oder Gegenargument ergänzen |
 
 Das Repo enthält einen lauffähigen Referenzpfad und Sicherheitsgrenzen. Auch
 ein Anfänger kann dadurch jeden Fall durchspielen. Vibe Coding bedeutet hier
@@ -128,6 +129,14 @@ nicht, unkontrollierten Code zur Pflichtfreigabe oder zum E-Mail-Versand
 hinzuzufügen: Neue Varianten müssen im eigenen Branch mit Tests und den
 bestehenden Guards erprobt werden. Für den offiziellen Nachweis gilt die
 jeweilige [Drill-Karte](DRILL_CARDS.md).
+
+Der fünfte Drill ist kein zusätzliches Versicherungsfeature. Er übersetzt
+das selbst gebaute System in eine **Management-Entscheidung**. Der offizielle
+Übergang aus Drill 11 übernimmt nur aggregierte Zählwerte in den neuen
+Worktree; keine Namen, Mailtexte oder Schlüssel landen im Report. Die
+vorhandene Folienbasis enthält reveal.js und D3 bereits im Browser. Es wird
+kein Node/npm installiert und kein neues Projekt aufgesetzt. Die Folien
+laufen über den lokalen Python-Server; der Datenschnappschuss bleibt lokal.
 
 ## Whiteboard: vom Terminal zur laufenden Automation
 

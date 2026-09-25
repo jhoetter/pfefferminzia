@@ -20,6 +20,7 @@ from .claims import create_claim_from_ticket, create_claim_task, ensure_workshop
 from .constants import ROOT
 from .crm import get_contract, get_customer, link_ticket_contract, link_ticket_party, resolve_ticket_customer, search_customers
 from .mcp_server import create_mcp_server
+from .management_report import read_report_snapshot
 from .seed import ensure_seed_data
 from .store import (
     add_internal_note,
@@ -213,6 +214,11 @@ def create_app() -> FastAPI:
     @app.get("/api/workshop/verify")
     async def verify_workshop(external: bool = False) -> dict[str, Any]:
         return await asyncio.to_thread(verify_checkpoint, external)
+
+    @app.get("/api/management-report")
+    async def management_report() -> dict[str, Any]:
+        require_capability("management_report")
+        return read_report_snapshot()
 
     @app.get("/api/customers")
     async def customers(q: str | None = None, country: str | None = None, productId: str | None = None, limit: int = 50):

@@ -7,6 +7,8 @@ from pathlib import Path
 import pytest
 
 import pfefferminzia.checkpoint_loader as loader
+from pfefferminzia.database import create_database
+from pfefferminzia.management_report import read_report_snapshot
 
 
 def test_checkpoint_loader_preserves_source_and_builds_separate_worktree(monkeypatch, tmp_path):
@@ -92,6 +94,41 @@ def test_checkpoint_worktree_is_a_pushable_branch(monkeypatch, tmp_path):
     assert (source / ".env").read_text(encoding="utf-8") == "WORKSHOP_CHECKPOINT=drill-08-start\n"
 
 
+def test_report_checkpoint_carries_counts_without_source_database(monkeypatch, tmp_path):
+    source = tmp_path / "pfefferminzia"
+    source.mkdir()
+    (source / ".env").write_text("WORKSHOP_CHECKPOINT=drill-11-start\nAUTO_SEND_ENABLED=true\n", encoding="utf-8")
+    db = create_database(source / ".data" / "pfefferminzia.db")
+    db.execute(
+        """INSERT INTO tickets (ticket_number, source, customer_email, subject, product_line,
+        created_at, updated_at, last_message_at) VALUES ('PF-PRIVATE', 'agentmail',
+        'private@example.invalid', 'Private', 'liability', '2026-09-29', '2026-09-29', '2026-09-29')"""
+    )
+    db.close()
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-11-start")
+    monkeypatch.setattr(loader, "ROOT", source)
+    monkeypatch.setattr(loader, "_plans_dir", lambda: source / ".data" / "checkpoint-plans")
+    monkeypatch.setattr(loader, "_official_ref", lambda checkpoint: (f"refs/tags/checkpoint/{checkpoint}", "abc123", True))
+    monkeypatch.setattr(loader, "_dirty_paths", lambda: [])
+    monkeypatch.setattr(loader, "_git_output", lambda *args, **kwargs: "source456")
+
+    def fake_run(command: list[str], cwd: Path, *, clean_checkpoint_environment: bool = False):
+        if command[:3] == ["git", "worktree", "add"]:
+            Path(command[-2]).mkdir(parents=True)
+
+    monkeypatch.setattr(loader, "_run", fake_run)
+    plan = loader.plan_checkpoint_load("drill-12-start")
+    assert plan["reportSourceDatabasePresent"] is True
+    assert plan["aggregateReportWillBeCopied"] is True
+    result = loader.apply_checkpoint_load(plan["confirmationToken"])
+    report = read_report_snapshot(Path(result["worktreePath"]))
+    assert report["sourceCheckpoint"] == "drill-11-start"
+    assert report["tickets"][0]["count"] == 1
+    assert "PF-PRIVATE" not in (Path(result["worktreePath"]) / ".data" / "management-report.json").read_text()
+    assert "AUTO_SEND_ENABLED=false" in (Path(result["worktreePath"]) / ".env").read_text()
+    assert (source / ".data" / "pfefferminzia.db").is_file()
+
+
 def test_checkpoint_loader_rejects_changed_source(monkeypatch, tmp_path):
     source = tmp_path / "pfefferminzia"
     source.mkdir()
@@ -145,7 +182,8 @@ def test_child_checkpoint_activation_drops_old_worktree_environment(monkeypatch,
 @pytest.mark.parametrize(
     ("checkpoint", "expected"),
     [("drill-08-start", "false"), ("drill-09-start", "false"), ("drill-10-start", "false"),
-     ("drill-11-start", "true"), ("drill-11-complete", "true")],
+     ("drill-11-start", "true"), ("drill-11-complete", "true"),
+     ("drill-12-start", "false"), ("drill-12-complete", "false")],
 )
 def test_recovery_sets_automatic_dispatch_for_its_stage(monkeypatch, tmp_path, checkpoint, expected):
     source = tmp_path / "pfefferminzia"

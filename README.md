@@ -10,11 +10,12 @@ Johannes zeigt morgens live eigene, bereits gebaute Anwendungen
 [tracker.sonaloop.com](https://tracker.sonaloop.com)): Was wird möglich,
 wenn man Software mit Claude Code selbst entwickelt? Danach ist
 **Pfefferminzia euer Bauplatz**. Jede Person forkt dieses Repo und arbeitet
-in ihrer eigenen Version. Vier Drills führen von einer eingehenden Mail über
+in ihrer eigenen Version. Fünf Drills führen von einer eingehenden Mail über
 MCP und einen belegten Entwurf zu zwei Arten von Agenten-Kontrolle:
 verpflichtende menschliche Freigabe bei Leben und ein sichtbares
-Eingriffsfenster vor automatischem Haftpflicht-Versand. Am Whiteboard
-fragen wir zum Schluss, wie derselbe Agent durch **Events oder Cron** statt
+Eingriffsfenster vor automatischem Haftpflicht-Versand. Zum Schluss bauen
+alle einen kurzen Management-Report mit reveal.js und D3 aus den erlebten
+Kontrollereignissen. Am Whiteboard fragen wir danach, wie derselbe Agent durch **Events oder Cron** statt
 durch fortlaufende Terminal-Prompts startet – und wo er handeln darf.
 
 Das Lernziel ist nicht, vier Prompts abzuschicken oder eine fertige Demo zu
@@ -36,10 +37,11 @@ Nachweise; die [Dienstagsagenda](docs/WORKSHOP_AGENDA.md) zeigt die Zeitslots.
 | Zeit | Gemeinsamer Meilenstein | Selbst bauen oder vertiefen |
 | --- | --- | --- |
 | 08:30–09:45 | Input und Johannes' Live-Beispiele | Zielbild, MCP und Sicherheitsgrenzen verstehen |
-| 10:00–11:15 | Drill 8: Inbox → Ticket in Cockpit/MCP | Eingang verbessern; optional Drill 9 vorbauen |
-| 11:30–12:45 | Drill 9: Leben, Mensch editiert und sendet | Belegprüfung; optional Drill 10 vorbauen |
-| 13:45–15:00 | Drill 10: Leben, Pflichtfreigabe/Ablehnung | Review; optional Drill 11 vorbauen |
-| 15:15–16:30 | Drill 11: Haftpflicht, Timer/Edit/Stopp | Queue; optional eigenen Trigger entwerfen |
+| 10:00–11:00 | Drill 8: Inbox → Ticket in Cockpit/MCP | Eingang verbessern; optional Drill 9 vorbauen |
+| 11:15–12:15 | Drill 9: Leben, Mensch editiert und sendet | Belegprüfung; optional Drill 10 vorbauen |
+| 13:15–14:15 | Drill 10: Leben, Pflichtfreigabe/Ablehnung | Review; optional Drill 11 vorbauen |
+| 14:30–15:30 | Drill 11: Haftpflicht, Timer/Edit/Stopp | Queue; optional Drill 12 vorbauen |
+| 15:45–16:30 | Mini-Drill 12: Management-Report | Mit reveal.js und D3 selbst visualisieren und eine Empfehlung belegen |
 | 16:45–18:00 | Whiteboard: „Wo darf der Agent handeln?“ | Event/Cron vs. Terminal, Automation Contract |
 
 ## Technischer Start in drei Schritten
@@ -79,7 +81,8 @@ die Diagnose. Der erste Test lautet: „Prüfe meinen Workshop-Status und
 gib mir nur den ersten Hinweis.“
 
 **Dienstag, 29. September 2026:** Beginne mit den
-[vier Teilnehmerkarten](docs/DRILL_CARDS.md). Jeder 75-Minuten-Drill hat ein
+[fünf Teilnehmerkarten](docs/DRILL_CARDS.md). Die Drills 8–11 dauern je 60
+Minuten, der Report-Mini-Drill 45 Minuten. Jeder hat ein
 Lernziel, einen konkreten Fall, einen eigenen Codebeitrag und einen
 Abschlussbeleg. Claude nennt diese Aufgabe über `get_drill_guide` schon bei
 Hinweis-Level 0. Die vier Dialogetappen pro Drill sind **keine vier Prompts
@@ -90,8 +93,12 @@ Inbox-Schlüssel nur in `.env` und optional im **eigenen Workshop-Chat**
 angeben, niemals in Git oder einem Gruppenchat. `checkpoint verify` prüft
 die Startbereitschaft, nicht den Abschluss einer Übung.
 
-**Stand der Vorbereitung:** Das System und die vier Drills sind mit Fake-Mail
-automatisiert durchgespielt. Zwei isolierte Teilnehmer-Inboxen und eine
+**Stand der Vorbereitung:** Die bisherigen vier operativen Drills sind mit
+Fake-Mail automatisiert durchgespielt. Für den Report-Drill sind Snapshot,
+Checkpoint-Grenze und HTTP-Zugriff automatisiert getestet; die Folien wurden
+mit lokalen Simulationsdaten im Browser geprüft. Ein vollständiger
+Teilnehmerdurchlauf mit echter Inbox und eigenem Fork steht noch aus. Zwei
+isolierte Teilnehmer-Inboxen und eine
 Dozenten-Inbox sind im kostenlosen AgentMail-Pilot erprobt. Für den Kurs mit
 16 Teilnehmenden plus Dozent müssen vor Dienstag noch mindestens 14 weitere
 Inboxen samt inboxgebundenen Schlüsseln bereitgestellt und individuell
@@ -208,8 +215,9 @@ technically blocked and cannot be approved.
 
 - `vendor/falk-pfefferminzia/` — pinned upstream teaching dataset
 - `pfefferminzia/` — FastAPI host, SQLite services, MCP server, AgentMail
-  adapter, and CLI
+  adapter, report snapshot, and CLI
 - `web/` — checked-in browser workspace served directly by FastAPI
+- `slides/management.js` — participant-editable reveal.js/D3 management report
 - `data/tariffs/catalog.json` — application index for Falk's upstream tariff documents
 - `tests/` — pytest domain-rule, data-contract, MCP, and workflow tests
 - `docs/` — workshop agenda, architecture, and third-party attribution
@@ -296,10 +304,11 @@ the exact recipient (or an explicitly configured domain suffix) is allowlisted.
 
 ## Staged workshop checkpoints
 
-The Tuesday path is represented by five deterministic boundaries:
+The Tuesday path is represented by six canonical boundaries (plus the legacy
+`drill-11-complete` reference):
 
 ```text
-drill-08-start → drill-09-start → drill-10-start → drill-11-start → drill-11-complete
+drill-08-start → drill-09-start → drill-10-start → drill-11-start → drill-12-start → drill-12-complete
 ```
 
 Each profile limits fixtures, browser affordances, REST operations, MCP tools,
