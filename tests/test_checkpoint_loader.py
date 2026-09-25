@@ -133,6 +133,11 @@ def test_continue_mode_carries_code_and_cases_without_touching_source(monkeypatc
     plan = loader.plan_checkpoint_load("drill-09-start", mode="continue")
     assert plan["participantChangesCarried"] is True
     assert plan["localCasesCarried"] is True
+    (source / "own.txt").write_text("changed after plan\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="Participant files changed"):
+        loader.apply_checkpoint_load(plan["confirmationToken"])
+    (source / "own.txt").write_text("improved\n", encoding="utf-8")
+    plan = loader.plan_checkpoint_load("drill-09-start", mode="continue")
     result = loader.apply_checkpoint_load(plan["confirmationToken"])
     target = Path(result["worktreePath"])
     assert result["mode"] == "continue"

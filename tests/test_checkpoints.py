@@ -23,6 +23,7 @@ def test_drill_eight_guide_starts_with_a_real_inbox_mission(monkeypatch, full_db
     assert guide["hint"] is None
     assert "Ticket-ID" in guide["mission"]
     assert "zweimal synchronisiert" in guide["buildTask"]
+    assert "genau ein" in guide["buildTaskShort"]
     assert "guided" in guide["learningPath"]
     assert sum(guide["timeboxMinutes"].values()) == 60
 

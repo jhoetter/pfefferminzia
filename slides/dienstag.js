@@ -93,10 +93,10 @@
     },
     {
       id: 'Zielbild', type: 'Inhalt', eyebrow: 'Rückwärts vom Zielbild', title: 'Am Ende können wir beide Kontrollmuster live vergleichen.',
-      subtitle: 'Die vier Startzustände sind bewusst begrenzt, obwohl das Zielsystem technisch vorbereitet ist.',
+      subtitle: 'Jeder Startzustand zeigt nur die Fähigkeiten des aktuellen Drills.',
       body: grid([
         card('Der gemeinsame Kern', `<p>Eingang → Router → Kunde und Vertrag → Tarifbelege → Antwortvorschlag → Audit.</p><p>Die Kontrollregel liegt <strong>zwischen Vorschlag und externer Wirkung</strong>.</p>`),
-        card('Die vier Grenzen', `<p><strong>8</strong> Cockpit &amp; Inbox<br><strong>9</strong> Mensch sendet Leben<br><strong>10</strong> Mensch genehmigt Leben<br><strong>11</strong> Haftpflicht-Queue mit Timer</p>`, 'mint-card')
+        card('Fünf Etappen', `<p><strong>8</strong> Eingang &amp; MCP<br><strong>9</strong> Mensch sendet Leben<br><strong>10</strong> Mensch genehmigt Leben<br><strong>11</strong> Haftpflicht-Queue<br><strong>12</strong> Management-Report</p>`, 'mint-card')
       ]),
       notes: 'ZEIT: 4 Minuten. SAGEN: Checkpoints sind keine Musterlösung zum Anschauen. Jeder Startzustand zeigt nur die Fähigkeiten des aktuellen Drills. Die Teilnehmenden bauen im eigenen Branch weiter; eine Recovery liegt getrennt, ohne ihre Arbeit zu überschreiben.'
     },
@@ -222,12 +222,12 @@
     },
     {
       id: 'Checkpoints', type: 'Code', eyebrow: 'Sicheres Aufholen', title: 'Ein Checkpoint rettet den Tag, nicht auf Kosten Ihrer Arbeit.',
-      subtitle: 'Claude plant den Wechsel zuerst und fragt vor dem Laden ausdrücklich nach.',
+      subtitle: 'Wähle zuerst, was der neue Arbeitsordner enthalten soll. Danach fragt Claude vor dem Laden erneut.',
       body: grid([
-        card('An Claude sagen', `${prompt('„Hilf mir, den offiziellen Checkpoint für meinen Drill zu laden. Zeig mir vorher, was erhalten bleibt, und frag mich noch einmal.“')}<p class="day-small">Der neue Stand landet in einem eigenen Worktree.</p>`, 'mint-card'),
-        card('Selbst prüfen', `${code('uv run pfefferminzia checkpoint status\nuv run pfefferminzia checkpoint verify')}<p class="day-small" style="margin-top:14px">Eigener Branch, uncommittete Dateien und lokale Datenbank bleiben im ursprünglichen Ordner.</p>`)
+        card('Eigenen Stand mitnehmen', `<p>Dein Code, auch uncommittierte Änderungen, und eine Kopie deiner Fälle gehen in den nächsten Drill.</p><p class="day-small">Wenn dein eigener Bau funktioniert und weiterwachsen soll.</p>`, 'mint-card'),
+        card('Frisch offiziell starten', `<p>Referenzcode und neue Fälle. Der alte Arbeitsordner bleibt trotzdem vollständig erhalten.</p><p class="day-small">Wenn du einen Rettungsstand brauchst. Nach der Wahl: Plan ansehen, ausdrücklich bestätigen, prüfen.</p>`)
       ]),
-      notes: 'ZEIT: 3 Minuten. SAGEN: Niemand muss einen kaputten Zwischenstand wegwerfen. Die Plan-Funktion ist read-only; erst ein klares Ja aktiviert einen neuen Worktree. Wer aufholen muss, prüft den neuen Zustand und arbeitet dort weiter.'
+      notes: 'ZEIT: 3 Minuten. SAGEN: Claude fragt zuerst nach Mitnehmen oder frisch offiziell. Beide Modi legen einen neuen Worktree an und lassen den alten Ordner unangetastet. Mitnehmen kopiert Code und Fälle; offiziell startet mit Referenzcode und frischen Fällen. Der Plan ist noch keine Umschaltung. Erst nach sichtbarem Plan und erneutem Ja wird geladen. App und Claude im neuen Ordner starten, Status und Tests prüfen.'
     },
     {
       id: 'Tempo', type: 'Inhalt', eyebrow: 'Adaptiver Lernpfad', title: 'Wer schneller ist, baut weiter. Wer hängt, bekommt Halt.',

@@ -37,9 +37,8 @@ weiterzugehen.
 Wichtig: Der aktive Checkpoint **sperrt** spätere UI-/MCP-Fähigkeiten auch
 für schnelle Personen. Vorausbau bedeutet deshalb zunächst Code und Tests
 im eigenen Branch, **nicht** eine vorzeitig freigeschaltete Live-App. Beim
-offiziellen Wechsel kannst du deinen Commit vergleichen bzw. gezielt in den
-neuen Branch übernehmen (`git cherry-pick` nur nach Diff-Prüfung) und dort
-integriert verproben. Wenn du stattdessen den nächsten offiziellen
+Wechsel kannst du deinen eigenen Code mitnehmen und dort integriert verproben
+oder einen frischen offiziellen Stand laden. Wenn du stattdessen den nächsten offiziellen
 Checkpoint vorzeitig laden möchtest, gilt derselbe Wahl-/Plan-/Rückfrage-Ablauf;
 du bekommst dann die vorbereitete Funktion, baust aber weniger davon selbst.
 
