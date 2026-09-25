@@ -34,14 +34,23 @@
       id: 'Agenda', type: 'Agenda · Tag', eyebrow: 'Der Dienstag in einem Blick', title: 'Wir bauen vier Stufen auf dasselbe Zielsystem.',
       subtitle: 'Jeder Drill startet an einer offiziellen Grenze – die Teilnehmenden entwickeln den nächsten Schritt selbst.',
       body: `<div class="day-timeline">
-        <div class="day-timeline-row"><strong>08:30–09:45</strong><em>Input</em><span>Vom Assistenten zum Agenten; MCP, Kontrolle, Verifizierbarkeit</span></div>
-        <div class="day-timeline-row"><strong>10:00–11:15</strong><em>Drill 8</em><span>Kommandozentrale und persönliche Inbox</span></div>
+        <div class="day-timeline-row"><strong>08:30–09:45</strong><em>Input</em><span>Live-Apps; Vibe Coding, MCP, Kontrolle</span></div>
+        <div class="day-timeline-row"><strong>10:00–11:15</strong><em>Drill 8</em><span>Eigener Fork, Kommandozentrale und Inbox</span></div>
         <div class="day-timeline-row"><strong>11:30–12:45</strong><em>Drill 9</em><span>Leben: Agent bereitet vor, Mensch bearbeitet und sendet</span></div>
         <div class="day-timeline-row"><strong>13:45–15:00</strong><em>Drill 10</em><span>Leben: Agent bearbeitet, Mensch gibt frei oder lehnt ab</span></div>
         <div class="day-timeline-row"><strong>15:15–16:30</strong><em>Drill 11</em><span>Haftpflicht: sichtbares Eingriffsfenster vor Auto-Versand</span></div>
-        <div class="day-timeline-row"><strong>16:45–18:00</strong><em>Whiteboard</em><span>Wo darf der Agent handeln? Automation Contract</span></div>
+        <div class="day-timeline-row"><strong>16:45–18:00</strong><em>Whiteboard</em><span>Event/Cron oder Prompt? Automation Contract</span></div>
       </div>`,
-      notes: 'ZEIT: 2 Minuten. SAGEN: Es gibt vier 75-Minuten-Drills. Die Stufen sind keine vorgeführte Featureliste, sondern eigene Entwicklungsaufgaben. Am Ende gehen die Laptops zu und wir zeichnen den Prozess.'
+      notes: 'ZEIT: 2 Minuten. SAGEN: Vier 75-Minuten-Drills. Jede Person arbeitet im eigenen Fork, baut und pusht Code. Die Stufen sind keine vorgeführte Featureliste. Schnelle können nach dem Kernnachweis vorausbauen; der offizielle Checkpoint bleibt das Rettungsnetz. Am Ende gehen die Laptops zu.'
+    },
+    {
+      id: 'LiveBeispiele', type: 'Input', eyebrow: 'Morgens · Blick nach vorn', title: 'Erst das Ziel sehen. Dann selbst bauen.',
+      subtitle: 'Johannes zeigt eigene Anwendungen live – als Möglichkeitshorizont, nicht als Pfefferminzia-Musterlösung.',
+      body: grid([
+        card('Live-Demo', `<p><strong>app.sonaloop.com</strong><br><strong>design.sonaloop.com</strong><br><strong>tracker.sonaloop.com</strong></p><p>Drei eigene Anwendungen, direkt im Browser gezeigt.</p>`, 'mint-card'),
+        card('Danach ihr', `<p>Eigener Fork. Eigener Code. Claude Code als Programmierpartner.</p><p>Aus einem Prompt wird erst mit Test, Diff und sichtbarer Wirkung Software.</p>`)
+      ]),
+      notes: 'ZEIT: 5 Minuten plus Live-Demo. Die drei Seiten live im Browser öffnen; Folie behauptet absichtlich nichts über ihren Inhalt. Überleitung: nicht die Beispiele kopieren, sondern denselben Entwicklungsmodus an Pfefferminzia lernen.'
     },
     {
       id: 'Wirkung', type: 'Inhalt', eyebrow: 'Der neue Einsatzpunkt', title: 'Ein Agent braucht nicht mehr Text, sondern begrenzte Rechte.',
@@ -91,17 +100,17 @@
       notes: 'ZEIT: 4 Minuten. SAGEN: Checkpoints sind keine Musterlösung zum Anschauen. Jeder Startzustand zeigt nur die Fähigkeiten des aktuellen Drills. Die Teilnehmenden bauen im eigenen Branch weiter; eine Recovery liegt getrennt, ohne ihre Arbeit zu überschreiben.'
     },
     {
-      id: 'Arbeitsrhythmus', type: 'Inhalt', eyebrow: 'So arbeiten wir', title: 'Jeder Drill hat einen Fall, einen Mini-Build und einen Beleg.',
-      subtitle: 'Claude darf helfen; die fachliche Entscheidung und der Nachweis bleiben bei Ihnen.',
+      id: 'Arbeitsrhythmus', type: 'Inhalt', eyebrow: 'So arbeiten wir', title: 'Nicht vier Prompts: vier echte Entwicklungszyklen.',
+      subtitle: 'Gleicher Fallnachweis für alle. Unterschiedlich viel eigener Code ist erlaubt.',
       body: grid([
-        card('75 Minuten', `<p><strong>1.</strong> Einen echten Workshop-Fall durchlaufen.<br><strong>2.</strong> Eine kleine Verbesserung selbst mit Claude coden.<br><strong>3.</strong> Zustand und Test belegen.</p><p>Die Zeitanteile stehen auf der jeweiligen Drill-Karte.</p>`),
-        card('Wenn es hakt', `<p>Claude nach dem nächsten kleinen Schritt fragen. Tool-Resultat und Cockpit vergleichen.</p><p>Offiziellen Checkpoint erst planen, erhaltenen Pfad lesen und <strong>nach Rückfrage</strong> laden.</p>`, 'mint-card')
+        card('Deine Version', `<p>Fork → Branch → mit Claude bauen → Test und Diff prüfen → Fall in App/MCP erleben → Commit → Push.</p><p>Jeder Drill endet mit einem sichtbaren eigenen Beitrag.</p>`),
+        card('Dein Tempo', `<p><strong>Geführt:</strong> nächster Schritt und Dateistelle.<br><strong>Bauend:</strong> Akzeptanztest und eigene Iteration.<br><strong>Vorausbauend:</strong> nach Kernnachweis den nächsten Drill selbst beginnen.</p>`, 'mint-card')
       ]),
-      notes: 'ZEIT: 3 Minuten. SAGEN: Paararbeit ist möglich, jede Person behält ihre lokale Instanz und Inbox. Vor dem Reset wird der eigene Stand nicht überschrieben. Wer schnell ist, vertieft den aktuellen Drill, statt künftige Stufen vorwegzunehmen.'
+      notes: 'ZEIT: 3 Minuten. SAGEN: Claude passt den Hilfsgrad an, ohne die Person zu etikettieren. Persönlicher Fork und Inbox. Schnelle dürfen ausdrücklich vorausbauen; andere laden nach Rückfrage den offiziellen Checkpoint. Fallnachweis und Sicherheitsgrenzen bleiben für alle gleich.'
     },
     {
       id: 'Drill8Start', type: 'Kapitel', eyebrow: '10:00–11:15 · Meilenstein 1', title: 'Die Kommandozentrale', study: true,
-      body: stage('8', 'Vom leeren Checkout zur ersten Nachricht.', 'Python-App starten, Claude via MCP anbinden und die eigene AgentMail-Inbox im Cockpit sehen.', ['Start: drill-08-start', 'Ziel: Postfach verbunden']),
+      body: stage('8', 'Vom eigenen Fork zur ersten Nachricht.', 'Branch anlegen, Python-App und MCP starten, Inbox prüfen, ersten Codebeitrag testen und pushen.', ['Start: drill-08-start', 'Ziel: Mail + eigenes Werk']),
       notes: 'ZEIT: 1 Minute. SAGEN: Bis zum Ende dieses Drills muss jede Person die eigene Inbox sehen und eine Nachricht empfangen haben. Noch kein CRM, kein Entwurf, keine Freigabe, kein Timer.'
     },
     {
@@ -120,7 +129,7 @@
         card('1–2 · Eingang', `${dialogueStep(1, 'Start', 'Was fehlt für App, MCP und Inbox?', 'Eigene Werte eintragen; externen Test erlauben.')}${dialogueStep(2, 'Mail', 'Zeig mir dieselbe Ticket-ID in MCP und Cockpit.', 'Vorher Testmail senden; danach Ticket-Todo prüfen.')}`, 'mint-card'),
         card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Wo entsteht ein Ticket? Gib mir zuerst einen Test.', 'Automatisches Prüfen-Todo selbst mit Claude coden.')}${dialogueStep(4, 'Belegen', 'Prüfe zwei Syncs und den Todo-Status.', 'Gleiche Ticket-ID und grünen Test zeigen.')}`)
       ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: Die vier kurzen Prompts sind Gesprächsetappen, nicht ein Block zum Kopieren. Nach jeder Antwort handelt oder prüft die Person selbst. Keine echten Kundendaten. Eine persönliche Inbox, kein geteilter Schlüssel. Den temporären inboxgebundenen Workshop-Key darf Claude im individuellen Workshop-Chat erhalten und lokal eintragen; für echte Geheimnisse wäre das tabu. Die Outbound-Allowlist ist kein Eingangsfilter. Ein grüner Preflight ist nur Startbereitschaft. 20 Minuten Setup/Mail, 10 Minuten Ticket erkunden, 25 Minuten selbst bauen, 15 Minuten nachweisen, 5 Minuten reflektieren.'
+      notes: 'ZEIT: 2 Minuten. SAGEN: Die vier kurzen Prompts sind Gesprächsetappen, nicht ein Block. Nach jeder Antwort handelt oder prüft die Person selbst. Eine persönliche Inbox, kein geteilter Schlüssel. Temporären inboxgebundenen Workshop-Key nur im individuellen Chat/lokal, nie echte Geheimnisse. Outbound-Allowlist ist kein Eingangsfilter. Grüner Preflight ist nur Startbereitschaft. Nach dem eigenen Test Diff prüfen, committen und zum eigenen Fork pushen. 20 Minuten Setup/Mail, 10 Minuten Ticket erkunden, 25 Minuten bauen, 15 Minuten nachweisen, 5 Minuten reflektieren.'
     },
     {
       id: 'Drill9Start', type: 'Kapitel', eyebrow: '11:30–12:45 · Meilenstein 2', title: 'Der Mensch bearbeitet', study: true,
@@ -143,7 +152,7 @@
         card('1–2 · Leben-Fall', `${dialogueStep(1, 'Quelle', 'Welche Person, Police und Tarifgeneration passen?', 'Zuordnung und Fundstelle selbst bestätigen.')}${dialogueStep(2, 'Entwurf', 'Formuliere mit Beleg. Nicht versenden.', 'Selbst editieren, Empfänger prüfen und senden.')}`, 'mint-card'),
         card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Wo fällt eine falsche Tarifgeneration auf?', 'Erst Test, dann kleine Schutzregel ergänzen.')}${dialogueStep(4, 'Belegen', 'Zeig mir Quelle, Edit, Versand und Test.', 'Audit und grünen Test selbst kontrollieren.')}`)
       ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: Nicht alle Fragen zugleich eingeben. Die Person bestätigt erst Quelle und Identität, bevor der Entwurf beginnt. Hier endet Augmentation im operativen Prozess. Challenge Card für Schnelle: ähnliche Namen oder veraltete Tarifgeneration. Keine Freigabe-Queue aus Drill 10 vorwegnehmen.'
+      notes: 'ZEIT: 2 Minuten. SAGEN: Nicht alle Fragen zugleich eingeben. Die Person bestätigt erst Quelle und Identität. Schnelle können einen Kantenfall vertiefen oder nach eigenem Wunsch den Review-Pfad für Drill 10 im Branch vorbauen; der aktuelle Checkpoint schaltet ihn noch nicht live frei.'
     },
     {
       id: 'Drill10Start', type: 'Kapitel', eyebrow: '13:45–15:00 · Meilenstein 3', title: 'Der Mensch gibt frei', study: true,
@@ -200,19 +209,19 @@
       notes: 'ZEIT: 3 Minuten. SAGEN: Niemand muss einen kaputten Zwischenstand wegwerfen. Die Plan-Funktion ist read-only; erst ein klares Ja aktiviert einen neuen Worktree. Wer aufholen muss, prüft den neuen Zustand und arbeitet dort weiter.'
     },
     {
-      id: 'Tempo', type: 'Inhalt', eyebrow: 'Zwei Sicherheitsnetze', title: 'Schnelle vertiefen; bei Tokenlimits bleibt niemand stehen.',
-      subtitle: 'Die Challenge Cards greifen nur den aktuellen Drill auf und verraten den nächsten nicht.',
+      id: 'Tempo', type: 'Inhalt', eyebrow: 'Adaptiver Lernpfad', title: 'Wer schneller ist, baut weiter. Wer hängt, bekommt Halt.',
+      subtitle: 'Die nächste Fähigkeit ist ein Angebot nach dem Kernnachweis – kein Pflichtprogramm.',
       body: grid([
-        card('Wenn Sie schnell sind', `<p><strong>8</strong> Falsche Inbox-ID diagnostizieren.<br><strong>9</strong> Ähnliche Namen oder Prompt-Injection-Anhang.<br><strong>10</strong> Freigabe durch Edit invalidieren.<br><strong>11</strong> Idempotenz oder Timer-Reset prüfen.</p><p>Danach als Buddy Fragen stellen – Tastatur bleibt beim Team.</p>`, 'mint-card'),
-        card('Wenn Tokens knapp sind', `<p>Vor jedem Drill Nutzung prüfen und Reservezugänge organisiert bereithalten.</p><p>Zu zweit mit einer aktiven Claude-Session arbeiten; Hint Card und offiziellen Checkpoint als Fallback nutzen.</p><p><strong>Echte Daten nie in Chat, Folien oder Git.</strong></p>`, 'red-card')
+        card('Schneller', `<p>Kernfall + Test belegen. Dann wählen: Kantenfall vertiefen <em>oder</em> die nächste Drill-Fähigkeit im eigenen Branch selbst bauen.</p><p>Offizieller Checkpoint bleibt als Rückweg.</p>`, 'mint-card'),
+        card('Mehr Unterstützung', `<p>Claude zeigt nur den nächsten Schritt. Hint Card, Buddy-Fragen und vorbereiteter Checkpoint helfen beim Aufholen.</p><p>Bei Tokenlimit: Browser + Karten; Reservezugang nur organisiert, nie Passwörter teilen.</p>`, 'red-card')
       ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: Die Lehrenden organisieren Reserve-Sitze und Konten. Bei Tokenlimits nicht improvisiert Passwörter teilen. Pair Mode, Hint Cards und Checkpoint-Recovery halten die Lernerfahrung aufrecht.'
+      notes: 'ZEIT: 2 Minuten. SAGEN: Vorausbau ist Opt-in; die nächste Aufgabe wird nicht der ganzen Gruppe verraten. Buddys stellen Fragen, übernehmen nicht Tastatur oder Freigabe. Lehrende organisieren Token-Reserven vorher.'
     },
     {
       id: 'Whiteboard', type: 'Schluss', eyebrow: '16:45 · Laptops zu', title: 'Wo darf der Agent handeln?',
-      subtitle: 'Wir zeichnen den heute erlebten Prozess – und markieren die Stopplinien.',
-      body: `<div class="day-flow"><div class="day-flow-step"><b>E-Mail</b><span>Auslöser</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Belege</b><span>Kontext</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Agent</b><span>Vorschlag</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Kontrolle</b><span>Freigabe oder<br>Eingriffsfenster</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Wirkung</b><span>Versand + Audit</span></div></div>`,
-      notes: 'ZEIT: 2 Minuten, dann Beamer aus. SAGEN: Kein weiterer Vortrag. Gemeinsam den Prozess auf Whiteboard rekonstruieren. Die Gruppe entscheidet, welche Wirkungen nur nach Freigabe und welche mit Eingriffsfenster vertretbar sind.'
+      subtitle: 'Vom Terminal-Prompt zu Event oder Cron: Wer startet, stoppt und verantwortet den Lauf?',
+      body: `<div class="day-flow"><div class="day-flow-step"><b>Trigger</b><span>Prompt · Mail<br>oder Cron</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Worker</b><span>Rechte · Retry<br>Duplikate</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Agent</b><span>MCP + Belege</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Kontrolle</b><span>Freigabe oder<br>Eingriffsfenster</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Wirkung</b><span>Versand + Audit</span></div></div>`,
+      notes: 'ZEIT: 2 Minuten, dann Beamer aus. SAGEN: Wir haben Claude oft im Terminal angestossen; wie sähe derselbe Prozess als Mail-Event oder periodischer Cron-Lauf aus? Wer betreibt ihn, mit welchen Rechten, Retry- und Stoppregeln? Kein Produktiv-Cronjob im Workshop.'
     },
     {
       id: 'Contract', type: 'Schluss', eyebrow: 'Übergabe an Mittwoch', title: 'Ein Automation Contract macht die Grenze explizit.',
@@ -228,8 +237,8 @@
   const agentisch = window.PFEFFERMINZIA_AGENTISCH_SLIDES || [];
 
   const deckIds = {
-    gesamt: ['Titel', 'Bruecke', 'Wirkung', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus', 'Tempo', 'Whiteboard', 'Contract'],
-    input: ['Titel', 'Bruecke', 'Wirkung', 'Architektur', 'Belege', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus'],
+    gesamt: ['Titel', 'Bruecke', 'LiveBeispiele', 'Agenda', 'Wirkung', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus', 'Tempo', 'Whiteboard', 'Contract'],
+    input: ['Titel', 'Bruecke', 'LiveBeispiele', 'Agenda', 'Wirkung', 'Architektur', 'Belege', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus'],
     'drill-08': ['Drill8Start', 'Drill8Cockpit', 'Drill8Auftrag', 'Checkpoints'],
     'drill-09': ['Drill9Start', 'Drill9Kontext', 'Drill9Auftrag', 'Checkpoints'],
     'drill-10': ['Drill10Start', 'Drill10Review', 'Drill10Auftrag', 'Checkpoints'],

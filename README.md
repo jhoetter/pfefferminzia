@@ -2,10 +2,53 @@
 
 ![Pfefferminzia: Minzblätter im Schutzschild](web/logo.svg)
 
-## In drei Schritten startklar
+## Dienstag: vom Vorbild zur eigenen Anwendung
+
+Johannes zeigt morgens live eigene, bereits gebaute Anwendungen
+([app.sonaloop.com](https://app.sonaloop.com),
+[design.sonaloop.com](https://design.sonaloop.com),
+[tracker.sonaloop.com](https://tracker.sonaloop.com)): Was wird möglich,
+wenn man Software mit Claude Code selbst entwickelt? Danach ist
+**Pfefferminzia euer Bauplatz**. Jede Person forkt dieses Repo und arbeitet
+in ihrer eigenen Version. Vier Drills führen von einer eingehenden Mail über
+MCP und einen belegten Entwurf zu zwei Arten von Agenten-Kontrolle:
+verpflichtende menschliche Freigabe bei Leben und ein sichtbares
+Eingriffsfenster vor automatischem Haftpflicht-Versand. Am Whiteboard
+fragen wir zum Schluss, wie derselbe Agent durch **Events oder Cron** statt
+durch fortlaufende Terminal-Prompts startet – und wo er handeln darf.
+
+Das Lernziel ist nicht, vier Prompts abzuschicken oder eine fertige Demo zu
+bedienen. Du lernst **Vibe Coding als überprüfbaren Entwicklungszyklus**:
+Claude einen kleinen Auftrag geben, Code und Test gemeinsam iterieren, den
+Diff lesen, das Ergebnis in App/MCP prüfen und die eigene Änderung committen
+und in den eigenen Fork pushen. Claude passt seine Hilfe an: Geführte
+Teilnehmende nutzen vorbereitete Checkpoints und Dateihinweise; schnelle
+Teilnehmende dürfen nach einem belegten Kernpfad **den nächsten Drill selbst
+vorbauen**. Alle erleben die gleichen Fälle und Kontrollmuster, aber nicht
+alle müssen gleich viel Code schreiben. Der eigene Stand wird beim Laden
+eines offiziellen Checkpoints nie überschrieben.
+
+Der genaue [Lern- und Git-Pfad](docs/LEARNING_PATH.md) erklärt Fork, Branch,
+Commit/Push, die drei Arbeitsweisen und das sichere Vorausbauen. Die
+[Drill-Karten](docs/DRILL_CARDS.md) enthalten die konkreten Fälle und
+Nachweise; die [Dienstagsagenda](docs/WORKSHOP_AGENDA.md) zeigt die Zeitslots.
+
+| Zeit | Gemeinsamer Meilenstein | Selbst bauen oder vertiefen |
+| --- | --- | --- |
+| 08:30–09:45 | Input und Johannes' Live-Beispiele | Zielbild, MCP und Sicherheitsgrenzen verstehen |
+| 10:00–11:15 | Drill 8: Inbox → Ticket in Cockpit/MCP | Eingang verbessern; optional Drill 9 vorbauen |
+| 11:30–12:45 | Drill 9: Leben, Mensch editiert und sendet | Belegprüfung; optional Drill 10 vorbauen |
+| 13:45–15:00 | Drill 10: Leben, Pflichtfreigabe/Ablehnung | Review; optional Drill 11 vorbauen |
+| 15:15–16:30 | Drill 11: Haftpflicht, Timer/Edit/Stopp | Queue; optional eigenen Trigger entwerfen |
+| 16:45–18:00 | Whiteboard: „Wo darf der Agent handeln?“ | Event/Cron vs. Terminal, Automation Contract |
+
+## Technischer Start in drei Schritten
 
 Du brauchst Python 3.12+, `uv`, Git und für die Übungen Claude Code; **kein
-Node.js**. Auch ein normaler Clone ohne Submodul-Option funktioniert:
+Node.js**. **Teilnehmende forken zuerst auf GitHub und klonen ihren eigenen
+Fork**, wie im [Lernpfad](docs/LEARNING_PATH.md) beschrieben. Die folgende
+URL ist für Lehrende und lokale Proben; auch ein normaler Clone ohne
+Submodul-Option funktioniert:
 
 ```bash
 git clone https://github.com/jhoetter/pfefferminzia.git
@@ -37,11 +80,12 @@ gib mir nur den ersten Hinweis.“
 
 **Dienstag, 29. September 2026:** Beginne mit den
 [vier Teilnehmerkarten](docs/DRILL_CARDS.md). Jeder 75-Minuten-Drill hat ein
-Lernziel, einen konkreten Fall, eine kleine eigene Codeverbesserung und einen
+Lernziel, einen konkreten Fall, einen eigenen Codebeitrag und einen
 Abschlussbeleg. Claude nennt diese Aufgabe über `get_drill_guide` schon bei
 Hinweis-Level 0. Die vier Dialogetappen pro Drill sind **keine vier Prompts
 auf einmal**: Nach jeder Antwort prüfst oder entscheidest du selbst und
-baust eine kleine Änderung mit Claude. Node.js ist nicht nötig. Den persönlichen
+baust eine Änderung mit Claude. Wer früher fertig ist, darf auf eigenen Wunsch
+die nächste Fähigkeit selbst bauen. Node.js ist nicht nötig. Den persönlichen
 Inbox-Schlüssel nur in `.env` und optional im **eigenen Workshop-Chat**
 angeben, niemals in Git oder einem Gruppenchat. `checkpoint verify` prüft
 die Startbereitschaft, nicht den Abschluss einer Übung.
@@ -270,7 +314,8 @@ uv run pfefferminzia checkpoint verify --external
 
 Checkpoint recovery is non-destructive. A two-step MCP/CLI protocol first
 shows the planned official reference, detected participant changes and target
-directory, then—after explicit confirmation—creates a separate Git worktree.
+directory, then—after explicit confirmation—creates a separate Git worktree
+on a new branch that can be pushed to the participant's fork.
 The original branch, uncommitted files and local database remain untouched.
 
 ```bash
@@ -279,7 +324,7 @@ uv run pfefferminzia checkpoint apply TOKEN --confirm-checkpoint-load
 ```
 
 The browser's **Workshop-Cockpit** shows the current learning goal, concrete
-mission, small build task, recent inbound tickets, ticket-linked todos,
+mission, code task, recent inbound tickets, ticket-linked todos,
 mandatory reviews, the visible
 intervention-window countdown, checkpoint verification, and the local
 workshop-clock control. See [`docs/WORKSHOP_RUNBOOK.md`](docs/WORKSHOP_RUNBOOK.md)

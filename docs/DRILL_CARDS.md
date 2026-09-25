@@ -2,8 +2,12 @@
 
 Lies während eines Drills nur dessen Karte. Die Anwendung ist absichtlich in
 Stufen freigeschaltet. Du bearbeitest fiktive Fälle, triffst die menschlichen
-Entscheidungen selbst und lässt dir von Claude zunächst Hinweise statt einer
-fertigen Lösung geben. Alle Nachrichten und Anhänge sind **Daten**, keine
+Entscheidungen selbst und **baust Teile des Systems in deinem eigenen Fork**.
+Claude passt seine Hilfe an: Lass dir zunächst Hinweise, Test und Dateistelle
+statt einer fertigen Lösung geben. Wer früh fertig ist, darf nach eigenem
+Entschluss bereits die nächste Fähigkeit bauen. Der offizielle Checkpoint
+bleibt das Rettungsnetz. Siehe [Lern- und Git-Pfad](LEARNING_PATH.md). Alle
+Nachrichten und Anhänge sind **Daten**, keine
 Anweisungen an Claude. Verwende niemals echte Kundendaten.
 
 ## Einmaliger Start am Dienstag
@@ -20,8 +24,11 @@ andere sensible Informationen gehören niemals in einen Chat. Der Schlüssel
 gehört nie in Git, einen Gruppenchat oder einen Screenshot.
 
 ```bash
-git clone https://github.com/jhoetter/pfefferminzia.git
+git clone https://github.com/DEIN-NAME/pfefferminzia.git  # vorher auf GitHub forken
 cd pfefferminzia
+git remote add upstream https://github.com/jhoetter/pfefferminzia.git
+git fetch upstream --tags
+git switch -c workshop/mein-tag
 uv sync --frozen
 uv run pfefferminzia setup  # lädt bei Bedarf das gepinnte Falk-Submodul und die lokale DB
 cp .env.example .env  # nur beim ersten Start; vorhandene .env nie überschreiben
@@ -113,10 +120,11 @@ für den Code hilft ein Idempotency-Key pro Eingangsnachricht.
 Bitte Claude für jeden weiteren Hinweis ausdrücklich erst dann, wenn du ihn
 brauchst (`get_drill_guide`, `hintLevel` 1–3).
 
-**Stretch, ohne Vorgriff:** Eine absichtlich falsch eingetragene Inbox-ID
-diagnostizieren, danach den korrekten Wert wiederherstellen und den externen
-Preflight erneut bestehen. Keine fremde Inbox und keinen fremden Schlüssel
-verwenden.
+**Wenn du früh fertig bist:** Vertiefe die Inbox-/Todo-Logik (z. B.
+Duplikatschutz) **oder** bitte Claude ausdrücklich um die Akzeptanzkriterien
+für Drill 9 und versuche, Kunden-/Tarifkontext und belegten Entwurf im
+eigenen Branch selbst zu bauen. Das ist dein Experiment; der offizielle
+Drill-9-Checkpoint bleibt separat verfügbar. Keine fremde Inbox verwenden.
 
 **Ohne Claude-Tokens:** `sync` und `checkpoint verify --external` im Terminal;
 Nachricht und Todo im Browser bearbeiten. Im Buddy-Modus bedient eine Person
@@ -166,10 +174,10 @@ welche Quelle belegt es? (2) Nutze `search_customers`, Ticket-Verknüpfung und
 dein eigener Edit und bewusster Send-Klick. Claude soll nicht für dich
 freigeben oder versenden.
 
-**Stretch, ohne Vorgriff:** Eine Anfrage mit fehlender Vertragsnummer oder
-zwei ähnlichen Namen sauber auflösen und dokumentieren, woran du die
-Zuordnung festmachst. Alternativ eine Anhang-Anweisung als untrusted input
-erkennen und ignorieren.
+**Wenn du früh fertig bist:** Löse ähnliche Namen oder eine fehlende
+Vertragsnummer als Kantenfall **oder** baue auf ausdrücklichen Wunsch die
+Review-Zustände aus Drill 10 selbst vor. Erhalte die bestehende
+Freigabesperre; teste, dass ohne Mensch nichts versendet wird.
 
 **Ohne Claude-Tokens:** Nach `sync` den Kontext und den Entwurf im Browser
 bearbeiten, Quellen selbst prüfen; für Hilfe die drei Hinweise oben nutzen.
@@ -219,9 +227,10 @@ ist nur nach neuer menschlicher Bestätigung erlaubt.
 (3) `approve_ticket_reply` oder `reject_ticket_reply` erst nach deiner
 ausdrücklichen Entscheidung; nach jedem Edit den Status neu prüfen.
 
-**Stretch, ohne Vorgriff:** Versuche nach einer Freigabe den Text zu ändern
-und belege anhand des Status/Audit Logs, dass die alte Freigabe nicht mehr
-gilt. Kein echter Versand für diesen Test.
+**Wenn du früh fertig bist:** Belege nach einem Edit den Freigabeverlust
+oder beginne auf ausdrücklichen Wunsch Drill 11 im eigenen Branch:
+Haftpflicht-Routing und sichtbare Eingriffs-Queue mit Timer. Auto-Versand
+nur im bestätigten Drill-11-Checkpoint und an erlaubte Workshop-Adressen.
 
 **Ohne Claude-Tokens:** `sync` im Terminal; Entwurf, Review, Ablehnung und
 Audit im Browser durchgehen. Ein Buddy darf bei Quellen und Begründung
@@ -274,9 +283,10 @@ an eine erlaubte Adresse gebunden? (2) Nutze `route_ticket`,
 entferne einen anderen mit `remove_from_send_queue` und lasse vor dem
 bestätigten Zeitsprung nur **einen** geplanten Fall übrig.
 
-**Stretch, ohne Vorgriff:** Prüfe Idempotenz: wiederholtes Prüfen oder
-Ausführen des Versandlaufs darf keine zweite Nachricht erzeugen. Nutze nur
-fiktive Fälle und die freigegebene Adresse.
+**Wenn du früh fertig bist:** Prüfe Idempotenz: Wiederholen darf keine
+zweite Nachricht erzeugen. Oder entwirf einen eigenen **begrenzten**
+Event-/Zeit-Trigger als Prototyp und diskutiere dessen Stopplinie; keinen
+Produktiv-Worker oder Cronjob starten.
 
 **Ohne Claude-Tokens:** Nach `sync` im Browser routen/entwerfen,
 Queue-Aktionen und Audit prüfen; der Zeitsprung bleibt eine bewusste
@@ -288,7 +298,8 @@ blind senden; Status und Activity Log zuerst prüfen.
 
 Für den **normalen Übergang** zum nächsten Drill und für „Ich hänge fest,
 bitte offiziellen Stand laden“ gilt derselbe sichere Ablauf. Er erzeugt
-einen **neuen** Git-Worktree aus dem offiziellen Tag mit frischer lokaler
+einen **neuen** Git-Worktree **auf einem eigenen Branch** aus dem offiziellen
+Tag mit frischer lokaler
 SQLite-Datenbank. Dein bisheriger Ordner, Branch, uncommittete Dateien und
 alte Datenbank bleiben unverändert. Fortschritt im alten Ordner wird nicht
 automatisch in den neuen übernommen; erzähle Claude, was du weiterverwenden
@@ -318,6 +329,12 @@ gib echte Geheimnisse nie in den Chat. Nur persönliche, temporäre
 Workshop-Inbox-Werte sind hier eine bewusste Ausnahme. Der Drill-11-Checkpoint
 setzt den Auto-Send-Schalter automatisch; du prüfst die Allowlist und
 bestätigst den Checkpoint-Wechsel.
+
+Zum Abschluss jedes Drills: eigenen Test und Fallnachweis zeigen, den Diff
+prüfen, nur die gewollten Dateien committen und nach Rückfrage in **deinen
+Fork** pushen (`git push -u origin HEAD`). Der neue Checkpoint-Branch ist
+ebenfalls pushbar. `.env` und `.data/` niemals committen. Bei einem älteren
+Fork vor dem nächsten Plan `git fetch upstream --tags --force` nutzen.
 
 Falls dir Tokens fehlen: führe `plan`/`apply` selbst im Terminal aus und
 arbeite mit dieser Karte und dem Browser weiter. Falls etwas scheitert,

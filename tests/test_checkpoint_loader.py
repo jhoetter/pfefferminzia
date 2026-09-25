@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -26,7 +27,7 @@ def test_checkpoint_loader_preserves_source_and_builds_separate_worktree(monkeyp
     def fake_run(command: list[str], cwd: Path, *, clean_checkpoint_environment: bool = False):
         commands.append((command, cwd, clean_checkpoint_environment))
         if command[:3] == ["git", "worktree", "add"]:
-            Path(command[4]).mkdir(parents=True)
+            Path(command[-2]).mkdir(parents=True)
 
     monkeypatch.setattr(loader, "_run", fake_run)
 
@@ -46,10 +47,49 @@ def test_checkpoint_loader_preserves_source_and_builds_separate_worktree(monkeyp
     assert "WORKSHOP_CHECKPOINT=drill-10-start" in environment
     assert "AUTO_SEND_ENABLED=false" in environment
     assert commands[0][0][:3] == ["git", "worktree", "add"]
+    assert commands[0][0][3] == "-b"
+    assert result["branch"].startswith("workshop/drill-10-start-")
     assert commands[0][0][-1] == "abc123"
     assert commands[-1][0][-2:] == ["drill-10-start", "--confirm-checkpoint-reset"]
     assert commands[-1][2] is True
     assert not (source / ".data" / "checkpoint-plans" / f"{plan['confirmationToken']}.json").exists()
+
+
+def test_checkpoint_worktree_is_a_pushable_branch(monkeypatch, tmp_path):
+    source = tmp_path / "pfefferminzia"
+    source.mkdir()
+
+    def git(*args: str, cwd: Path = source) -> str:
+        return subprocess.run(
+            ["git", *args], cwd=cwd, check=True, capture_output=True, text=True
+        ).stdout.strip()
+
+    git("init", "-b", "main")
+    git("config", "user.name", "Workshop Test")
+    git("config", "user.email", "workshop@example.invalid")
+    (source / ".gitignore").write_text(".env\n.data/\n", encoding="utf-8")
+    git("add", ".gitignore")
+    git("commit", "-m", "initial")
+    git("tag", "checkpoint/drill-09-start")
+    (source / ".env").write_text("WORKSHOP_CHECKPOINT=drill-08-start\n", encoding="utf-8")
+
+    monkeypatch.setattr(loader, "ROOT", source)
+    monkeypatch.setattr(loader, "_plans_dir", lambda: source / ".data" / "checkpoint-plans")
+    monkeypatch.setattr(loader, "_git_output", lambda *args, **kwargs: git(*args))
+    real_run = loader._run
+
+    def run_without_app_setup(command: list[str], cwd: Path, *, clean_checkpoint_environment: bool = False):
+        if command[:2] == ["git", "worktree"]:
+            real_run(command, cwd, clean_checkpoint_environment=clean_checkpoint_environment)
+
+    monkeypatch.setattr(loader, "_run", run_without_app_setup)
+    plan = loader.plan_checkpoint_load("drill-09-start")
+    result = loader.apply_checkpoint_load(plan["confirmationToken"])
+    target = Path(result["worktreePath"])
+    assert git("branch", "--show-current", cwd=target) == result["branch"]
+    assert git("rev-parse", "HEAD", cwd=target) == plan["commit"]
+    assert git("branch", "--show-current") == "main"
+    assert (source / ".env").read_text(encoding="utf-8") == "WORKSHOP_CHECKPOINT=drill-08-start\n"
 
 
 def test_checkpoint_loader_rejects_changed_source(monkeypatch, tmp_path):

@@ -16,7 +16,7 @@ Offizielle Modulseite:
 | Tag | Thema | Leitung | Leitfrage | Ergebnis für die Teilnehmenden |
 | --- | --- | --- | --- | --- |
 | Montag | Von der Tabelle zum Agenten: AI Augmentation | Falk Uebernickel | Wie kann KI Menschen dabei unterstützen, fragmentierte Versicherungsdaten zu verstehen und zu bearbeiten? | Die Teilnehmenden untersuchen den Datensatz aus fachlichen Rollen heraus, bauen Kundensichten zusammen, analysieren Bestände und treffen assistierte Entscheidungen. |
-| Dienstag | Vom Agenten zum System: AI Automation | Johannes Hötter | Was ändert sich, wenn ein Agent operative Fähigkeiten nutzen und externe Wirkungen auslösen kann? | Die Teilnehmenden bauen einen MCP-basierten E-Mail-zu-Aktion-Prozess und vergleichen verpflichtende Freigabe mit einem reversiblen Automationsfenster. |
+| Dienstag | Vom eigenen Code zum Agentensystem: Vibe Coding, MCP, Automation | Johannes Hötter | Wie baue ich mit Claude Code einen prüfbaren Prozess, und wo darf er selbst handeln? | Jede Person forkt, baut, testet und pusht ihre Pfefferminzia-Version; alle erleben Pflichtfreigabe und Eingriffsfenster. |
 | Mittwoch | Vom System in die eigene Firma: Bring Your Own Case | Falk Uebernickel | Wo lassen sich die Muster verantwortbar in der eigenen Organisation einsetzen? | Die Teilnehmenden übertragen die Muster auf eigene Fälle und formulieren einen konkreten Umsetzungspfad. |
 
 Ulrike Baumöl begleitet den Workshop als Programmmanagerin. Der Arbeitsstand
@@ -49,12 +49,12 @@ Die letzte Frage bildet bewusst die Brücke von Augmentation zu Automation.
 
 | Zeit | Programmpunkt | Inhalt und Ergebnis |
 | --- | --- | --- |
-| 08:30–09:45 | **Input – Vom Assistenten zum Agenten: Wenn KI handelt** | Rund 45–50 Minuten Input, danach Diskussion und Tagesbriefing. Johannes zeigt seine Arbeit mit Agententeams, erklärt das MCP-first-Betriebsmodell, führt Verifiability ein und stellt die beiden Kontrollmuster des Tages gegenüber. |
-| 10:00–11:15 | **Drill 8 – Die Kommandozentrale für Agenten** | Die Teilnehmenden starten eine eigene Pfefferminzia-Instanz, verbinden Claude über MCP und empfangen die erste Nachricht in einer persönlichen AgentMail-Inbox. Sie sehen, dass menschliche Oberfläche und Agent dieselben kontrollierten Fachfunktionen verwenden. |
+| 08:30–09:45 | **Input – Vom Assistenten zum Agenten: Wenn KI handelt** | Johannes zeigt seine fertigen Anwendungen live (app/design/tracker.sonaloop.com), erklärt Vibe Coding mit Claude Code, MCP, Verifizierbarkeit und die zwei Kontrollmuster. Danach Fork-/Tagesbriefing. |
+| 10:00–11:15 | **Drill 8 – Die Kommandozentrale für Agenten** | Eigenen Fork/Branch anlegen, Python-App und MCP starten, persönliche Mail bis zum Ticket verfolgen, eine erste Eingangsverbesserung mit Claude bauen, testen, committen und pushen. |
 | 11:30–12:45 | **Drill 9 – Leben: Der Mensch bearbeitet, der Agent bereitet vor** | Das System ermittelt Kunde, Antrag oder Vertrag, Tarifgeneration und relevante Dokumente. Die Teilnehmenden prüfen den zusammengestellten Kontext, lassen einen Entwurf vorbereiten, redigieren ihn und lösen den Versand selbst aus. Ziel ist Augmentation innerhalb eines operativen Prozesses. |
 | 13:45–15:00 | **Drill 10 – Leben: Der Agent bearbeitet, der Mensch gibt frei** | Ein neuer Lebens- bzw. Leistungsfall trifft per E-Mail ein. Der Agent erstellt die vollständige Entscheidungsvorlage und Antwort und erzeugt eine Review-Notification. Die Teilnehmenden können freigeben, ablehnen, editieren oder Kontext ergänzen. Neuer menschlicher Input führt zurück in den agentischen Loop; erst eine ausdrückliche Freigabe erlaubt Entscheidung und tatsächlichen E-Mail-Versand. |
 | 15:15–16:30 | **Drill 11 – Haftpflicht: Automatisch, solange niemand widerspricht** | Der Agent routet eine einfache Haftpflichtanfrage und plant die Antwort für 24 Stunden später ein. Die Teilnehmenden lassen eine Antwort weiterlaufen, bearbeiten eine zweite und nehmen eine dritte aus der Queue oder brechen sie ab. Anschließend wird die Workshop-Zeit vorgespult und die verbliebene Nachricht tatsächlich versendet. |
-| 16:45–18:00 | **Whiteboard-Abschluss – Wo darf der Agent handeln?** | Kein weiterer Foliensatz: mit geschlossenen Laptops, einem Getränk und im Halbkreis rekonstruiert die Gruppe das System und seine Kontrollpunkte am Whiteboard. Danach übertragen die Teilnehmenden das Muster auf einen eigenen Prozess und formulieren einen Automation Contract für Mittwoch. |
+| 16:45–18:00 | **Whiteboard-Abschluss – Wo darf der Agent handeln?** | Laptops zu: Gruppen rekonstruieren Pflichtfreigabe und Eingriffsfenster. Dann vergleichen sie Terminal-Prompts mit Event-/Cron-Triggern samt Retry, Rechten, Audit und verantwortlicher Person und formulieren einen Automation Contract. |
 
 ### Die zwei Kontrollmuster
 
@@ -78,9 +78,14 @@ Eingriffe und das endgültige Ergebnis fest.
 
 ### Rhythmus der Drills
 
-Jeder Drill hat eine beobachtbare Produktmission **und** eine kleine eigene
-Codeänderung. Der Verifier prüft nur die Startbereitschaft; abgeschlossen ist
-ein Drill erst mit einem Fallnachweis und einem getesteten eigenen Beitrag.
+Jeder Drill hat eine beobachtbare Produktmission **und** eigenen Code. Der
+Verifier prüft nur die Startbereitschaft; abgeschlossen ist ein Drill erst
+mit Fallnachweis, getesteter Änderung und eigenem Commit/Push. Geführte
+Teilnehmende verändern eine klar abgegrenzte Stelle; Bauende implementieren
+mehrere kleine Schritte; Schnelle dürfen nach dem Kernnachweis auf eigenen
+Wunsch bereits die nächste Fähigkeit bauen. Der offizielle Checkpoint ist
+ein sicherer Rückweg, keine Musterlösungspflicht. Details:
+[Lernpfad](LEARNING_PATH.md).
 
 | Drill | Kernpfad | Selbst bauen | Nachweis + Rückblick |
 | --- | ---: | ---: | ---: |
@@ -98,14 +103,20 @@ und am menschlichen Stopp warten, nicht alle Prompts als einen autonomen
 Auftrag ausführen oder bloß ein zufälliges Todo vorschlagen.
 
 Die Teilnehmenden können in Paaren zusammenarbeiten, betreiben aber jeweils ein
-isoliertes lokales System mit eigener Inbox. Der Lehrende kann nach jeder Phase
-gemeinsam weitergehen, statt darauf zu warten, dass alle jede Vertiefung
-vollständig beendet haben.
+isoliertes lokales System mit eigener Inbox und eigenem Fork. Der Lehrende
+kann nach jeder Phase gemeinsam weitergehen; Vorausbau ist freiwillig und
+kein Grund, andere zu bremsen oder spätere Funktionen ungefragt zu zeigen.
 
-### Optionale Challenge Cards
+### Optionale Vertiefung und Vorausbau
 
 Die Challenges vertiefen einen bestehenden Drill. Generische Kosten- oder
 Deckungsfragen benötigen dafür keinen eigenen Programmpunkt.
+
+Wer den Fall und den Codebeitrag früh nachweist, kann stattdessen auf
+ausdrücklichen Wunsch den **nächsten** Drill selbst vorbauen. Die
+Akzeptanzkriterien kommen vor der Lösung; beim gemeinsamen Wechsel kann die
+Person ihren Branch behalten oder nach Rückfrage den offiziellen Checkpoint
+in einem neuen Worktree laden. Diese Wahl wird nie über einen Reset erzwungen.
 
 - Zwei Kunden haben sehr ähnliche Namen.
 - In der eingehenden Nachricht fehlt die Vertragsnummer.
@@ -127,6 +138,8 @@ Danach wendet jede Gruppe die Zeichnung auf einen möglichen Prozess aus der
 eigenen Organisation an:
 
 - Was startet den Prozess?
+- Ist es ein Terminal-Prompt, eine eingehende Mail oder ein Zeitplan/Cron?
+- Wer betreibt den Event-Worker; was geschieht bei Retry, Duplikat und Ausfall?
 - Welchen Kontext und welche Belege braucht der Agent?
 - Was darf der Agent vorbereiten oder verändern?
 - Was ist die externe Wirkung?

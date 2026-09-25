@@ -19,6 +19,13 @@ Four drills require five unambiguous boundaries:
 The codebase is complete in every boundary. Server-side capabilities, MCP tool
 registration, resources, scenarios and UI affordances are restricted by the
 active profile, so later behavior is neither visible nor usable early.
+This is a **reference and rescue path**, not a substitute for building.
+Participants fork the repository, commit and push their own code. After a
+current-drill case is demonstrated, fast participants may explicitly opt in
+to building the next capability on their own branch. Default tutor guidance
+does not spoil the next drill. Everyone uses the same case evidence; the
+amount of code built varies. The learning model and Git commands are in
+[`LEARNING_PATH.md`](LEARNING_PATH.md).
 The participant-facing [drill cards](DRILL_CARDS.md) are the concrete handout
 for commands, evidence, hints, code exercises, stretch work and token fallback.
 
@@ -27,7 +34,9 @@ for commands, evidence, hints, code exercises, stretch work and token fallback.
 Each participant needs:
 
 - Python 3.12+, `uv`, Git and Claude Code;
-- their own clone of this repository;
+- a GitHub account with permission to fork this repository and push to their
+  **own** fork; test authentication before Tuesday;
+- their own fork/clone and a personal working branch;
 - exactly one personal AgentMail inbox and an API key scoped to that inbox;
 - their inbox ID, not only its email address;
 - the instructor's exact scenario-sender address on the local outbound allowlist.
@@ -100,12 +109,13 @@ offiziellen Stand zu laden.” The protocol is deliberately two-phase:
    a short-lived token. Nothing is switched or overwritten.
 2. Claude shows source, new target directory and preservation guarantee and
    asks the participant again.
-3. Only after a clear yes does `apply_checkpoint_load` create a detached
-   recovery worktree from the immutable official tag, copy the local `.env`
+3. Only after a clear yes does `apply_checkpoint_load` create a new branch in
+   a recovery worktree from the official tag, copy the local `.env`
    without a shared database path, initialize the submodule/dependencies and
    activate the checkpoint.
 4. The participant starts Claude in the returned directory. Their original
    branch, commits, untracked files and local database remain untouched.
+   The new branch can be pushed to their own fork after a diff/secret check.
 
 Terminal fallback:
 
@@ -206,6 +216,8 @@ round-trip only to a pre-approved workshop address.
 Go only if:
 
 - all automated tests pass;
+- participants can fork and authenticate a push to their own repository (or
+  have a pre-arranged instructor-assisted Git fallback);
 - every personal inbox passes the external preflight;
 - each official checkpoint tag resolves and loads;
 - the instructor can send all seven scenario messages;
@@ -214,10 +226,14 @@ Go only if:
 
 ## Fast participants
 
-Use a drill-local Challenge Card first; it deepens the current control pattern
-without revealing the next one. After completing and explaining the challenge,
-participants may volunteer as a buddy. A buddy asks diagnostic questions and
-does not take over the keyboard.
+After the current case **and tested code contribution** are demonstrated,
+offer a genuine choice: deepen this drill with a Challenge Card **or** begin
+building the next capability in their own branch. Reveal the next task only
+after explicit opt-in. At the current checkpoint its UI/MCP capability
+remains gated, so the advance work starts with code and tests; integrated
+exercise follows at the next official boundary. A participant can also
+volunteer as a buddy. A buddy asks diagnostic questions and does not take
+over the keyboard or approve a case for someone else.
 
 - Drill 8: diagnose a deliberately wrong inbox ID or build an activity-log
   view for todo changes.
@@ -239,6 +255,11 @@ drill. Keep three continuity layers:
    repository and need no model call.
 3. Rescue mode: load the official next boundary in a separate worktree and
    continue with the verifier and browser cockpit.
+
+For each drill, ask participants to show their own diff/test, commit and push
+to their own fork. At the end, compare how much they built, **not** whether
+they all wrote the same amount. The shared case evidence and control rule are
+the common learning outcome.
 
 Record who controls reserve access and how it is reassigned. Workshop-only,
 inbox-scoped keys may be handled in an individual Claude chat as described

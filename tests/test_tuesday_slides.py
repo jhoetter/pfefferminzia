@@ -31,13 +31,16 @@ def test_tuesday_deck_covers_all_four_milestones() -> None:
     script = (ROOT / "slides" / "dienstag.js").read_text(encoding="utf-8")
     ids = re.findall(r"\bid: '([^']+)'", script)
 
-    assert len(ids) == 25
+    assert len(ids) == 26
     assert len(ids) == len(set(ids))
     for milestone in ("Drill8Start", "Drill9Start", "Drill10Start", "Drill11Start"):
         assert milestone in ids
     assert script.count("dialogueStep(") == 16
     assert "DEIN SCHRITT" in script
     assert "Dialog statt Zauberprompt" in script
+    assert "LiveBeispiele" in ids
+    assert "Vorausbauend" in script
+    assert "Cron" in script
     assert "keine echte Aktion" in script
     for deck in ("gesamt", "input", "drill-08", "drill-09", "drill-10", "drill-11", "abschluss", "agentisch"):
         assert f"{deck}:" in script or f"'{deck}':" in script

@@ -71,6 +71,7 @@ def plan_checkpoint_load(target_checkpoint: str) -> dict[str, Any]:
     token = secrets.token_urlsafe(24)
     suffix = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     target = ROOT.parent / f"{_recovery_base_name()}-{checkpoint}-{suffix}-{token[:6]}"
+    branch = f"workshop/{checkpoint}-{suffix}-{token[:6]}"
     plan = {
         "token": token,
         "checkpoint": checkpoint,
@@ -80,6 +81,7 @@ def plan_checkpoint_load(target_checkpoint: str) -> dict[str, Any]:
         "officialTag": official_tag,
         "sourcePath": str(ROOT),
         "targetPath": str(target),
+        "branch": branch,
         "dirtyPaths": dirty_paths,
         "createdAtEpoch": time.time(),
         "sourceFingerprint": _source_fingerprint(source_head, dirty_paths),
@@ -96,6 +98,7 @@ def plan_checkpoint_load(target_checkpoint: str) -> dict[str, Any]:
         "commit": commit,
         "sourcePath": str(ROOT),
         "targetPath": str(target),
+        "branch": branch,
         "participantChangesDetected": bool(dirty_paths),
         "participantChangePaths": dirty_paths[:30],
         "participantChangesPreserved": True,
@@ -141,7 +144,7 @@ def apply_checkpoint_load(confirmation_token: str) -> dict[str, Any]:
     if target.exists():
         raise ValueError(f"Checkpoint target already exists: {target}")
 
-    _run(["git", "worktree", "add", "--detach", str(target), plan["commit"]], ROOT)
+    _run(["git", "worktree", "add", "-b", plan["branch"], str(target), plan["commit"]], ROOT)
     try:
         _run(["git", "submodule", "update", "--init", "--recursive"], target)
         _write_checkpoint_environment(target, plan["checkpoint"])
@@ -158,16 +161,18 @@ def apply_checkpoint_load(confirmation_token: str) -> dict[str, Any]:
         # Only this unique, just-created worktree is removed. The participant's
         # source directory and plan remain untouched for a safe retry.
         _run(["git", "worktree", "remove", "--force", str(target)], ROOT)
+        _run(["git", "branch", "-D", plan["branch"]], ROOT)
         raise
     plan_path.unlink(missing_ok=True)
     return {
         "checkpoint": plan["checkpoint"],
         "sourcePath": str(ROOT),
         "worktreePath": str(target),
+        "branch": plan["branch"],
         "sourceUntouched": True,
         "participantChangesPreserved": True,
         "nextCommands": [f"cd {target}", "claude"],
-        "message": "Official checkpoint prepared in a separate worktree. Restart Claude from that directory.",
+        "message": "Official checkpoint prepared on a new branch in a separate worktree. Restart Claude from that directory.",
     }
 
 

@@ -21,7 +21,7 @@ CHECKPOINTS: dict[str, dict[str, Any]] = {
             "Claude sieht den Pfefferminzia-MCP-Server.",
             "Eine neue Testmail an die persönliche Inbox erscheint als dasselbe Ticket im Cockpit und über MCP.",
             "Ein ticketbezogenes Todo benennt den nächsten sinnvollen Schritt und wird erst nach Prüfung abgeschlossen.",
-            "Eine kleine eigene Verbesserung am Eingangs-Workflow ist getestet.",
+            "Ein eigener Codebeitrag am Eingangs-Workflow ist getestet und im eigenen Fork gesichert.",
         ],
     },
     "drill-09-start": {
@@ -34,7 +34,7 @@ CHECKPOINTS: dict[str, dict[str, Any]] = {
             "Ein Lebensfall ist Kunde, Vertrag und Tarifgeneration zugeordnet.",
             "Claude hat einen belegten Antwortentwurf vorbereitet.",
             "Ein Mensch hat den Entwurf bearbeitet und den Versand ausdrücklich ausgelöst.",
-            "Eine kleine eigene Verbesserung an der Belegprüfung ist getestet.",
+            "Ein eigener Codebeitrag an der Belegprüfung ist getestet und im eigenen Fork gesichert.",
         ],
     },
     "drill-10-start": {
@@ -49,7 +49,7 @@ CHECKPOINTS: dict[str, dict[str, Any]] = {
             "Mehrere Lebensfälle wurden vollständig vorbereitet.",
             "Ohne explizite Freigabe konnte weder Entscheidung noch Kommunikation das System verlassen.",
             "Mindestens ein Vorschlag wurde abgelehnt und überarbeitet.",
-            "Eine kleine eigene Verbesserung am Review-Pfad ist getestet.",
+            "Ein eigener Codebeitrag am Review-Pfad ist getestet und im eigenen Fork gesichert.",
         ],
     },
     "drill-11-start": {
@@ -65,7 +65,7 @@ CHECKPOINTS: dict[str, dict[str, Any]] = {
             "Router trennt Leben und Haftpflicht nachvollziehbar.",
             "Eine Haftpflichtantwort lief nach dem Zeitfenster automatisch durch.",
             "Eine zweite Antwort wurde im Zeitfenster bearbeitet oder aus der Queue genommen.",
-            "Eine kleine eigene Verbesserung an Queue oder Timer ist getestet.",
+            "Ein eigener Codebeitrag an Queue oder Timer ist getestet und im eigenen Fork gesichert.",
         ],
     },
     "drill-11-complete": {
@@ -96,7 +96,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
     8: {
         "learningObjective": "Verstehen, dass eine externe Mail als lokales Ticket in UI und MCP denselben Zustand hat.",
         "mission": "Sende eine fiktive Mail an die vollständige persönliche AgentMail-Adresse, synchronisiere, finde die neue Ticket-ID in UI und MCP, lies Absender/Betreff und lege erst dann ein konkretes ticketbezogenes Todo an. Schließe es nach der Prüfung ab.",
-        "buildTask": "Vibe-code mit Claude eine kleine Eingangsverbesserung: Beim Import eines neuen Tickets genau ein automatisch erzeugtes, verknüpftes 'Eingang prüfen'-Todo anlegen, auch wenn zweimal synchronisiert wird. Ein vorher manuell angelegtes Todo bleibt separat. Ergänze einen Test. Einstieg: pfefferminzia/agentmail_service.py und pfefferminzia/todos.py.",
+        "buildTask": "Vibe-code mit Claude eine vertikale Eingangs-Funktion: Beim Import eines neuen Tickets genau ein automatisch erzeugtes, verknüpftes 'Eingang prüfen'-Todo anlegen, auch wenn zweimal synchronisiert wird. Ein vorher manuell angelegtes Todo bleibt separat. Schreibe erst den Test, dann die Implementierung. Einstieg: pfefferminzia/agentmail_service.py und pfefferminzia/todos.py.",
         "dialogueSteps": [
             {"phase": "Start klären", "askClaude": "Was fehlt für Drill 8 noch? Hilf mir, App, MCP und meine persönliche Inbox zu prüfen – nur den nächsten Schritt.", "yourMove": "Persönliche Workshop-Werte nur im eigenen Chat oder lokal eintragen; externen Inbox-Test gesondert erlauben."},
             {"phase": "Eingang verfolgen", "askClaude": "Ich habe eine Testmail geschickt. Synchronisiere und zeig mir Betreff, Absender und dieselbe Ticket-ID in MCP und Cockpit.", "yourMove": "Vor dieser Frage die Mail selbst senden; danach Ticket lesen, konkretes Ticket-Todo anlegen und erst nach Prüfung abschließen."},
@@ -109,7 +109,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
     9: {
         "learningObjective": "Kontext und Quellen gegen den Nachrichtentext prüfen, bevor ein Mensch eine Antwort verschickt.",
         "mission": "Bearbeite eine neue Lebensanfrage: Person, Police und gültige Tarifgeneration bestätigen; Claude entwirft mit Beleg, du änderst den Wortlaut und sendest selbst.",
-        "buildTask": "Vibe-code eine kleine Belegkontrolle: Ein Test muss falsche oder fehlende Tarifgeneration im Antwortpfad sichtbar machen; verbessere Fehlermeldung oder Schutzregel, falls sie fehlt. Einstieg: pfefferminzia/store.py und tests/test_workflow.py.",
+        "buildTask": "Vibe-code eine Belegkontrolle im Antwortpfad: Ein Test muss falsche oder fehlende Tarifgeneration sichtbar machen; implementiere Fehlermeldung oder Schutzregel und prüfe einen Gegenfall. Einstieg: pfefferminzia/store.py und tests/test_workflow.py.",
         "dialogueSteps": [
             {"phase": "Quelle finden", "askClaude": "Welche Person, Police und Tarifgeneration passen zu dieser neuen Lebensanfrage? Zeig mir die Belege; noch keinen Entwurf.", "yourMove": "Zuordnung und exakte Tarifgeneration selbst bestätigen; bei Unklarheit nachfragen."},
             {"phase": "Entwurf prüfen", "askClaude": "Erstelle jetzt einen begründeten Antwortentwurf mit Fundstellen. Nicht versenden.", "yourMove": "Text und Empfänger im Cockpit selbst prüfen, ändern und den Versand bewusst auslösen."},
@@ -122,7 +122,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
     10: {
         "learningObjective": "Erleben, dass Agentenarbeit vollständig sein darf, aber eine aktuelle menschliche Freigabe die externe Wirkung sperrt.",
         "mission": "Lass zwei Lebensfälle bis zur Review-Vorlage bearbeiten. Genehmige einen, lehne einen begründet ab. Ändere testweise Text und beobachte, dass eine alte Freigabe verfällt.",
-        "buildTask": "Vibe-code eine kleine Review-Verbesserung: Zeige den Ablehnungsgrund oder den Verlust einer Freigabe im Cockpit deutlicher und sichere den Zustand mit einem Test ab. Einstieg: web/workshop.js und tests/test_workshop_end_to_end.py; kein Build-Tool nötig.",
+        "buildTask": "Vibe-code einen klaren Review-Zustand: Zeige Ablehnungsgrund und Verlust einer Freigabe nach Edit im Cockpit; sichere den Zustand mit einem Test ab. Einstieg: web/workshop.js und tests/test_workshop_end_to_end.py; kein Build-Tool nötig.",
         "dialogueSteps": [
             {"phase": "Fälle vorbereiten", "askClaude": "Bereite zwei neue Lebensfälle mit Entscheidung, Belegen und Antwort nur bis zur Review-Vorlage vor. Nichts freigeben oder senden.", "yourMove": "Beide Vorlagen und Fundstellen selbst prüfen; externe Wirkung bleibt gesperrt."},
             {"phase": "Mensch entscheidet", "askClaude": "Zeig mir beide Review-Optionen und ihre Folgen. Führe noch keine Entscheidung aus.", "yourMove": "Einen Fall ausdrücklich freigeben, den anderen begründet ablehnen; Versand ist nochmals separat zu bestätigen."},
@@ -135,7 +135,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
     11: {
         "learningObjective": "Den Unterschied zwischen Pflichtfreigabe und automatischem Versand nach einer sichtbaren Eingriffsfrist beurteilen.",
         "mission": "Route drei neue Haftpflichtfälle: einen laufen lassen, einen im Fenster ändern, einen entfernen. Spule die Workshop-Uhr erst nach deiner Bestätigung vor und prüfe Versand plus Audit.",
-        "buildTask": "Vibe-code eine kleine Queue-Verbesserung: Zeige einen abgebrochenen Termin deutlich an oder teste, dass Edit und erneuter Versandlauf kein Duplikat erzeugen. Einstieg: pfefferminzia/store.py, web/workshop.js und tests/test_workshop_end_to_end.py.",
+        "buildTask": "Vibe-code eine überprüfbare Queue-Verbesserung: Zeige einen abgebrochenen Termin deutlich an und teste, dass Edit und erneuter Versandlauf kein Duplikat erzeugen. Einstieg: pfefferminzia/store.py, web/workshop.js und tests/test_workshop_end_to_end.py.",
         "dialogueSteps": [
             {"phase": "Routing prüfen", "askClaude": "Ordne die drei neuen Fälle nachvollziehbar zu. Welche sind Haftpflicht, und welche Empfänger sind für Antworten erlaubt? Noch nichts einplanen.", "yourMove": "Sparte, Quellen und erlaubte Empfänger selbst prüfen."},
             {"phase": "Queue erleben", "askClaude": "Bereite belegte Antworten vor und zeig mir die +24-Stunden-Queue. Die Uhr nicht vorspulen.", "yourMove": "Countdown prüfen; einen Fall bearbeiten und einen anderen mit Begründung entfernen. Einer bleibt geplant."},
@@ -145,6 +145,13 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
         "timeboxMinutes": {"routeUndQueue": 20, "selbstBauen": 20, "eingreifen": 20, "versandNachweis": 10, "reflexion": 5},
         "doneWhen": "Ein Auto-Versand, ein Edit und ein Stopp sind nachvollziehbar; eigene Queue- oder Testverbesserung ist gezeigt.",
     },
+}
+
+ADVANCE_TASKS = {
+    8: "Drill 9 selbst vorbauen: Kunden-/Tarifkontext und belegten Lebensentwurf entwickeln; ein Mensch muss Text und Versand behalten.",
+    9: "Drill 10 selbst vorbauen: Review-Zustand mit Freigabe, Ablehnung und Freigabeverlust nach Edit; ohne neue menschliche Freigabe keine Wirkung.",
+    10: "Drill 11 selbst vorbauen: Haftpflicht-Routing und sichtbare Eingriffs-Queue mit Timer, Edit und Stopp; Auto-Versand nur im bestätigten Drill-11-Checkpoint.",
+    11: "Einen begrenzten Event- oder Zeit-Trigger als Prototyp entwerfen und seine Rechte, Retry-Regel und menschliche Stopplinie erklären; keinen Produktiv-Worker starten.",
 }
 
 
@@ -206,7 +213,9 @@ def available_checkpoints() -> list[dict[str, Any]]:
     return [{"name": name, **profile} for name, profile in CHECKPOINTS.items()]
 
 
-def drill_guide(hint_level: int = 0, db: sqlite3.Connection | None = None) -> dict[str, Any]:
+def drill_guide(
+    hint_level: int = 0, db: sqlite3.Connection | None = None, *, include_advance_task: bool = False
+) -> dict[str, Any]:
     profile = checkpoint_profile(db)
     hints = {
         8: [
@@ -234,9 +243,16 @@ def drill_guide(hint_level: int = 0, db: sqlite3.Connection | None = None) -> di
     return {
         "checkpoint": profile,
         **DRILL_BRIEFS[profile["drill"]],
+        "learningPath": {
+            "commonEvidence": "Fall im Cockpit und MCP nachvollziehen, eigene Codeänderung testen, Diff prüfen und auf eigenem Branch committen/pushen.",
+            "guided": "Nur nächsten Schritt, Dateistelle und kleinen Test zeigen; bei Bedarf offiziellen Checkpoint sicher laden.",
+            "building": "Akzeptanzkriterien geben, Code in kleinen Iterationen mit der Person bauen und verifizieren.",
+            "advance": "Erst nach aktuellem Fallnachweis und ausdrücklichem Opt-in anbieten; nächstes Ziel auf eigenem Branch, nicht ungefragt freischalten.",
+        },
+        "advanceTask": ADVANCE_TASKS[profile["drill"]] if include_advance_task else None,
         "hintLevel": bounded,
         "hint": None if bounded == 0 else hints[profile["drill"]][bounded - 1],
-        "instruction": "Die vier Dialogetappen sind eine Landkarte, kein einzelner Copy-paste-Auftrag. Erkläre kurz den Ablauf, beginne nur mit der aktuellen Etappe und warte an jedem 'yourMove'-Stopp auf die Person. Gib zunächst nur den gewählten Hinweis; eine vollständige Lösung erst auf ausdrücklichen Wunsch.",
+        "instruction": "Die vier Dialogetappen sind eine Landkarte, kein einzelner Copy-paste-Auftrag. Frage nach gewünschter Hilfstiefe (geführt, bauend, vorausbauend), beginne nur mit der aktuellen Etappe und warte an jedem 'yourMove'-Stopp. Ein Vorausbau ist erst nach aktuellem Fallnachweis und ausdrücklichem Wunsch erlaubt. Eigener Test, Diff, Commit und Push zum eigenen Fork gehören zum Abschluss; eine vollständige Lösung erst auf ausdrücklichen Wunsch.",
     }
 
 

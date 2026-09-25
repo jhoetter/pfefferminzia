@@ -13,6 +13,8 @@ def test_checkpoint_activation_resets_clock_and_guides_without_spoilers(monkeypa
     assert "24" not in first_hint["hint"]
     assert sum(first_hint["timeboxMinutes"].values()) == 75
     assert "Tarifgeneration" in first_hint["buildTask"]
+    assert first_hint["advanceTask"] is None
+    assert "Review-Zustand" in drill_guide(0, full_db, include_advance_task=True)["advanceTask"]
 
 
 def test_drill_eight_guide_starts_with_a_real_inbox_mission(monkeypatch, full_db):
@@ -21,6 +23,7 @@ def test_drill_eight_guide_starts_with_a_real_inbox_mission(monkeypatch, full_db
     assert guide["hint"] is None
     assert "Ticket-ID" in guide["mission"]
     assert "zweimal synchronisiert" in guide["buildTask"]
+    assert "guided" in guide["learningPath"]
     assert sum(guide["timeboxMinutes"].values()) == 75
 
 

@@ -9,9 +9,8 @@ one to two minutes so not every participant asks for help simultaneously.
 **Subject:** Willkommen in der Pfefferminzia-Kommandozentrale
 
 > Guten Morgen,  
-> dies ist die persönliche Verbindungskontrolle für Ihre Workshop-Inbox. Bitte
-> legen Sie für diese Nachricht ein Todo „Eingang geprüft“ an und schließen Sie
-> es nach erfolgreicher Sichtprüfung.  
+> dies ist die persönliche Verbindungskontrolle für Ihre Workshop-Inbox. Hier
+> können Sie prüfen, ob Betreff, Absender und Inhalt im System ankommen.
 > Freundliche Grüße  
 > Workshop-Team
 

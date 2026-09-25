@@ -12,7 +12,15 @@ Council sind enthalten. Persönliche Einschätzungen und illustrative
 Benchmarkreihen sind als solche gekennzeichnet; die Originalbilder lassen sich
 auf der Folie zur Detailansicht öffnen.
 
-Die Arbeitsauftragsfolie jedes Drills zeigt nun vier kurze Dialogetappen mit
+Die Input-Folien beginnen mit Johannes' drei live gezeigten Anwendungen und
+führen dann von „eigener Fork“ über Vibe Coding und MCP zu den zwei
+Kontrollmustern. Die Abschlussfolie erweitert das Bild von Terminal-Prompts
+auf Event- und Cron-Trigger. Die Seiten werden **live** geöffnet; die Folie
+beschreibt ihren Inhalt nicht im Voraus. Der adaptive
+[Lernpfad](LEARNING_PATH.md) ist die gemeinsame Grundlage für Tutor und
+Folien.
+
+Die Arbeitsauftragsfolie jedes Drills zeigt vier kurze Dialogetappen mit
 einem menschlichen Stopp nach jeder Frage. Die Prompts sind Beispiele für ein
 Gespräch mit Claude, **kein einzelner Copy-paste-Auftrag**. Ausführliche
 Formulierungen, Handlungen und Nachweise stehen in den
@@ -20,7 +28,7 @@ Formulierungen, Handlungen und Nachweise stehen in den
 
 | Deck | Live-Einsatz | Folien |
 | --- | --- | ---: |
-| [Input](../slides/index.html?deck=input) | 08:30 · Vom Agenten zum System | 8 |
+| [Input](../slides/index.html?deck=input) | 08:30 · Live-Beispiele, Vibe Coding, MCP, Kontrolle | 10 |
 | [Drill 8](../slides/index.html?deck=drill-08) | 10:00 · Cockpit und Inbox | 4 |
 | [Drill 9](../slides/index.html?deck=drill-09) | 11:30 · Leben: Mensch bearbeitet | 4 |
 | [Drill 10](../slides/index.html?deck=drill-10) | 13:45 · Leben: Mensch gibt frei | 4 |
