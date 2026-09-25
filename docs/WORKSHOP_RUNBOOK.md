@@ -105,16 +105,20 @@ app/MCP process, so no restart is needed for a newly entered inbox key.
 ## Safe checkpoint recovery
 
 Claude supports the natural-language request “Ich bin in Drill 9, hilf mir den
-offiziellen Stand zu laden.” The protocol is deliberately two-phase:
+Checkpoint zu laden.” Before planning, ask whether to carry the person's own
+code and cases (`continue`) or start from the official reference with fresh
+cases (`official`). The protocol is then deliberately two-phase:
 
 1. `plan_checkpoint_load` inspects the current HEAD and dirty paths and creates
-   a short-lived token. Nothing is switched or overwritten.
-2. Claude shows source, new target directory and preservation guarantee and
+   a short-lived token for the selected mode. Nothing is switched or overwritten.
+2. Claude shows mode, source, new target directory, what is copied, and the preservation guarantee and
    asks the participant again.
 3. Only after a clear yes does `apply_checkpoint_load` create a new branch in
-   a recovery worktree from the official tag, copy the local `.env`
-   without a shared database path, initialize the submodule/dependencies and
-   activate the checkpoint.
+   a recovery worktree. Official mode checks out the tag and starts with a
+   fresh database. Continue mode starts from the participant's HEAD and copies
+   tracked/untracked edits plus a consistent SQLite backup. Both copy the local
+   `.env` without a shared database path, initialize dependencies and activate
+   the new stage. The source worktree is never changed.
 4. The participant starts Claude in the returned directory. Their original
    branch, commits, untracked files and local database remain untouched.
    The new branch can be pushed to their own fork after a diff/secret check.
@@ -123,6 +127,7 @@ Terminal fallback:
 
 ```bash
 uv run pfefferminzia checkpoint plan drill-10-start
+# Or: uv run pfefferminzia checkpoint plan drill-10-start --mode continue
 # Read the plan and ask for confirmation.
 uv run pfefferminzia checkpoint apply TOKEN --confirm-checkpoint-load
 ```
@@ -133,11 +138,12 @@ Use `uv run pfefferminzia checkpoint status` and
 The **normal transition** between drills uses the same plan/confirm/apply
 protocol. Stop the old webserver, start it in the returned worktree, and
 restart Claude there: the MCP tool set is registered at startup. Each new
-worktree has its own fresh SQLite database, while old work and old data stay
-in the previous folder. Inbox history may be imported again; participants
-should act only on the newly announced scenario tickets. Participant code
-changes do not silently migrate to the official next boundary. Invite them
-to explain and selectively carry over their own changes if they wish.
+worktree has its own SQLite database. In official mode it is fresh; in
+continue mode it is a copy of the previous cases. Old work and old data stay
+in the previous folder. Inbox history may be imported again in official mode;
+participants should act only on newly announced scenario tickets. Continue
+mode preserves the participant's changes but they must still verify the next
+stage; official mode is the safety net when their build does not work.
 
 ## Drill facilitation
 

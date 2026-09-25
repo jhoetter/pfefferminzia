@@ -125,6 +125,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
     8: {
         "learningObjective": "Verstehen, dass eine externe Mail als lokales Ticket in UI und MCP denselben Zustand hat.",
         "mission": "Sende eine fiktive Mail an die vollständige persönliche AgentMail-Adresse, synchronisiere, finde die neue Ticket-ID in UI und MCP, lies Absender/Betreff und lege erst dann ein konkretes ticketbezogenes Todo an. Schließe es nach der Prüfung ab.",
+        "buildTaskShort": "Beim Import genau ein verknüpftes Prüfen-Todo erzeugen – auch nach zwei Syncs.",
         "buildTask": "Vibe-code mit Claude eine vertikale Eingangs-Funktion: Beim Import eines neuen Tickets genau ein automatisch erzeugtes, verknüpftes 'Eingang prüfen'-Todo anlegen, auch wenn zweimal synchronisiert wird. Ein vorher manuell angelegtes Todo bleibt separat. Schreibe erst den Test, dann die Implementierung. Einstieg: pfefferminzia/agentmail_service.py und pfefferminzia/todos.py.",
         "dialogueSteps": [
             {"phase": "Start klären", "askClaude": "Was fehlt für Drill 8 noch? Hilf mir, App, MCP und meine persönliche Inbox zu prüfen – nur den nächsten Schritt.", "yourMove": "Persönliche Workshop-Werte nur im eigenen Chat oder lokal eintragen; externen Inbox-Test gesondert erlauben."},
@@ -138,6 +139,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
     9: {
         "learningObjective": "Kontext und Quellen gegen den Nachrichtentext prüfen, bevor ein Mensch eine Antwort verschickt.",
         "mission": "Bearbeite eine neue Lebensanfrage: Person, Police und gültige Tarifgeneration bestätigen; Claude entwirft mit Beleg, du änderst den Wortlaut und sendest selbst.",
+        "buildTaskShort": "Eine fehlende oder falsche Tarifgeneration sichtbar abfangen.",
         "buildTask": "Vibe-code eine Belegkontrolle im Antwortpfad: Ein Test muss falsche oder fehlende Tarifgeneration sichtbar machen; implementiere Fehlermeldung oder Schutzregel und prüfe einen Gegenfall. Einstieg: pfefferminzia/store.py und tests/test_workflow.py.",
         "dialogueSteps": [
             {"phase": "Quelle finden", "askClaude": "Welche Person, Police und Tarifgeneration passen zu dieser neuen Lebensanfrage? Zeig mir die Belege; noch keinen Entwurf.", "yourMove": "Zuordnung und exakte Tarifgeneration selbst bestätigen; bei Unklarheit nachfragen."},
@@ -151,6 +153,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
     10: {
         "learningObjective": "Erleben, dass Agentenarbeit vollständig sein darf, aber eine aktuelle menschliche Freigabe die externe Wirkung sperrt.",
         "mission": "Lass zwei Lebensfälle bis zur Review-Vorlage bearbeiten. Genehmige einen, lehne einen begründet ab. Ändere testweise Text und beobachte, dass eine alte Freigabe verfällt.",
+        "buildTaskShort": "Ablehnung und erloschene Freigabe im Review klar anzeigen.",
         "buildTask": "Vibe-code einen klaren Review-Zustand: Zeige Ablehnungsgrund und Verlust einer Freigabe nach Edit im Cockpit; sichere den Zustand mit einem Test ab. Einstieg: web/workshop.js und tests/test_workshop_end_to_end.py; kein Build-Tool nötig.",
         "dialogueSteps": [
             {"phase": "Fälle vorbereiten", "askClaude": "Bereite zwei neue Lebensfälle mit Entscheidung, Belegen und Antwort nur bis zur Review-Vorlage vor. Nichts freigeben oder senden.", "yourMove": "Beide Vorlagen und Fundstellen selbst prüfen; externe Wirkung bleibt gesperrt."},
@@ -164,6 +167,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
     11: {
         "learningObjective": "Den Unterschied zwischen Pflichtfreigabe und automatischem Versand nach einer sichtbaren Eingriffsfrist beurteilen.",
         "mission": "Route drei neue Haftpflichtfälle: einen laufen lassen, einen im Fenster ändern, einen entfernen. Spule die Workshop-Uhr erst nach deiner Bestätigung vor und prüfe Versand plus Audit.",
+        "buildTaskShort": "Stopp und erneuten Versandlauf ohne Duplikat überprüfbar machen.",
         "buildTask": "Vibe-code eine überprüfbare Queue-Verbesserung: Zeige einen abgebrochenen Termin deutlich an und teste, dass Edit und erneuter Versandlauf kein Duplikat erzeugen. Einstieg: pfefferminzia/store.py, web/workshop.js und tests/test_workshop_end_to_end.py.",
         "dialogueSteps": [
             {"phase": "Routing prüfen", "askClaude": "Ordne die drei neuen Fälle nachvollziehbar zu. Welche sind Haftpflicht, und welche Empfänger sind für Antworten erlaubt? Noch nichts einplanen.", "yourMove": "Sparte, Quellen und erlaubte Empfänger selbst prüfen."},
@@ -177,6 +181,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
     12: {
         "learningObjective": "Aus operativen Ereignissen einen knappen, belegten Management-Befund machen – ohne aus einer lokalen Simulation Unternehmens-KPIs abzuleiten.",
         "mission": "Lade den aggregierten Schnappschuss aus Drill 11, baue mit reveal.js und D3 einen maximal vierseitigen Management-Report und erkläre Kontrolle, Ergebnis und Grenze der Aussage.",
+        "buildTaskShort": "Eine beschriftete D3-Grafik und eine belegte Empfehlung bauen.",
         "buildTask": "Vibe-code in slides/management.js eine zweite aussagekräftige D3-Ansicht oder verbessere die bestehende Grafik. Nutze nur /api/management-report mit aggregierten Zahlen; keine Mailtexte, Namen, Secrets oder erfundenen Wirkungs-KPIs.",
         "dialogueSteps": [
             {"phase": "Befund wählen", "askClaude": "Welche aggregierten Beobachtungen aus unserem Drill-11-Schnappschuss sind wirklich belegt? Bitte keine Management-Aussage erfinden.", "yourMove": "Eine Aussage und ihre Grenze selbst wählen; Demo- und echte Workshop-Tickets unterscheiden."},
@@ -247,6 +252,24 @@ def activate_checkpoint(name: str, db: sqlite3.Connection | None = None) -> dict
     )
     db.execute(
         "INSERT INTO workshop_events (type, actor, details_json, created_at) VALUES ('checkpoint_activated', 'checkpoint-loader', ?, ?)",
+        (f'{{"checkpoint":"{checkpoint}"}}', utc_now()),
+    )
+    return checkpoint_profile(db)
+
+
+def adopt_checkpoint(name: str, db: sqlite3.Connection | None = None) -> dict[str, Any]:
+    """Advance a copied worktree without resetting its cases or workshop clock."""
+    checkpoint = normalize_checkpoint(name)
+    configured = os.getenv("WORKSHOP_CHECKPOINT")
+    if configured and normalize_checkpoint(configured) != checkpoint:
+        raise ValueError(f"WORKSHOP_CHECKPOINT fixes this worktree to {configured}")
+    db = db or get_database()
+    db.execute(
+        "UPDATE workshop_state SET checkpoint = ?, updated_at = ? WHERE id = 1",
+        (checkpoint, utc_now()),
+    )
+    db.execute(
+        "INSERT INTO workshop_events (type, actor, details_json, created_at) VALUES ('checkpoint_adopted', 'checkpoint-loader', ?, ?)",
         (f'{{"checkpoint":"{checkpoint}"}}', utc_now()),
     )
     return checkpoint_profile(db)

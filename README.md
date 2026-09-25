@@ -321,22 +321,24 @@ uv run pfefferminzia checkpoint verify
 uv run pfefferminzia checkpoint verify --external
 ```
 
-Checkpoint recovery is non-destructive. A two-step MCP/CLI protocol first
-shows the planned official reference, detected participant changes and target
-directory, then—after explicit confirmation—creates a separate Git worktree
-on a new branch that can be pushed to the participant's fork.
-The original branch, uncommitted files and local database remain untouched.
+Checkpoint recovery is non-destructive. Before planning, choose **Eigenen
+Stand mitnehmen** (`continue`: your code, including uncommitted edits, and
+local cases are copied) or **Frischen offiziellen Stand laden** (`official`:
+reference code and a fresh case database). Both create a separate Git worktree
+on a pushable branch after a plan and explicit confirmation. The original
+branch, files and database remain untouched; nothing is overwritten.
 
 ```bash
 uv run pfefferminzia checkpoint plan drill-10-start
+# To carry your work instead: checkpoint plan drill-10-start --mode continue
 uv run pfefferminzia checkpoint apply TOKEN --confirm-checkpoint-load
 ```
 
-The browser's **Workshop-Cockpit** shows the current learning goal, concrete
-mission, code task, recent inbound tickets, ticket-linked todos,
-mandatory reviews, the visible
-intervention-window countdown, checkpoint verification, and the local
-workshop-clock control. See [`docs/WORKSHOP_RUNBOOK.md`](docs/WORKSHOP_RUNBOOK.md)
+The browser's single **Werkstatt** shows the current learning goal, inbox,
+ticket, draft, mandatory review or intervention queue as the active drill
+requires. `web/workshop.js` and `web/workshop.css` are editable source files,
+served directly by Python; there is no React bundle or frontend build step.
+See [`docs/WORKSHOP_RUNBOOK.md`](docs/WORKSHOP_RUNBOOK.md)
 for facilitator setup, scenario delivery, challenge cards and continuity plans.
 Participants should use the [drill cards](docs/DRILL_CARDS.md); the verifier
 is a readiness check, while the cards define the separate completion evidence.

@@ -133,16 +133,17 @@ def create_mcp_server() -> MCPServer:
     @server.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, openWorldHint=False))
     def plan_checkpoint_load(
         targetCheckpoint: Literal["drill-08-start", "drill-09-start", "drill-10-start", "drill-11-start", "drill-11-complete", "drill-12-start", "drill-12-complete"],
+        mode: Literal["official", "continue"] = "official",
     ) -> dict[str, Any]:
-        """Prepare a short-lived, non-destructive recovery-worktree plan. Do not call apply yet; show the plan and ask the participant's confirmation."""
-        return plan_checkpoint_load_impl(targetCheckpoint)
+        """Plan a separate worktree. 'official' starts fresh; 'continue' carries own code and cases. Ask which mode, show the plan, then request confirmation before apply."""
+        return plan_checkpoint_load_impl(targetCheckpoint, mode=mode)
 
     @server.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, openWorldHint=False))
     def apply_checkpoint_load(
         confirmationToken: Annotated[str, Field(min_length=20, max_length=100)],
         confirmCheckpointLoad: Literal[True],
     ) -> dict[str, Any]:
-        """Create the separately planned official worktree. Call only after showing the plan and receiving a fresh explicit yes from the participant."""
+        """Create the separately planned worktree. Call only after showing its mode and receiving a fresh explicit yes from the participant."""
         del confirmCheckpointLoad
         return apply_checkpoint_load_impl(confirmationToken)
 

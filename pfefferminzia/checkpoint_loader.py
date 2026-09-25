@@ -5,11 +5,12 @@ import json
 import os
 import secrets
 import shutil
+import sqlite3
 import subprocess
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from .checkpoints import normalize_checkpoint
 from .constants import ROOT
@@ -17,6 +18,7 @@ from .management_report import capture_report_snapshot
 
 
 PLAN_TTL_SECONDS = 15 * 60
+LoadMode = Literal["official", "continue"]
 
 
 def _recovery_base_name() -> str:
@@ -63,7 +65,56 @@ def _dirty_paths() -> list[str]:
     return [line[3:] for line in output.splitlines() if len(line) > 3]
 
 
-def plan_checkpoint_load(target_checkpoint: str) -> dict[str, Any]:
+def _untracked_files() -> list[Path]:
+    result = subprocess.run(
+        ["git", "ls-files", "--others", "--exclude-standard", "-z"], cwd=ROOT,
+        check=True, capture_output=True,
+    )
+    return [Path(os.fsdecode(item)) for item in result.stdout.split(b"\0") if item]
+
+
+def _participant_content_fingerprint() -> str:
+    patch = subprocess.run(
+        ["git", "diff", "--binary", "HEAD"], cwd=ROOT, check=True, capture_output=True,
+    ).stdout
+    digest = hashlib.sha256(patch)
+    for relative in _untracked_files():
+        path = ROOT / relative
+        if path.is_symlink() or not path.is_file():
+            raise ValueError(f"Untracked path needs manual review before continuing: {relative}")
+        digest.update(os.fsencode(relative))
+        digest.update(path.read_bytes())
+    return digest.hexdigest()
+
+
+def _carry_participant_changes(target: Path) -> None:
+    patch = subprocess.run(
+        ["git", "diff", "--binary", "HEAD"], cwd=ROOT, check=True, capture_output=True,
+    ).stdout
+    if patch:
+        subprocess.run(["git", "apply", "--binary", "-"], cwd=target, input=patch, check=True, capture_output=True)
+    for relative in _untracked_files():
+        source = ROOT / relative
+        destination = target / relative
+        if source.is_symlink() or not source.is_file() or not destination.resolve().is_relative_to(target.resolve()):
+            raise ValueError(f"Untracked path needs manual review before continuing: {relative}")
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, destination)
+
+
+def _copy_database(source: Path, target: Path) -> None:
+    if not source.is_file():
+        raise ValueError("Die bisherige Workshop-Datenbank fehlt; für Mitnehmen den alten Drill zuerst starten")
+    destination = target / ".data" / "pfefferminzia.db"
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with sqlite3.connect(f"file:{source}?mode=ro", uri=True) as source_db:
+        with sqlite3.connect(destination) as target_db:
+            source_db.backup(target_db)
+
+
+def plan_checkpoint_load(target_checkpoint: str, mode: LoadMode = "official") -> dict[str, Any]:
+    if mode not in ("official", "continue"):
+        raise ValueError("Mode must be 'official' or 'continue'")
     checkpoint = normalize_checkpoint(target_checkpoint)
     automatic_dispatch = checkpoint in ("drill-11-start", "drill-11-complete")
     report_snapshot = checkpoint in ("drill-12-start", "drill-12-complete")
@@ -74,6 +125,9 @@ def plan_checkpoint_load(target_checkpoint: str) -> dict[str, Any]:
     reference, commit, official_tag = _official_ref(checkpoint)
     source_head = _git_output("rev-parse", "HEAD")
     dirty_paths = _dirty_paths()
+    content_fingerprint = _participant_content_fingerprint() if mode == "continue" else None
+    if mode == "continue" and not source_database.is_file():
+        raise ValueError("Für 'continue' muss die bisherige Workshop-Datenbank vorhanden sein")
     token = secrets.token_urlsafe(24)
     suffix = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     target = ROOT.parent / f"{_recovery_base_name()}-{checkpoint}-{suffix}-{token[:6]}"
@@ -81,8 +135,10 @@ def plan_checkpoint_load(target_checkpoint: str) -> dict[str, Any]:
     plan = {
         "token": token,
         "checkpoint": checkpoint,
+        "mode": mode,
         "reference": reference,
-        "commit": commit,
+        "commit": source_head if mode == "continue" else commit,
+        "officialCommit": commit,
         "sourceHead": source_head,
         "officialTag": official_tag,
         "sourcePath": str(ROOT),
@@ -91,6 +147,7 @@ def plan_checkpoint_load(target_checkpoint: str) -> dict[str, Any]:
         "dirtyPaths": dirty_paths,
         "createdAtEpoch": time.time(),
         "sourceFingerprint": _source_fingerprint(source_head, dirty_paths),
+        "sourceContentFingerprint": content_fingerprint,
         "sourceCheckpoint": os.getenv("WORKSHOP_CHECKPOINT", "drill-08-start"),
         "sourceDatabase": str(source_database),
     }
@@ -101,15 +158,19 @@ def plan_checkpoint_load(target_checkpoint: str) -> dict[str, Any]:
     plan_path.chmod(0o600)
     return {
         "checkpoint": checkpoint,
+        "mode": mode,
+        "modeLabel": "Eigenen Stand mitnehmen" if mode == "continue" else "Frischen offiziellen Stand laden",
         "officialReference": reference,
         "officialTagAvailable": official_tag,
-        "commit": commit,
+        "commit": source_head if mode == "continue" else commit,
         "sourcePath": str(ROOT),
         "targetPath": str(target),
         "branch": branch,
         "participantChangesDetected": bool(dirty_paths),
         "participantChangePaths": dirty_paths[:30],
         "participantChangesPreserved": True,
+        "participantChangesCarried": mode == "continue",
+        "localCasesCarried": mode == "continue",
         "environmentCopied": (ROOT / ".env").exists(),
         "automaticDispatchWillBeEnabled": automatic_dispatch,
         "aggregateReportWillBeCopied": report_snapshot,
@@ -117,8 +178,10 @@ def plan_checkpoint_load(target_checkpoint: str) -> dict[str, Any]:
         "confirmationToken": token,
         "expiresInSeconds": PLAN_TTL_SECONDS,
         "confirmationQuestion": (
-            f"Soll ich den offiziellen Zustand {checkpoint} jetzt in {target} vorbereiten? "
-            "Dein aktuelles Arbeitsverzeichnis bleibt unverändert."
+            f"Soll ich {checkpoint} als '{'Eigenen Stand mitnehmen' if mode == 'continue' else 'Frischen offiziellen Stand laden'}' in {target} vorbereiten? "
+            "Dein aktuelles Arbeitsverzeichnis bleibt unverändert. "
+            + ("Dein Code (auch uncommittierte Änderungen) und die bisherigen Fälle werden in den neuen Worktree kopiert. "
+               if mode == "continue" else "Der neue Worktree erhält offiziellen Code und eine frische Fall-Datenbank; deine Änderungen bleiben nur im alten Ordner. ")
             + (
                 " In Drill 11 wird Auto-Versand für später eingereichte Haftpflichtantworten nach dem sichtbaren Zeitfenster aktiviert."
                 if automatic_dispatch else ""
@@ -149,6 +212,8 @@ def apply_checkpoint_load(confirmation_token: str) -> dict[str, Any]:
     current_dirty = _dirty_paths()
     if _source_fingerprint(current_commit, current_dirty) != plan["sourceFingerprint"]:
         raise ValueError("Repository changed after the plan was prepared; inspect and prepare a new plan")
+    if plan.get("mode") == "continue" and _participant_content_fingerprint() != plan["sourceContentFingerprint"]:
+        raise ValueError("Participant files changed after the plan; inspect and prepare a new plan")
 
     target = Path(plan["targetPath"]).resolve()
     expected_parent = ROOT.parent.resolve()
@@ -161,14 +226,18 @@ def apply_checkpoint_load(confirmation_token: str) -> dict[str, Any]:
     _run(["git", "worktree", "add", "-b", plan["branch"], str(target), plan["commit"]], ROOT)
     try:
         _run(["git", "submodule", "update", "--init", "--recursive"], target)
+        if plan.get("mode") == "continue":
+            _carry_participant_changes(target)
         _write_checkpoint_environment(target, plan["checkpoint"])
+        if plan.get("mode") == "continue":
+            _copy_database(Path(plan["sourceDatabase"]), target)
         if plan["checkpoint"] in ("drill-12-start", "drill-12-complete"):
             capture_report_snapshot(ROOT, target, plan["sourceCheckpoint"], Path(plan["sourceDatabase"]))
         _run(["uv", "sync", "--frozen"], target)
         _run(
             [
-                "uv", "run", "pfefferminzia", "checkpoint", "activate", plan["checkpoint"],
-                "--confirm-checkpoint-reset",
+                "uv", "run", "pfefferminzia", "checkpoint", "adopt" if plan.get("mode") == "continue" else "activate", plan["checkpoint"],
+                "--confirm-checkpoint-adopt" if plan.get("mode") == "continue" else "--confirm-checkpoint-reset",
             ],
             target,
             clean_checkpoint_environment=True,
@@ -182,13 +251,14 @@ def apply_checkpoint_load(confirmation_token: str) -> dict[str, Any]:
     plan_path.unlink(missing_ok=True)
     return {
         "checkpoint": plan["checkpoint"],
+        "mode": plan.get("mode", "official"),
         "sourcePath": str(ROOT),
         "worktreePath": str(target),
         "branch": plan["branch"],
         "sourceUntouched": True,
         "participantChangesPreserved": True,
         "nextCommands": [f"cd {target}", "claude"],
-        "message": "Official checkpoint prepared on a new branch in a separate worktree. Restart Claude from that directory.",
+        "message": "Checkpoint prepared on a new branch in a separate worktree. Restart app and Claude from that directory; the source remains untouched.",
     }
 
 

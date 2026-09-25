@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import sqlite3
 import subprocess
 from pathlib import Path
 
@@ -92,6 +93,56 @@ def test_checkpoint_worktree_is_a_pushable_branch(monkeypatch, tmp_path):
     assert git("rev-parse", "HEAD", cwd=target) == plan["commit"]
     assert git("branch", "--show-current") == "main"
     assert (source / ".env").read_text(encoding="utf-8") == "WORKSHOP_CHECKPOINT=drill-08-start\n"
+
+
+def test_continue_mode_carries_code_and_cases_without_touching_source(monkeypatch, tmp_path):
+    source = tmp_path / "pfefferminzia"
+    source.mkdir()
+
+    def git(*args: str, cwd: Path = source) -> str:
+        return subprocess.run(["git", *args], cwd=cwd, check=True, capture_output=True, text=True).stdout.strip()
+
+    git("init", "-b", "main")
+    git("config", "user.name", "Workshop Test")
+    git("config", "user.email", "workshop@example.invalid")
+    (source / ".gitignore").write_text(".env\n.data/\n", encoding="utf-8")
+    (source / "own.txt").write_text("first\n", encoding="utf-8")
+    git("add", ".gitignore", "own.txt")
+    git("commit", "-m", "base")
+    git("tag", "checkpoint/drill-09-start")
+    (source / "own.txt").write_text("improved\n", encoding="utf-8")
+    (source / "new.txt").write_text("untracked work\n", encoding="utf-8")
+    (source / ".env").write_text("WORKSHOP_CHECKPOINT=drill-08-start\n", encoding="utf-8")
+    db = create_database(source / ".data" / "pfefferminzia.db")
+    db.execute(
+        """INSERT INTO tickets (ticket_number, source, customer_email, subject, created_at, updated_at, last_message_at)
+        VALUES ('PF-OWN', 'agentmail', 'own@example.invalid', 'Own case', '2026-09-29', '2026-09-29', '2026-09-29')"""
+    )
+    db.close()
+
+    monkeypatch.setattr(loader, "ROOT", source)
+    monkeypatch.setattr(loader, "_plans_dir", lambda: source / ".data" / "checkpoint-plans")
+    monkeypatch.setattr(loader, "_git_output", lambda *args, **kwargs: git(*args))
+    real_run = loader._run
+
+    def run_without_app_setup(command: list[str], cwd: Path, *, clean_checkpoint_environment: bool = False):
+        if command[:2] == ["git", "worktree"] or command[:2] == ["git", "submodule"]:
+            real_run(command, cwd, clean_checkpoint_environment=clean_checkpoint_environment)
+
+    monkeypatch.setattr(loader, "_run", run_without_app_setup)
+    plan = loader.plan_checkpoint_load("drill-09-start", mode="continue")
+    assert plan["participantChangesCarried"] is True
+    assert plan["localCasesCarried"] is True
+    result = loader.apply_checkpoint_load(plan["confirmationToken"])
+    target = Path(result["worktreePath"])
+    assert result["mode"] == "continue"
+    assert (target / "own.txt").read_text() == "improved\n"
+    assert (target / "new.txt").read_text() == "untracked work\n"
+    assert "WORKSHOP_CHECKPOINT=drill-09-start" in (target / ".env").read_text()
+    with sqlite3.connect(target / ".data" / "pfefferminzia.db") as copied:
+        assert copied.execute("SELECT subject FROM tickets WHERE ticket_number = 'PF-OWN'").fetchone()[0] == "Own case"
+    assert (source / "own.txt").read_text() == "improved\n"
+    assert (source / "new.txt").read_text() == "untracked work\n"
 
 
 def test_report_checkpoint_carries_counts_without_source_database(monkeypatch, tmp_path):

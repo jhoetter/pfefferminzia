@@ -40,7 +40,7 @@ im eigenen Branch, **nicht** eine vorzeitig freigeschaltete Live-App. Beim
 offiziellen Wechsel kannst du deinen Commit vergleichen bzw. gezielt in den
 neuen Branch übernehmen (`git cherry-pick` nur nach Diff-Prüfung) und dort
 integriert verproben. Wenn du stattdessen den nächsten offiziellen
-Checkpoint vorzeitig laden möchtest, gilt derselbe Plan-/Rückfrage-Ablauf;
+Checkpoint vorzeitig laden möchtest, gilt derselbe Wahl-/Plan-/Rückfrage-Ablauf;
 du bekommst dann die vorbereitete Funktion, baust aber weniger davon selbst.
 
 ## Git: deine Version statt eines Wegwerf-Checkouts
@@ -87,14 +87,16 @@ du bekommst dann die vorbereitete Funktion, baust aber weniger davon selbst.
    Push nötig sein; es gibt keinen geteilten Kurs-Account.
 
 3. Vor einem neuen Drill: `git status --short` und den bisherigen Stand bei
-   Bedarf committen/pushen. „Lade den offiziellen Checkpoint für Drill 9“
-   plant zunächst nur. Nach deiner Bestätigung entsteht ein separater
-   Worktree auf einem **neuen Branch** ab dem offiziellen Tag. Wechsle in
-   dessen angezeigten Pfad, starte dort App und Claude, und pushe später
-   auch diesen Branch mit `git push -u origin HEAD`. Dein vorheriger Branch
-   samt uncommittierter Änderungen bleibt erhalten. Die neue lokale DB ist
-   getrennt; synchronisiere die Inbox dort neu. In einem älteren Fork, dem
-   Tags fehlen, zuerst `git fetch upstream --tags --force` ausführen.
+   Bedarf committen/pushen. Entscheide dann ausdrücklich: **Eigenen Stand
+   mitnehmen** kopiert deinen Code (auch uncommittierte Änderungen) und deine
+   bisherige lokale Datenbank in einen neuen Worktree. **Frischen offiziellen
+   Stand laden** beginnt dort mit Referenzcode und frischen Fällen. Beide
+   Varianten lassen den alten Ordner unverändert; Claude plant zuerst und
+   fragt vor dem Anwenden erneut. Wechsle in den angezeigten neuen Pfad,
+   starte dort App und Claude und pushe später auch diesen Branch mit
+   `git push -u origin HEAD`. Im Mitnehmen-Modus prüfe deinen Diff und die
+   neue Stufe besonders sorgfältig. In einem älteren Fork, dem Tags fehlen,
+   zuerst `git fetch upstream --tags --force` ausführen.
 
 ## Der Vibe-Coding-Rhythmus
 

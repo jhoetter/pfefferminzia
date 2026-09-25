@@ -56,8 +56,12 @@ def main() -> None:
     activate = checkpoint_commands.add_parser("activate", help="Reset a fresh worktree to one checkpoint")
     activate.add_argument("checkpoint")
     activate.add_argument("--confirm-checkpoint-reset", action="store_true", required=True)
+    adopt = checkpoint_commands.add_parser("adopt", help="Advance a copied worktree without resetting cases")
+    adopt.add_argument("checkpoint")
+    adopt.add_argument("--confirm-checkpoint-adopt", action="store_true", required=True)
     plan = checkpoint_commands.add_parser("plan", help="Plan a non-destructive recovery worktree")
     plan.add_argument("checkpoint")
+    plan.add_argument("--mode", choices=("official", "continue"), default="official")
     apply = checkpoint_commands.add_parser("apply", help="Apply a prepared recovery-worktree plan")
     apply.add_argument("confirmation_token")
     apply.add_argument("--confirm-checkpoint-load", action="store_true", required=True)
@@ -131,7 +135,7 @@ def main() -> None:
         _json(sync_agentmail())
     elif args.command == "checkpoint":
         from .checkpoint_loader import apply_checkpoint_load, plan_checkpoint_load
-        from .checkpoints import activate_checkpoint, available_checkpoints, checkpoint_profile, verify_checkpoint
+        from .checkpoints import activate_checkpoint, adopt_checkpoint, available_checkpoints, checkpoint_profile, verify_checkpoint
 
         if args.checkpoint_command == "list":
             _json(available_checkpoints())
@@ -151,8 +155,11 @@ def main() -> None:
             activate_checkpoint(args.checkpoint)
             reset_workshop_fixtures()
             _json(checkpoint_profile())
+        elif args.checkpoint_command == "adopt":
+            _initialize()
+            _json(adopt_checkpoint(args.checkpoint))
         elif args.checkpoint_command == "plan":
-            _json(plan_checkpoint_load(args.checkpoint))
+            _json(plan_checkpoint_load(args.checkpoint, mode=args.mode))
         elif args.checkpoint_command == "apply":
             _json(apply_checkpoint_load(args.confirmation_token))
 

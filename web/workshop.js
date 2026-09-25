@@ -1,345 +1,327 @@
-const workshopState = {
-  dashboard: null,
-  todos: [],
-  verification: null,
-  error: null,
-  fetchedAt: Date.now(),
-};
+/* One editable browser workspace for all drills. No frontend build step. */
+const app = document.querySelector('#app');
+const state = { dashboard: null, todos: [], ticket: null, view: 'inbox', selected: null,
+  filter: 'all', verification: null, dialog: null, error: '', notice: '', busy: false, fetchedAt: Date.now() };
+
+const html = value => String(value ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
+const lines = value => html(value).replaceAll('\n', '<br>');
+const stage = () => state.dashboard?.workshop?.checkpoint?.drill ?? 8;
+const has = capability => state.dashboard?.workshop?.checkpoint?.capabilities?.includes(capability);
+const url = ticket => encodeURIComponent(ticket);
+const date = value => value ? new Intl.DateTimeFormat('de-DE', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(value)) : '—';
+const statusNames = { new: 'Neu', in_progress: 'In Arbeit', awaiting_human: 'Wartet auf Freigabe',
+  scheduled: 'Im Eingriffsfenster', sent: 'Gesendet', closed: 'Abgeschlossen' };
+const productNames = { life: 'Leben', liability: 'Haftpflicht', unknown: 'Noch offen' };
 
 async function request(path, options = {}) {
-  const response = await fetch(path, {
-    ...options,
-    headers: { "Content-Type": "application/json", ...(options.headers || {}) },
-  });
+  const response = await fetch(path, { ...options, headers: { 'Content-Type': 'application/json', ...(options.headers || {}) } });
   const body = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(body.error || `Request failed (${response.status})`);
+  if (!response.ok) throw new Error(body.error || `Aktion fehlgeschlagen (${response.status})`);
   return body;
 }
 
-function escapeHtml(value) {
-  return String(value ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+function visibleTickets() {
+  const tickets = state.dashboard?.tickets || [];
+  if (state.view === 'reviews') return tickets.filter(ticket => ticket.productLine === 'life' && ticket.status === 'awaiting_human');
+  if (state.view === 'queue') return tickets.filter(ticket => ticket.status === 'scheduled');
+  if (state.filter === 'mail') return tickets.filter(ticket => !ticket.isDemo);
+  return tickets;
 }
 
-function hasCapability(name) {
-  return workshopState.dashboard?.workshop?.checkpoint?.capabilities?.includes(name);
-}
-
-function checkpointName() {
-  return workshopState.dashboard?.workshop?.checkpoint?.name || "loading";
-}
-
-function applyStageVisibility() {
-  const name = checkpointName();
-  [...document.body.classList]
-    .filter((item) => item.startsWith("checkpoint-"))
-    .forEach((item) => document.body.classList.remove(item));
-  document.body.classList.add(`checkpoint-${name}`);
-
-  const order = workshopState.dashboard?.workshop?.checkpoint?.order || 12;
-  document.documentElement.dataset.stage = String(order);
-  document.querySelectorAll(".sidebar nav button").forEach((button) => {
-    const label = button.textContent || "";
-    const hidden =
-      (order < 9 && (label.includes("Kunden 360") || label.includes("Tarife"))) ||
-      (order < 10 && (label.includes("Schäden") || label.includes("Prüfung"))) ||
-      (order < 11 && label.includes("Geplant"));
-    button.style.display = hidden ? "none" : "";
-  });
-  document.querySelectorAll("button").forEach((button) => {
-    if (button.closest(".workshop-panel")) return;
-    const label = (button.textContent || "").trim();
-    if (order < 10 && label.includes("Prüfung anfordern")) button.style.display = "none";
-    if (order < 10 && (label === "Prüfung" || label === "Geplant")) button.style.display = "none";
-    if (order < 11 && label === "Haftpflicht") button.style.display = "none";
-    if (order < 11 && (label.includes("In 24h einplanen") || label.includes("Jetzt senden"))) {
-      button.style.display = "none";
-    }
-  });
-  const brandMark = document.querySelector(".sidebar .brand .brand-mark");
-  if (brandMark && !brandMark.querySelector("img")) {
-    brandMark.innerHTML = '<img src="/favicon.svg" alt="" width="30" height="30">';
-  }
-  if (workshopState.dashboard?.workshop?.agentMail?.ready === false) {
-    const connectionLabel = document.querySelector(".sidebar-footer strong");
-    const connectionDetail = document.querySelector(".sidebar-footer small");
-    if (connectionLabel && connectionLabel.textContent !== "AgentMail nicht verbunden") {
-      connectionLabel.textContent = "AgentMail nicht verbunden";
-    }
-    if (connectionDetail && connectionDetail.textContent !== "Setup in .env prüfen") {
-      connectionDetail.textContent = "Setup in .env prüfen";
-    }
-  }
-}
-
-async function refresh(render = true) {
+async function refresh({ quiet = false } = {}) {
+  const draftInput = document.querySelector('#draft-body');
+  const unsavedDraft = draftInput && draftInput.value !== (state.ticket?.draft?.body || '');
+  if (state.busy || (quiet && (state.dialog || unsavedDraft || app.contains(document.activeElement) && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)))) return;
   try {
-    const [dashboard, todos] = await Promise.all([
-      request("/api/dashboard"),
-      request("/api/todos").catch(() => []),
-    ]);
-    workshopState.dashboard = dashboard;
-    workshopState.todos = todos;
-    workshopState.fetchedAt = Date.now();
-    workshopState.error = null;
-  } catch (error) {
-    workshopState.error = error.message;
-  }
-  applyStageVisibility();
-  renderRibbon();
-  const panel = document.querySelector(".workshop-panel");
-  if (render && (!panel?.contains(document.activeElement) || render === "force")) renderPanel();
+    const [dashboard, todos] = await Promise.all([request('/api/dashboard'), request('/api/todos')]);
+    state.dashboard = dashboard;
+    state.todos = todos;
+    state.fetchedAt = Date.now();
+    const visible = visibleTickets();
+    if (!visible.some(ticket => ticket.ticketNumber === state.selected)) state.selected = visible[0]?.ticketNumber || null;
+    state.ticket = state.selected ? await request(`/api/tickets/${url(state.selected)}`) : null;
+    state.error = '';
+  } catch (error) { state.error = error.message; }
+  render();
 }
 
-function renderRibbon() {
-  let ribbon = document.querySelector(".workshop-ribbon");
-  if (!ribbon) {
-    ribbon = document.createElement("div");
-    ribbon.className = "workshop-ribbon";
-    document.body.append(ribbon);
-  }
-  const profile = workshopState.dashboard?.workshop?.checkpoint;
-  ribbon.innerHTML = `<img src="/favicon.svg" alt="" width="20" height="20">${escapeHtml(profile ? `Drill ${profile.drill} · ${profile.title}` : "Workshop wird geladen…")}`;
+function badge(label, kind = '') { return `<span class="badge ${kind}">${html(label)}</span>`; }
+function button(label, action, extra = '') { return `<button type="button" data-action="${action}" ${extra}>${label}</button>`; }
+function actionButton(label, action, extra = '') { return `<button type="button" class="primary" data-action="${action}" ${extra}>${label}</button>`; }
+
+function header() {
+  const profile = state.dashboard.workshop.checkpoint;
+  const mail = state.dashboard.workshop.agentMail;
+  return `<header class="topbar"><div class="brand"><img src="/favicon.svg" alt="" width="32" height="32">
+      <span>Pfefferminzia<small>Die Versicherungs-Werkstatt</small></span></div>
+    <div class="topbar-right"><span class="checkpoint">Drill ${profile.drill} <span>·</span> ${html(profile.title)}</span>
+      ${badge(mail.ready ? 'Inbox verbunden' : 'Inbox einrichten', mail.ready ? 'good' : 'attention')}</div></header>`;
 }
 
-function taskMarkup(todo) {
-  return `<div class="workshop-todo ${escapeHtml(todo.status)}">
-    <div><strong>${escapeHtml(todo.title)}</strong><small>${escapeHtml(todo.ticketNumber || todo.kind)}</small></div>
-    <button class="action" data-action="todo" data-id="${todo.id}" data-status="${todo.status === "open" ? "completed" : "open"}">
-      ${todo.status === "open" ? "Erledigt" : "Öffnen"}
-    </button>
-  </div>`;
+function navigation() {
+  const tickets = state.dashboard.tickets;
+  const views = [ ['inbox', 'Eingang', tickets.length] ];
+  if (has('life_review')) views.push(['reviews', 'Freigaben', tickets.filter(t => t.productLine === 'life' && t.status === 'awaiting_human').length]);
+  if (has('intervention_queue') && stage() !== 12) views.push(['queue', 'Eingriffsfenster', tickets.filter(t => t.status === 'scheduled').length]);
+  return `<nav class="tabs" aria-label="Arbeitsbereiche">${views.map(([key, label, count]) =>
+    `<button type="button" data-view="${key}" class="${state.view === key ? 'active' : ''}" aria-current="${state.view === key ? 'page' : 'false'}">${label}<span>${count}</span></button>`).join('')}
+    ${stage() === 12 ? '<a href="/slides/index.html?deck=management" target="_blank" rel="noopener">Management-Report ↗</a>' : ''}</nav>`;
 }
 
-function queueMarkup(ticket) {
-  return `<div class="workshop-queue-item">
-    <div><strong>${escapeHtml(ticket.ticketNumber)} · ${escapeHtml(ticket.subject)}</strong>
-      <small>${escapeHtml(ticket.customerName || ticket.customerEmail)}</small>
-      <span class="workshop-countdown" data-scheduled="${escapeHtml(ticket.scheduledFor)}">berechnet…</span>
-    </div>
-    <div class="workshop-actions"><button class="action" data-action="open-ticket" data-ticket="${escapeHtml(ticket.ticketNumber)}">Bearbeiten</button><button class="action danger" data-action="remove-queue" data-ticket="${escapeHtml(ticket.ticketNumber)}">Stoppen</button></div>
-  </div>`;
+function inboxBar() {
+  if (state.view !== 'inbox') return '';
+  const mail = state.dashboard.workshop.agentMail;
+  const sync = state.dashboard.workshop.lastInboxSync;
+  return `<div class="inbox-bar"><div><strong>${mail.inboxId ? html(mail.inboxId) : 'Noch keine persönliche Inbox'}</strong>
+    <span>${mail.inboxId ? 'Testmail an diese Adresse senden. Danach hier synchronisieren.' : 'Bitte Claude, deine Workshop-Inbox einzurichten.'}</span>
+    ${sync ? `<small>Letzter Abgleich ${date(sync.at)} · ${sync.importedTickets} neue Tickets${sync.status === 'error' ? ` · ${html(sync.error)}` : ''}</small>` : ''}</div>
+    ${button('Synchronisieren', 'sync', mail.ready ? '' : 'disabled')}</div>`;
 }
 
-function reviewMarkup(ticket) {
-  return `<div class="workshop-queue-item">
-    <div><strong>${escapeHtml(ticket.ticketNumber)} · ${escapeHtml(ticket.subject)}</strong>
-      <small>${ticket.isDemo ? "Demo: kein echter Versand" : "Externe Wirkung bleibt bis zur Freigabe blockiert"}</small>
-    </div>
-    <div class="workshop-actions">
-      <button class="action danger" data-action="reject" data-ticket="${escapeHtml(ticket.ticketNumber)}">Ablehnen</button>
-      ${ticket.humanApprovedAt ? '<span class="workshop-approved">Freigegeben</span>' : `<button class="action" data-action="approve" data-ticket="${escapeHtml(ticket.ticketNumber)}">Freigeben</button>`}
-      <button class="action" data-action="send" data-ticket="${escapeHtml(ticket.ticketNumber)}" ${ticket.isDemo || !ticket.humanApprovedAt ? "disabled" : ""}>Senden</button>
-    </div>
-  </div>`;
+function ticketRow(ticket) {
+  const active = ticket.ticketNumber === state.selected;
+  const when = ticket.status === 'scheduled' ? `<span class="countdown" data-scheduled="${html(ticket.scheduledFor)}">Zeit wird berechnet</span>` : '';
+  return `<button type="button" class="ticket-row ${active ? 'selected' : ''}" data-ticket="${html(ticket.ticketNumber)}" aria-current="${active ? 'true' : 'false'}">
+    <span class="ticket-row-top"><span class="ticket-id">${html(ticket.ticketNumber)}</span>${badge(productNames[ticket.productLine] || ticket.productLine)}${ticket.isDemo ? '<span class="muted">Demo</span>' : '<span class="mail-source">Inbox</span>'}</span>
+    <strong>${html(ticket.subject)}</strong><span class="ticket-row-bottom">${html(ticket.customerName || ticket.customerEmail || 'Unbekannt')}<span>${html(statusNames[ticket.status] || ticket.status)}</span></span>${when}</button>`;
 }
 
-function manualOutboxMarkup(ticket) {
-  return `<div class="workshop-queue-item">
-    <div><strong>${escapeHtml(ticket.ticketNumber)} · ${escapeHtml(ticket.subject)}</strong>
-      <small>${ticket.isDemo ? "Demo bleibt lokal" : "Entwurf vom Menschen prüfen und bewusst versenden"}</small>
-    </div>
-    <button class="action" data-action="send" data-ticket="${escapeHtml(ticket.ticketNumber)}" ${ticket.isDemo ? "disabled" : ""}>Manuell senden</button>
-  </div>`;
+function todoSection() {
+  if (stage() !== 8 || state.view !== 'inbox') return '';
+  const todos = state.todos;
+  const inboxTickets = state.dashboard.tickets.filter(ticket => !ticket.isDemo);
+  return `<section class="todo-section"><div class="section-head"><h3>Nächster Prüfschritt</h3><span>${todos.filter(todo => todo.status === 'open').length} offen</span></div>
+    <p>Ein Todo ist nur sinnvoll, wenn es aus einem konkreten Ticket entsteht.</p>
+    ${todos.map(todo => `<div class="todo-row"><span><strong class="${todo.status === 'completed' ? 'done' : ''}">${html(todo.title)}</strong><small>${html(todo.ticketNumber || '')}</small></span>
+      ${button(todo.status === 'open' ? 'Erledigt' : 'Wieder öffnen', 'todo', `data-id="${todo.id}" data-status="${todo.status === 'open' ? 'completed' : 'open'}"`)}</div>`).join('')}
+    ${inboxTickets.length ? `<form data-form="todo"><input name="title" aria-label="Konkreter nächster Prüfschritt" placeholder="Zum Beispiel: PF-123 · Anliegen prüfen" maxlength="300" required>
+      <select name="ticketNumber" aria-label="Ticket auswählen" required><option value="">Ticket auswählen</option>${inboxTickets.map(t => `<option value="${html(t.ticketNumber)}">${html(t.ticketNumber)}</option>`).join('')}</select>
+      <button type="submit">Todo anlegen</button></form>` : '<p class="todo-wait">Sende zuerst eine Testmail und öffne ihr Ticket. Dann kannst du hier einen passenden Prüfschritt festhalten.</p>'}</section>`;
 }
 
-function verificationMarkup() {
-  if (!workshopState.verification) return "";
-  return `<div class="workshop-verify-results">${workshopState.verification.checks
-    .map((item) => `<div class="workshop-check ${item.passed ? "" : "failed"}">${escapeHtml(item.detail)}</div>`)
-    .join("")}</div>`;
+function listPane() {
+  const tickets = visibleTickets();
+  const labels = { inbox: 'Eingang', reviews: 'Auf deine Entscheidung wartend', queue: 'Vor dem automatischen Versand' };
+  const empty = state.view === 'inbox' ? (state.filter === 'mail' ? 'Noch keine importierte Mail. Sende eine Testmail an deine Inbox und synchronisiere.' : 'Noch keine Fälle. Beginne mit einer Testmail.')
+    : state.view === 'reviews' ? 'Keine Lebensantwort wartet auf Freigabe. Bitte Claude, einen Entwurf zur Prüfung vorzulegen.'
+      : 'Keine Antwort ist eingeplant. Bitte Claude, einen Haftpflichtfall für das Eingriffsfenster vorzubereiten.';
+  return `<div class="list-pane"><div class="section-head"><h2>${labels[state.view]}</h2><span>${tickets.length} Fälle</span></div>
+    ${inboxBar()}${state.view === 'inbox' ? `<div class="filters" aria-label="Eingang filtern">${button('Alle', 'filter-all', state.filter === 'all' ? 'class="selected"' : '')}${button('Meine Mails', 'filter-mail', state.filter === 'mail' ? 'class="selected"' : '')}</div>` : ''}
+    <div class="ticket-list">${tickets.length ? tickets.map(ticketRow).join('') : `<p class="empty-state">${empty}</p>`}</div>
+    ${state.view === 'queue' ? `<div class="queue-clock"><p>Der Timer gehört zum Workshop. Prüfe zuerst, was noch in der Queue liegt.</p>${actionButton('Workshop-Zeit +24 h', 'clock', state.dashboard.autoSendEnabled ? '' : 'disabled title="Auto-Versand ist in diesem Checkpoint aus"')}</div>` : ''}
+    ${todoSection()}</div>`;
 }
 
-function dialogueMarkup(steps) {
-  if (!steps?.length) return "";
-  return `<ol class="workshop-dialogue">${steps.map((step) => `<li>
-    <strong>${escapeHtml(step.phase)}</strong>
-    <p class="workshop-claude-prompt"><span>Claude fragen</span> „${escapeHtml(step.askClaude)}“</p>
-    <p class="workshop-human-stop"><span>Dein Stopp</span> ${escapeHtml(step.yourMove)}</p>
-  </li>`).join("")}</ol>`;
+function mailText(ticket) {
+  const inbound = (ticket.messages || []).filter(message => message.direction === 'inbound');
+  return inbound.length ? inbound.map(message => `<article class="message"><div><strong>${html(message.sender)}</strong><small>${date(message.sentAt)}</small></div>
+    <p>${lines(message.textBody || '(Kein Textkörper)')}</p></article>`).join('') : '<p class="empty-state">Noch keine eingehende Nachricht.</p>';
 }
 
-function renderPanel() {
-  const panel = document.querySelector(".workshop-panel");
-  if (!panel || !workshopState.dashboard) return;
-  const workshop = workshopState.dashboard.workshop;
-  const profile = workshop.checkpoint;
+function context(ticket) {
+  const contracts = ticket.linkedContracts || [];
+  if (!has('knowledge')) return '';
+  return `<div class="context"><span>Vertrag & Tarifgeneration</span>${contracts.length ? contracts.map(contract =>
+    `<strong>${html(contract.contractId)} · ${html(contract.tariffGenerationId)}</strong>`).join('') : '<strong>Noch nicht zugeordnet – mit Claude und MCP prüfen.</strong>'}</div>`;
+}
+
+function draftArea(ticket) {
+  if (!has('draft') || ['sent', 'closed'].includes(ticket.status)) return '';
+  const draft = ticket.draft;
+  const life = ticket.productLine === 'life';
+  const liability = ticket.productLine === 'liability';
+  let next = '';
+  if (life && has('life_review')) {
+    next = ticket.status === 'awaiting_human'
+      ? `<div class="decision-bar"><div><strong>${ticket.humanApprovedAt ? 'Freigegeben – Versand bleibt ein eigener Schritt' : 'Deine Entscheidung ist erforderlich'}</strong><span>${ticket.isDemo ? 'Demo-Fall: Freigabe/Ablehnung üben, kein echter Versand.' : 'Ohne aktuelle Freigabe verlässt nichts den Fall.'}</span></div>
+        ${ticket.humanApprovedAt ? actionButton('Antwort senden', 'send', ticket.isDemo ? 'disabled' : '') : `${button('Ablehnen', 'reject')}${actionButton('Freigeben', 'approve')}`}</div>`
+      : draft ? actionButton('Zur Freigabe vorlegen', 'submit') : '';
+  } else if (life && draft) next = actionButton('Antwort bewusst senden', 'send', ticket.isDemo ? 'disabled' : '');
+  else if (liability && stage() === 11 && draft && ticket.status !== 'scheduled') next = actionButton('Für 24 h einplanen', 'schedule');
+  if (ticket.status === 'scheduled') next = `<div class="decision-bar"><div><strong>Im Eingriffsfenster</strong><span>Bearbeiten entwertet die Planung. Stoppen nimmt die Antwort aus der Queue.</span></div>${button('Aus Queue nehmen', 'remove')}</div>`;
+  return `<section class="draft-section"><div class="section-head"><h3>Antwortentwurf</h3>${draft ? badge(draft.status || 'Entwurf') : ''}</div>
+    <p class="section-help">${draft ? 'Lies den genauen Text und die Quelle, bevor du handelst.' : 'Bitte Claude um einen belegten Entwurf – oder schreibe einen eigenen.'}</p>
+    <form data-form="draft"><label for="draft-body">Text an ${html(ticket.customerEmail || 'Empfänger')}</label>
+      <textarea id="draft-body" name="body" rows="${['awaiting_human', 'scheduled'].includes(ticket.status) ? 6 : 9}" placeholder="Noch kein Entwurf…" required>${html(draft?.body || '')}</textarea>
+      <div class="draft-footer"><span>${draft?.rationale ? `Begründung: ${html(draft.rationale)}` : 'Fundstellen mit Claude und MCP prüfen.'}</span><button type="submit">Entwurf speichern</button></div></form>
+    ${next ? `<div class="next-action">${next}</div>` : ''}</section>`;
+}
+
+function classification(ticket) {
+  if (!has('draft') || ticket.status === 'sent') return '';
+  const options = stage() >= 11 ? ['life', 'liability'] : ['life'];
+  return `<details class="subtle-details"><summary>Sparte prüfen oder ändern</summary><form data-form="classify"><label for="product-line">Welcher Pfad passt?</label>
+    <select id="product-line" name="productLine">${options.map(value => `<option value="${value}" ${ticket.productLine === value ? 'selected' : ''}>${productNames[value]}</option>`).join('')}</select>
+    <button type="submit">Zuordnen</button></form><p>Kundentext ist eine Behauptung. Quelle und Kontrollregel separat prüfen.</p></details>`;
+}
+
+function detailPane() {
+  const ticket = state.ticket;
+  if (!ticket) return `<div class="detail-pane empty-detail"><span>↖</span><h2>Wähle einen Fall</h2><p>Eine Mail, ein Ticket, ein nächster Schritt.</p></div>`;
+  const actionFocus = (state.view === 'reviews' && ticket.status === 'awaiting_human') ||
+    (state.view === 'queue' && ticket.status === 'scheduled');
+  const message = `<section class="message-section"><div class="section-head"><h3>Nachricht</h3><span>${ticket.messages?.length || 0}</span></div>${mailText(ticket)}</section>`;
+  return `<article class="detail-pane"><div class="detail-top"><span>${html(ticket.ticketNumber)} · ${html(productNames[ticket.productLine] || ticket.productLine)}</span>
+    ${badge(statusNames[ticket.status] || ticket.status, ticket.status === 'awaiting_human' ? 'attention' : ticket.status === 'sent' ? 'good' : '')}</div>
+    <h2>${html(ticket.subject)}</h2><p class="detail-subtitle">${ticket.isDemo ? 'Vorbereiteter Demo-Fall · kein echter Versand' : `Eingang von ${html(ticket.customerEmail || 'unbekannt')}`} · ${date(ticket.lastMessageAt)}</p>
+    ${context(ticket)}${actionFocus ? `${draftArea(ticket)}<details class="source-details"><summary>Originalnachricht und Kontext prüfen</summary>${message}</details>` : `${message}${classification(ticket)}${draftArea(ticket)}`}
+    <details class="audit"><summary>Verlauf & Belege <span>${ticket.events?.length || 0}</span></summary><ol>${(ticket.events || []).map(event =>
+      `<li><strong>${html(event.type)}</strong><span>${date(event.createdAt)} · ${html(event.actor)}</span></li>`).join('')}</ol></details></article>`;
+}
+
+function guide() {
+  const workshop = state.dashboard.workshop;
   const brief = workshop.drillBrief;
-  const openTodos = workshopState.todos.filter((todo) => todo.status === "open");
-  const inboxTickets = workshopState.dashboard.tickets
-    .filter((ticket) => ticket.source === "agentmail")
-    .sort((a, b) => String(b.lastMessageAt).localeCompare(String(a.lastMessageAt)))
-    .slice(0, 3);
-  const lastSync = workshop.lastInboxSync;
-  const scheduled = workshopState.dashboard.tickets.filter((ticket) => ticket.status === "scheduled");
-  const reviews = workshopState.dashboard.tickets.filter((ticket) => ticket.status === "awaiting_human" && ticket.productLine === "life");
-  const manualOutbox = workshopState.dashboard.tickets.filter((ticket) => ticket.hasDraft && ticket.productLine === "life" && !["sent", "closed", "awaiting_human"].includes(ticket.status));
-  panel.innerHTML = `<header>
-      <p class="eyebrow">${escapeHtml(profile.name)}</p>
-      <h2>Drill ${profile.drill} · ${escapeHtml(profile.title)}</h2>
-      <p>${escapeHtml(profile.goal)}</p>
-      <button data-action="close" aria-label="Workshop-Cockpit schließen">×</button>
-    </header>
-    <div class="workshop-body">
-      <div class="workshop-status">
-        <span>AgentMail<strong class="${workshop.agentMail.ready ? "ok" : "warn"}">${workshop.agentMail.ready ? "konfiguriert" : "Setup fehlt"}</strong></span>
-        <span>Auto-Versand<strong class="${workshopState.dashboard.autoSendEnabled ? "ok" : "warn"}">${workshopState.dashboard.autoSendEnabled ? "aktiv" : "deaktiviert"}</strong></span>
-      </div>
-      <section class="workshop-card"><h3>Deine AgentMail-Inbox</h3>
-        <p class="empty">${workshop.agentMail.inboxId ? `Nachrichten an <strong>${escapeHtml(workshop.agentMail.inboxId)}</strong> können aus normalen Postfächern gesendet werden.` : "Noch keine persönliche Inbox eingerichtet. Trage Inbox-ID und Schlüssel in .env ein."} Die Empfänger-Allowlist begrenzt nur ausgehende Antworten, nicht eingehende Mails.</p>
-        <div class="workshop-actions"><button class="action" data-action="sync-inbox" ${workshop.agentMail.ready ? "" : "disabled"}>Jetzt synchronisieren</button></div>
-        <p class="empty">${lastSync ? `Letzter Abgleich: ${escapeHtml(lastSync.at)} · ${lastSync.importedMessages} neue Nachricht(en) · ${lastSync.importedTickets} neue Tickets${lastSync.status === "error" ? ` · Fehler: ${escapeHtml(lastSync.error || "unbekannt")}` : ""}` : "Noch kein Inbox-Abgleich. Nach dem Senden kann die Zustellung kurz dauern."}</p>
-        ${inboxTickets.length ? `<ol>${inboxTickets.map((ticket) => `<li>${escapeHtml(ticket.ticketNumber)} · ${escapeHtml(ticket.subject)}</li>`).join("")}</ol>` : '<p class="empty">Noch kein importiertes Ticket. Nach einer Testmail synchronisieren und erneut prüfen.</p>'}
-      </section>
-      <section class="workshop-card"><h3>Dein Lernziel</h3><p>${escapeHtml(brief?.learningObjective || profile.goal)}</p>
-        <p class="empty"><strong>Fertig, wenn:</strong> ${escapeHtml(brief?.doneWhen || "")}</p>
-        ${profile.drill === 12 ? '<p><a class="action" href="/slides/index.html?deck=management" target="_blank" rel="noopener">Management-Report öffnen ↗</a></p>' : ''}
-      </section>
-      <section class="workshop-card"><h3>Dialog in Etappen <small>nicht alles auf einmal</small></h3>
-        <p class="empty">Claude hilft beim nächsten Schritt. Nach jeder Antwort prüfst oder entscheidest du selbst.</p>
-        ${dialogueMarkup(brief?.dialogueSteps)}
-      </section>
-      <section class="workshop-card"><h3>Erfolgskriterien</h3><ol>${profile.successCriteria.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ol></section>
-      <section class="workshop-card"><h3>Todos <small>${openTodos.length} offen</small></h3>
-        ${workshopState.todos.length ? workshopState.todos.map(taskMarkup).join("") : '<p class="empty">Noch keine Todos. Lege eine konkrete Aufgabe zu einem eingegangenen Ticket an.</p>'}
-        <form class="workshop-todo-form"><input name="title" maxlength="300" placeholder="Nächster Prüfschritt…" required>
-          <select name="ticketNumber" aria-label="Todo mit Ticket verknüpfen"><option value="">Ohne Ticket</option>${inboxTickets.map((ticket) => `<option value="${escapeHtml(ticket.ticketNumber)}">${escapeHtml(ticket.ticketNumber)} · ${escapeHtml(ticket.subject)}</option>`).join("")}</select>
-          <button>Anlegen</button></form>
-      </section>
-      ${hasCapability("manual_send") && !hasCapability("life_review") ? `<section class="workshop-card"><h3>Menschlicher Postausgang</h3>${manualOutbox.length ? manualOutbox.map(manualOutboxMarkup).join("") : '<p class="empty">Noch kein versandbereiter Lebensentwurf.</p>'}</section>` : ""}
-      ${hasCapability("life_review") ? `<section class="workshop-card"><h3>Verpflichtende Freigabe <small>${reviews.length}</small></h3>${reviews.length ? reviews.map(reviewMarkup).join("") : '<p class="empty">Keine Lebensantwort wartet auf Prüfung.</p>'}</section>` : ""}
-      ${hasCapability("intervention_queue") ? `<section class="workshop-card"><h3>Eingriffsfenster <small>${scheduled.length}</small></h3>${scheduled.length ? scheduled.map(queueMarkup).join("") : '<p class="empty">Keine Haftpflichtantwort ist eingeplant.</p>'}
-        <div class="workshop-actions"><button class="action" data-action="advance-clock">Workshop-Zeit +24h</button></div>
-      </section>` : ""}
-      <section class="workshop-card"><h3>Startbereitschaft prüfen</h3><p class="empty">Prüft den Startzustand, nicht den Abschluss des Drills. Der externe Inbox-Test liest erst nach gesonderter Bestätigung.</p>
-        <div class="workshop-actions"><button class="action" data-action="verify">Lokal prüfen</button><button class="action" data-action="verify-external">Inbox prüfen</button></div>
-        ${verificationMarkup()}${workshopState.error ? `<p class="workshop-error" role="alert">${escapeHtml(workshopState.error)}</p>` : ""}
-      </section>
-    </div>`;
+  const profile = workshop.checkpoint;
+  const first = brief.dialogueSteps?.[0];
+  return `<aside class="guide"><div class="guide-label">Dein Drill · ${profile.drill}</div><h2>${html(profile.title)}</h2>
+    <p>${html(brief.learningObjective)}</p><div class="guide-block"><span>Fertig, wenn</span><strong>${html(brief.doneWhen)}</strong></div>
+    <div class="guide-block"><span>Selbst bauen</span><strong>${html(brief.buildTaskShort || brief.buildTask)}</strong></div>
+    <details><summary>Bauauftrag im Detail</summary><p>${html(brief.buildTask)}</p></details>
+    <details><summary>Mit Claude starten</summary><p>„${html(first?.askClaude || 'Was ist mein nächster Schritt?')}“</p>
+      <small>Claude soll dich führen, nicht den ganzen Drill in einem Zug erledigen.</small></details>
+    <details><summary>Alle Etappen & Prüfung</summary><ol>${(brief.dialogueSteps || []).map(step =>
+      `<li><strong>${html(step.phase)}</strong><p>„${html(step.askClaude)}“</p><small>${html(step.yourMove)}</small></li>`).join('')}</ol>
+      ${button('Lokal prüfen', 'verify')}${button('Inbox-Verbindung prüfen', 'verify-external')}
+      ${state.verification ? `<p>${state.verification.ok ? 'Startbereitschaft geprüft.' : `Noch offen: ${html(state.verification.nextAction)}`}</p>` : ''}</details>
+    <a class="guide-link" href="/slides/decks.html" target="_blank" rel="noopener">Folien & Drill-Karten ↗</a></aside>`;
+}
+
+function dialogMarkup() {
+  const dialog = state.dialog;
+  if (!dialog) return '';
+  const ticket = state.ticket;
+  const descriptions = {
+    send: ['Antwort versenden?', 'Dieser genaue Text geht an die angezeigte Adresse. Das ist eine externe Wirkung.'],
+    reject: ['Freigabe ablehnen', 'Nenne den Grund. Der Entwurf geht zurück in Bearbeitung.'],
+    remove: ['Aus Queue nehmen?', 'Diese Antwort wird nicht automatisch versendet. Nenne den Grund.'],
+    schedule: ['Automatisch nach 24 Stunden?', 'Nach dem sichtbaren Eingriffsfenster kann die Antwort ohne weitere Freigabe versendet werden.'],
+    clock: ['Workshop-Zeit vorspulen?', 'Fällige Antworten können dadurch wirklich an erlaubte Workshop-Adressen versendet werden.'],
+  };
+  const [title, copy] = descriptions[dialog] || ['Bestätigen?', ''];
+  const reason = ['reject', 'remove'].includes(dialog);
+  return `<div class="dialog-backdrop"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+    <form data-form="confirm"><span class="dialog-eyebrow">Bewusster Eingriff</span><h2 id="dialog-title">${title}</h2><p>${copy}</p>
+    ${ticket && dialog !== 'clock' ? `<div class="dialog-preview"><strong>${html(ticket.ticketNumber)} → ${html(ticket.customerEmail || 'kein Empfänger')}</strong><p>${lines(ticket.draft?.body || 'Kein Entwurf')}</p></div>` : ''}
+    ${reason ? '<label for="reason">Begründung</label><textarea id="reason" name="reason" rows="3" maxlength="2000" required></textarea>' : ''}
+    <div class="dialog-actions">${button('Zurück', 'cancel')}<button type="submit" class="${dialog === 'send' || dialog === 'clock' ? 'danger' : 'primary'}">${dialog === 'send' ? 'Jetzt senden' : dialog === 'clock' ? 'Zeit vorspulen' : 'Bestätigen'}</button></div>
+    </form></div></div>`;
+}
+
+function render() {
+  if (!state.dashboard) { app.innerHTML = `<main class="loading">${state.error ? html(state.error) : 'Pfefferminzia wird geladen…'}</main>`; return; }
+  const profile = state.dashboard.workshop.checkpoint;
+  app.innerHTML = `${header()}<main class="page"><div class="page-intro"><div><span class="overline">WORKSHOP · ${html(profile.name)}</span>
+    <h1>Ein Fall. Ein nächster Schritt.</h1><p>Arbeite im Cockpit. Baue mit Claude am Code. Prüfe die Wirkung hier und im MCP.</p></div>
+    <a href="/slides/index.html?deck=drill-${String(profile.drill).padStart(2, '0')}" target="_blank" rel="noopener">Drill-Folien ↗</a></div>
+    ${navigation()}${state.error ? `<p class="alert" role="alert">${html(state.error)}</p>` : ''}${state.notice ? `<p class="notice" role="status">${html(state.notice)}</p>` : ''}
+    <div class="workspace">${listPane()}${detailPane()}${guide()}</div></main>${dialogMarkup()}`;
   updateCountdowns();
+  if (state.dialog) document.querySelector('.dialog [name="reason"]')?.focus();
 }
 
 function updateCountdowns() {
-  const serverNow = Date.parse(workshopState.dashboard?.workshop?.clock?.now || new Date().toISOString());
-  const now = serverNow + (Date.now() - workshopState.fetchedAt);
-  document.querySelectorAll("[data-scheduled]").forEach((node) => {
+  const base = Date.parse(state.dashboard?.workshop?.clock?.now || new Date().toISOString());
+  const now = base + Date.now() - state.fetchedAt;
+  document.querySelectorAll('[data-scheduled]').forEach(node => {
     const seconds = Math.max(0, Math.floor((Date.parse(node.dataset.scheduled) - now) / 1000));
     const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    node.textContent = seconds ? `${hours}h ${String(minutes).padStart(2, "0")}m ${String(secs).padStart(2, "0")}s` : "fällig";
+    node.textContent = seconds ? `Noch ${hours} h ${String(Math.floor(seconds % 3600 / 60)).padStart(2, '0')} min` : 'Jetzt fällig';
   });
 }
 
-async function perform(action) {
-  workshopState.error = null;
-  try {
-    await action();
-  } catch (error) {
-    workshopState.error = error.message;
+async function mutate(work, notice) {
+  if (state.busy) return;
+  state.busy = true;
+  state.error = '';
+  state.dialog = null;
+  let actionError = '';
+  try { await work(); state.notice = notice || ''; }
+  catch (error) { actionError = error.message; state.notice = ''; }
+  finally {
+    state.busy = false;
+    await refresh();
+    if (actionError) { state.error = actionError; render(); }
   }
-  await refresh("force");
 }
 
-function install() {
-  const launcher = document.createElement("button");
-  launcher.className = "workshop-launcher";
-  launcher.innerHTML = '<img src="/favicon.svg" alt="" width="19" height="19"> Workshop-Cockpit';
-  launcher.setAttribute("aria-controls", "workshop-panel");
-  launcher.setAttribute("aria-expanded", "false");
-  const panel = document.createElement("aside");
-  panel.id = "workshop-panel";
-  panel.className = "workshop-panel";
-  panel.setAttribute("role", "dialog");
-  panel.setAttribute("aria-modal", "true");
-  panel.setAttribute("aria-label", "Workshop-Cockpit");
-  panel.tabIndex = -1;
-  panel.inert = true;
-  document.body.append(launcher, panel);
-  const openPanel = () => {
-    panel.inert = false;
-    panel.classList.add("open");
-    launcher.setAttribute("aria-expanded", "true");
-    (panel.querySelector("header button") || panel).focus();
-  };
-  const closePanel = () => {
-    panel.classList.remove("open");
-    panel.inert = true;
-    launcher.setAttribute("aria-expanded", "false");
-    launcher.focus();
-  };
-  launcher.addEventListener("click", openPanel);
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && panel.classList.contains("open")) closePanel();
-  });
-
-  panel.addEventListener("submit", (event) => {
-    if (!event.target.matches(".workshop-todo-form")) return;
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const title = formData.get("title");
-    const ticketNumber = formData.get("ticketNumber") || null;
-    perform(() => request("/api/todos", { method: "POST", body: JSON.stringify({ title, ticketNumber }) }));
-  });
-
-  panel.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-action]");
-    if (!button) return;
-    const ticket = button.dataset.ticket;
-    const actions = {
-      close: closePanel,
-      todo: () => perform(() => request(`/api/todos/${button.dataset.id}`, { method: "PATCH", body: JSON.stringify({ status: button.dataset.status }) })),
-      approve: () => perform(() => request(`/api/tickets/${ticket}/approve`, { method: "POST", body: "{}" })),
-      reject: () => {
-        const note = window.prompt("Warum wird der Entwurf abgelehnt?");
-        if (note) perform(() => request(`/api/tickets/${ticket}/reject`, { method: "POST", body: JSON.stringify({ note }) }));
-      },
-      send: () => {
-        if (window.confirm("Diesen exakten Entwurf jetzt als Mensch freigeben und extern versenden?")) {
-          perform(() => request(`/api/tickets/${ticket}/send`, { method: "POST", body: "{}" }));
-        }
-      },
-      "remove-queue": () => {
-        const reason = window.prompt("Warum wird die Antwort aus der Queue genommen?");
-        if (reason) perform(() => request(`/api/tickets/${ticket}/schedule`, { method: "DELETE", body: JSON.stringify({ reason }) }));
-      },
-      "open-ticket": () => {
-        const row = [...document.querySelectorAll("button.ticket-row")]
-          .find((candidate) => candidate.querySelector(".ticket-id")?.textContent?.trim() === ticket);
-        if (!row) {
-          workshopState.error = `Ticket ${ticket} ist in der aktuellen Liste nicht sichtbar. Öffne die Eingangsübersicht.`;
-          renderPanel();
-          return;
-        }
-        closePanel();
-        row.click();
-      },
-      "advance-clock": () => {
-        if (window.confirm("Die lokale Workshop-Uhr um 24 Stunden vorspulen und fällige Antworten verarbeiten?")) {
-          perform(() => request("/api/workshop/clock/advance", { method: "POST", body: JSON.stringify({ hours: 24, confirmAdvance: true }) }));
-        }
-      },
-      "sync-inbox": () => perform(() => request("/api/sync", { method: "POST", body: "{}" })),
-      verify: () => perform(async () => { workshopState.verification = await request("/api/workshop/verify"); }),
-      "verify-external": () => {
-        if (window.confirm("Darf Pfefferminzia die konfigurierte AgentMail-Inbox jetzt erreichen und lesen?")) {
-          perform(async () => { workshopState.verification = await request("/api/workshop/verify?external=true"); });
-        }
-      },
-    };
-    actions[button.dataset.action]?.();
-  });
-
-  const observer = new MutationObserver(() => applyStageVisibility());
-  observer.observe(document.getElementById("root"), { childList: true, subtree: true });
-  refresh();
-  window.setInterval(() => refresh(panel.classList.contains("open")), 5000);
-  window.setInterval(updateCountdowns, 1000);
+async function selectTicket(number) {
+  state.selected = number;
+  state.ticket = null;
+  try { state.ticket = await request(`/api/tickets/${url(number)}`); state.error = ''; }
+  catch (error) { state.error = error.message; }
+  render();
 }
 
-if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", install);
-else install();
+app.addEventListener('click', async event => {
+  if (event.target.classList.contains('dialog-backdrop')) { state.dialog = null; render(); return; }
+  const view = event.target.closest('[data-view]');
+  if (view) { state.view = view.dataset.view; state.selected = null; await refresh(); return; }
+  const row = event.target.closest('[data-ticket]');
+  if (row) { await selectTicket(row.dataset.ticket); return; }
+  const control = event.target.closest('[data-action]');
+  if (!control || control.disabled) return;
+  const action = control.dataset.action;
+  const ticket = state.ticket?.ticketNumber;
+  const draftInput = document.querySelector('#draft-body');
+  if (draftInput && ['send', 'approve', 'submit', 'schedule'].includes(action) &&
+      draftInput.value !== (state.ticket?.draft?.body || '')) {
+    state.error = 'Du hast ungespeicherte Änderungen. Speichere den Entwurf und prüfe die Wirkung erneut.';
+    document.querySelector('.alert')?.remove();
+    const alert = document.createElement('p');
+    alert.className = 'alert';
+    alert.setAttribute('role', 'alert');
+    alert.textContent = state.error;
+    document.querySelector('.tabs').after(alert);
+    draftInput.focus();
+    return;
+  }
+  if (action === 'filter-all' || action === 'filter-mail') { state.filter = action.slice(7); state.selected = null; await refresh(); return; }
+  if (action === 'cancel') { state.dialog = null; render(); return; }
+  if (['send', 'reject', 'remove', 'schedule', 'clock'].includes(action)) { state.dialog = action; render(); return; }
+  if (action === 'sync') return mutate(() => request('/api/sync', { method: 'POST', body: '{}' }), 'Inbox synchronisiert.');
+  if (action === 'todo') return mutate(() => request(`/api/todos/${control.dataset.id}`, { method: 'PATCH', body: JSON.stringify({ status: control.dataset.status }) }), 'Todo aktualisiert.');
+  if (action === 'submit') return mutate(() => request(`/api/tickets/${url(ticket)}/submit`, { method: 'POST', body: '{}' }), 'Zur menschlichen Freigabe vorgelegt.');
+  if (action === 'approve') return mutate(() => request(`/api/tickets/${url(ticket)}/approve`, { method: 'POST', body: '{}' }), 'Freigegeben. Der Versand bleibt ein eigener Schritt.');
+  if (action === 'verify') return mutate(async () => { state.verification = await request('/api/workshop/verify'); }, 'Startbereitschaft geprüft.');
+  if (action === 'verify-external') { if (window.confirm('Darf die konfigurierte AgentMail-Inbox jetzt extern geprüft werden?'))
+    return mutate(async () => { state.verification = await request('/api/workshop/verify?external=true'); }, 'Inbox geprüft.'); }
+});
+
+app.addEventListener('submit', event => {
+  const form = event.target.closest('[data-form]');
+  if (!form) return;
+  event.preventDefault();
+  const values = new FormData(form);
+  const ticket = state.ticket?.ticketNumber;
+  if (form.dataset.form === 'todo') return mutate(() => request('/api/todos', { method: 'POST',
+    body: JSON.stringify({ title: values.get('title'), ticketNumber: values.get('ticketNumber') || null }) }), 'Todo angelegt.');
+  if (form.dataset.form === 'draft') return mutate(() => request(`/api/tickets/${url(ticket)}/draft`, { method: 'PUT',
+    body: JSON.stringify({ body: values.get('body') }) }), 'Entwurf gespeichert.');
+  if (form.dataset.form === 'classify') {
+    const productLine = values.get('productLine');
+    const path = stage() >= 11 ? 'route' : 'classify';
+    const payload = stage() >= 11
+      ? { route: productLine === 'life' ? 'life_mandatory_review' : 'liability_intervention_window', category: state.ticket.category === 'unknown' ? 'general_question' : state.ticket.category, summary: state.ticket.summary || state.ticket.subject, confidence: 1 }
+      : { productLine, category: state.ticket.category === 'unknown' ? 'general_question' : state.ticket.category, summary: state.ticket.summary || state.ticket.subject };
+    return mutate(() => request(`/api/tickets/${url(ticket)}/${path}`, { method: 'POST', body: JSON.stringify(payload) }), 'Sparte zugeordnet.');
+  }
+  if (form.dataset.form === 'confirm') {
+    const action = state.dialog;
+    const reason = String(values.get('reason') || '');
+    if (action === 'send') return mutate(() => request(`/api/tickets/${url(ticket)}/send`, { method: 'POST', body: '{}' }), 'Antwort versendet.');
+    if (action === 'reject') return mutate(() => request(`/api/tickets/${url(ticket)}/reject`, { method: 'POST', body: JSON.stringify({ note: reason }) }), 'Freigabe abgelehnt.');
+    if (action === 'remove') return mutate(() => request(`/api/tickets/${url(ticket)}/schedule`, { method: 'DELETE', body: JSON.stringify({ reason }) }), 'Aus der Queue genommen.');
+    if (action === 'schedule') return mutate(() => request(`/api/tickets/${url(ticket)}/submit`, { method: 'POST', body: JSON.stringify({ delayHours: 24 }) }), 'Für das Eingriffsfenster eingeplant.');
+    if (action === 'clock') return mutate(() => request('/api/workshop/clock/advance', { method: 'POST', body: JSON.stringify({ hours: 24, confirmAdvance: true }) }), 'Workshop-Zeit vorgespult. Audit prüfen.');
+  }
+});
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && state.dialog) { state.dialog = null; render(); }
+});
+
+refresh();
+window.setInterval(() => refresh({ quiet: true }), 10000);
+window.setInterval(updateCountdowns, 1000);

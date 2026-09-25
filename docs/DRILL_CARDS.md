@@ -303,11 +303,12 @@ Quelle, Kontrollgrenze und Unsicherheit müssen zusammenpassen.
 **45 Minuten:** 5′ Zahlen und Leitfrage · 20′ mit Claude Folien/Grafik bauen ·
 10′ Empfehlung und Grenzen formulieren · 5′ lokal prüfen · 5′ Kurzvortrag.
 
-**Preflight:** Bitte Claude: „Plane den offiziellen Checkpoint für Drill 12,
-zeige mir insbesondere, welche Daten übernommen werden, und frage mich vor
-dem Laden.“ Lade ihn aus dem **Drill-11-Arbeitsordner** nach Bestätigung. Der
-neue Worktree hat eine frische Datenbank, übernimmt aber einen lokalen,
-aggregierten Zählwert-Schnappschuss aus dem bisherigen Drill. Namen,
+**Preflight:** Bitte Claude: „Zeig mir beide Wege zum Checkpoint für Drill 12,
+plane erst nach meiner Wahl und frage vor dem Laden noch einmal.“ Lade ihn
+aus dem **Drill-11-Arbeitsordner** nach Bestätigung. Der neue Worktree übernimmt
+einen lokalen, aggregierten Zählwert-Schnappschuss aus dem bisherigen Drill;
+im offiziellen Modus beginnt die Fall-Datenbank frisch, beim Mitnehmen bleibt
+die bisherige Fallarbeit als separate Kopie erhalten. Namen,
 Mailtexte und Schlüssel gehören nicht hinein. Auto-Versand ist hier aus.
 Starte App und Claude im neuen Ordner, dann prüfe:
 
@@ -344,30 +345,36 @@ Referenzgrafik und Kontrollereignisse bleiben als Gerüst verfügbar.
 
 ## Offizieller Übergang und Rettung – immer ohne Verlust des eigenen Stands
 
-Für den **normalen Übergang** zum nächsten Drill und für „Ich hänge fest,
-bitte offiziellen Stand laden“ gilt derselbe sichere Ablauf. Er erzeugt
-einen **neuen** Git-Worktree **auf einem eigenen Branch** aus dem offiziellen
-Tag mit frischer lokaler SQLite-Datenbank. Beim Übergang zu Drill 12 wird
-zusätzlich ein **aggregierter Snapshot** aus dem alten Drill-11-Ordner
-übernommen. Dein bisheriger Ordner, Branch, uncommittierte Dateien und
-alte Datenbank bleiben unverändert. Fortschritt im alten Ordner wird nicht
-automatisch in den neuen übernommen; erzähle Claude, was du weiterverwenden
-möchtest. Alte Inbox-Nachrichten sind extern weiter vorhanden und können im
-neuen Worktree erneut importiert werden; bearbeite pro Drill nur die neu
-angekündigten Fälle. Offizielle Tags sind Kurs-Referenzen, nicht dein
-persönlicher Commit.
+Für den **normalen Übergang** und für „Ich hänge fest“ wählst du vor dem Plan:
+
+| Modus | Im neuen Worktree | Wann sinnvoll |
+| --- | --- | --- |
+| **Eigenen Stand mitnehmen** (`continue`) | Dein Code inklusive uncommittierter Änderungen und eine Kopie deiner bisherigen Fälle | Dein eigener Bau funktioniert und soll weiterwachsen. |
+| **Frischen offiziellen Stand laden** (`official`) | Offizieller Code, frische Fall-Datenbank | Du möchtest die Referenz oder brauchst einen Rettungsstand. |
+
+Beide Modi erzeugen einen **neuen** Git-Worktree auf eigenem Branch. Dein
+bisheriger Ordner, Branch, Dateien und Datenbank bleiben unverändert; nichts
+wird überschrieben. Beim Übergang zu Drill 12 kommt zusätzlich in beiden Modi
+ein **aggregierter Snapshot** aus Drill 11 hinzu. Im Mitnehmen-Modus kann
+dein Code Anpassungen an die neue Stufe brauchen: Diff und Tests prüfen.
+Alte Inbox-Nachrichten sind extern weiter vorhanden; im offiziellen Modus
+können sie neu importiert werden. Bearbeite pro Drill nur die angekündigten
+Fälle. Offizielle Tags sind Kurs-Referenzen, nicht dein persönlicher Commit.
 
 ```bash
 # Beispiel für den Übergang nach Drill 8; entsprechend 10, 11 oder 12 einsetzen.
 uv run pfefferminzia checkpoint plan drill-09-start
+# Oder, um eigenen Code und Fälle mitzunehmen:
+uv run pfefferminzia checkpoint plan drill-09-start --mode continue
 # Plan lesen: Quelle, Zielordner und eigene Änderungen. Erst dann entscheiden.
 uv run pfefferminzia checkpoint apply TOKEN --confirm-checkpoint-load
 ```
 
 Ersetze `TOKEN` nur durch `confirmationToken` aus **deinem** Plan; der Plan
-verfällt nach 15 Minuten. Oder bitte Claude: „Plane den offiziellen
-Checkpoint für Drill 9, zeige mir alles und frage mich vor dem Laden noch
-einmal.“ Claude darf `apply_checkpoint_load` erst nach deinem klaren Ja
+verfällt nach 15 Minuten. Oder bitte Claude: „Ich will Drill 9 laden. Frag
+mich zuerst, ob ich meinen Stand mitnehmen oder frisch offiziell starten
+will; zeig mir danach den Plan und frage vor dem Laden erneut.“ Claude darf
+`apply_checkpoint_load` erst nach deinem klaren Ja
 aufrufen. Nach `apply` den zurückgegebenen `worktreePath` öffnen. **Alten
 Webserver stoppen**, im neuen Ordner Terminal A mit
 `uv run pfefferminzia serve` starten und Terminal B mit `claude` **neu**

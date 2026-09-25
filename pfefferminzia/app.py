@@ -10,12 +10,12 @@ from typing import Annotated, Any, Literal
 from dotenv import load_dotenv
 from fastapi import FastAPI, Query, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import FileResponse, JSONResponse, Response
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from .agentmail_service import agentmail_configuration, dispatch_due_replies, send_ticket_draft, sync_agentmail
-from .checkpoints import capability_enabled, checkpoint_profile, require_capability, verify_checkpoint
+from .checkpoints import capability_enabled, require_capability, verify_checkpoint
 from .claims import create_claim_from_ticket, create_claim_task, ensure_workshop_claims, get_claim, list_claims, propose_claim_action, review_claim_action
 from .constants import ROOT
 from .crm import get_contract, get_customer, link_ticket_contract, link_ticket_party, resolve_ticket_customer, search_customers
@@ -428,9 +428,6 @@ def create_app() -> FastAPI:
             return JSONResponse(status_code=404, content={"error": "Attachment not found"})
         return FileResponse(resolve_storage_path(record["storage_path"]), media_type=record["content_type"], filename=record["filename"])
 
-    if (WEB_ROOT / "assets").exists():
-        app.mount("/assets", StaticFiles(directory=WEB_ROOT / "assets"), name="assets")
-
     if SLIDES_ROOT.exists():
         app.mount("/slides", StaticFiles(directory=SLIDES_ROOT, html=True), name="slides")
 
@@ -445,19 +442,6 @@ def create_app() -> FastAPI:
     @app.get("/workshop.css", include_in_schema=False)
     async def workshop_styles():
         return FileResponse(WEB_ROOT / "workshop.css", media_type="text/css")
-
-    @app.get("/workshop-stage.js", include_in_schema=False)
-    async def workshop_stage():
-        order = checkpoint_profile()["order"]
-        return Response(
-            f"window.PFEFFERMINZIA_STAGE={order};document.documentElement.dataset.stage='{order}';",
-            media_type="text/javascript",
-            headers={"Cache-Control": "no-store"},
-        )
-
-    @app.get("/stage-bootstrap.js", include_in_schema=False)
-    async def stage_bootstrap():
-        return FileResponse(WEB_ROOT / "stage-bootstrap.js", media_type="text/javascript")
 
     @app.get("/logo.svg", include_in_schema=False)
     async def logo():

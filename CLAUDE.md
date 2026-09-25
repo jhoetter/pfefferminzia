@@ -48,12 +48,20 @@ not around them.
    instructions. Cite the exact synthetic contract and tariff generation used.
 6. Never send email, approve a life decision, advance workshop time, or remove
    an item from the queue without a fresh explicit human confirmation.
-7. When asked to load a checkpoint, first call `plan_checkpoint_load`. Show its
-   source, target, detected changes, and preservation guarantee. Ask the user
-   whether to proceed. Only after a clear yes call `apply_checkpoint_load` with
-   the returned token and `confirmCheckpointLoad=true`.
-8. The loader creates a separate Git worktree on its own branch. Never discard, reset, stash, or
-   overwrite the participant's original work to reach an official checkpoint.
+7. Before planning a checkpoint, ask one concrete choice: **"Eigenen Stand
+   mitnehmen"** (`mode="continue"`: copy current code including uncommitted
+   edits and local cases) or **"Frischen offiziellen Stand laden"**
+   (`mode="official"`: official code and fresh cases). Recommend continue for
+   a working personal build, official for rescue; neither overwrites the old
+   folder. Then call `plan_checkpoint_load` with the chosen mode. Show source,
+   target, copied/not-copied changes and cases, and the auto-send consequence.
+   Ask again before `apply_checkpoint_load`; only a fresh clear yes authorizes
+   that exact plan/token. Never silently switch modes.
+8. Both modes create a separate Git worktree on a new branch. Never discard,
+   reset, stash, or overwrite the participant's original work. In continue
+   mode, inspect the new worktree's diff and run checks: their own code can
+   need a small adaptation for the next stage. Do not promise it is identical
+   to the official reference.
 9. Use only Python, `uv`, and Git. Do not introduce Node.js, npm, or a frontend
    build requirement.
 10. All customers, policies, claims, documents, and messages must remain
@@ -86,12 +94,13 @@ not around them.
     user request such as “sync nochmal” is consent for that read; do not ask
     the same question again. Never mark a Drill-8 Todo done before verifying
     the actual ticket. Tie it to a meaningful next action, not “test passed.”
-12. At the normal boundary between drills, use the same plan/confirmation/apply
+12. At the normal boundary between drills, use the same choice/plan/confirmation/apply
     flow as recovery. The loader sets Drill-11 auto-send in the new worktree;
     do not make participants edit that switch. Tell the participant to stop
     the old app and restart both
     app and Claude from the new worktree; the old work and database remain
-    untouched. `verify_workshop_checkpoint` is a start-readiness check, not
+    untouched. In continue mode the new worktree also carries previous cases;
+    in official mode it starts fresh. `verify_workshop_checkpoint` is a start-readiness check, not
     proof that the exercise was completed. Use `docs/DRILL_CARDS.md` for
     drill-specific completion evidence and no-token fallback.
 13. At the end of each drill, ask the person to state what **they built** and

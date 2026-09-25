@@ -1,4 +1,4 @@
-from pfefferminzia.checkpoints import activate_checkpoint, checkpoint_profile, drill_guide, verify_checkpoint
+from pfefferminzia.checkpoints import activate_checkpoint, adopt_checkpoint, checkpoint_profile, drill_guide, verify_checkpoint
 from pfefferminzia.workshop import ensure_workshop_fixtures
 
 
@@ -25,6 +25,17 @@ def test_drill_eight_guide_starts_with_a_real_inbox_mission(monkeypatch, full_db
     assert "zweimal synchronisiert" in guide["buildTask"]
     assert "guided" in guide["learningPath"]
     assert sum(guide["timeboxMinutes"].values()) == 60
+
+
+def test_adopt_checkpoint_keeps_cases_and_clock(monkeypatch, full_db):
+    monkeypatch.delenv("WORKSHOP_CHECKPOINT", raising=False)
+    ensure_workshop_fixtures(full_db)
+    full_db.execute("UPDATE workshop_state SET clock_offset_seconds = 3600 WHERE id = 1")
+    before = full_db.execute("SELECT COUNT(*) FROM tickets").fetchone()[0]
+    profile = adopt_checkpoint("drill-10-start", full_db)
+    assert profile["name"] == "drill-10-start"
+    assert full_db.execute("SELECT clock_offset_seconds FROM workshop_state WHERE id = 1").fetchone()[0] == 3600
+    assert full_db.execute("SELECT COUNT(*) FROM tickets").fetchone()[0] == before
 
 
 def test_each_drill_guides_separate_claude_questions_and_human_stops(monkeypatch, full_db):
