@@ -93,6 +93,7 @@ def test_realistic_drills_8_to_11_without_network(monkeypatch, tmp_path, request
         number = find(client, "Drill 8 onboarding")
         status = client.get("/api/workshop").json()
         assert status["drillBrief"]["timeboxMinutes"]["selbstBauen"] == 25
+        assert len(status["drillBrief"]["dialogueSteps"]) == 4
         todo = client.post("/api/todos", json={"title": "Absender und Anliegen prüfen", "ticketNumber": number})
         assert todo.status_code == 201
         assert todo.json()["ticketNumber"] == number

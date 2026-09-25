@@ -91,16 +91,15 @@ Zeitpunkt und neue Ticket-ID prüfen, bei Bedarf nach kurzer Wartezeit erneut.
 Ein Sync mit „0 neu“ beweist nicht, dass die Mail nie ankommt. Ein grüner
 Preflight allein ist noch kein Abschluss.
 
-**Dein Auftrag:** Bitte Claude: „Finde die gerade eingegangene Nachricht in
-MCP und Cockpit. Zeig mir dieselbe Ticket-ID und hilf mir, den nächsten
-sinnvollen Prüfschritt zu formulieren — noch keine Lösung vorwegnehmen.“ Lege
-ein **ticketbezogenes** Todo an, z. B. „PF-…: Absender und Anliegen prüfen“.
-Schließe es erst nach dem Lesen der Nachricht ab. Dann vibe-code mit Claude
-eine kleine Änderung: Beim ersten Import eines Tickets automatisch genau ein
-verknüpftes „Eingang prüfen“-Todo erzeugen, ohne Duplikat beim zweiten Sync.
-Dein zuvor manuell angelegtes Todo ist davon getrennt.
-Einstieg: `pfefferminzia/agentmail_service.py`, `pfefferminzia/todos.py` und
-ein kleiner Test. Danach `uv run pytest -q`.
+**Dialog in vier Etappen:** Schreibe nicht alle Prompts auf einmal. Nach jeder
+Antwort prüfst oder entscheidest **du** etwas, bevor Claude weitermacht.
+
+| Etappe | Frage an Claude | Dein Stopp |
+| --- | --- | --- |
+| 1 · Start klären | „Was fehlt für Drill 8 noch? Hilf mir bei App, MCP und meiner Inbox – nur der nächste Schritt.“ | Eigene Workshop-Werte eintragen; externen Inbox-Test gesondert erlauben. |
+| 2 · Eingang verfolgen | „Ich habe eine Testmail geschickt. Synchronisiere und zeig mir Betreff, Absender und dieselbe Ticket-ID in MCP und Cockpit.“ | **Vor** der Frage die Mail selbst senden; danach lesen, ein **ticketbezogenes** Todo wie „PF-…: Absender und Anliegen prüfen“ anlegen und erst nach Prüfung schließen. |
+| 3 · Selbst bauen | „Wo wird ein neues Ticket importiert? Gib mir erst einen Test für genau ein automatisches Prüfen-Todo pro Ticket.“ | Mit Claude in `pfefferminzia/agentmail_service.py` und `pfefferminzia/todos.py` ändern. Dein manuelles Todo bleibt separat. |
+| 4 · Beleg zeigen | „Prüfe zwei Syncs und den Todo-Status. Was ist belegt, was nicht?“ | `uv run pytest -q` ausführen, Ticket-ID in beiden Oberflächen und grünen Test zeigen. Nichts versenden. |
 
 **Abschlussnachweis:** Die neue Mail hat dieselbe Ticket-ID in Cockpit und
 MCP. Ein konkretes ticketbezogenes Todo ist nach Prüfung abgeschlossen. Deine
@@ -146,15 +145,15 @@ uv run pfefferminzia sync
 Lehrperson schickt die fiktive Lebensanfrage. Wähle **dieses neue
 AgentMail-Ticket**, nicht einen nicht versendbaren Demofall.
 
-**Dein Auftrag:** Bitte Claude zunächst um Kundenvorschläge und den passenden
-Vertrag; bestätige die Zuordnung. Lass die **exakte** Tarifgeneration und den
-Beleg lesen, dann einen begründeten Antwortentwurf speichern. Bearbeite den
-Wortlaut selbst im Cockpit. Prüfe Empfänger, Text und Quellen und bestätige
-den Versand erst dann. Vibe-code mit Claude eine kleine Belegkontrolle:
-Ergänze einen Test, der falsche oder fehlende Tarifgeneration im Antwortpfad
-sichtbar macht, und verbessere eine Fehlermeldung oder Schutzregel, falls sie
-fehlt. Orientierung: `tests/test_workflow.py`, `pfefferminzia/store.py`.
-Danach `uv run pytest -q`.
+**Dialog in vier Etappen:** Geh nach jeder Antwort zurück zum Fall oder Code;
+der Entwurf ist noch kein Auftrag zum Versand.
+
+| Etappe | Frage an Claude | Dein Stopp |
+| --- | --- | --- |
+| 1 · Quelle finden | „Welche Person, Police und Tarifgeneration passen zu dieser neuen Lebensanfrage? Zeig mir die Belege; noch keinen Entwurf.“ | Zuordnung und **exakte** Tarifgeneration selbst bestätigen. |
+| 2 · Entwurf prüfen | „Erstelle jetzt einen begründeten Antwortentwurf mit Fundstellen. Nicht versenden.“ | Text und Empfänger im Cockpit selbst prüfen, ändern und Versand bewusst bestätigen. |
+| 3 · Selbst bauen | „Wo kann eine falsche oder fehlende Tarifgeneration auffallen? Hilf mir zuerst mit einem fehlschlagenden Test.“ | Mit Claude Test und kleine Fehlermeldung/Schutzregel in `tests/test_workflow.py` und `pfefferminzia/store.py` ändern. |
+| 4 · Beleg zeigen | „Zeig mir Quelle, menschliche Textänderung, Versandereignis und Testergebnis. Was fehlt?“ | `uv run pytest -q` und Activity Log prüfen; keinen zweiten Versand auslösen. |
 
 **Abschlussnachweis:** Ticket mit bestätigter Person, Vertrag und
 Tarifgeneration, gespeicherter Entwurf, nachvollziehbare menschliche Änderung
@@ -200,16 +199,15 @@ uv run pfefferminzia sync
 Das grüne `verify` bedeutet nur, dass der Review-Pfad bereit ist. Die
 Lehrperson schickt zwei fiktive Lebensfälle.
 
-**Dein Auftrag:** Lass Claude für beide Fälle Vertrag, Tarifbeleg,
-Entscheidungsbegründung und Antwort vollständig vorbereiten und zur Prüfung
-einreichen. Prüfe einen Vorschlag und gib ihn ausdrücklich frei; lehne den
-anderen mit konkreter Begründung ab und lass ihn überarbeiten. Eine
-Textänderung muss die frühere Freigabe aufheben. Senden ist ein eigener,
-ausdrücklich bestätigter Schritt. Vibe-code mit Claude eine kleine
-Review-Verbesserung: Zeige den Ablehnungsgrund oder den Verlust einer
-Freigabe im Cockpit deutlicher und sichere den Zustand mit einem Test ab.
-Orientierung: `web/workshop.js`, `tests/test_workshop_end_to_end.py`;
-kein Node-Build nötig. Danach `uv run pytest -q`.
+**Dialog in vier Etappen:** Die Review-Vorlage ist eine Einladung zur
+Entscheidung, keine vorweggenommene Freigabe.
+
+| Etappe | Frage an Claude | Dein Stopp |
+| --- | --- | --- |
+| 1 · Fälle vorbereiten | „Bereite zwei neue Lebensfälle mit Entscheidung, Belegen und Antwort nur bis zur Review-Vorlage vor. Nichts freigeben oder senden.“ | Beide Vorlagen und Fundstellen selbst prüfen. |
+| 2 · Mensch entscheidet | „Zeig mir beide Review-Optionen und ihre Folgen. Führe noch keine Entscheidung aus.“ | Einen Fall ausdrücklich freigeben, den anderen begründet ablehnen und überarbeiten lassen. Versand nochmals separat bestätigen. |
+| 3 · Selbst bauen | „Wo kann ich Ablehnungsgrund oder erloschene Freigabe klarer zeigen? Hilf mir zuerst mit einem Test.“ | Kleine Verbesserung in `web/workshop.js` oder `tests/test_workshop_end_to_end.py` mit Claude umsetzen; kein Node-Build nötig. |
+| 4 · Beleg zeigen | „Prüfe im Audit Freigabe und Ablehnung; was passiert, wenn ich den genehmigten Text ändere?“ | Freigabeverlust nach Edit und `uv run pytest -q` prüfen; niemals alte Freigabe wiederverwenden. |
 
 **Abschlussnachweis:** Zwei Review-Fälle, eine Freigabe und eine begründete
 Ablehnung im Activity Log; der abgelehnte Fall ist wieder in Bearbeitung.
@@ -255,16 +253,15 @@ uv run pfefferminzia sync
 `verify` prüft die Bereitschaft der Queue und des Schalters, noch nicht den
 späteren Versand. Die Lehrperson schickt drei fiktive Haftpflichtfälle.
 
-**Dein Auftrag:** Lass Claude die neuen Tickets nachvollziehbar routen und
-für jedes eine belegte Antwort vorbereiten. Reiche alle drei für das
-24-Stunden-Fenster ein. Prüfe den Countdown: Fall A bleibt unverändert; Fall
-B wird im Fenster bearbeitet (damit entfällt sein alter Termin); Fall C wird
-mit Begründung aus der Queue genommen. Erst wenn das sichtbar ist, den Sprung
-der **lokalen Workshop-Uhr** um 24 Stunden ausdrücklich bestätigen. Vibe-code
-mit Claude eine kleine Queue-Verbesserung: Zeige einen abgebrochenen Termin
-deutlicher an oder teste, dass Edit und erneuter Versandlauf kein Duplikat
-erzeugen. Orientierung: `tests/test_workshop_end_to_end.py`,
-`pfefferminzia/store.py`, `web/workshop.js`. Danach `uv run pytest -q`.
+**Dialog in vier Etappen:** „Queue sichtbar“ ist noch kein Einverständnis
+zum Zeitsprung oder Versand.
+
+| Etappe | Frage an Claude | Dein Stopp |
+| --- | --- | --- |
+| 1 · Routing prüfen | „Ordne die drei neuen Fälle nachvollziehbar zu. Welche sind Haftpflicht, und welche Empfänger sind erlaubt? Noch nichts einplanen.“ | Sparte, Quellen und erlaubte Empfänger selbst prüfen. |
+| 2 · Queue erleben | „Bereite belegte Antworten vor und zeig mir die +24-Stunden-Queue. Die Uhr nicht vorspulen.“ | Countdown prüfen: A bleibt geplant, B wird bearbeitet, C begründet entfernt. |
+| 3 · Selbst bauen | „Wie machen wir Stopp oder Duplikatschutz in der Queue klarer? Zeig mir zuerst einen kleinen Test.“ | Kleine Änderung in `tests/test_workshop_end_to_end.py`, `pfefferminzia/store.py` oder `web/workshop.js` mit Claude umsetzen. |
+| 4 · Wirkung belegen | „Zeig mir vor dem Zeitsprung, was automatisch rausgehen würde. Spule erst nach meiner ausdrücklichen Bestätigung vor.“ | **Lokale Workshop-Uhr** bewusst vorspulen; genau einen Auto-Versand, Edit, Stopp, Audit und `uv run pytest -q` prüfen. |
 
 **Abschlussnachweis:** Genau ein unverändert geplanter Fall wurde automatisch
 an die freigegebene Workshop-Adresse versendet. Der geänderte Fall zeigt

@@ -152,6 +152,11 @@ after delivery. Never suggest the allowlist blocked incoming mail.
 Checkpoint evidence: health is green, external inbox verification succeeds,
 one incoming ticket appears, and the todo lifecycle is visible in the cockpit.
 
+For every drill, present the four `dialogueSteps` from `get_drill_guide` as
+separate exchanges. The `askClaude` text is an example question, not a
+one-shot agent instruction. Stop at each `yourMove`: participants inspect the
+case, decide, edit code or verify evidence themselves before proceeding.
+
 ### Drill 9 — human works, agent prepares
 
 Core path: receive the prepared life request; resolve person and policy; inspect

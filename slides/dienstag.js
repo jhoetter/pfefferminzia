@@ -11,6 +11,7 @@
   const card = (title, content, extra = '') => `<div class="day-card ${extra}"><h3>${title}</h3>${content}</div>`;
   const grid = (items, columns = 'two') => `<div class="day-grid ${columns}">${items.join('')}</div>`;
   const prompt = text => `<div class="day-prompt">${text}</div>`;
+  const dialogueStep = (number, label, ask, human) => `<div class="day-dialogue-step"><strong>${number} · ${label}</strong><p>Claude: „${ask}“</p><small>DEIN SCHRITT: ${human}</small></div>`;
   const code = text => `<div class="day-command">${text}</div>`;
   const stage = (number, headline, summary, tags) => `<div class="day-big-num">${number}</div><div class="day-stage-title">DRILL ${number}</div><div class="day-stage-summary"><strong>${headline}</strong><br>${summary}</div><div class="day-stage-bottom">${tags.map(x => pill(x, 'mint')).join('')}</div>`;
 
@@ -113,13 +114,13 @@
       notes: 'ZEIT: 3 Minuten. SAGEN: Diese Folie ist eine schematische App-Ansicht, keine Live-Verbindung. Danach zur echten Instanz wechseln. Die genaue Kundenzuordnung ist erst Drill 9.'
     },
     {
-      id: 'Drill8Auftrag', type: 'Drill', eyebrow: 'Drill 8 · Arbeitsauftrag', title: 'Eine Mail. Ein Ticket. Eine eigene Verbesserung.',
-      subtitle: 'Lernziel: dieselbe Nachricht an der Grenze zwischen AgentMail, Cockpit und MCP wiederfinden.', study: true,
+      id: 'Drill8Auftrag', type: 'Drill', eyebrow: 'Drill 8 · Dialog statt Zauberprompt', title: 'Fragen. Selber prüfen. Dann weiterbauen.',
+      subtitle: 'Eine Nachricht wandert durch AgentMail, Cockpit und MCP – du hältst nach jeder Etappe kurz an.', study: true,
       body: grid([
-        card('Mission · 30′', `<p>Sende eine Testmail an deine vollständige Inbox-Adresse. Synchronisiere und finde <strong>dieselbe Ticket-ID</strong> im Cockpit und per MCP.</p><p>Lege erst nach dem Lesen ein konkretes, ticketbezogenes Todo an.</p>`, 'mint-card'),
-        card('Mini-Build · 25′', `<p>Verbessere mit Claude den Import: pro neuem Ticket genau ein verknüpftes Prüfen-Todo, auch nach erneutem Sync.</p><p>Teste zweimaliges Synchronisieren und zeige den grünen Test.</p>${pill('Nachweis + Rückblick · 20′', 'blue')}`)
+        card('1–2 · Eingang', `${dialogueStep(1, 'Start', 'Was fehlt für App, MCP und Inbox?', 'Eigene Werte eintragen; externen Test erlauben.')}${dialogueStep(2, 'Mail', 'Zeig mir dieselbe Ticket-ID in MCP und Cockpit.', 'Vorher Testmail senden; danach Ticket-Todo prüfen.')}`, 'mint-card'),
+        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Wo entsteht ein Ticket? Gib mir zuerst einen Test.', 'Automatisches Prüfen-Todo selbst mit Claude coden.')}${dialogueStep(4, 'Belegen', 'Prüfe zwei Syncs und den Todo-Status.', 'Gleiche Ticket-ID und grünen Test zeigen.')}`)
       ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: Keine echten Kundendaten. Eine persönliche Inbox, kein geteilter Schlüssel. Den temporären inboxgebundenen Workshop-Key darf Claude im individuellen Workshop-Chat erhalten und lokal eintragen; für echte Geheimnisse wäre das tabu. Die Outbound-Allowlist ist kein Eingangsfilter. Ein grüner Preflight ist nur Startbereitschaft. Nach dem Eintrag Status erneut prüfen, ohne MCP oder App zu killen. 20 Minuten Setup/Mail, 10 Minuten Ticket erkunden, 25 Minuten selbst bauen, 15 Minuten nachweisen, 5 Minuten reflektieren.'
+      notes: 'ZEIT: 2 Minuten. SAGEN: Die vier kurzen Prompts sind Gesprächsetappen, nicht ein Block zum Kopieren. Nach jeder Antwort handelt oder prüft die Person selbst. Keine echten Kundendaten. Eine persönliche Inbox, kein geteilter Schlüssel. Den temporären inboxgebundenen Workshop-Key darf Claude im individuellen Workshop-Chat erhalten und lokal eintragen; für echte Geheimnisse wäre das tabu. Die Outbound-Allowlist ist kein Eingangsfilter. Ein grüner Preflight ist nur Startbereitschaft. 20 Minuten Setup/Mail, 10 Minuten Ticket erkunden, 25 Minuten selbst bauen, 15 Minuten nachweisen, 5 Minuten reflektieren.'
     },
     {
       id: 'Drill9Start', type: 'Kapitel', eyebrow: '11:30–12:45 · Meilenstein 2', title: 'Der Mensch bearbeitet', study: true,
@@ -136,13 +137,13 @@
       notes: 'ZEIT: 3 Minuten. SAGEN: Die Knöpfe auf der Folie sind absichtlich deaktiviert; die Übung findet in der App statt. Betonen: Nicht die erstbeste Tarif-PDF, sondern die zum Vertrag passende Generation.'
     },
     {
-      id: 'Drill9Auftrag', type: 'Drill', eyebrow: 'Drill 9 · Arbeitsauftrag', title: 'Sie redigieren – und nur Sie lösen den Versand aus.',
-      subtitle: 'Lernziel: Kundenaussage und belegte Tarifquelle trennen; Textänderung und Versand bleiben bei dir.', study: true,
+      id: 'Drill9Auftrag', type: 'Drill', eyebrow: 'Drill 9 · Dialog statt Zauberprompt', title: 'Erst Quelle. Dann Entwurf. Dann du.',
+      subtitle: 'Der Mensch prüft Person und Tarif, redigiert und löst den Versand bewusst selbst aus.', study: true,
       body: grid([
-        card('Mission', `${prompt('„Ordne diese Lebensanfrage der richtigen Person und Police zu. Prüfe die gültige Tarifgeneration und erstelle einen begründeten Antwortentwurf mit Belegen. Versende nichts.“')}<p class="day-small">Den Entwurf selbst ändern und bewusst senden.</p>`, 'mint-card'),
-        card('Mini-Build + Beleg', `<p>Teste eine falsche oder fehlende Tarifgeneration und verbessere Fehlermeldung oder Schutzregel.</p><p>Danach: menschliche Änderung und Versand im Activity Log zeigen.</p>${pill('20′ eigener Code', 'blue')}`)
+        card('1–2 · Leben-Fall', `${dialogueStep(1, 'Quelle', 'Welche Person, Police und Tarifgeneration passen?', 'Zuordnung und Fundstelle selbst bestätigen.')}${dialogueStep(2, 'Entwurf', 'Formuliere mit Beleg. Nicht versenden.', 'Selbst editieren, Empfänger prüfen und senden.')}`, 'mint-card'),
+        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Wo fällt eine falsche Tarifgeneration auf?', 'Erst Test, dann kleine Schutzregel ergänzen.')}${dialogueStep(4, 'Belegen', 'Zeig mir Quelle, Edit, Versand und Test.', 'Audit und grünen Test selbst kontrollieren.')}`)
       ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: Hier endet Augmentation im operativen Prozess. Challenge Card für Schnelle: ähnliche Namen oder veraltete Tarifgeneration. Keine Freigabe-Queue aus Drill 10 vorwegnehmen.'
+      notes: 'ZEIT: 2 Minuten. SAGEN: Nicht alle Fragen zugleich eingeben. Die Person bestätigt erst Quelle und Identität, bevor der Entwurf beginnt. Hier endet Augmentation im operativen Prozess. Challenge Card für Schnelle: ähnliche Namen oder veraltete Tarifgeneration. Keine Freigabe-Queue aus Drill 10 vorwegnehmen.'
     },
     {
       id: 'Drill10Start', type: 'Kapitel', eyebrow: '13:45–15:00 · Meilenstein 3', title: 'Der Mensch gibt frei', study: true,
@@ -157,13 +158,13 @@
       notes: 'ZEIT: 4 Minuten. SAGEN: Die Foliendemo simuliert die Zustandslogik. Freigabe ist explizit; Ablehnung führt zurück in den Agenten-Loop; Bearbeitung widerruft die frühere Freigabe. In der echten App sind alle drei Wege im Audit sichtbar.'
     },
     {
-      id: 'Drill10Auftrag', type: 'Drill', eyebrow: 'Drill 10 · Arbeitsauftrag', title: 'Eine Freigabe und eine Ablehnung beweisen den Workflow.',
-      subtitle: 'Lernziel: Agentenarbeit kann vollständig sein; externe Wirkung braucht eine aktuelle menschliche Freigabe.', study: true,
+      id: 'Drill10Auftrag', type: 'Drill', eyebrow: 'Drill 10 · Dialog statt Zauberprompt', title: 'Claude bereitet vor. Du entscheidest.',
+      subtitle: 'Eine aktuelle menschliche Freigabe ist die Stopplinie vor jeder externen Wirkung.', study: true,
       body: grid([
-        card('Mission', `${prompt('„Bearbeite zwei Lebensfälle vollständig bis zur Review-Notification. Lege Entscheidung, Belege und Antwort vor. Löse keine externe Wirkung ohne meine ausdrückliche Freigabe aus.“')}<p class="day-small">Einen freigeben, einen begründet ablehnen.</p>`, 'mint-card'),
-        card('Mini-Build + Beleg', `<p>Zeige Ablehnungsgrund oder erloschene Freigabe im Cockpit deutlicher und teste den Zustand.</p><p>Nach einer Textänderung darf die alte Freigabe nicht gelten.</p>${pill('25′ eigener Code', 'red')}`)
+        card('1–2 · Review', `${dialogueStep(1, 'Vorlage', 'Bereite zwei Fälle nur bis zur Review vor.', 'Belege selbst prüfen; nichts geht raus.')}${dialogueStep(2, 'Entscheidung', 'Zeig mir die Optionen, führe noch nichts aus.', 'Einen freigeben, einen begründet ablehnen.')}`, 'mint-card'),
+        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Wie zeigen wir Ablehnung oder Freigabeverlust klarer?', 'Kleine UI- oder Teständerung selbst umsetzen.')}${dialogueStep(4, 'Belegen', 'Was zeigt das Audit nach Edit und Ablehnung?', 'Alte Freigabe muss ungültig sein.')}`)
       ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: Nicht nur den Happy Path testen. Die Ablehnung muss dokumentiert sein und einen neuen Agenten-Loop auslösen. Challenge: Freigabe durch Änderung invalidieren.'
+      notes: 'ZEIT: 2 Minuten. SAGEN: Das sind vier Gesprächsetappen mit menschlichem Stopp dazwischen, kein einmaliger Auftrag. Nicht nur den Happy Path testen. Die Ablehnung muss dokumentiert sein und einen neuen Agenten-Loop auslösen. Versand bleibt eine eigene Bestätigung. Challenge: Freigabe durch Änderung invalidieren.'
     },
     {
       id: 'Drill11Start', type: 'Kapitel', eyebrow: '15:15–16:30 · Meilenstein 4', title: 'Das Eingriffsfenster', study: true,
@@ -181,13 +182,13 @@
       notes: 'ZEIT: 4 Minuten. SAGEN: Erst die drei Eingriffe vorführen: eine Nachricht laufen lassen, eine bearbeiten, eine entfernen. Danach Uhr vorspulen. Der Knopf auf der Folie sendet nicht; im Workshop muss die echte App mit freigegebenen synthetischen Empfängern getestet werden.'
     },
     {
-      id: 'Drill11Auftrag', type: 'Drill', eyebrow: 'Drill 11 · Arbeitsauftrag', title: 'Ein Auto-Versand, ein Edit und ein Stopp sind Pflicht.',
-      subtitle: 'Lernziel: Pflichtfreigabe mit dem automatischen Versand nach einer sichtbaren Eingriffsfrist vergleichen.', study: true,
+      id: 'Drill11Auftrag', type: 'Drill', eyebrow: 'Drill 11 · Dialog statt Zauberprompt', title: 'Die Queue ist sichtbar. Die Wirkung kommt später.',
+      subtitle: 'Du siehst den Countdown, greifst ein und bestätigst erst dann den Zeitsprung.', study: true,
       body: grid([
-        card('Mission', `${prompt('„Route drei fiktive Haftpflichtfälle. Bereite Antworten vor und plane sie sichtbar für +24 Stunden. Zeige mir, wie ich eine bearbeiten und eine aus der Queue nehmen kann.“')}<p class="day-small">Erst nach Eingriffen: Uhr mit Bestätigung vorspulen.</p>`, 'mint-card'),
-        card('Mini-Build + Beleg', `<p>Zeige einen Stopp deutlicher an oder teste, dass nach Edit und erneuter Prüfung kein Duplikat rausgeht.</p><p>Ein Auto-Versand, ein Edit und ein Stopp müssen im Audit stehen.</p>${pill('20′ eigener Code', 'red')}`)
+        card('1–2 · Eingriffsfenster', `${dialogueStep(1, 'Routing', 'Welche Fälle sind Haftpflicht? Noch nichts planen.', 'Sparte, Quellen und Empfänger prüfen.')}${dialogueStep(2, 'Queue', 'Zeig die +24h-Queue; Uhr nicht vorspulen.', 'Einen editieren, einen stoppen, einen belassen.')}`, 'mint-card'),
+        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Wie machen wir Stopp oder Duplikatschutz klarer?', 'Erst Test, dann kleine Änderung selbst coden.')}${dialogueStep(4, 'Wirkung', 'Was geht nach dem Zeitsprung wirklich raus?', 'Uhr ausdrücklich bestätigen; Audit prüfen.')}`)
       ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: Der offizielle Drill-11-Checkpoint aktiviert Auto-Send im neuen Worktree; niemand editiert dafür manuell .env. Auto-Send nur an freigegebene Workshop-Adressen. Den 24-Stunden-Sprung erst nach sichtbarer Queue und expliziter Bestätigung ausführen. Challenge: idempotentes Handling oder Timer-Reset nach Edit.'
+      notes: 'ZEIT: 2 Minuten. SAGEN: Jede Frage stoppt vor einer menschlichen Prüfung. Der offizielle Drill-11-Checkpoint aktiviert Auto-Send im neuen Worktree; niemand editiert dafür manuell .env. Auto-Send nur an freigegebene Workshop-Adressen. Den 24-Stunden-Sprung erst nach sichtbarer Queue und expliziter Bestätigung ausführen. Challenge: idempotentes Handling oder Timer-Reset nach Edit.'
     },
     {
       id: 'Checkpoints', type: 'Code', eyebrow: 'Sicheres Aufholen', title: 'Ein Checkpoint rettet den Tag, nicht auf Kosten Ihrer Arbeit.',

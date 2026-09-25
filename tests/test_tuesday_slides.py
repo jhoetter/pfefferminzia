@@ -35,6 +35,9 @@ def test_tuesday_deck_covers_all_four_milestones() -> None:
     assert len(ids) == len(set(ids))
     for milestone in ("Drill8Start", "Drill9Start", "Drill10Start", "Drill11Start"):
         assert milestone in ids
+    assert script.count("dialogueStep(") == 16
+    assert "DEIN SCHRITT" in script
+    assert "Dialog statt Zauberprompt" in script
     assert "keine echte Aktion" in script
     for deck in ("gesamt", "input", "drill-08", "drill-09", "drill-10", "drill-11", "abschluss", "agentisch"):
         assert f"{deck}:" in script or f"'{deck}':" in script

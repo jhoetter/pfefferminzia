@@ -135,6 +135,16 @@ body:has(aside.ticket-drawer.open) .workshop-launcher { display: none; }
 .workshop-card p.empty + p.empty { margin-top: 7px; }
 .workshop-card ol { margin: 0; padding-left: 20px; color: #56665d; font-size: 12px; }
 .workshop-card ol li + li { margin-top: 5px; }
+.workshop-dialogue { margin-top: 12px !important; padding-left: 27px !important; }
+.workshop-dialogue li { padding: 10px 0 10px 8px; border-top: 1px solid #e7ede8; }
+.workshop-dialogue li + li { margin-top: 0 !important; }
+.workshop-dialogue li::marker { color: #2d6a4a; font-weight: 800; }
+.workshop-dialogue li > strong { display: block; color: #243d2e; font-size: 13px; }
+.workshop-dialogue p { margin: 6px 0 0; font-size: 12px; line-height: 1.4; }
+.workshop-dialogue p span { display: block; margin-bottom: 2px; color: #4c6955; font-size: 10px; font-weight: 800; letter-spacing: .045em; text-transform: uppercase; }
+.workshop-dialogue .workshop-claude-prompt { padding: 8px 10px; border-left: 3px solid #3d8f66; background: #f1f8f2; }
+.workshop-dialogue .workshop-human-stop { color: #534627; }
+.workshop-dialogue .workshop-human-stop span { color: #876321; }
 
 .workshop-todo, .workshop-queue-item {
   padding: 9px 0;

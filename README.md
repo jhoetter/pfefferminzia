@@ -39,8 +39,9 @@ gib mir nur den ersten Hinweis.“
 [vier Teilnehmerkarten](docs/DRILL_CARDS.md). Jeder 75-Minuten-Drill hat ein
 Lernziel, einen konkreten Fall, eine kleine eigene Codeverbesserung und einen
 Abschlussbeleg. Claude nennt diese Aufgabe über `get_drill_guide` schon bei
-Hinweis-Level 0; du kannst schrittweise Hilfe erfragen, ohne dass Claude die
-Übung sofort für dich löst. Node.js ist nicht nötig. Den persönlichen
+Hinweis-Level 0. Die vier Dialogetappen pro Drill sind **keine vier Prompts
+auf einmal**: Nach jeder Antwort prüfst oder entscheidest du selbst und
+baust eine kleine Änderung mit Claude. Node.js ist nicht nötig. Den persönlichen
 Inbox-Schlüssel nur in `.env` und optional im **eigenen Workshop-Chat**
 angeben, niemals in Git oder einem Gruppenchat. `checkpoint verify` prüft
 die Startbereitschaft, nicht den Abschluss einer Übung.

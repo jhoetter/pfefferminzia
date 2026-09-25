@@ -24,6 +24,19 @@ def test_drill_eight_guide_starts_with_a_real_inbox_mission(monkeypatch, full_db
     assert sum(guide["timeboxMinutes"].values()) == 75
 
 
+def test_each_drill_guides_separate_claude_questions_and_human_stops(monkeypatch, full_db):
+    for drill in (8, 9, 10, 11):
+        monkeypatch.setenv("WORKSHOP_CHECKPOINT", f"drill-{drill:02d}-start")
+        guide = drill_guide(0, full_db)
+        steps = guide["dialogueSteps"]
+        assert len(steps) == 4
+        assert all(set(step) == {"phase", "askClaude", "yourMove"} for step in steps)
+        assert all(step["askClaude"] and step["yourMove"] for step in steps)
+        assert "vier Dialogetappen" in guide["instruction"]
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-11-start")
+    assert "nicht vorspulen" in drill_guide(0, full_db)["dialogueSteps"][1]["askClaude"]
+
+
 def test_checkpoint_verifier_reports_actionable_preflight(monkeypatch, full_db):
     monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-11-start")
     monkeypatch.setenv("AGENTMAIL_API_KEY", "")

@@ -154,6 +154,15 @@ function verificationMarkup() {
     .join("")}</div>`;
 }
 
+function dialogueMarkup(steps) {
+  if (!steps?.length) return "";
+  return `<ol class="workshop-dialogue">${steps.map((step) => `<li>
+    <strong>${escapeHtml(step.phase)}</strong>
+    <p class="workshop-claude-prompt"><span>Claude fragen</span> „${escapeHtml(step.askClaude)}“</p>
+    <p class="workshop-human-stop"><span>Dein Stopp</span> ${escapeHtml(step.yourMove)}</p>
+  </li>`).join("")}</ol>`;
+}
+
 function renderPanel() {
   const panel = document.querySelector(".workshop-panel");
   if (!panel || !workshopState.dashboard) return;
@@ -187,9 +196,11 @@ function renderPanel() {
         ${inboxTickets.length ? `<ol>${inboxTickets.map((ticket) => `<li>${escapeHtml(ticket.ticketNumber)} · ${escapeHtml(ticket.subject)}</li>`).join("")}</ol>` : '<p class="empty">Noch kein importiertes Ticket. Nach einer Testmail synchronisieren und erneut prüfen.</p>'}
       </section>
       <section class="workshop-card"><h3>Dein Lernziel</h3><p>${escapeHtml(brief?.learningObjective || profile.goal)}</p>
-        <p class="empty"><strong>Mission:</strong> ${escapeHtml(brief?.mission || profile.goal)}</p>
-        <p class="empty"><strong>Selbst bauen:</strong> ${escapeHtml(brief?.buildTask || "")}</p>
         <p class="empty"><strong>Fertig, wenn:</strong> ${escapeHtml(brief?.doneWhen || "")}</p>
+      </section>
+      <section class="workshop-card"><h3>Dialog in Etappen <small>nicht alles auf einmal</small></h3>
+        <p class="empty">Claude hilft beim nächsten Schritt. Nach jeder Antwort prüfst oder entscheidest du selbst.</p>
+        ${dialogueMarkup(brief?.dialogueSteps)}
       </section>
       <section class="workshop-card"><h3>Erfolgskriterien</h3><ol>${profile.successCriteria.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ol></section>
       <section class="workshop-card"><h3>Todos <small>${openTodos.length} offen</small></h3>

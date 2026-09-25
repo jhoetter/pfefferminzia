@@ -91,8 +91,11 @@ ein Drill erst mit einem Fallnachweis und einem getesteten eigenen Beitrag.
 
 Die genauen Teilziele, Dateieinstiege und 75-Minuten-Zeitboxen stehen in den
 [Drill-Karten](DRILL_CARDS.md) und im MCP-Werkzeug `get_drill_guide` schon bei
-Hinweis-Level 0. Claude soll zuerst Lernziel, Mission und Bauaufgabe nennen,
-nicht bloß ein zufälliges Todo vorschlagen.
+Hinweis-Level 0. Jeder Drill ist dort als vier **aufeinanderfolgende
+Dialogetappen** beschrieben: Claude fragen, menschlich prüfen/entscheiden,
+selbst bauen, Ergebnis belegen. Claude soll nur den nächsten Schritt führen
+und am menschlichen Stopp warten, nicht alle Prompts als einen autonomen
+Auftrag ausführen oder bloß ein zufälliges Todo vorschlagen.
 
 Die Teilnehmenden können in Paaren zusammenarbeiten, betreiben aber jeweils ein
 isoliertes lokales System mit eigener Inbox. Der Lehrende kann nach jeder Phase
