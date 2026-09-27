@@ -26,6 +26,13 @@ Inbox-Werten vom Zettel. Danach bittet es dich einmal, Claude im Ordner
 `~/pfefferminzia` neu zu starten, damit es direkt mit der Software sprechen
 kann (MCP).
 
+> **Für Claude Code – Einrichtung:** Lies `CLAUDE.md` in diesem Repo und
+> folge Abschnitt 1 „Erststart“. Kurz: Branch `workshop/mein-tag` anlegen,
+> `uv sync --frozen`, `uv run pfefferminzia setup`, `.env` aus `.env.example`
+> anlegen (Rechte 600), `uv run pfefferminzia serve --open` im Hintergrund
+> starten, nach den drei Inbox-Werten fragen und die Person dann bitten, dich
+> im Repo-Ordner neu zu starten, damit der MCP-Server verbunden ist.
+
 **Wenn du nicht weiterweißt, frag Claude.** Es ist hier dein Tutor: Es kennt
 den aktuellen Drill, gibt Hinweise in kleinen Schritten und kann dir zu jedem
 Drill den offiziellen Lösungsstand laden, ohne deine Arbeit zu überschreiben.
