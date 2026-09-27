@@ -33,7 +33,7 @@ async def test_mcp_capability_surface(monkeypatch):
         assert len(names) == len(set(names))
         by_name = {tool.name: tool for tool in tools.tools}
         assert "ticketNumber" in by_name["create_todo"].input_schema["properties"]
-        assert "includeAdvanceTask" in by_name["get_drill_guide"].input_schema["properties"]
+        assert "includeExtensions" in by_name["get_drill_guide"].input_schema["properties"]
         assert "mode" in by_name["plan_checkpoint_load"].input_schema["properties"]
         templates = await client.list_resource_templates()
         uris = {str(resource.uri_template) for resource in templates.resource_templates}

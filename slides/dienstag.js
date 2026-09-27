@@ -86,19 +86,19 @@
       id: 'Zielbild', type: 'Inhalt', eyebrow: 'Rückwärts vom Zielbild', title: 'Am Ende können wir beide Kontrollmuster live vergleichen.',
       subtitle: 'Jeder Startzustand zeigt nur die Fähigkeiten des aktuellen Drills.',
       body: grid([
-        card('Der gemeinsame Kern', `<p>Eingang → Router → Kunde und Vertrag → Tarifbelege → Antwortvorschlag → Audit.</p><p>Die Kontrollregel liegt <strong>zwischen Vorschlag und externer Wirkung</strong>.</p>`),
-        card('Fünf Etappen', `<p><strong>6</strong> Eingang &amp; MCP<br><strong>7</strong> Mensch sendet Leben<br><strong>8</strong> Mensch genehmigt Leben<br><strong>9</strong> Haftpflicht-Queue<br><strong>10</strong> Management-Report</p>`, 'mint-card')
+        card('Sechs Bausteine', `<p><strong>Eingänge</strong> · <strong>Wissen</strong> · <strong>Werkzeuge</strong> · <strong>Kontrollen</strong> · <strong>Oberfläche</strong> · <strong>Protokoll</strong></p><p>Aus diesen Teilen besteht jedes agentische System. Die Kontrollregel liegt <strong>zwischen Vorschlag und externer Wirkung</strong>.</p>`),
+        card('Fünf Etappen', `<p><strong>6</strong> Eingänge &amp; Werkzeuge: Mensch sendet<br><strong>7</strong> Wissen &amp; Prüfregel: Leben<br><strong>8</strong> Kontrolle: Mensch gibt frei<br><strong>9</strong> Kontrolle: Eingriffsfenster<br><strong>10</strong> Protokoll: Management-Report</p>`, 'mint-card')
       ]),
-      notes: 'ZEIT: 4 Minuten. SAGEN: Jeder Startzustand zeigt nur die Fähigkeiten des aktuellen Drills. Der nächste Checkpoint enthält die Lösung des vorigen Bauauftrags – wer hängt, lädt ihn und macht mit der Gruppe weiter. Die Teilnehmenden bauen im eigenen Branch weiter; eine Recovery liegt getrennt, ohne ihre Arbeit zu überschreiben.'
+      notes: 'ZEIT: 4 Minuten. SAGEN: Heute geht es darum, wie man ein agentisches System aufbaut. Jeder Drill rückt einen Baustein in den Fokus; wer früher fertig ist, baut den nächsten Baustein in der eigenen Kommandozentrale schon im Kleinen. Jeder Startzustand zeigt nur die Fähigkeiten des aktuellen Drills. Der nächste Checkpoint enthält die Lösung des vorigen Bauauftrags – wer hängt, lädt ihn und macht mit der Gruppe weiter. Die Teilnehmenden bauen im eigenen Branch weiter; eine Recovery liegt getrennt, ohne ihre Arbeit zu überschreiben.'
     },
     {
       id: 'Arbeitsrhythmus', type: 'Inhalt', eyebrow: 'So arbeiten wir', title: 'Nicht vier Prompts: vier echte Entwicklungszyklen.',
       subtitle: 'Gleicher Fallnachweis für alle. Unterschiedlich viel eigener Code ist erlaubt.',
       body: grid([
         card('Deine Version', `<p>Branch → mit Claude bauen → Test und Diff prüfen → Fall im Cockpit erleben → Commit.</p><p>Jeder Drill endet mit einem sichtbaren eigenen Beitrag.</p>`),
-        card('Dein Tempo', `<p><strong>Geführt:</strong> nächster Schritt und Dateistelle.<br><strong>Bauend:</strong> Akzeptanztest und eigene Iteration.<br><strong>Vorausbauend:</strong> nach Kernnachweis den nächsten Drill selbst beginnen.</p>`, 'mint-card')
+        card('Dein Tempo', `<p><strong>Geführt:</strong> nächster Schritt und Dateistelle.<br><strong>Bauend:</strong> Akzeptanztest und eigene Iteration.<br><strong>Ausbauend:</strong> nach dem Fallnachweis die eigene Kommandozentrale erweitern – erst Steckbrief, dann bauen.</p>`, 'mint-card')
       ]),
-      notes: 'ZEIT: 3 Minuten. SAGEN: Claude passt den Hilfsgrad an, ohne die Person zu etikettieren. Persönliche Kopie und Inbox. Schnelle dürfen ausdrücklich vorausbauen; andere laden nach Rückfrage den offiziellen Checkpoint. Fallnachweis und Sicherheitsgrenzen bleiben für alle gleich.'
+      notes: 'ZEIT: 3 Minuten. SAGEN: Claude passt den Hilfsgrad an, ohne die Person zu etikettieren. Persönliche Kopie und Inbox. In jeder Etappe fragt Claude zuerst nach eurer Entscheidung – ein „mach einfach“ reicht nicht. Schnelle erweitern ihr eigenes System; andere laden nach Rückfrage den offiziellen Checkpoint. Fallnachweis und Sicherheitsgrenzen bleiben für alle gleich.'
     },
     {
       id: 'Drill6Start', type: 'Kapitel', eyebrow: '10:00–11:00 · Meilenstein 1', title: 'Die Kommandozentrale', study: true,
@@ -121,11 +121,11 @@
       notes: 'ZEIT: 2 Minuten. SAGEN: Das ist eure eigene Instanz. Links die Bereiche, in der Mitte der Posteingang, rechts die Mail mit Antwortfeld. Senden kann nur der Mensch – Claude hat dafür kein Werkzeug.'
     },
     {
-      id: 'Drill6Auftrag', type: 'Drill', eyebrow: 'Drill 6 · Dialog statt Zauberprompt', title: 'Antworten. Selber prüfen. Dann weiterbauen.',
-      subtitle: 'Claude bereitet vor, du entscheidest – und nach jeder Etappe hältst du kurz an.', study: true,
+      id: 'Drill6Auftrag', type: 'Drill', eyebrow: 'Drill 6 · Dialog statt Zauberprompt', title: 'Entscheiden. Bauen. Selbst senden.',
+      subtitle: 'Claude fragt zuerst nach deiner Entscheidung – dann bereitet es vor. Dein Senden ist der Beweis.', study: true,
       body: grid([
-        card('1–2 · Antworten', `${dialogueStep(1, 'Ankommen', 'Was ist meine erste Aufgabe?', 'Mail im Cockpit öffnen und lesen.')}${dialogueStep(2, 'Entwurf', 'Entwirf eine kurze Antwort. Nicht senden.', 'Im Cockpit ändern, speichern, selbst senden.')}`, 'mint-card'),
-        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Die Aufgabe ist nach dem Senden noch offen – ändern wir das?', 'Erst Test, dann die kleine Änderung mit Claude.')}${dialogueStep(4, 'Belegen', 'Was ist belegt?', 'Gesendete Antwort, erledigte Aufgabe, grüner Test.')}`)
+        card('1–2 · Antworten', `${dialogueStep(1, 'Ankommen', 'Was ist meine erste Aufgabe?', 'Mail lesen, Kernaussage der Antwort nennen.')}${dialogueStep(2, 'Entwurf', 'Entwirf aus meiner Kernaussage eine kurze Antwort. Noch nicht senden.', 'Im Cockpit ändern und speichern.')}`, 'mint-card'),
+        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Bleibt die Aufgabe nach dem Senden offen? Erst Test.', 'Regel und Gegenfall festlegen, dann mit Claude bauen.')}${dialogueStep(4, 'Senden', 'Läuft meine Änderung? Dann sende ich.', 'Selbst senden: Aufgabe erledigt, Gegenfall offen.')}`)
       ]),
       notes: 'ZEIT: 2 Minuten. SAGEN: Die vier Prompts sind Gesprächsetappen. Persönliche Inbox, kein geteilter Schlüssel. Temporären inboxgebundenen Workshop-Key nur im individuellen Chat/lokal, nie echte Geheimnisse. Outbound-Allowlist ist kein Eingangsfilter. Grüner Preflight ist nur Startbereitschaft. Nach eigenem Test Diff prüfen und committen. 15 Minuten Start, 10 Minuten antworten, 20 Minuten bauen, 10 Minuten nachweisen, 5 Minuten reflektieren.'
     },
@@ -227,13 +227,13 @@
       notes: 'ZEIT: 3 Minuten. SAGEN: Claude fragt zuerst nach Mitnehmen oder frisch offiziell. Beide Modi legen einen neuen Worktree an und lassen den alten Ordner unangetastet. Mitnehmen kopiert Code und Fälle; offiziell startet mit Referenzcode und frischen Fällen. Der Plan ist noch keine Umschaltung. Erst nach sichtbarem Plan und erneutem Ja wird geladen. App und Claude im neuen Ordner starten, Status und Tests prüfen.'
     },
     {
-      id: 'Tempo', type: 'Inhalt', eyebrow: 'Adaptiver Lernpfad', title: 'Wer schneller ist, baut weiter. Wer hängt, bekommt Halt.',
-      subtitle: 'Die nächste Fähigkeit ist ein Angebot nach dem Kernnachweis – kein Pflichtprogramm.',
+      id: 'Tempo', type: 'Inhalt', eyebrow: 'Adaptiver Lernpfad', title: 'Wer schneller ist, gestaltet mit. Wer hängt, bekommt Halt.',
+      subtitle: 'Ausbauen ist ein Angebot nach dem Fallnachweis – kein Pflichtprogramm und kein Vorgriff auf den nächsten Drill.',
       body: grid([
-        card('Schneller', `<p>Kernfall + Test belegen. Dann wählen: Kantenfall vertiefen <em>oder</em> die nächste Drill-Fähigkeit im eigenen Branch selbst bauen.</p><p>Offizieller Checkpoint bleibt als Rückweg.</p>`, 'mint-card'),
+        card('Schneller', `<p>Kernfall + Test belegen. Dann die eigene Kommandozentrale erweitern: empfohlene Erweiterung, Anregung oder eigene Idee – etwa eine Mini-Wissensbasis oder ein neues Werkzeug für Claude.</p><p>Erst Steckbrief: Wer löst aus, welche Daten, welche Kontrolle, woran erkennen wir Erfolg?</p>`, 'mint-card'),
         card('Mehr Unterstützung', `<p>Claude zeigt nur den nächsten Schritt. Hint Card, Buddy-Fragen und vorbereiteter Checkpoint helfen beim Aufholen.</p><p>Bei Tokenlimit: Browser + Karten; Reservezugang nur organisiert, nie Passwörter teilen.</p>`, 'red-card')
       ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: Vorausbau ist Opt-in; die nächste Aufgabe wird nicht der ganzen Gruppe verraten. Buddys stellen Fragen, übernehmen nicht Tastatur oder Freigabe. Lehrende organisieren Token-Reserven vorher.'
+      notes: 'ZEIT: 2 Minuten. SAGEN: Ausbauen ist Opt-in und baut den Baustein, den der nächste Drill im Großen zeigt – etwa die eigene Mini-Wissensbasis vor den Tarifen in Drill 7. Wer ein Werkzeug mit Außenwirkung baut, etwa Senden, legt vorher die Kontrolle fest. Buddys stellen Fragen, übernehmen nicht Tastatur oder Freigabe. Lehrende organisieren Token-Reserven vorher.'
     },
     {
       id: 'Whiteboard', type: 'Schluss', eyebrow: '16:45 · Laptops zu', title: 'Wo darf der Agent handeln?',

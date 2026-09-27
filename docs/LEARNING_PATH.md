@@ -7,6 +7,23 @@ begrenzte Werkzeuge auch die laufende App lesen und Fälle vorbereiten. Die
 fachlichen Entscheidungen und jede externe Wirkung bleiben beim Menschen im
 Cockpit.
 
+## Worum es geht: Wie baue ich ein agentisches System auf?
+
+Jedes agentische System besteht aus sechs Bausteinen: **Eingänge** (woher
+kommen Fälle), **Wissen** (was darf der Agent nachschlagen), **Werkzeuge**
+(was darf er tun – was fehlt, kann er nicht), **Kontrollen** (wo prüft eine
+Regel, wo entscheidet ein Mensch), **Oberfläche** (was sieht und tut der
+Mensch) und **Protokoll** (was wird festgehalten). MCP ist die Art, wie
+Claude an Werkzeuge und Wissen kommt.
+
+| Drill | Baustein im Fokus | Empfohlene Erweiterung für Schnelle (bereitet den nächsten Drill vor) |
+| --- | --- | --- |
+| 6 | Eingänge, Werkzeuge, Oberfläche | Mini-Wissensbasis (z. B. erfundene Kontakte, Antwortregeln) → Drill 7: Wissen des Versicherers |
+| 7 | Wissen, Kontrollen | Beleg-Kasten im Cockpit → Drill 8: Freigabe braucht Überblick |
+| 8 | Kontrollen, Oberfläche | Risiko-Einstufung je Fall → Drill 9: Was darf automatisch laufen? |
+| 9 | Kontrollen, Protokoll | Eigene Kennzahl → Drill 10: Was nicht gezählt wird, ist nicht belegbar |
+| 10 | Protokoll | Folie „Mein agentisches System“; Bonus-Video |
+
 ## Lernergebnisse
 
 Am Ende kann jede Person (1) Claude mit einem kleinen, prüfbaren Auftrag zum
@@ -14,7 +31,9 @@ Vibe Coding führen, (2) erklären, warum ein MCP-Werkzeug mehr ist als eine
 Chat-Antwort – und warum ein *fehlendes* Werkzeug eine Kontrolle ist,
 (3) einen Mail-zu-Aktion-Fall mit Quellen und Audit nachvollziehen,
 (4) Pflichtfreigabe und Eingriffsfenster am eigenen System vergleichen und
-(5) den eigenen Stand testen und committen. Wie viel Code jemand selbst baut,
+(5) den eigenen Stand testen und committen und (6) das eigene System aus
+den sechs Bausteinen erklären und an einer selbst gewählten Stelle mit
+Steckbrief erweitern. Wie viel Code jemand selbst baut,
 darf verschieden sein; der **Fallnachweis** ist für alle gleich.
 
 ## Drei Arbeitsweisen, jederzeit wechselbar
@@ -23,16 +42,23 @@ darf verschieden sein; der **Fallnachweis** ist für alle gleich.
 | --- | --- | --- | --- |
 | Geführt | Claude Code noch kennenlernst oder festhängst | Nächster Schritt, Dateistelle, kleiner Test; Checkpoint als Rettungsnetz | Eine Änderung verstehen, auswählen, testen, committen |
 | Bauend | mit der Struktur zurechtkommst | Akzeptanzkriterien nennen, Implementierung mit dir iterieren | Den Bauauftrag in mehreren kleinen Schritten bauen und belegen |
-| Vorausbauend | den Kernfall früh belegt hast | Auf Wunsch den **nächsten** Bauauftrag im eigenen Branch öffnen | Die nächste Verbesserung möglichst selbst entwickeln |
+| Ausbauend | Fall und Bauauftrag früh belegt hast | Empfohlene Erweiterung oder Anregungen vorstellen, Steckbrief mit dir klären, Risiko und Alternative nennen | Selbst festlegen, was deine Kommandozentrale zusätzlich können soll – dann mit Claude bauen |
 
-Vorausbauen ist Opt-in und wird der Gruppe nicht verraten. Die nächste
-Live-Fähigkeit (z. B. die Freigabe-Ansicht) bleibt bis zum Checkpoint
-gesperrt; vorausbauen heißt Code und Tests im eigenen Branch.
+Ausbauen ist Opt-in und **nimmt nie den nächsten Drill vorweg**. Die Person
+gestaltet ihr eigenes System: eine eigene Idee (z. B. „Claude soll selbst
+senden dürfen“, eine neue Ansicht im Cockpit) oder die empfohlene
+Erweiterung. Zuerst kommt ein kurzer Steckbrief in `MEINE_ERWEITERUNGEN.md`:
+Was soll neu möglich sein, welcher Baustein, wer löst aus, welche Daten,
+welche Kontrolle, woran erkennen wir Erfolg? Werkzeuge mit Außenwirkung sind
+in der eigenen Kopie erlaubt, aber nur mit festgelegter Kontrolle; die
+Antwort-Liste bleibt unangetastet. Nur erfundene Daten.
 
 ## Der Vibe-Coding-Rhythmus
 
 Ein guter Auftrag hat **beobachtbares Verhalten**, eine **Grenze** und einen
-**Test**. Beispiel: „Wenn dieselbe Mail zweimal synchronisiert wird, soll
+**Test** – und die Entscheidungen darin triffst du, nicht Claude. In jeder
+Etappe fragt Claude zuerst nach deiner Entscheidung; auf „mach einfach“ bietet
+es zwei, drei Optionen an. Beispiel: „Wenn dieselbe Mail zweimal synchronisiert wird, soll
 genau ein verknüpftes Prüfen-Todo entstehen. Zeig zuerst den fehlenden Test.“
 
 `Hypothese → kleiner Test → Änderung mit Claude → Diff lesen → Fall im
@@ -40,8 +66,8 @@ Cockpit prüfen → Test ausführen → committen → erklären`
 
 - Claude macht zu viel auf einmal? „Stopp. Nur den nächsten Schritt; sag mir,
   welche Zeile ich prüfen soll.“
-- Du bist schneller? „Gib mir nur die Akzeptanzkriterien für den nächsten
-  Bauauftrag; ich versuche es zuerst selbst.“
+- Du bist schneller? „Ich bin fertig. Ich möchte meine Kommandozentrale
+  erweitern – hilf mir mit dem Steckbrief.“
 - Du hängst? „Zeig mir die Dateistelle und einen minimalen Test.“ Oder: „Zeig
   mir die Referenzlösung für diesen Schritt und erklär sie mir.“
 
@@ -52,7 +78,7 @@ gebauter Beitrag.
 
 | Drill | Fall für alle | Bauauftrag | Lösung im Checkpoint |
 | --- | --- | --- | --- |
-| 6 · Erste Antwort | Mail kommt mit Aufgabe → Claude entwirft → Mensch sendet | Aufgabe erledigt sich beim Senden | `drill-07-start` |
+| 6 · Erste Antwort | Mail kommt mit Aufgabe → Claude entwirft → bauen → Mensch sendet (= Beweis) | Aufgabe erledigt sich beim Senden | `drill-07-start` |
 | 7 · Leben | Quelle prüfen → Entwurf → Mensch sendet | Tarif-Belegprüfung beim Speichern | `drill-08-start` |
 | 8 · Freigabe | Zwei Fälle → Freigabe und Ablehnung | `controlNotice`: Ablehnung und Freigabeverlust anzeigen | `drill-09-start` |
 | 9 · Eingriffsfenster | Auto-Versand, Edit und Stopp | Gestoppte Termine erklären, Doppelversand testen | `drill-10-start` |

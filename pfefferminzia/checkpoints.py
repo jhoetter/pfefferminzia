@@ -112,87 +112,265 @@ REFERENCE_TAGS = {6: "drill-07-start", 7: "drill-08-start", 8: "drill-09-start",
 DRILL_BRIEFS: dict[int, dict[str, Any]] = {
     6: {
         "learningObjective": "Erleben, wie aus einer echten Mail ein Fall mit Aufgabe wird – und dass Claude die Antwort vorbereitet, der Mensch sie aber sendet.",
-        "mission": "In deinem Posteingang liegt die Mail der Lehrperson, dazu die Aufgabe „Antworten“. Bitte Claude, eine kurze Antwort zu entwerfen. Prüfe und ändere sie im Cockpit und sende sie dort selbst.",
+        "learningGoals": [
+            "Claude einen Auftrag mit Absicht, Grenze und Prüfung geben – statt „mach mal“.",
+            "Erklären, warum Claude entwerfen, aber nicht senden kann: Die Kontrolle steckt im fehlenden Werkzeug, nicht in einer Bitte.",
+            "Eine Änderung an einem Beispiel und einem Gegenbeispiel abnehmen, statt dem Ergebnis zu glauben.",
+        ],
+        "mission": "In deinem Posteingang liegt die Mail der Lehrperson, dazu die Aufgabe „Antworten“. Bitte Claude, eine kurze Antwort zu entwerfen, und ändere sie im Cockpit. Bevor du sendest, baust du mit Claude, dass sich die Aufgabe beim Senden von selbst erledigt – dein eigenes Senden im Cockpit ist dann der Beweis.",
         "buildTaskShort": "Nach dem Senden soll sich die Antwort-Aufgabe von selbst erledigen.",
-        "buildTask": "Beim Senden einer Antwort bleibt die Aufgabe „Antworten: …“ bisher offen. Sie soll automatisch als erledigt markiert werden – nur die Antwort-Aufgabe dieses Tickets, keine anderen. Erst einen Test schreiben (tests/test_workshop_end_to_end.py hat einen Fake-Mailserver), dann umsetzen. Einstieg: send_ticket_draft in pfefferminzia/agentmail_service.py und complete_ticket_todos (Aufgabenart \"reply\") in pfefferminzia/todos.py.",
+        "buildTask": "Beim Senden einer Antwort bleibt die Aufgabe „Antworten: …“ bisher offen. Sie soll automatisch als erledigt markiert werden – nur die Antwort-Aufgabe dieses Tickets, keine anderen (Gegenfall: eine zweite Aufgabe zum selben Fall, z. B. „Rückruf planen“, bleibt offen). Erst einen Test schreiben (tests/test_workshop_end_to_end.py hat einen Fake-Mailserver), dann umsetzen. Einstieg: send_ticket_draft in pfefferminzia/agentmail_service.py und complete_ticket_todos (Aufgabenart \"reply\") in pfefferminzia/todos.py.",
         "dialogueSteps": [
-            {"phase": "Ankommen", "askClaude": "Was liegt in meinem Posteingang, und was ist meine erste Aufgabe?", "yourMove": "Die Mail im Cockpit öffnen und lesen. Falls noch nichts da ist: synchronisieren lassen."},
-            {"phase": "Antworten", "askClaude": "Entwirf eine kurze, freundliche Antwort auf die Mail. Nicht senden – das mache ich.", "yourMove": "Entwurf im Cockpit lesen, etwas Eigenes ändern, speichern und auf „Senden“ klicken."},
-            {"phase": "Selbst bauen", "askClaude": "Die Aufgabe ist nach dem Senden noch offen. Wo ändern wir das? Schreib mit mir zuerst einen Test.", "yourMove": "Test lesen, die kleine Änderung mit Claude bauen und im Cockpit prüfen."},
-            {"phase": "Beleg zeigen", "askClaude": "Zeig mir, was belegt ist: gesendete Antwort, erledigte Aufgabe, grüner Test. Dann hilf mir beim Speichern meiner Änderung.", "yourMove": "Im Verlauf die gesendete Antwort sehen, Änderung committen lassen."},
+            {"phase": "Ankommen", "askClaude": "Was liegt in meinem Posteingang, und was ist meine erste Aufgabe?", "decision": "Was will die Absenderin von dir – und was möchtest du ihr in einem Satz antworten?", "yourMove": "Die Mail im Cockpit öffnen, lesen und Claude die eigene Kernaussage für die Antwort nennen."},
+            {"phase": "Entwerfen", "askClaude": "Entwirf aus meiner Kernaussage eine kurze, freundliche Antwort. Noch nicht senden.", "decision": "Was änderst du am Entwurf, und warum? Und warum könnte Claude hier gar nicht senden, selbst wenn es wollte?", "yourMove": "Entwurf im Cockpit lesen, etwas Eigenes ändern und speichern – noch nicht senden."},
+            {"phase": "Selbst bauen", "askClaude": "Bevor ich sende: Bleibt die Aufgabe „Antworten“ nach dem Senden offen? Zeig es mir mit einem Test, dann bauen wir es.", "decision": "Wie sollte das System wissen, welche Aufgabe mit dem Senden erledigt ist – und welche zweite Aufgabe legen wir als Gegenfall an, die offen bleiben muss?", "yourMove": "Mit Claude eine zweite Aufgabe zum Fall anlegen (z. B. „Rückruf planen“), vorhersagen, ob der Test rot oder grün ist, dann die kleine Änderung bauen."},
+            {"phase": "Senden und belegen", "askClaude": "Läuft die App mit meiner Änderung? Dann sende ich jetzt. Danach zeig mir: gesendete Antwort, Aufgaben, grüner Test – und hilf mir beim Commit.", "decision": "Woran siehst du selbst, dass es funktioniert – ohne Claude zu glauben?", "yourMove": "Im Cockpit auf „Senden“ klicken; unter „Aufgaben“ prüfen: „Antworten“ erledigt, die zweite Aufgabe offen; Commit freigeben."},
+        ],
+        "reflection": "Was hast du heute entschieden, und was hat Claude gemacht? Wo war eine Grenze eingebaut, statt nur erbeten?",
+        "thinkingPrompts": [
+            "Stell dir vor, Claude hätte heute ein Sende-Werkzeug gehabt: Was wäre mit deiner Antwort passiert – und wer hätte es gemerkt?",
+            "Die Aufgabe „Antworten“ ist von selbst entstanden. Welche Aufgaben entstehen bei euch aus einer Mail – und welche davon dürfte ein Agent anlegen, welche nie?",
+            "Woran merkst du bei einer neuen Kollegin, dass sie eine Mail nur überflogen hat – und woran würdest du es bei Claude merken?",
         ],
         "timeboxMinutes": {"startUndPosteingang": 15, "antworten": 10, "selbstBauen": 20, "nachweisen": 10, "reflexion": 5},
         "doneWhen": "Eine von dir geprüfte Antwort ist gesendet; die Antwort-Aufgabe erledigt sich beim Senden automatisch; eigene Änderung mit grünem Test committet.",
+        "bridge": "Heute baust du an einer echten kleinen Kommandozentrale: Mails kommen herein, Claude bereitet vor, du entscheidest. Achte darauf, was Claude tun kann – und was nicht.",
+        "focusBlocks": ["Eingänge", "Werkzeuge", "Oberfläche"],
+        "extension": {
+            "title": "Meine Mini-Wissensbasis",
+            "block": "Wissen",
+            "prepares": "In Drill 7 bekommt Claude die große Wissensbasis des Versicherers: Kunden, Verträge, Tarife. Wer hier schon eine kleine gebaut hat, erkennt dort dieselbe Idee im Großen.",
+            "designQuestion": "Wenn Claude beim Antworten wissen soll, wer dir schreibt und wie du die Person ansprichst – wie würdest du das aufbauen: Wo liegen die Angaben, wie kommt Claude dran, und wer darf sie ändern?",
+            "task": "Baue mit Claude eine kleine Wissensbasis, die dir beim Beantworten von Mails hilft – z. B. erfundene Kontakte mit Rolle, Anrede und Zuständigkeit oder deine Antwortregeln (Ton, Signatur, Standardsätze). Sie liegt als einfache Datei in deiner Kopie (z. B. wissen/kontakte.csv); ein neues Werkzeug lässt Claude darin nachschlagen. Test: Ein Entwurf an einen hinterlegten Kontakt nutzt dessen Anrede, ein unbekannter Absender bekommt die Standardanrede. Nur erfundene Daten, keine echten Kontakte.",
+            "decision": "Welche drei, vier Angaben würden deine Antworten wirklich besser machen – und was darf auf keinen Fall hinein?",
+            "inspiration": [
+                "Werkzeuge: Claude darf selbst senden – ein neues Werkzeug. Welche Kontrolle gehört dann dazu (nur an die Antwort-Liste, nur nach deinem Ja, Eintrag im Protokoll)?",
+                "Oberfläche: Im Cockpit sehen, wodurch eine Aufgabe erledigt wurde – durch Versand, von Hand oder durch Claude.",
+                "Eingänge: Mails mit „dringend“ im Betreff bekommen eine markierte Aufgabe.",
+                "Werkzeuge: Beim Abholen neuer Mails legt Claude eine Zusammenfassung in drei Zeilen als interne Notiz an.",
+            ],
+        },
     },
     7: {
         "learningObjective": "Kontext und Quellen gegen den Nachrichtentext prüfen, bevor ein Mensch eine Antwort verschickt.",
+        "learningGoals": [
+            "Erklären, woher ein Agent sein Wissen hat – nur aus den Quellen, die wir ihm als Werkzeug geben – und Behauptungen der Kundin davon trennen.",
+            "Eine Fachregel so genau festlegen, dass sie prüfbar wird: was gilt als Fehler, was ausdrücklich nicht.",
+            "Entscheiden, was eine automatische Prüfung der Sachbearbeitung sagen muss, damit sie hilft statt nervt.",
+        ],
         "mission": "Bearbeite die neue Lebensanfrage aus deiner Inbox: Person, Police und gültige Tarifgeneration bestätigen; Claude entwirft mit Beleg, du änderst den Wortlaut im Cockpit und sendest dort selbst.",
         "buildTaskShort": "Einen Entwurf abweisen, der eine falsche Tarifgeneration zitiert.",
         "buildTask": "Beim Speichern eines Entwurfs soll eine Belegprüfung greifen: Nennt Text oder Begründung eine bekannte Tarifgeneration (z. B. PL-2017), die nicht zum verknüpften Vertrag passt, wird der Entwurf mit klarer Meldung abgelehnt („zitiert PL-2012, Vertrag VTR-… hat PL-2017“). Ein korrekt zitierender Entwurf und ein Entwurf ohne Tarifzitat bleiben erlaubt. Erst Tests in tests/test_workflow.py, dann save_draft in pfefferminzia/store.py ergänzen (bekannte Generationen stehen in der Tabelle documents).",
         "dialogueSteps": [
-            {"phase": "Quelle finden", "askClaude": "Welche Person, Police und Tarifgeneration passen zu der neuen Lebensanfrage? Zeig mir die Belege; noch keinen Entwurf.", "yourMove": "Zuordnung und exakte Tarifgeneration selbst bestätigen; bei Unklarheit nachfragen."},
-            {"phase": "Entwurf prüfen", "askClaude": "Erstelle jetzt einen begründeten Antwortentwurf mit Fundstelle. Nicht versenden – das mache ich im Cockpit.", "yourMove": "Text und Empfänger im Cockpit prüfen, selbst ändern, speichern und bewusst senden."},
-            {"phase": "Selbst bauen", "askClaude": "Hilf mir mit einem fehlschlagenden Test: Ein Entwurf, der die falsche Tarifgeneration zitiert, muss abgewiesen werden.", "yourMove": "Test und Schutzregel mit Claude bauen; einen korrekten Gegenfall mittesten."},
-            {"phase": "Beleg zeigen", "askClaude": "Zeig mir Quelle, menschliche Textänderung, Versandereignis und Testergebnis. Was fehlt noch? Dann hilf mir beim Commit.", "yourMove": "Activity Log und grünen Test kontrollieren; keinen zweiten Versand auslösen; committen."},
+            {"phase": "Quelle finden", "askClaude": "Welche Person, Police und Tarifgeneration passen zu der neuen Lebensanfrage? Zeig mir die Belege; noch keinen Entwurf.", "decision": "Welche Aussage in der Mail ist nur Behauptung der Kundin, welche ist durch Vertrag und Tarif belegt? Stimmt die Zuordnung – woran machst du das fest?", "yourMove": "Zuordnung und exakte Tarifgeneration selbst bestätigen oder widersprechen."},
+            {"phase": "Entwurf prüfen", "askClaude": "Erstelle jetzt einen begründeten Antwortentwurf mit Fundstelle. Nicht versenden – das mache ich im Cockpit.", "decision": "Welchen Satz im Entwurf würdest du so nicht unterschreiben, und wie lautet er besser?", "yourMove": "Text und Empfänger im Cockpit prüfen, den Satz selbst ändern, speichern und bewusst senden."},
+            {"phase": "Selbst bauen", "askClaude": "Wir bauen eine Prüfung gegen falsch zitierte Tarifgenerationen. Frag mich zuerst nach der Regel und den Beispielen, dann schreiben wir einen fehlschlagenden Test.", "decision": "Wann ist ein Tarifzitat für dich falsch – auch wenn gar keiner oder zwei genannt sind? Und wie soll die Meldung wörtlich lauten, damit die Sachbearbeitung sofort weiß, was zu tun ist?", "yourMove": "Beispieltabelle mit einem eigenen Gegenfall ergänzen, Meldungstext selbst formulieren, Ergebnis vorhersagen, dann mit Claude bauen."},
+            {"phase": "Beleg zeigen", "askClaude": "Zeig mir Quelle, menschliche Textänderung, Versandereignis und Testergebnis. Was fehlt noch? Dann hilf mir beim Commit.", "decision": "Versuch die Prüfung auszutricksen: Welchen Entwurf schreibst du im Cockpit, damit sie greifen müsste?", "yourMove": "Im Cockpit einen falsch zitierenden Entwurf speichern und die eigene Meldung sehen; Protokoll prüfen; keinen zweiten Versand auslösen; committen."},
+        ],
+        "reflection": "Wo hast du heute einer Quelle mehr geglaubt als der Mail – und würde die Regel in deinem Haus sperren oder nur warnen?",
+        "thinkingPrompts": [
+            "Die Kundin nennt ihre Vertragsnummer selbst. Was, wenn sie sich vertippt hat – woran merkt es ein Mensch, woran der Agent?",
+            "Claude darf Tarife nur lesen. Welche Quelle in deinem Haus dürfte ein Agent auf keinen Fall lesen – und warum?",
+            "Die Prüfregel stoppt einen falschen Tarif. Welche andere Zusage an Kunden würdest du gern automatisch prüfen lassen?",
         ],
         "timeboxMinutes": {"fallUndQuellen": 15, "entwurfUndMensch": 15, "selbstBauen": 20, "nachweisen": 5, "reflexion": 5},
         "doneWhen": "Ein belegter Lebensentwurf wurde vom Menschen im Cockpit verändert und gesendet; die Tarif-Belegprüfung ist getestet und committet.",
+        "bridge": "In Drill 6 kannte Claude nur die Mail. Jetzt bekommt es die Wissensbasis des Versicherers: Kunden, Verträge, Tarife – über Werkzeuge, die nur lesen dürfen.",
+        "focusBlocks": ["Wissen", "Kontrollen"],
+        "extension": {
+            "title": "Beleg-Kasten im Cockpit",
+            "block": "Oberfläche",
+            "prepares": "In Drill 8 gibst du Antworten frei, statt sie selbst zu schreiben. Dafür musst du auf einen Blick sehen, worauf sich ein Entwurf stützt.",
+            "designQuestion": "Stell dir vor, du musst in zehn Sekunden entscheiden, ob du einem Entwurf traust – wie sollte das Cockpit dir das zeigen?",
+            "task": "Zeige im Cockpit neben dem Entwurf, worauf er sich stützt: verknüpfter Vertrag, Tarifgeneration, Fundstelle – und einen klaren Hinweis, wenn etwas fehlt. Du legst fest, was drinsteht und in welcher Reihenfolge. Test: get_ticket liefert die Angaben; ohne verknüpften Vertrag kommt der Hinweis.",
+            "decision": "Was musst du sehen, um in zehn Sekunden zu entscheiden, ob du dem Entwurf traust?",
+            "inspiration": [
+                "Wissen: Deine Mini-Wissensbasis um Textbausteine je Tarifgeneration ergänzen, z. B. welche Unterlagen bei einer Bezugsrechtsänderung nötig sind.",
+                "Kontrollen: Eine zweite Prüfregel – der Entwurf nennt eine Vertragsnummer, die nicht zum Fall gehört.",
+                "Kontrollen: Entwürfe ohne Fundstelle dürfen gespeichert, aber nicht gesendet werden.",
+                "Werkzeuge: Claude darf einen Rückruf als Aufgabe mit Fälligkeit planen.",
+            ],
+        },
     },
     8: {
         "learningObjective": "Erleben, dass Agentenarbeit vollständig sein darf, aber nur eine aktuelle menschliche Freigabe im Cockpit die externe Wirkung öffnet.",
+        "learningGoals": [
+            "Eigene Prüfkriterien festlegen, bevor man die Arbeit des Agenten ansieht.",
+            "Eine Ablehnung so begründen, dass der Agent sie umsetzen kann – Feedback als Steuerung.",
+            "Begründen, warum eine Freigabe an genau einen Textstand gebunden ist, und was ein Prüfer im Moment der Entscheidung sehen muss.",
+        ],
         "mission": "Lass Claude zwei neue Lebensfälle bis zur Review-Vorlage bearbeiten. Gib im Cockpit einen frei und lehne einen begründet ab. Ändere danach testweise einen freigegebenen Text und beobachte, dass die Freigabe verfällt.",
         "buildTaskShort": "Ablehnungsgrund und erloschene Freigabe im Cockpit sichtbar machen.",
         "buildTask": "get_ticket soll ein Feld controlNotice liefern ({kind, text, actor, at}), wenn das letzte Kontrollereignis eine Ablehnung (draft_rejected, mit Begründung) oder eine erloschene Freigabe (review_invalidated) ist. Das Cockpit zeigt dieses Feld bereits als gelben Hinweis über dem Antwortfeld an, sobald es geliefert wird. Erst Test in tests/test_workflow.py (ablehnen → controlNotice mit Begründung; neu vorlegen → Hinweis weg), dann get_ticket in pfefferminzia/store.py.",
         "dialogueSteps": [
-            {"phase": "Fälle vorbereiten", "askClaude": "Bereite die zwei neuen Lebensfälle mit Belegen und Antwort bis zur Review-Vorlage vor. Freigeben kann nur ich im Cockpit.", "yourMove": "Beide Vorlagen und Fundstellen im Cockpit unter „Freigaben“ prüfen."},
-            {"phase": "Mensch entscheidet", "askClaude": "Welche Folgen haben Freigabe und Ablehnung bei diesen beiden Fällen?", "yourMove": "Im Cockpit einen Fall freigeben und senden, den anderen mit Begründung ablehnen. Claude überarbeitet ihn danach."},
-            {"phase": "Selbst bauen", "askClaude": "Wie zeigen wir Ablehnungsgrund oder erloschene Freigabe im Cockpit klarer? Hilf mir zuerst mit einem Test.", "yourMove": "Die kleine Review-Verbesserung mit Claude umsetzen und im Browser prüfen."},
-            {"phase": "Beleg zeigen", "askClaude": "Prüfe im Audit Freigabe und Ablehnung. Was passiert, wenn ich einen freigegebenen Text ändere? Dann hilf mir beim Commit.", "yourMove": "Freigabeverlust nach Edit im Cockpit sehen; Test grün; committen."},
+            {"phase": "Fälle vorbereiten", "askClaude": "Bereite die zwei neuen Lebensfälle mit Belegen und Antwort bis zur Review-Vorlage vor. Freigeben kann nur ich im Cockpit.", "decision": "Bevor du die Vorlagen ansiehst: Nach welchen zwei, drei Punkten prüfst du eine Antwort, bevor du sie freigibst?", "yourMove": "Die eigenen Prüfpunkte nennen, dann beide Vorlagen im Cockpit unter „Freigaben“ daran messen."},
+            {"phase": "Mensch entscheidet", "askClaude": "Welche Folgen haben Freigabe und Ablehnung bei diesen beiden Fällen?", "decision": "Welchen Fall lehnst du ab – sind beide gut, den, der einen deiner Prüfpunkte am schwächsten erfüllt – und welcher eine Satz Begründung sagt Claude genau, was zu ändern ist?", "yourMove": "Im Cockpit einen Fall freigeben und senden, den anderen mit eigener Begründung ablehnen; prüfen, ob Claudes Überarbeitung die Begründung trifft."},
+            {"phase": "Selbst bauen", "askClaude": "Wie zeigen wir Ablehnungsgrund oder erloschene Freigabe im Cockpit klarer? Frag mich zuerst, was der Hinweis sagen soll, dann ein Test.", "decision": "Jemand öffnet den Fall morgen: Was muss im Hinweis stehen (wer, wann, warum), und wann soll er wieder verschwinden?", "yourMove": "Inhalt und Verschwinden des Hinweises festlegen, Ergebnis vorhersagen, die Verbesserung mit Claude bauen und im Browser prüfen."},
+            {"phase": "Beleg zeigen", "askClaude": "Prüfe im Audit Freigabe und Ablehnung. Was passiert, wenn ich einen freigegebenen Text ändere? Dann hilf mir beim Commit.", "decision": "Soll schon ein geändertes Komma eine Freigabe aufheben – was spricht dafür (Sicherheit), was dagegen (Aufwand)?", "yourMove": "Einen freigegebenen Text im Cockpit ändern, den Freigabeverlust sehen; Test grün; committen."},
+        ],
+        "reflection": "Welche Arbeit darf der Agent in deinem Haus komplett vorbereiten – und an welcher Stelle muss ein Name unter der Entscheidung stehen?",
+        "thinkingPrompts": [
+            "Wenn du zehn Freigaben am Tag machst: Ab der wievielten liest du nicht mehr genau – und was hieße das für das System?",
+            "Eine Freigabe verfällt, wenn sich der Text ändert. Wo gibt es bei euch heute Freigaben, die eigentlich verfallen müssten?",
+            "Deine Ablehnung hat Claude gesteuert. Was unterscheidet das von Feedback an eine neue Mitarbeiterin – und was nicht?",
         ],
         "timeboxMinutes": {"faelleVorbereiten": 15, "freigabeUndAblehnung": 15, "selbstBauen": 20, "nachweisen": 5, "reflexion": 5},
         "doneWhen": "Eine Freigabe und eine Ablehnung im Audit; eine Änderung entwertet die alte Freigabe; eigene Review-Verbesserung getestet und committet.",
+        "bridge": "Bisher hast du jeden Entwurf selbst geändert und gesendet. Jetzt bereitet Claude alles vor, und du entscheidest nur noch: freigeben oder ablehnen.",
+        "focusBlocks": ["Kontrollen", "Oberfläche"],
+        "extension": {
+            "title": "Risiko-Einstufung je Fall",
+            "block": "Kontrollen",
+            "prepares": "In Drill 9 laufen manche Antworten automatisch raus. Welche dürfen das? Deine Einstufung ist die Grundlage für diese Entscheidung.",
+            "designQuestion": "Wie würdest du Fälle nach Risiko sortieren – woran erkennt man einen riskanten Fall, und wer sollte das festlegen?",
+            "task": "Lege mit Claude eine Einstufung fest (z. B. niedrig, mittel, hoch) und die Regeln dafür – etwa Beschwerde, Betrag, Sparte, fehlender Beleg. Claude setzt sie über ein neues Werkzeug pro Fall mit Begründung; das Cockpit zeigt sie an; das Protokoll hält fest, wer sie gesetzt hat. Test: ein Beispiel pro Stufe.",
+            "decision": "Welche zwei Merkmale machen einen Fall für dich riskant – und wer darf die Einstufung ändern: Claude, du oder beide?",
+            "inspiration": [
+                "Oberfläche: Deine Prüfpunkte aus Etappe 1 als Checkliste im Freigabe-Dialog; freigeben erst, wenn alle abgehakt sind.",
+                "Oberfläche: Zeigen, was sich seit der letzten Freigabe am Text geändert hat.",
+                "Kontrollen: Ablehnen nur mit Kategorie (Ton, Fakten, Beleg, Zusage), damit man später sieht, woran Entwürfe scheitern.",
+                "Werkzeuge: Claude darf freigeben – durchdenke, warum das die Freigabe aushebelt und welcher Kompromiss denkbar wäre, z. B. ein zweiter Mensch.",
+            ],
+        },
     },
     9: {
         "learningObjective": "Den Unterschied zwischen Pflichtfreigabe und automatischem Versand nach einer sichtbaren Eingriffsfrist beurteilen.",
+        "learningGoals": [
+            "Pflichtfreigabe und Eingriffsfenster am eigenen Erleben abwägen: Aufwand, Risiko, Verantwortung.",
+            "Festlegen, welche Fälle automatisch laufen dürfen und welche nie.",
+            "Vorher sagen, was die Automatik tun wird, und es danach am Protokoll überprüfen.",
+        ],
         "mission": "Route drei neue Haftpflichtfälle und plane Antworten ein: einen laufen lassen, einen im Fenster ändern, einen aus der Queue nehmen. Spule die Workshop-Uhr im Cockpit vor und prüfe Versand und Audit.",
         "buildTaskShort": "Gestoppte Termine sichtbar machen und Doppelversand ausschließen.",
         "buildTask": "Erweitere controlNotice in get_ticket um schedule_cancelled (Text im Fenster geändert) und queue_removed (mit Begründung), damit das Cockpit gestoppte Termine erklärt. Teste in tests/test_workshop_end_to_end.py: Ein geänderter Termin wird nach dem Zeitsprung nicht gesendet, und zweimal dispatch_due_replies versendet den unveränderten Fall genau einmal. Einstieg: pfefferminzia/store.py, dispatch_due_replies in pfefferminzia/agentmail_service.py.",
         "dialogueSteps": [
-            {"phase": "Routing prüfen", "askClaude": "Ordne die drei neuen Fälle nachvollziehbar zu. Welche sind Haftpflicht, und ist der Empfänger für Antworten erlaubt? Noch nichts einplanen.", "yourMove": "Sparte, Quellen und erlaubten Empfänger selbst prüfen."},
-            {"phase": "Queue erleben", "askClaude": "Bereite belegte Antworten vor und plane sie ins 24-Stunden-Fenster ein.", "yourMove": "Im Cockpit unter „Eingriffsfenster“: einen Text ändern, einen mit Begründung aus der Queue nehmen, einen laufen lassen."},
-            {"phase": "Selbst bauen", "askClaude": "Wie machen wir gestoppte Termine und Duplikatschutz überprüfbar? Zeig mir zuerst einen kleinen Test.", "yourMove": "Die Queue-Verbesserung mit Claude umsetzen."},
-            {"phase": "Wirkung belegen", "askClaude": "Was würde nach dem Zeitsprung automatisch rausgehen? Danach prüfe Versand und Audit mit mir und hilf mir beim Commit.", "yourMove": "Im Cockpit „Workshop-Zeit +24 h“ drücken; genau einen Auto-Versand prüfen; committen."},
+            {"phase": "Routing prüfen", "askClaude": "Ordne die drei neuen Fälle nachvollziehbar zu. Welche sind Haftpflicht, und ist der Empfänger für Antworten erlaubt? Noch nichts einplanen.", "decision": "Welcher Fall wäre dir für einen automatischen Versand zu heikel – und woran erkennst du das?", "yourMove": "Sparte, Quellen und erlaubten Empfänger selbst prüfen; den heiklen Fall benennen."},
+            {"phase": "Queue erleben", "askClaude": "Bereite belegte Antworten vor und plane sie ins 24-Stunden-Fenster ein.", "decision": "Welchen lässt du laufen, welchen änderst du, welchen stoppst du – je ein Satz Begründung. Und: Wie viele Mails gehen nach +24 h raus, und welche?", "yourMove": "Die Vorhersage aufschreiben, dann im Cockpit unter „Eingriffsfenster“ einen Text ändern, einen mit Begründung aus der Queue nehmen, einen laufen lassen."},
+            {"phase": "Selbst bauen", "askClaude": "Wie machen wir gestoppte Termine und Duplikatschutz überprüfbar? Frag mich zuerst, welche Fehler am schlimmsten wären, dann ein kleiner Test.", "decision": "Was wäre schlimmer: eine Antwort doppelt oder eine gestoppte Antwort doch versendet? Welche zwei Fälle muss der Test deshalb unbedingt enthalten?", "yourMove": "Die Testfälle festlegen, das Ergebnis vorhersagen und die Queue-Verbesserung mit Claude bauen."},
+            {"phase": "Wirkung belegen", "askClaude": "Was würde nach dem Zeitsprung automatisch rausgehen? Danach prüfe Versand und Audit mit mir und hilf mir beim Commit.", "decision": "Stimmt das Ergebnis mit deiner Vorhersage überein? Würdest du das Fenster in echt kürzer oder länger machen – wovon hängt es ab?", "yourMove": "Im Cockpit „Workshop-Zeit +24 h“ drücken; genau einen Auto-Versand prüfen und mit der Vorhersage vergleichen; committen."},
+        ],
+        "reflection": "Für welche Fälle in deinem Haus wäre „läuft, wenn niemand widerspricht“ vertretbar – und wer schaut dann ins Fenster?",
+        "thinkingPrompts": [
+            "Im Fenster hat niemand widersprochen, also ging die Mail raus. Wer trägt die Verantwortung: der Agent, du oder wer das Fenster festgelegt hat?",
+            "Was passiert mit dem Eingriffsfenster am Freitagabend oder in der Ferienzeit?",
+            "Welche Routine läuft bei euch heute schon nach „geht raus, wenn niemand widerspricht“ – nur ohne Agent?",
         ],
         "timeboxMinutes": {"routeUndQueue": 15, "eingreifen": 15, "selbstBauen": 15, "versandNachweis": 10, "reflexion": 5},
         "doneWhen": "Ein Auto-Versand, ein Edit und ein Stopp sind im Audit nachvollziehbar; eigene Queue-Verbesserung getestet und committet.",
+        "bridge": "Eine Freigabe für jeden Fall kostet Zeit. Jetzt probierst du die Alternative: Antworten laufen automatisch, wenn niemand im Zeitfenster eingreift.",
+        "focusBlocks": ["Kontrollen", "Protokoll"],
+        "extension": {
+            "title": "Eine Kennzahl für deinen Report",
+            "block": "Protokoll",
+            "prepares": "In Drill 10 wird aus dem Protokoll ein Management-Bericht. Was dort nicht gezählt wird, kannst du nicht belegen.",
+            "designQuestion": "Welche Frage würde dein Vorstand zum Eingriffsfenster stellen – und was müssten wir dafür mitzählen?",
+            "task": "Lege fest, welche Frage dein Bericht beantworten soll (z. B. Warum wird im Fenster eingegriffen? Wie oft ändert der Mensch den Text des Agenten?), und ergänze in pfefferminzia/management_report.py eine gruppierte Zählung dafür – nur Zahlen, keine Texte oder Namen. Test in tests/test_management_report.py.",
+            "decision": "Welche Frage soll deine Zahl beantworten – und was würde sie ausdrücklich nicht zeigen?",
+            "inspiration": [
+                "Kontrollen: Beschwerden laufen nie automatisch, sie brauchen immer eine Freigabe.",
+                "Kontrollen: Die Fensterlänge hängt vom Fall ab, z. B. länger bei hohen Beträgen.",
+                "Oberfläche: Eine Übersicht „geht heute raus“ mit Countdown und Grund.",
+                "Werkzeuge: Claude darf nur Fälle einplanen, die deine Einstufung als niedrig führt.",
+            ],
+        },
     },
     10: {
         "learningObjective": "Aus operativen Ereignissen einen knappen, belegten Management-Befund machen – ohne aus einer lokalen Simulation Unternehmens-KPIs abzuleiten.",
+        "learningGoals": [
+            "Beobachtung, Deutung und Empfehlung trennen und die Grenze einer Aussage aus einer kleinen Simulation benennen.",
+            "Das eigene agentische System aus seinen sechs Bausteinen erklären: was es darf, wo der Mensch entscheidet.",
+            "Eine Grafik so anlegen, dass sie genau eine Frage beantwortet.",
+        ],
         "mission": "Nimm den aggregierten Schnappschuss aus Drill 9 und baue mit reveal.js und D3 einen Report mit höchstens vier Folien: Beobachtung, Grafik, Empfehlung, Grenze der Aussage.",
         "buildTaskShort": "Eine zweite, beschriftete D3-Grafik und eine eigene belegte Empfehlung bauen.",
         "buildTask": "Ergänze in slides/management.js eine zweite D3-Ansicht (z. B. Kontrollereignisse: Freigaben, Ablehnungen, Stopps, Auto-Versände) mit Achsen/Beschriftung und Nullfall, und ersetze den Empfehlungs-Platzhalter durch deine eigene begründete Empfehlung mit Grenze. Nur /api/management-report verwenden; keine Mailtexte, Namen, Secrets oder erfundenen KPIs. Test: tests/test_management_report.py.",
         "dialogueSteps": [
-            {"phase": "Befund wählen", "askClaude": "Welche Beobachtungen aus unserem Drill-9-Schnappschuss sind wirklich belegt? Bitte keine Management-Aussage erfinden.", "yourMove": "Eine Aussage und ihre Grenze selbst wählen; Demo- und Inbox-Fälle unterscheiden."},
-            {"phase": "Visualisieren", "askClaude": "Zeig mir für diese Aussage erst Datenform und Skizze einer D3-Grafik in slides/management.js, dann den Code.", "yourMove": "Grafik mit Claude bauen; Achsen, Beschriftung und Nullfälle im Browser prüfen."},
-            {"phase": "Entscheidung formulieren", "askClaude": "Hilf mir, meine Empfehlung mit Beleg, Kontrollregel und Unsicherheit auf eine Folie zu verdichten.", "yourMove": "Empfehlung und Einschränkung selbst formulieren; höchstens vier Folien."},
-            {"phase": "Vorführen", "askClaude": "Prüfe, ob die Folien lokal laufen, die Zahlen zum Snapshot passen und keine persönlichen Daten enthalten. Dann hilf mir beim Commit.", "yourMove": "Report zwei Minuten zeigen, Test ausführen, committen."},
+            {"phase": "Befund wählen", "askClaude": "Welche Beobachtungen aus unserem Drill-9-Schnappschuss sind wirklich belegt? Bitte keine Management-Aussage erfinden.", "decision": "Welche eine Frage soll dein Vorstand nach zwei Minuten beantworten können? Welche Zahl stützt die Antwort, und was würde sie widerlegen?", "yourMove": "Frage, Aussage und Grenze selbst wählen; Demo- und Inbox-Fälle unterscheiden."},
+            {"phase": "Visualisieren", "askClaude": "Zeig mir für diese Aussage erst Datenform und Skizze einer D3-Grafik in slides/management.js, dann den Code.", "decision": "Was soll man in fünf Sekunden sehen – was kommt auf die Achsen, was wird hervorgehoben, und was steht da, wenn ein Wert null ist?", "yourMove": "Skizze in Worten vorgeben, Grafik mit Claude bauen; Achsen, Beschriftung und Nullfälle im Browser prüfen."},
+            {"phase": "Entscheidung formulieren", "askClaude": "Hier ist meine Empfehlung in eigenen Worten. Kürze sie und stell mir eine kritische Rückfrage – schreib sie nicht neu.", "decision": "Wie lautet deine Empfehlung in zwei Sätzen: was, auf welchem Beleg, mit welcher Kontrollregel – und was beweist sie ausdrücklich nicht?", "yourMove": "Empfehlung und Einschränkung selbst schreiben; höchstens vier Folien."},
+            {"phase": "Vorführen", "askClaude": "Prüfe, ob die Folien lokal laufen, die Zahlen zum Snapshot passen und keine persönlichen Daten enthalten. Dann hilf mir beim Commit.", "decision": "Welche Rückfrage aus dem Vorstand fürchtest du am meisten, und was antwortest du?", "yourMove": "Report zwei Minuten zeigen, Rückfrage beantworten, Test ausführen, committen."},
+        ],
+        "reflection": "Was nimmst du aus dem Tag als Regel mit: Welche Arbeit darf ein Agent bei euch allein, mit Fenster oder nur mit Freigabe tun?",
+        "thinkingPrompts": [
+            "Welche Zahl aus dem Workshop würde dein Vorstand am ehesten falsch verstehen – und wie verhinderst du das?",
+            "Wenn du morgen einen Baustein bei euch einführen dürftest: Welcher bringt am meisten, welcher birgt das größte Risiko?",
+            "Was müsste im Protokoll stehen, damit du einem Prüfer in einem Jahr erklären kannst, warum eine Antwort rausging?",
         ],
         "timeboxMinutes": {"snapshotUndFrage": 5, "selbstBauen": 20, "interpretation": 10, "nachweisen": 5, "reflexion": 5},
         "doneWhen": "Höchstens vier präsentierbare Folien; D3-Grafik mit lokalen Zählwerten; belegte Empfehlung mit Grenze; eigener Commit.",
+        "bridge": "Alles, was heute passiert ist, steht im Protokoll. Jetzt machst du daraus eine belegte Aussage für dein Management – und zeigst dein System.",
+        "focusBlocks": ["Protokoll"],
+        "extension": {
+            "title": "Folie: Mein agentisches System",
+            "block": "alle",
+            "prepares": "Das nimmst du mit nach Hause: dein System in einem Bild.",
+            "designQuestion": "Wie würdest du einer Kollegin in einem Bild erklären, was dein System darf und wo du entscheidest?",
+            "task": "Eine Zusatzfolie am Ende (zählt nicht zu den vier Report-Folien) in slides/management.js: dein System in sechs Bausteinen – was Claude darf, wo du entscheidest, was du heute selbst gebaut hast (aus MEINE_ERWEITERUNGEN.md) und was du als Nächstes bauen würdest.",
+            "decision": "Welchen Baustein würdest du in deinem Haus als Erstes bauen – und welchen auf keinen Fall ohne menschliche Kontrolle?",
+            "inspiration": [
+                "Bonus mit restlichem Guthaben: ein 30–60-Sekunden-Video deiner Lösung mit Remotion (docs/BONUS_VIDEO.md) als letzte Folie.",
+                "Oberfläche: Die Grafik lässt sich zwischen Leben und Haftpflicht umschalten.",
+                "Protokoll: Eine Folie „Was wir nicht messen konnten“.",
+            ],
+        },
     },
 }
 
-BONUS_TASK = (
-    "Bonus mit restlichem Guthaben: ein 30–60-Sekunden-Video deiner Lösung mit Remotion bauen "
-    "(docs/BONUS_VIDEO.md) und als letzte Folie in deinen Report einbinden."
+# The day's frame: every agentic system is built from these blocks. Each drill
+# puts some in focus; its extension builds the block the next drill needs.
+BUILDING_BLOCKS = {
+    "Eingänge": "Woher kommen die Fälle? (Postfach, Abholen der Mails)",
+    "Wissen": "Was darf der Agent nachschlagen? (Kunden, Verträge, Tarife, eigene Notizen)",
+    "Werkzeuge": "Was darf der Agent tun? Jedes Werkzeug ist eine Hand – was fehlt, kann er nicht.",
+    "Kontrollen": "Wo prüft eine Regel, wo entscheidet ein Mensch? (Prüfregel, Freigabe, Eingriffsfenster)",
+    "Oberfläche": "Was sieht und tut der Mensch? (Cockpit)",
+    "Protokoll": "Was wird festgehalten, damit man es später belegen kann?",
+}
+
+# Every extension starts as a short spec in the participant's own words.
+SPEC_QUESTIONS = [
+    "Was soll neu möglich sein – in einem Satz, aus Sicht der Person, die damit arbeitet?",
+    "Welcher Baustein ist das: Eingänge, Wissen, Werkzeuge, Kontrollen, Oberfläche oder Protokoll?",
+    "Wer löst es aus: du im Cockpit, Claude über ein Werkzeug oder eine Automatik?",
+    "Welche Daten braucht es – und welche darf es auf keinen Fall sehen oder ändern?",
+    "Welche Kontrolle gehört dazu?",
+    "Woran erkennen wir, dass es funktioniert: ein Beispiel, ein Gegenbeispiel – und was steht danach im Protokoll?",
+]
+
+EXTENSION_RULES = (
+    "Erst fragen, was die Person in ihrer Kommandozentrale gern hätte. Hat sie keine eigene Idee, das Problem der "
+    "empfohlenen Erweiterung mit ihrer 'designQuestion' öffnen – 'task' ist nur deine Richtung, nicht vorlesen und "
+    "nicht vorbauen. Ihre Skizze bestimmt den Entwurf; du ergänzt mit Rückfragen. Dann den Steckbrief "
+    "(specQuestions) im Gespräch klären, höchstens zwei Fragen auf einmal; ein Risiko und eine Alternative nennen, "
+    "die Person entscheidet. Den Steckbrief in MEINE_ERWEITERUNGEN.md festhalten, dann klein und mit Test bauen. "
+    "Nur erfundene Daten. Ein neues Werkzeug für Claude erscheint erst in einer neuen Code-Sitzung. Werkzeuge mit "
+    "Außenwirkung (senden, freigeben, Zeit) nur mit einer Kontrolle im Steckbrief; die Antwort-Liste bleibt unangetastet, "
+    "und Claude nutzt ein solches Werkzeug nur nach frischem, ausdrücklichem Ja für genau diesen Fall."
 )
 
+# The case every participant must have handled before extensions open:
+# (description, SQL over ticket_events that counts matching evidence).
+CASE_EVIDENCE: dict[int, list[tuple[str, str]]] = {
+    6: [("Eine Antwort wurde von einem Menschen im Cockpit gesendet.",
+         "SELECT COUNT(*) FROM ticket_events WHERE type = 'reply_sent' AND actor != 'auto-send-worker'")],
+    7: [("Eine Lebensantwort wurde von einem Menschen im Cockpit gesendet.",
+         "SELECT COUNT(*) FROM ticket_events e JOIN tickets t ON t.id = e.ticket_id"
+         " WHERE e.type = 'reply_sent' AND e.actor != 'auto-send-worker' AND t.product_line = 'life'")],
+    8: [("Ein Entwurf wurde im Cockpit freigegeben.", "SELECT COUNT(*) FROM ticket_events WHERE type = 'draft_approved'"),
+        ("Ein Entwurf wurde im Cockpit begründet abgelehnt.", "SELECT COUNT(*) FROM ticket_events WHERE type = 'draft_rejected'")],
+    9: [("Eine Antwort lief nach dem Zeitfenster automatisch raus.",
+         "SELECT COUNT(*) FROM ticket_events WHERE type = 'reply_sent' AND actor = 'auto-send-worker'"),
+        ("Ein eingeplanter Text wurde im Fenster geändert.", "SELECT COUNT(*) FROM ticket_events WHERE type = 'schedule_cancelled'"),
+        ("Eine Antwort wurde mit Begründung aus der Queue genommen.", "SELECT COUNT(*) FROM ticket_events WHERE type = 'queue_removed'")],
+    10: [],
+}
 
-def advance_task(drill: int) -> str:
-    """The opt-in task for fast participants: the next drill's build task on their own branch."""
-    if drill + 1 in DRILL_BRIEFS:
-        return f"Vorausbauen im eigenen Branch: {DRILL_BRIEFS[drill + 1]['buildTask']}"
-    return BONUS_TASK
+
+def case_evidence(drill: int, db: sqlite3.Connection | None = None) -> dict[str, Any]:
+    """What the audit log already shows of this drill's case, and what is still missing."""
+    db = db or get_database()
+    missing = [text for text, query in CASE_EVIDENCE[drill] if not db.execute(query).fetchone()[0]]
+    return {"complete": not missing, "missing": missing}
 
 
 def normalize_checkpoint(value: str) -> str:
@@ -304,31 +482,54 @@ HINTS = {
 
 
 def drill_guide(
-    hint_level: int = 0, db: sqlite3.Connection | None = None, *, include_advance_task: bool = False
+    hint_level: int = 0, db: sqlite3.Connection | None = None, *, include_extensions: bool = False
 ) -> dict[str, Any]:
+    db = db or get_database()
     profile = checkpoint_profile(db)
     drill = profile["drill"]
     bounded = max(0, min(hint_level, 3))
+    evidence = case_evidence(drill, db)
+    brief = DRILL_BRIEFS[drill]
+    extensions = None
+    if include_extensions:
+        extensions = {"unlocked": evidence["complete"], "missing": evidence["missing"]}
+        if evidence["complete"]:
+            extensions |= {"recommended": brief["extension"], "specQuestions": SPEC_QUESTIONS, "rules": EXTENSION_RULES}
     reference = REFERENCE_TAGS[drill]
     previous = f"checkpoint/{profile['name']}" if profile["name"] != "drill-10-complete" else "checkpoint/drill-10-start"
     return {
         "checkpoint": profile,
-        **DRILL_BRIEFS[drill],
+        **{key: value for key, value in brief.items() if key != "extension"},
+        "buildingBlocks": BUILDING_BLOCKS,
         "learningPath": {
             "commonEvidence": "Fall im Cockpit und MCP nachvollziehen, eigene Codeänderung testen, Diff prüfen und auf eigenem Branch committen.",
             "guided": "Nur nächsten Schritt, Dateistelle und kleinen Test zeigen; bei Bedarf den offiziellen Checkpoint laden.",
             "building": "Akzeptanzkriterien geben, Code in kleinen Iterationen mit der Person bauen und verifizieren.",
-            "advance": "Erst nach aktuellem Fallnachweis und ausdrücklichem Opt-in: nächsten Bauauftrag im eigenen Branch.",
+            "extend": "Erst nach Fallnachweis, eigenem Bauauftrag und auf Wunsch: die eigene Kommandozentrale erweitern – mit Steckbrief, im Baustein, den der nächste Drill braucht.",
         },
         "referenceSolution": {
             "tag": f"checkpoint/{reference}",
             "diff": f"git diff {previous} checkpoint/{reference}",
             "rule": "Nur im Rettungsmodus oder auf ausdrücklichen Wunsch zeigen; sonst nur als Orientierung für die Richtung nutzen.",
         },
-        "advanceTask": advance_task(drill) if include_advance_task else None,
+        "caseEvidence": evidence,
+        "extensions": extensions,
         "hintLevel": bounded,
         "hint": None if bounded == 0 else HINTS[drill][bounded - 1],
-        "instruction": "Die vier Dialogetappen sind eine Landkarte, kein Copy-paste-Auftrag. Frage nach der gewünschten Hilfstiefe (geführt, bauend, vorausbauend), beginne mit der aktuellen Etappe und warte an jedem 'yourMove'. Freigeben, Senden und Zeitsprung macht der Mensch im Cockpit. Eigener Test, Diff und Commit gehören zum Abschluss; eine vollständige Lösung nur auf ausdrücklichen Wunsch.",
+        "instruction": (
+            "Die vier Dialogetappen sind eine Landkarte, kein Copy-paste-Auftrag. Frage nach der gewünschten Hilfstiefe, "
+            "beginne mit der aktuellen Etappe und stelle dort zuerst die Frage aus 'decision' – bevor du etwas entwirfst, "
+            "baust oder vorschlägst. Frag offen („Was meinst du, wie sollten wir … aufbauen?“), greif die Idee der Person auf, "
+            "schärfe sie mit einer Rückfrage („Und was passiert, wenn …?“) und ergänze erst dann, was fehlt. Die Antwort "
+            "der Person bestimmt, was du tust. Nur wer nach der offenen Frage hängt, bekommt zwei, drei Denkrichtungen "
+            "mit ihren Folgen – als Anstoß, nicht als Menü. In Wartezeiten und wenn die Person früh fertig ist, einen "
+            "Denkanstoß aus 'thinkingPrompts' stellen und ihn auf ihr eigenes Haus beziehen. Beim Bauen: Regel in ihren "
+            "Worten → Beispiele mit einem eigenen Gegenfall → Vorhersage rot/grün → kleine Änderung → Diff in drei "
+            "Alltagssätzen → Person prüft im Cockpit. Warte an jedem 'yourMove'. Freigeben, Senden und Zeitsprung macht "
+            "der Mensch im Cockpit. Vor dem Commit die Frage aus 'reflection' stellen. Zum Einstieg 'bridge' und die "
+            "Bausteine aus 'focusBlocks' nennen. Den eigenen Bauauftrag nie überspringen; wer fertig ist, erweitert "
+            "das eigene System ('extensions', erst wenn 'caseEvidence.complete' wahr ist) – nie den nächsten Drill vorwegnehmen."
+        ),
     }
 
 

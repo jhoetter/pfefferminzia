@@ -173,7 +173,8 @@ def get_workshop_status(db: sqlite3.Connection | None = None) -> dict[str, Any]:
         "workshopClaims": claims,
         "importedTruthTables": truth_tables,
         "checkpoint": profile,
-        "drillBrief": DRILL_BRIEFS[profile["drill"]],
+        # The extension opens through get_drill_guide once the case is done.
+        "drillBrief": {key: value for key, value in DRILL_BRIEFS[profile["drill"]].items() if key != "extension"},
         "clock": clock_status(db),
         "agentMail": agentmail_configuration(probe=False),
         "lastInboxSync": (

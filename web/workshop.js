@@ -401,6 +401,9 @@ document.addEventListener('keydown', event => {
   if (event.key === 'k' || event.key === 'ArrowUp') { event.preventDefault(); moveSelection(-1); }
 });
 
+// Claude links straight to a case: /?ticket=PF-1008 opens it without a click.
+const linked = new URLSearchParams(window.location.search).get('ticket');
+if (linked && /^PF-\d+$/.test(linked)) state.selected = linked;
 refresh();
 window.setInterval(() => refresh({ quiet: true }), 8000);
 window.setInterval(updateCountdowns, 1000);

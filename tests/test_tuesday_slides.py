@@ -47,7 +47,7 @@ def test_tuesday_deck_covers_all_five_milestones() -> None:
     assert "DEIN SCHRITT" in script
     assert "Dialog statt Zauberprompt" in script
     assert "LiveBeispiele" in ids
-    assert "Vorausbauend" in script
+    assert "Ausbauend" in script
     assert "Cron" in script
     assert "keine echte Aktion" in script
     assert "Ich bin in Drill 6" in script

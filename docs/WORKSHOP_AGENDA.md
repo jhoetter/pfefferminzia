@@ -51,7 +51,7 @@ Die letzte Frage bildet bewusst die Brücke von Augmentation zu Automation.
 | Zeit | Programmpunkt | Inhalt und Ergebnis |
 | --- | --- | --- |
 | 08:30–09:45 | **Input – Vom Assistenten zum Agenten: Wenn KI handelt** | Johannes zeigt seine fertigen Anwendungen live (app/design/tracker.sonaloop.com), erklärt Vibe Coding mit Claude Code, MCP, Verifizierbarkeit und die zwei Kontrollmuster. Danach: ein Satz an Claude, und jede Person hat ihre eigene Kommandozentrale. |
-| 10:00–11:00 | **Drill 6 – Die Kommandozentrale für Agenten** | Claude klont und startet die Software; die Mail der Lehrperson liegt mit Aufgabe im Posteingang: Claude entwirft die Antwort, der Mensch sendet im Cockpit. Danach bauen: Aufgabe erledigt sich beim Senden. |
+| 10:00–11:00 | **Drill 6 – Die Kommandozentrale für Agenten** | Claude klont und startet die Software; die Mail der Lehrperson liegt mit Aufgabe im Posteingang: Der Mensch sagt, was drinstehen soll, Claude entwirft. Vor dem Senden bauen: Aufgabe erledigt sich beim Senden; das eigene Senden im Cockpit ist der Beweis. |
 | 11:15–12:15 | **Drill 7 – Leben: Der Mensch bearbeitet, der Agent bereitet vor** | Kunde, Vertrag und Tarifgeneration prüfen; belegten Entwurf redigieren und bewusst selbst versenden. Eine Tarif-Belegprüfung mit Claude bauen. |
 | 12:15–13:15 | **Mittagspause** | Abstand vor den Automationsmustern. |
 | 13:15–14:15 | **Drill 8 – Leben: Der Agent bearbeitet, der Mensch gibt frei** | Claude bereitet zwei Fälle vor; im Cockpit einen freigeben, einen ablehnen (Claude hat kein Freigabe-Werkzeug). Review-Zustand selbst verbessern und belegen, dass ein Edit die Freigabe entwertet. |
@@ -110,19 +110,25 @@ Auftrag ausführen oder bloß ein zufälliges Todo vorschlagen.
 
 Die Teilnehmenden können in Paaren zusammenarbeiten, betreiben aber jeweils ein
 isoliertes lokales System mit eigener Inbox und eigener Kopie. Der Lehrende
-kann nach jeder Phase gemeinsam weitergehen; Vorausbau ist freiwillig und
+kann nach jeder Phase gemeinsam weitergehen; Ausbauen ist freiwillig und
 kein Grund, andere zu bremsen oder spätere Funktionen ungefragt zu zeigen.
 
-### Optionale Vertiefung und Vorausbau
+### Optionale Vertiefung und Ausbau
 
 Die Challenges vertiefen einen bestehenden Drill. Generische Kosten- oder
 Deckungsfragen benötigen dafür keinen eigenen Programmpunkt.
 
-Wer den Fall und den Codebeitrag früh nachweist, kann stattdessen auf
-ausdrücklichen Wunsch den **nächsten** Bauauftrag selbst beginnen. Die
-Akzeptanzkriterien kommen vor der Lösung; beim gemeinsamen Wechsel kann die
-Person ihren Branch behalten oder nach Rückfrage den offiziellen Checkpoint
-in einem neuen Worktree laden. Diese Wahl wird nie über einen Reset erzwungen.
+Wer den Fall und den Codebeitrag früh nachweist, erweitert auf Wunsch die
+**eigene** Kommandozentrale – nie den nächsten Drill. Das Ziel ist zu lernen,
+wie man ein agentisches System aus sechs Bausteinen gestaltet (Eingänge,
+Wissen, Werkzeuge, Kontrollen, Oberfläche, Protokoll). Die empfohlene
+Erweiterung eines Drills baut im Kleinen den Baustein, den der nächste Drill
+im Großen zeigt, z. B. eine Mini-Wissensbasis vor den Tarifen in Drill 7.
+Eigene Ideen – etwa ein Sende-Werkzeug für Claude oder eine neue Ansicht –
+beginnen mit einem Steckbrief (`MEINE_ERWEITERUNGEN.md`). Beim gemeinsamen
+Wechsel kann die Person ihren Stand mitnehmen oder nach Rückfrage den
+offiziellen Checkpoint in einem neuen Worktree laden. Diese Wahl wird nie über
+einen Reset erzwungen.
 
 - Zwei Kunden haben sehr ähnliche Namen.
 - In der eingehenden Nachricht fehlt die Vertragsnummer.

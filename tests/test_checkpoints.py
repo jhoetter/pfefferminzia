@@ -1,4 +1,4 @@
-from pfefferminzia.checkpoints import activate_checkpoint, adopt_checkpoint, checkpoint_profile, drill_guide, verify_checkpoint
+from pfefferminzia.checkpoints import DRILL_BRIEFS, activate_checkpoint, adopt_checkpoint, checkpoint_profile, drill_guide, verify_checkpoint
 from pfefferminzia.workshop import ensure_workshop_fixtures
 
 
@@ -13,10 +13,23 @@ def test_checkpoint_activation_resets_clock_and_guides_without_spoilers(monkeypa
     assert "24" not in first_hint["hint"]
     assert sum(first_hint["timeboxMinutes"].values()) == 60
     assert "Tarifgeneration" in first_hint["buildTask"]
-    assert first_hint["advanceTask"] is None
-    advance = drill_guide(0, full_db, include_advance_task=True)
-    assert "controlNotice" in advance["advanceTask"]
-    assert advance["referenceSolution"]["tag"] == "checkpoint/drill-08-start"
+    assert first_hint["extensions"] is None and "extension" not in first_hint
+    locked = drill_guide(0, full_db, include_extensions=True)
+    assert locked["caseEvidence"]["complete"] is False
+    assert locked["extensions"] == {"unlocked": False, "missing": locked["caseEvidence"]["missing"]}
+    life = full_db.execute("SELECT id FROM tickets WHERE product_line = 'life' LIMIT 1").fetchone()["id"]
+    full_db.execute(
+        "INSERT INTO ticket_events (ticket_id, type, actor, created_at) VALUES (?, 'reply_sent', 'cockpit-user', '2026-09-29T10:00:00Z')",
+        (life,),
+    )
+    opened = drill_guide(0, full_db, include_extensions=True)
+    assert opened["caseEvidence"] == {"complete": True, "missing": []}
+    extensions = opened["extensions"]
+    assert extensions["unlocked"] and len(extensions["specQuestions"]) == 6
+    # Fast participants extend their own system; they never start the next drill's build task.
+    assert extensions["recommended"]["title"] == "Beleg-Kasten im Cockpit"
+    assert "controlNotice" not in str(extensions)
+    assert opened["referenceSolution"]["tag"] == "checkpoint/drill-08-start"
 
 
 def test_drill_six_guide_starts_with_a_real_inbox_mission(monkeypatch, full_db):
@@ -47,8 +60,19 @@ def test_each_drill_guides_separate_claude_questions_and_human_stops(monkeypatch
         guide = drill_guide(0, full_db)
         steps = guide["dialogueSteps"]
         assert len(steps) == 4
-        assert all(set(step) == {"phase", "askClaude", "yourMove"} for step in steps)
-        assert all(step["askClaude"] and step["yourMove"] for step in steps)
+        assert all(set(step) == {"phase", "askClaude", "decision", "yourMove"} for step in steps)
+        # Every step asks the participant for a judgement, not just a go-ahead.
+        assert all(step["askClaude"] and step["yourMove"] and step["decision"].rstrip().endswith("?") for step in steps)
+        assert len(guide["learningGoals"]) == 3 and guide["reflection"].endswith("?")
+        assert "decision" in guide["instruction"] and "reflection" in guide["instruction"]
+        assert guide["bridge"] and set(guide["focusBlocks"]) <= set(guide["buildingBlocks"])
+        extension = DRILL_BRIEFS[drill]["extension"]
+        assert extension["decision"].endswith("?") and extension["prepares"] and extension["inspiration"]
+        # Early finishers get open questions to think with, not a finished solution.
+        assert extension["designQuestion"].endswith("?")
+        assert len(guide["thinkingPrompts"]) == 3 and all(t.endswith("?") for t in guide["thinkingPrompts"])
+        assert "thinkingPrompts" in guide["instruction"]
+        assert extension["block"] in {*guide["buildingBlocks"], "alle"}
         assert "vier Dialogetappen" in guide["instruction"]
         assert sum(guide["timeboxMinutes"].values()) == (45 if drill == 10 else 60)
         assert "Cockpit" in guide["instruction"]
@@ -85,3 +109,17 @@ def test_report_checkpoint_needs_snapshot_but_not_live_inbox(monkeypatch, full_d
     result = verify_checkpoint(False, full_db)
     assert result["ok"] is True
     assert next(item for item in result["checks"] if item["name"] == "agentmail-configuration")["required"] is False
+
+
+def test_extensions_wait_for_the_auto_send_edit_and_stop_in_drill_nine(monkeypatch, full_db):
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-09-start")
+    ensure_workshop_fixtures(full_db)
+    ticket = full_db.execute("SELECT id FROM tickets LIMIT 1").fetchone()["id"]
+    for kind, actor in (("reply_sent", "auto-send-worker"), ("schedule_cancelled", "cockpit-user")):
+        full_db.execute(
+            "INSERT INTO ticket_events (ticket_id, type, actor, created_at) VALUES (?, ?, ?, '2026-09-29T10:00:00Z')",
+            (ticket, kind, actor),
+        )
+    guide = drill_guide(0, full_db, include_extensions=True)
+    assert guide["caseEvidence"]["missing"] == ["Eine Antwort wurde mit Begründung aus der Queue genommen."]
+    assert guide["extensions"]["unlocked"] is False and "recommended" not in guide["extensions"]

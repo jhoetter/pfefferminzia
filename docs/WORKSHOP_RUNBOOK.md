@@ -96,7 +96,7 @@ Code-Sitzung mit dem neuen Ordner.
 | Zeit | Du sagst | Du tust |
 | --- | --- | --- |
 | 08:30 | Input-Deck (`?deck=input`), Live-Beispiele | – |
-| 10:00 | Drill 6: „Sagt Claude den Satz vom Zettel … ihr seht ein Softwaregerüst. Erste Aufgabe liegt schon im Posteingang: meine Mail beantworten – Claude schreibt, ihr sendet. Dann mit Claude bauen, dass sich die Aufgabe beim Senden erledigt. Wenn ihr nicht weiterwisst: fragt Claude.“ | **Vorher** (z. B. 09:45): „Schick die Drill-6-Begrüßung an alle“ oder eigene Mail per BCC |
+| 10:00 | Drill 6: „Sagt Claude den Satz vom Zettel … ihr seht ein Softwaregerüst. Erste Aufgabe liegt schon im Posteingang: meine Mail beantworten – ihr sagt, was drinstehen soll, Claude schreibt. Bevor ihr sendet, baut ihr mit Claude, dass sich die Aufgabe beim Senden erledigt; euer Senden ist der Beweis. Claude fragt euch dabei immer zuerst nach eurer Entscheidung. Wenn ihr nicht weiterwisst: fragt Claude.“ | **Vorher** (z. B. 09:45): „Schick die Drill-6-Begrüßung an alle“ oder eigene Mail per BCC |
 | 11:15 | Drill 7: „Ladet mit Claude Drill 7 – mitnehmen oder offiziell.“ | nach dem Laden `instructor send 7 --yes` |
 | 13:15 | Drill 8 | `instructor send 8 --yes` |
 | 14:30 | Drill 9 | `instructor send 9 --yes` |
@@ -142,9 +142,15 @@ alter Nummerierung 8–12).
 ## Schnelle Teilnehmende
 
 Nach Fallnachweis und eigenem Commit echte Wahl anbieten: diesen Drill mit
-einer Challenge vertiefen **oder** den nächsten Bauauftrag im eigenen Branch
-beginnen (Claude: `includeAdvanceTask`). Nicht der Gruppe verraten. Oder
-Buddy werden: Fragen stellen, nicht Tastatur oder Freigabe übernehmen.
+einer Challenge vertiefen **oder** die eigene Kommandozentrale erweitern
+(Claude: `includeExtensions`; erst nach dem Fallnachweis offen). Nie den
+nächsten Drill vorwegnehmen. Die empfohlene Erweiterung baut den Baustein,
+den der nächste Drill im Großen zeigt (Drill 6: Mini-Wissensbasis → Drill 7:
+Tarife); eigene Ideen sind ausdrücklich erwünscht, z. B. „Claude darf
+senden“ – dann mit Kontrolle im Steckbrief (`MEINE_ERWEITERUNGEN.md`). Beim
+Drill-Wechsel „mitnehmen“ wählen, sonst fehlt die Erweiterung im neuen
+Ordner. Oder Buddy werden: Fragen stellen, nicht Tastatur oder Freigabe
+übernehmen.
 
 - Drill 6: auf die eigene Gmail-Testmail antworten und verstehen, warum die App das blockiert (Antwort-Liste).
 - Drill 7: ähnliche Namen, fehlende Vertragsnummer, `send challenge` (Anweisung im Mailtext).

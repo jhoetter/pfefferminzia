@@ -56,7 +56,8 @@ Die Drill-Karten zum Nachlesen: [docs/DRILL_CARDS.md](docs/DRILL_CARDS.md).
 Jeder Drill hat einen Fall, den alle erleben, und einen kleinen Bauauftrag,
 den du mit Claude umsetzt, testest und committest. Wie viel Code du selbst
 schreibst, darf verschieden sein. Die Arbeitsweisen (geführt, bauend,
-vorausbauend) stehen im [Lernpfad](docs/LEARNING_PATH.md).
+ausbauend) und die sechs Bausteine eines agentischen Systems stehen im
+[Lernpfad](docs/LEARNING_PATH.md).
 
 ## Für Lehrende
 
