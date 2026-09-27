@@ -69,5 +69,5 @@ def capture_report_snapshot(
 def read_report_snapshot(root: Path = ROOT) -> dict[str, Any]:
     path = root / REPORT_SNAPSHOT
     if not path.is_file():
-        raise ValueError("Report-Schnappschuss fehlt: Drill 12 aus dem Drill-11-Arbeitsstand laden")
+        raise ValueError("Report-Schnappschuss fehlt: Drill 10 aus dem Drill-9-Arbeitsstand laden")
     return json.loads(path.read_text(encoding="utf-8"))

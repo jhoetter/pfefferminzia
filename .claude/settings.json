@@ -1,0 +1,18 @@
+{
+  "enabledMcpjsonServers": ["pfefferminzia"],
+  "permissions": {
+    "allow": [
+      "mcp__pfefferminzia",
+      "Bash(uv run pytest:*)",
+      "Bash(uv run pfefferminzia checkpoint status)",
+      "Bash(uv run pfefferminzia checkpoint verify)",
+      "Bash(curl -s http://127.0.0.1:3004/api/health)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ],
+    "ask": [
+      "mcp__pfefferminzia__apply_checkpoint_load"
+    ]
+  }
+}

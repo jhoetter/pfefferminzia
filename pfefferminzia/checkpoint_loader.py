@@ -116,8 +116,8 @@ def plan_checkpoint_load(target_checkpoint: str, mode: LoadMode = "official") ->
     if mode not in ("official", "continue"):
         raise ValueError("Mode must be 'official' or 'continue'")
     checkpoint = normalize_checkpoint(target_checkpoint)
-    automatic_dispatch = checkpoint in ("drill-11-start", "drill-11-complete")
-    report_snapshot = checkpoint in ("drill-12-start", "drill-12-complete")
+    automatic_dispatch = checkpoint == "drill-09-start"
+    report_snapshot = checkpoint in ("drill-10-start", "drill-10-complete")
     configured_database = os.getenv("PFEFFERMINZIA_DB_PATH")
     source_database = (
         (ROOT / configured_database).resolve() if configured_database else ROOT / ".data" / "pfefferminzia.db"
@@ -148,7 +148,7 @@ def plan_checkpoint_load(target_checkpoint: str, mode: LoadMode = "official") ->
         "createdAtEpoch": time.time(),
         "sourceFingerprint": _source_fingerprint(source_head, dirty_paths),
         "sourceContentFingerprint": content_fingerprint,
-        "sourceCheckpoint": os.getenv("WORKSHOP_CHECKPOINT", "drill-08-start"),
+        "sourceCheckpoint": os.getenv("WORKSHOP_CHECKPOINT", "drill-06-start"),
         "sourceDatabase": str(source_database),
     }
     plans_dir = _plans_dir()
@@ -183,11 +183,11 @@ def plan_checkpoint_load(target_checkpoint: str, mode: LoadMode = "official") ->
             + ("Dein Code (auch uncommittierte Änderungen) und die bisherigen Fälle werden in den neuen Worktree kopiert. "
                if mode == "continue" else "Der neue Worktree erhält offiziellen Code und eine frische Fall-Datenbank; deine Änderungen bleiben nur im alten Ordner. ")
             + (
-                " In Drill 11 wird Auto-Versand für später eingereichte Haftpflichtantworten nach dem sichtbaren Zeitfenster aktiviert."
+                " In Drill 9 wird Auto-Versand für später eingereichte Haftpflichtantworten nach dem sichtbaren Zeitfenster aktiviert."
                 if automatic_dispatch else ""
             )
             + (
-                " Für den Drill-12-Report werden nur aggregierte Zählwerte aus deiner bisherigen Datenbank übernommen; keine Mailtexte, Namen oder Schlüssel im Report. Die lokale .env wird wie bei jedem Checkpoint separat kopiert. Auto-Versand ist dort aus."
+                " Für den Drill-10-Report werden nur aggregierte Zählwerte aus deiner bisherigen Datenbank übernommen; keine Mailtexte, Namen oder Schlüssel im Report. Die lokale .env wird wie bei jedem Checkpoint separat kopiert. Auto-Versand ist dort aus."
                 if report_snapshot else ""
             )
         ),
@@ -231,7 +231,7 @@ def apply_checkpoint_load(confirmation_token: str) -> dict[str, Any]:
         _write_checkpoint_environment(target, plan["checkpoint"])
         if plan.get("mode") == "continue":
             _copy_database(Path(plan["sourceDatabase"]), target)
-        if plan["checkpoint"] in ("drill-12-start", "drill-12-complete"):
+        if plan["checkpoint"] in ("drill-10-start", "drill-10-complete"):
             capture_report_snapshot(ROOT, target, plan["sourceCheckpoint"], Path(plan["sourceDatabase"]))
         _run(["uv", "sync", "--frozen"], target)
         _run(
@@ -272,7 +272,7 @@ def _write_checkpoint_environment(target: Path, checkpoint: str) -> None:
     replaced = {"WORKSHOP_CHECKPOINT", "PFEFFERMINZIA_DB_PATH", "AUTO_SEND_ENABLED"}
     retained = [line for line in lines if line.partition("=")[0].strip() not in replaced]
     retained.append(f"WORKSHOP_CHECKPOINT={checkpoint}")
-    retained.append(f"AUTO_SEND_ENABLED={'true' if checkpoint in ('drill-11-start', 'drill-11-complete') else 'false'}")
+    retained.append(f"AUTO_SEND_ENABLED={'true' if checkpoint == 'drill-09-start' else 'false'}")
     destination = target / ".env"
     destination.write_text("\n".join(retained) + "\n", encoding="utf-8")
     destination.chmod(0o600)

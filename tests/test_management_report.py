@@ -28,9 +28,9 @@ def test_report_snapshot_contains_only_aggregated_counts(tmp_path):
     )
     db.close()
 
-    capture_report_snapshot(source, target, "drill-11-start")
+    capture_report_snapshot(source, target, "drill-09-start")
     report = read_report_snapshot(target)
-    assert report["sourceCheckpoint"] == "drill-11-start"
+    assert report["sourceCheckpoint"] == "drill-09-start"
     assert sum(row["count"] for row in report["tickets"]) == 2
     assert report["events"] == [{"type": "reply_sent", "mode": "automatic", "count": 1}]
     raw = (target / ".data" / "management-report.json").read_text(encoding="utf-8")
@@ -42,9 +42,9 @@ def test_report_api_is_gated_to_final_drill(monkeypatch):
     import pfefferminzia.app as app_module
 
     monkeypatch.setattr(app_module, "read_report_snapshot", lambda: {"tickets": [], "events": []})
-    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-11-start")
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-09-start")
     assert TestClient(create_app()).get("/api/management-report").status_code == 400
-    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-12-start")
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-10-start")
     response = TestClient(create_app()).get("/api/management-report")
     assert response.status_code == 200
     assert response.json() == {"tickets": [], "events": []}

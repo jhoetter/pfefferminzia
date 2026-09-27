@@ -9,198 +9,190 @@ from .database import get_database
 from .util import utc_now
 
 
+# Tuesday continues Falk's Monday drills 1–5. Each official checkpoint tag
+# `checkpoint/<name>` contains the reference solution of every earlier build
+# task; `drill-10-complete` also contains the Drill-10 report solution.
+BASE_CAPABILITIES = ["core", "inbox", "todos"]
 CHECKPOINTS: dict[str, dict[str, Any]] = {
+    "drill-06-start": {
+        "order": 6,
+        "drill": 6,
+        "title": "Die Kommandozentrale",
+        "goal": "Eine selbst gesendete Testmail vom AgentMail-Postfach bis ins Cockpit und MCP verfolgen; daraus eine echte nächste Aufgabe ableiten.",
+        "capabilities": BASE_CAPABILITIES,
+        "successCriteria": [
+            "Pfefferminzia läuft lokal und Claude sieht den Pfefferminzia-MCP-Server.",
+            "Eine neue Testmail an die persönliche Inbox erscheint als dasselbe Ticket im Cockpit und über MCP.",
+            "Ein ticketbezogenes Todo benennt den nächsten sinnvollen Schritt und wird erst nach Prüfung abgeschlossen.",
+            "Ein eigener Codebeitrag am Eingangs-Workflow ist getestet und committet.",
+        ],
+    },
+    "drill-07-start": {
+        "order": 7,
+        "drill": 7,
+        "title": "Leben: Mensch bearbeitet, Agent bereitet vor",
+        "goal": "Aus einer Lebensanfrage einen belegten Entwurf machen; die letzte Textänderung und den Versand bewusst beim Menschen halten.",
+        "capabilities": [*BASE_CAPABILITIES, "knowledge", "draft", "manual_send"],
+        "successCriteria": [
+            "Ein Lebensfall ist Kunde, Vertrag und Tarifgeneration zugeordnet.",
+            "Claude hat einen belegten Antwortentwurf vorbereitet.",
+            "Ein Mensch hat den Entwurf im Cockpit bearbeitet und dort versendet.",
+            "Ein eigener Codebeitrag an der Belegprüfung ist getestet und committet.",
+        ],
+    },
     "drill-08-start": {
         "order": 8,
         "drill": 8,
-        "title": "Die Kommandozentrale",
-        "goal": "Eine selbst gesendete Testmail vom AgentMail-Postfach bis ins Cockpit und MCP verfolgen; daraus eine echte nächste Aufgabe ableiten.",
-        "capabilities": ["core", "inbox", "todos"],
+        "title": "Leben: Agent bearbeitet, Mensch gibt frei",
+        "goal": "Agentische Vorbereitung von Lebensfällen erlauben, aber jede externe Wirkung an eine aktuelle menschliche Freigabe im Cockpit binden.",
+        "capabilities": [*BASE_CAPABILITIES, "knowledge", "draft", "manual_send", "life_review", "claims"],
         "successCriteria": [
-            "Pfefferminzia läuft lokal.",
-            "Claude sieht den Pfefferminzia-MCP-Server.",
-            "Eine neue Testmail an die persönliche Inbox erscheint als dasselbe Ticket im Cockpit und über MCP.",
-            "Ein ticketbezogenes Todo benennt den nächsten sinnvollen Schritt und wird erst nach Prüfung abgeschlossen.",
-            "Ein eigener Codebeitrag am Eingangs-Workflow ist getestet und im eigenen Fork gesichert.",
+            "Mehrere Lebensfälle wurden vollständig vorbereitet.",
+            "Ohne Freigabe im Cockpit konnte keine Antwort das System verlassen.",
+            "Mindestens ein Vorschlag wurde abgelehnt und überarbeitet.",
+            "Ein eigener Codebeitrag am Review-Pfad ist getestet und committet.",
         ],
     },
     "drill-09-start": {
         "order": 9,
         "drill": 9,
-        "title": "Leben: Mensch bearbeitet, Agent bereitet vor",
-        "goal": "Aus einer Lebensanfrage einen belegten Entwurf machen; die letzte Textänderung und den Versand bewusst beim Menschen halten.",
-        "capabilities": ["core", "inbox", "todos", "knowledge", "draft", "manual_send"],
+        "title": "Haftpflicht: Automatisch, solange niemand widerspricht",
+        "goal": "Haftpflichtantworten durch ein sichtbares Eingriffsfenster steuern und den Gegensatz zur Pflichtfreigabe selbst erleben.",
+        "capabilities": [
+            *BASE_CAPABILITIES, "knowledge", "draft", "manual_send", "life_review", "claims",
+            "router", "intervention_queue", "workshop_clock",
+        ],
         "successCriteria": [
-            "Ein Lebensfall ist Kunde, Vertrag und Tarifgeneration zugeordnet.",
-            "Claude hat einen belegten Antwortentwurf vorbereitet.",
-            "Ein Mensch hat den Entwurf bearbeitet und den Versand ausdrücklich ausgelöst.",
-            "Ein eigener Codebeitrag an der Belegprüfung ist getestet und im eigenen Fork gesichert.",
+            "Router trennt Leben und Haftpflicht nachvollziehbar.",
+            "Eine Haftpflichtantwort lief nach dem Zeitfenster automatisch durch.",
+            "Eine zweite Antwort wurde im Zeitfenster bearbeitet, eine dritte aus der Queue genommen.",
+            "Ein eigener Codebeitrag an Queue oder Timer ist getestet und committet.",
         ],
     },
     "drill-10-start": {
         "order": 10,
         "drill": 10,
-        "title": "Leben: Agent bearbeitet, Mensch gibt frei",
-        "goal": "Agentische Vorbereitung von Lebensfällen erlauben, aber jede externe Wirkung an eine aktuelle menschliche Freigabe binden.",
-        "capabilities": [
-            "core", "inbox", "todos", "knowledge", "draft", "manual_send", "life_review", "claims"
-        ],
-        "successCriteria": [
-            "Mehrere Lebensfälle wurden vollständig vorbereitet.",
-            "Ohne explizite Freigabe konnte weder Entscheidung noch Kommunikation das System verlassen.",
-            "Mindestens ein Vorschlag wurde abgelehnt und überarbeitet.",
-            "Ein eigener Codebeitrag am Review-Pfad ist getestet und im eigenen Fork gesichert.",
-        ],
-    },
-    "drill-11-start": {
-        "order": 11,
-        "drill": 11,
-        "title": "Haftpflicht: Automatisch, solange niemand widerspricht",
-        "goal": "Haftpflichtantworten durch ein sichtbares Eingriffsfenster steuern und den Gegensatz zur Pflichtfreigabe selbst erleben.",
-        "capabilities": [
-            "core", "inbox", "todos", "knowledge", "draft", "manual_send", "life_review", "claims",
-            "router", "intervention_queue", "workshop_clock"
-        ],
-        "successCriteria": [
-            "Router trennt Leben und Haftpflicht nachvollziehbar.",
-            "Eine Haftpflichtantwort lief nach dem Zeitfenster automatisch durch.",
-            "Eine zweite Antwort wurde im Zeitfenster bearbeitet oder aus der Queue genommen.",
-            "Ein eigener Codebeitrag an Queue oder Timer ist getestet und im eigenen Fork gesichert.",
-        ],
-    },
-    "drill-11-complete": {
-        "order": 12,
-        "drill": 11,
-        "title": "Vollständiges Zielsystem",
-        "goal": "Beide Kontrollmuster stehen integriert, sichtbar und verifizierbar nebeneinander.",
-        "capabilities": [
-            "core", "inbox", "todos", "knowledge", "draft", "manual_send", "life_review", "claims",
-            "router", "intervention_queue", "workshop_clock"
-        ],
-        "successCriteria": [
-            "Der vollständige End-to-End-Test für Leben und Haftpflicht ist grün.",
-            "Kontrollregel, Eingriffe und externe Wirkung sind im Audit Log sichtbar.",
-        ],
-    },
-    "drill-12-start": {
-        "order": 13,
-        "drill": 12,
         "title": "Management-Report: Was darf der Agent?",
         "goal": "Die erlebten Kontrollmuster als kurze, überprüfbare Management-Präsentation mit reveal.js und D3 erklären.",
         "capabilities": [
-            "core", "inbox", "todos", "knowledge", "draft", "manual_send", "life_review", "claims",
-            "router", "intervention_queue", "workshop_clock", "management_report"
+            *BASE_CAPABILITIES, "knowledge", "draft", "manual_send", "life_review", "claims",
+            "router", "intervention_queue", "workshop_clock", "management_report",
         ],
         "successCriteria": [
-            "Ein aggregierter Schnappschuss aus dem bisherigen Drill-11-Arbeitsstand ist vorhanden.",
+            "Ein aggregierter Schnappschuss aus dem Drill-9-Arbeitsstand ist vorhanden.",
             "Eine D3-Grafik in einer reveal.js-Präsentation zeigt echte lokale Workshop-Zählwerte.",
             "Eine Management-Aussage nennt Beleg, Kontrollgrenze und Unsicherheit.",
-            "Eigener Folien-/Chart-Code ist getestet, committet und im Fork gepusht.",
+            "Eigener Folien-/Chart-Code ist getestet und committet.",
         ],
     },
-    "drill-12-complete": {
-        "order": 14,
-        "drill": 12,
+    "drill-10-complete": {
+        "order": 11,
+        "drill": 10,
         "title": "Management-Report abgeschlossen",
-        "goal": "Report, Grenzen und Automation Contract sind bereit für die Whiteboard-Diskussion.",
+        "goal": "Referenzstand am Tagesende: alle Bauaufträge gelöst, Report präsentierbar.",
         "capabilities": [
-            "core", "inbox", "todos", "knowledge", "draft", "manual_send", "life_review", "claims",
-            "router", "intervention_queue", "workshop_clock", "management_report"
+            *BASE_CAPABILITIES, "knowledge", "draft", "manual_send", "life_review", "claims",
+            "router", "intervention_queue", "workshop_clock", "management_report",
         ],
         "successCriteria": ["Der Bericht ist lokal präsentierbar und trennt Beobachtung, Interpretation und Empfehlung."],
     },
 }
 
 ALIASES = {
-    "8": "drill-08-start", "drill-8": "drill-08-start", "drill-08": "drill-08-start",
-    "9": "drill-09-start", "drill-9": "drill-09-start", "drill-09": "drill-09-start",
-    "10": "drill-10-start", "drill-10": "drill-10-start",
-    "11": "drill-11-start", "drill-11": "drill-11-start",
-    "12": "drill-12-start", "drill-12": "drill-12-start",
-    "complete": "drill-12-complete", "drill-11-complete": "drill-11-complete",
-    "drill-12-complete": "drill-12-complete",
+    **{str(drill): f"drill-{drill:02d}-start" for drill in range(6, 11)},
+    **{f"drill-{drill}": f"drill-{drill:02d}-start" for drill in range(6, 11)},
+    **{f"drill-{drill:02d}": f"drill-{drill:02d}-start" for drill in range(6, 11)},
+    "complete": "drill-10-complete",
 }
+
+# Where the reference solution of each build task lives. Claude shows it only
+# in rescue mode or on explicit request (see CLAUDE.md).
+REFERENCE_TAGS = {6: "drill-07-start", 7: "drill-08-start", 8: "drill-09-start", 9: "drill-10-start", 10: "drill-10-complete"}
 
 DRILL_BRIEFS: dict[int, dict[str, Any]] = {
-    8: {
-        "learningObjective": "Verstehen, dass eine externe Mail als lokales Ticket in UI und MCP denselben Zustand hat.",
-        "mission": "Sende eine fiktive Mail an die vollständige persönliche AgentMail-Adresse, synchronisiere, finde die neue Ticket-ID in UI und MCP, lies Absender/Betreff und lege erst dann ein konkretes ticketbezogenes Todo an. Schließe es nach der Prüfung ab.",
-        "buildTaskShort": "Beim Import genau ein verknüpftes Prüfen-Todo erzeugen – auch nach zwei Syncs.",
-        "buildTask": "Vibe-code mit Claude eine vertikale Eingangs-Funktion: Beim Import eines neuen Tickets genau ein automatisch erzeugtes, verknüpftes 'Eingang prüfen'-Todo anlegen, auch wenn zweimal synchronisiert wird. Ein vorher manuell angelegtes Todo bleibt separat. Schreibe erst den Test, dann die Implementierung. Einstieg: pfefferminzia/agentmail_service.py und pfefferminzia/todos.py.",
+    6: {
+        "learningObjective": "Verstehen, dass eine externe Mail als lokales Ticket in Cockpit und MCP denselben Zustand hat.",
+        "mission": "Sende eine Mail an deine persönliche Workshop-Adresse, synchronisiere, finde die neue Ticket-ID im Cockpit und über Claude/MCP, lies Absender und Betreff und lege dann ein konkretes Todo zu diesem Ticket an. Schließe es erst nach der Prüfung ab.",
+        "buildTaskShort": "Beim Import automatisch genau ein „Eingang prüfen“-Todo pro Ticket anlegen – auch nach zwei Syncs.",
+        "buildTask": "Wenn sync_agentmail ein neues Ticket anlegt, soll automatisch genau ein verknüpftes Todo „PF-…: Eingang prüfen“ entstehen. Ein zweiter Sync darf kein Duplikat erzeugen; ein manuell angelegtes Todo bleibt separat. Erst den Test schreiben (tests/test_workshop_end_to_end.py hat einen Fake-AgentMail-Client), dann implementieren. Einstieg: sync_agentmail in pfefferminzia/agentmail_service.py und create_todo (Parameter idempotency_key) in pfefferminzia/todos.py.",
         "dialogueSteps": [
-            {"phase": "Start klären", "askClaude": "Was fehlt für Drill 8 noch? Hilf mir, App, MCP und meine persönliche Inbox zu prüfen – nur den nächsten Schritt.", "yourMove": "Persönliche Workshop-Werte nur im eigenen Chat oder lokal eintragen; externen Inbox-Test gesondert erlauben."},
-            {"phase": "Eingang verfolgen", "askClaude": "Ich habe eine Testmail geschickt. Synchronisiere und zeig mir Betreff, Absender und dieselbe Ticket-ID in MCP und Cockpit.", "yourMove": "Vor dieser Frage die Mail selbst senden; danach Ticket lesen, konkretes Ticket-Todo anlegen und erst nach Prüfung abschließen."},
-            {"phase": "Selbst bauen", "askClaude": "Wo wird ein neues Ticket importiert? Gib mir einen kleinen Test für genau ein automatisches Prüfen-Todo pro Ticket; ich ändere den Code mit dir.", "yourMove": "Import und Test selbst mit Claude bearbeiten; manuelles Todo bleibt separat."},
-            {"phase": "Beleg zeigen", "askClaude": "Prüfe zwei Syncs und den Todo-Status. Was ist belegt, was noch nicht?", "yourMove": "Ticket-ID in UI/MCP und grünen Test zeigen; keine Antwort versenden."},
+            {"phase": "Inbox verbinden", "askClaude": "Was fehlt noch für Drill 6? Hilf mir, meine persönliche Workshop-Inbox einzurichten – nur den nächsten Schritt.", "yourMove": "Die drei persönlichen Inbox-Werte eintragen lassen; die externe Inbox-Prüfung ausdrücklich erlauben."},
+            {"phase": "Eingang verfolgen", "askClaude": "Ich habe eine Mail an meine Workshop-Adresse geschickt. Synchronisiere und zeig mir Betreff, Absender und die Ticket-ID.", "yourMove": "Vorher die Mail selbst senden. Danach dieselbe Ticket-ID im Cockpit finden und dort ein konkretes Todo zum Ticket anlegen."},
+            {"phase": "Selbst bauen", "askClaude": "Wo wird ein neues Ticket importiert? Schreib mit mir zuerst einen Test für genau ein automatisches Prüfen-Todo pro Ticket.", "yourMove": "Test lesen, dann die Implementierung mit Claude bauen; dein manuelles Todo bleibt separat."},
+            {"phase": "Beleg zeigen", "askClaude": "Prüfe zwei Syncs und den Todo-Status. Was ist belegt, was noch nicht? Dann hilf mir beim Commit.", "yourMove": "Grünen Test und Ticket im Cockpit zeigen, Diff ansehen, committen. Nichts versenden."},
         ],
-        "timeboxMinutes": {"setupUndEingang": 15, "erkunden": 5, "selbstBauen": 25, "nachweisen": 10, "reflexion": 5},
-        "doneWhen": "Neue Mail und Ticket-ID in beiden Oberflächen identisch; sinnvoller nächster Schritt als Todo abgeschlossen; eigene kleine Codeänderung mit grünem Test.",
+        "timeboxMinutes": {"startUndEingang": 15, "erkunden": 5, "selbstBauen": 25, "nachweisen": 10, "reflexion": 5},
+        "doneWhen": "Neue Mail mit derselben Ticket-ID in Cockpit und MCP; ein sinnvolles Todo geprüft und abgeschlossen; eigene Codeänderung mit grünem Test committet.",
     },
-    9: {
+    7: {
         "learningObjective": "Kontext und Quellen gegen den Nachrichtentext prüfen, bevor ein Mensch eine Antwort verschickt.",
-        "mission": "Bearbeite eine neue Lebensanfrage: Person, Police und gültige Tarifgeneration bestätigen; Claude entwirft mit Beleg, du änderst den Wortlaut und sendest selbst.",
-        "buildTaskShort": "Eine fehlende oder falsche Tarifgeneration sichtbar abfangen.",
-        "buildTask": "Vibe-code eine Belegkontrolle im Antwortpfad: Ein Test muss falsche oder fehlende Tarifgeneration sichtbar machen; implementiere Fehlermeldung oder Schutzregel und prüfe einen Gegenfall. Einstieg: pfefferminzia/store.py und tests/test_workflow.py.",
+        "mission": "Bearbeite die neue Lebensanfrage aus deiner Inbox: Person, Police und gültige Tarifgeneration bestätigen; Claude entwirft mit Beleg, du änderst den Wortlaut im Cockpit und sendest dort selbst.",
+        "buildTaskShort": "Einen Entwurf abweisen, der eine falsche Tarifgeneration zitiert.",
+        "buildTask": "Beim Speichern eines Entwurfs soll eine Belegprüfung greifen: Nennt Text oder Begründung eine bekannte Tarifgeneration (z. B. PL-2017), die nicht zum verknüpften Vertrag passt, wird der Entwurf mit klarer Meldung abgelehnt („zitiert PL-2012, Vertrag VTR-… hat PL-2017“). Zitiert ein Lebensentwurf eine Tarifgeneration ohne verknüpften Vertrag, ebenfalls abweisen. Ein korrekt zitierender Entwurf bleibt erlaubt. Erst Tests in tests/test_workflow.py, dann save_draft in pfefferminzia/store.py ergänzen (bekannte Generationen stehen in der Tabelle documents).",
         "dialogueSteps": [
-            {"phase": "Quelle finden", "askClaude": "Welche Person, Police und Tarifgeneration passen zu dieser neuen Lebensanfrage? Zeig mir die Belege; noch keinen Entwurf.", "yourMove": "Zuordnung und exakte Tarifgeneration selbst bestätigen; bei Unklarheit nachfragen."},
-            {"phase": "Entwurf prüfen", "askClaude": "Erstelle jetzt einen begründeten Antwortentwurf mit Fundstellen. Nicht versenden.", "yourMove": "Text und Empfänger im Cockpit selbst prüfen, ändern und den Versand bewusst auslösen."},
-            {"phase": "Selbst bauen", "askClaude": "Wo kann eine falsche oder fehlende Tarifgeneration auffallen? Hilf mir zuerst mit einem kleinen fehlschlagenden Test.", "yourMove": "Test und kleine Fehlermeldung oder Schutzregel mit Claude implementieren."},
-            {"phase": "Beleg zeigen", "askClaude": "Zeig mir Quelle, menschliche Textänderung, Versandereignis und Testergebnis. Was fehlt noch?", "yourMove": "Activity Log und grünen Test kontrollieren; keinen zweiten Versand auslösen."},
+            {"phase": "Quelle finden", "askClaude": "Welche Person, Police und Tarifgeneration passen zu der neuen Lebensanfrage? Zeig mir die Belege; noch keinen Entwurf.", "yourMove": "Zuordnung und exakte Tarifgeneration selbst bestätigen; bei Unklarheit nachfragen."},
+            {"phase": "Entwurf prüfen", "askClaude": "Erstelle jetzt einen begründeten Antwortentwurf mit Fundstelle. Nicht versenden – das mache ich im Cockpit.", "yourMove": "Text und Empfänger im Cockpit prüfen, selbst ändern, speichern und bewusst senden."},
+            {"phase": "Selbst bauen", "askClaude": "Hilf mir mit einem fehlschlagenden Test: Ein Entwurf, der die falsche Tarifgeneration zitiert, muss abgewiesen werden.", "yourMove": "Test und Schutzregel mit Claude bauen; einen korrekten Gegenfall mittesten."},
+            {"phase": "Beleg zeigen", "askClaude": "Zeig mir Quelle, menschliche Textänderung, Versandereignis und Testergebnis. Was fehlt noch? Dann hilf mir beim Commit.", "yourMove": "Activity Log und grünen Test kontrollieren; keinen zweiten Versand auslösen; committen."},
         ],
         "timeboxMinutes": {"fallUndQuellen": 15, "entwurfUndMensch": 15, "selbstBauen": 20, "nachweisen": 5, "reflexion": 5},
-        "doneWhen": "Ein belegter Lebensentwurf wurde vom Menschen verändert und bewusst gesendet; Tarifprüfung und eigene Änderung sind getestet.",
+        "doneWhen": "Ein belegter Lebensentwurf wurde vom Menschen im Cockpit verändert und gesendet; die Tarif-Belegprüfung ist getestet und committet.",
+    },
+    8: {
+        "learningObjective": "Erleben, dass Agentenarbeit vollständig sein darf, aber nur eine aktuelle menschliche Freigabe im Cockpit die externe Wirkung öffnet.",
+        "mission": "Lass Claude zwei neue Lebensfälle bis zur Review-Vorlage bearbeiten. Gib im Cockpit einen frei und lehne einen begründet ab. Ändere danach testweise einen freigegebenen Text und beobachte, dass die Freigabe verfällt.",
+        "buildTaskShort": "Ablehnungsgrund und erloschene Freigabe im Cockpit sichtbar machen.",
+        "buildTask": "get_ticket soll ein Feld controlNotice liefern, wenn das letzte Kontrollereignis eine Ablehnung (draft_rejected, mit Begründung) oder eine erloschene Freigabe (review_invalidated) ist; das Cockpit zeigt es als Hinweis über dem Entwurf. Erst Test in tests/test_workflow.py (ablehnen → controlNotice mit Begründung; neu vorlegen → Hinweis weg), dann pfefferminzia/store.py und web/workshop.js (Funktion draftArea). Kein Build-Tool nötig.",
+        "dialogueSteps": [
+            {"phase": "Fälle vorbereiten", "askClaude": "Bereite die zwei neuen Lebensfälle mit Belegen und Antwort bis zur Review-Vorlage vor. Freigeben kann nur ich im Cockpit.", "yourMove": "Beide Vorlagen und Fundstellen im Cockpit unter „Freigaben“ prüfen."},
+            {"phase": "Mensch entscheidet", "askClaude": "Welche Folgen haben Freigabe und Ablehnung bei diesen beiden Fällen?", "yourMove": "Im Cockpit einen Fall freigeben und senden, den anderen mit Begründung ablehnen. Claude überarbeitet ihn danach."},
+            {"phase": "Selbst bauen", "askClaude": "Wie zeigen wir Ablehnungsgrund oder erloschene Freigabe im Cockpit klarer? Hilf mir zuerst mit einem Test.", "yourMove": "Die kleine Review-Verbesserung mit Claude umsetzen und im Browser prüfen."},
+            {"phase": "Beleg zeigen", "askClaude": "Prüfe im Audit Freigabe und Ablehnung. Was passiert, wenn ich einen freigegebenen Text ändere? Dann hilf mir beim Commit.", "yourMove": "Freigabeverlust nach Edit im Cockpit sehen; Test grün; committen."},
+        ],
+        "timeboxMinutes": {"faelleVorbereiten": 15, "freigabeUndAblehnung": 15, "selbstBauen": 20, "nachweisen": 5, "reflexion": 5},
+        "doneWhen": "Eine Freigabe und eine Ablehnung im Audit; eine Änderung entwertet die alte Freigabe; eigene Review-Verbesserung getestet und committet.",
+    },
+    9: {
+        "learningObjective": "Den Unterschied zwischen Pflichtfreigabe und automatischem Versand nach einer sichtbaren Eingriffsfrist beurteilen.",
+        "mission": "Route drei neue Haftpflichtfälle und plane Antworten ein: einen laufen lassen, einen im Fenster ändern, einen aus der Queue nehmen. Spule die Workshop-Uhr im Cockpit vor und prüfe Versand und Audit.",
+        "buildTaskShort": "Gestoppte Termine sichtbar machen und Doppelversand ausschließen.",
+        "buildTask": "Erweitere controlNotice in get_ticket um schedule_cancelled (Text im Fenster geändert) und queue_removed (mit Begründung), damit das Cockpit gestoppte Termine erklärt. Teste in tests/test_workshop_end_to_end.py: Ein geänderter Termin wird nach dem Zeitsprung nicht gesendet, und zweimal dispatch_due_replies versendet den unveränderten Fall genau einmal. Einstieg: pfefferminzia/store.py, dispatch_due_replies in pfefferminzia/agentmail_service.py, web/workshop.js.",
+        "dialogueSteps": [
+            {"phase": "Routing prüfen", "askClaude": "Ordne die drei neuen Fälle nachvollziehbar zu. Welche sind Haftpflicht, und ist der Empfänger für Antworten erlaubt? Noch nichts einplanen.", "yourMove": "Sparte, Quellen und erlaubten Empfänger selbst prüfen."},
+            {"phase": "Queue erleben", "askClaude": "Bereite belegte Antworten vor und plane sie ins 24-Stunden-Fenster ein.", "yourMove": "Im Cockpit unter „Eingriffsfenster“: einen Text ändern, einen mit Begründung aus der Queue nehmen, einen laufen lassen."},
+            {"phase": "Selbst bauen", "askClaude": "Wie machen wir gestoppte Termine und Duplikatschutz überprüfbar? Zeig mir zuerst einen kleinen Test.", "yourMove": "Die Queue-Verbesserung mit Claude umsetzen."},
+            {"phase": "Wirkung belegen", "askClaude": "Was würde nach dem Zeitsprung automatisch rausgehen? Danach prüfe Versand und Audit mit mir und hilf mir beim Commit.", "yourMove": "Im Cockpit „Workshop-Zeit +24 h“ drücken; genau einen Auto-Versand prüfen; committen."},
+        ],
+        "timeboxMinutes": {"routeUndQueue": 15, "eingreifen": 15, "selbstBauen": 15, "versandNachweis": 10, "reflexion": 5},
+        "doneWhen": "Ein Auto-Versand, ein Edit und ein Stopp sind im Audit nachvollziehbar; eigene Queue-Verbesserung getestet und committet.",
     },
     10: {
-        "learningObjective": "Erleben, dass Agentenarbeit vollständig sein darf, aber eine aktuelle menschliche Freigabe die externe Wirkung sperrt.",
-        "mission": "Lass zwei Lebensfälle bis zur Review-Vorlage bearbeiten. Genehmige einen, lehne einen begründet ab. Ändere testweise Text und beobachte, dass eine alte Freigabe verfällt.",
-        "buildTaskShort": "Ablehnung und erloschene Freigabe im Review klar anzeigen.",
-        "buildTask": "Vibe-code einen klaren Review-Zustand: Zeige Ablehnungsgrund und Verlust einer Freigabe nach Edit im Cockpit; sichere den Zustand mit einem Test ab. Einstieg: web/workshop.js und tests/test_workshop_end_to_end.py; kein Build-Tool nötig.",
-        "dialogueSteps": [
-            {"phase": "Fälle vorbereiten", "askClaude": "Bereite zwei neue Lebensfälle mit Entscheidung, Belegen und Antwort nur bis zur Review-Vorlage vor. Nichts freigeben oder senden.", "yourMove": "Beide Vorlagen und Fundstellen selbst prüfen; externe Wirkung bleibt gesperrt."},
-            {"phase": "Mensch entscheidet", "askClaude": "Zeig mir beide Review-Optionen und ihre Folgen. Führe noch keine Entscheidung aus.", "yourMove": "Einen Fall ausdrücklich freigeben, den anderen begründet ablehnen; Versand ist nochmals separat zu bestätigen."},
-            {"phase": "Selbst bauen", "askClaude": "Wo kann ich Ablehnungsgrund oder erloschene Freigabe klarer zeigen? Hilf mir zuerst mit einem Test.", "yourMove": "Eine kleine Review-Verbesserung selbst mit Claude umsetzen und testen."},
-            {"phase": "Beleg zeigen", "askClaude": "Prüfe im Audit Freigabe und Ablehnung; was passiert, wenn ich den genehmigten Text ändere?", "yourMove": "Freigabeverlust nach Edit prüfen; keine alte Freigabe für neuen Text verwenden."},
-        ],
-        "timeboxMinutes": {"faelleVorbereiten": 15, "selbstBauen": 20, "freigabeUndAblehnung": 15, "nachweisen": 5, "reflexion": 5},
-        "doneWhen": "Eine Freigabe und eine Ablehnung im Audit; Änderung entwertet die alte Freigabe; eigene UI- oder Teständerung ist gezeigt.",
-    },
-    11: {
-        "learningObjective": "Den Unterschied zwischen Pflichtfreigabe und automatischem Versand nach einer sichtbaren Eingriffsfrist beurteilen.",
-        "mission": "Route drei neue Haftpflichtfälle: einen laufen lassen, einen im Fenster ändern, einen entfernen. Spule die Workshop-Uhr erst nach deiner Bestätigung vor und prüfe Versand plus Audit.",
-        "buildTaskShort": "Stopp und erneuten Versandlauf ohne Duplikat überprüfbar machen.",
-        "buildTask": "Vibe-code eine überprüfbare Queue-Verbesserung: Zeige einen abgebrochenen Termin deutlich an und teste, dass Edit und erneuter Versandlauf kein Duplikat erzeugen. Einstieg: pfefferminzia/store.py, web/workshop.js und tests/test_workshop_end_to_end.py.",
-        "dialogueSteps": [
-            {"phase": "Routing prüfen", "askClaude": "Ordne die drei neuen Fälle nachvollziehbar zu. Welche sind Haftpflicht, und welche Empfänger sind für Antworten erlaubt? Noch nichts einplanen.", "yourMove": "Sparte, Quellen und erlaubte Empfänger selbst prüfen."},
-            {"phase": "Queue erleben", "askClaude": "Bereite belegte Antworten vor und zeig mir die +24-Stunden-Queue. Die Uhr nicht vorspulen.", "yourMove": "Countdown prüfen; einen Fall bearbeiten und einen anderen mit Begründung entfernen. Einer bleibt geplant."},
-            {"phase": "Selbst bauen", "askClaude": "Wie machen wir Stopp oder Duplikatschutz in der Queue klarer? Zeig mir zuerst einen kleinen Test.", "yourMove": "Kleine Queue- oder Testverbesserung selbst mit Claude umsetzen."},
-            {"phase": "Wirkung belegen", "askClaude": "Zeig mir vor dem Zeitsprung, was automatisch rausgehen würde. Spule erst nach meiner ausdrücklichen Bestätigung vor.", "yourMove": "Uhrsprung bestätigen und danach genau einen Auto-Versand, Edit, Stopp und Audit prüfen."},
-        ],
-        "timeboxMinutes": {"routeUndQueue": 15, "selbstBauen": 15, "eingreifen": 15, "versandNachweis": 10, "reflexion": 5},
-        "doneWhen": "Ein Auto-Versand, ein Edit und ein Stopp sind nachvollziehbar; eigene Queue- oder Testverbesserung ist gezeigt.",
-    },
-    12: {
         "learningObjective": "Aus operativen Ereignissen einen knappen, belegten Management-Befund machen – ohne aus einer lokalen Simulation Unternehmens-KPIs abzuleiten.",
-        "mission": "Lade den aggregierten Schnappschuss aus Drill 11, baue mit reveal.js und D3 einen maximal vierseitigen Management-Report und erkläre Kontrolle, Ergebnis und Grenze der Aussage.",
-        "buildTaskShort": "Eine beschriftete D3-Grafik und eine belegte Empfehlung bauen.",
-        "buildTask": "Vibe-code in slides/management.js eine zweite aussagekräftige D3-Ansicht oder verbessere die bestehende Grafik. Nutze nur /api/management-report mit aggregierten Zahlen; keine Mailtexte, Namen, Secrets oder erfundenen Wirkungs-KPIs.",
+        "mission": "Nimm den aggregierten Schnappschuss aus Drill 9 und baue mit reveal.js und D3 einen Report mit höchstens vier Folien: Beobachtung, Grafik, Empfehlung, Grenze der Aussage.",
+        "buildTaskShort": "Eine zweite, beschriftete D3-Grafik und eine eigene belegte Empfehlung bauen.",
+        "buildTask": "Ergänze in slides/management.js eine zweite D3-Ansicht (z. B. Kontrollereignisse: Freigaben, Ablehnungen, Stopps, Auto-Versände) mit Achsen/Beschriftung und Nullfall, und ersetze den Empfehlungs-Platzhalter durch deine eigene begründete Empfehlung mit Grenze. Nur /api/management-report verwenden; keine Mailtexte, Namen, Secrets oder erfundenen KPIs. Test: tests/test_management_report.py.",
         "dialogueSteps": [
-            {"phase": "Befund wählen", "askClaude": "Welche aggregierten Beobachtungen aus unserem Drill-11-Schnappschuss sind wirklich belegt? Bitte keine Management-Aussage erfinden.", "yourMove": "Eine Aussage und ihre Grenze selbst wählen; Demo- und echte Workshop-Tickets unterscheiden."},
-            {"phase": "Visualisieren", "askClaude": "Zeig mir in slides/management.js eine kleine D3-Grafik für diese Aussage. Erst Datenform und Skizze, dann Code.", "yourMove": "Grafik selbst mit Claude bauen; Achsen, Beschriftung und Nullfälle prüfen."},
-            {"phase": "Entscheidung formulieren", "askClaude": "Hilf mir, eine Management-Empfehlung mit Beleg, Kontrollregel und Unsicherheit auf eine Folie zu verdichten.", "yourMove": "Empfehlung und Einschränkung selbst verantworten; maximal vier Folien."},
-            {"phase": "Vorführen", "askClaude": "Prüfe, ob die Folien lokal über den Python-Server ohne Node/CDN starten, die Zahlen zum Snapshot passen und keine persönlichen Daten enthalten.", "yourMove": "Report zeigen, Test ausführen, Diff prüfen, committen und in den eigenen Fork pushen."},
+            {"phase": "Befund wählen", "askClaude": "Welche Beobachtungen aus unserem Drill-9-Schnappschuss sind wirklich belegt? Bitte keine Management-Aussage erfinden.", "yourMove": "Eine Aussage und ihre Grenze selbst wählen; Demo- und Inbox-Fälle unterscheiden."},
+            {"phase": "Visualisieren", "askClaude": "Zeig mir für diese Aussage erst Datenform und Skizze einer D3-Grafik in slides/management.js, dann den Code.", "yourMove": "Grafik mit Claude bauen; Achsen, Beschriftung und Nullfälle im Browser prüfen."},
+            {"phase": "Entscheidung formulieren", "askClaude": "Hilf mir, meine Empfehlung mit Beleg, Kontrollregel und Unsicherheit auf eine Folie zu verdichten.", "yourMove": "Empfehlung und Einschränkung selbst formulieren; höchstens vier Folien."},
+            {"phase": "Vorführen", "askClaude": "Prüfe, ob die Folien lokal laufen, die Zahlen zum Snapshot passen und keine persönlichen Daten enthalten. Dann hilf mir beim Commit.", "yourMove": "Report zwei Minuten zeigen, Test ausführen, committen."},
         ],
         "timeboxMinutes": {"snapshotUndFrage": 5, "selbstBauen": 20, "interpretation": 10, "nachweisen": 5, "reflexion": 5},
-        "doneWhen": "Maximal vier präsentierbare Folien; D3-Grafik mit lokalen Zählwerten; belegte Empfehlung mit Limit; eigener getesteter Commit im Fork.",
+        "doneWhen": "Höchstens vier präsentierbare Folien; D3-Grafik mit lokalen Zählwerten; belegte Empfehlung mit Grenze; eigener Commit.",
     },
 }
 
-ADVANCE_TASKS = {
-    8: "Drill 9 selbst vorbauen: Kunden-/Tarifkontext und belegten Lebensentwurf entwickeln; ein Mensch muss Text und Versand behalten.",
-    9: "Drill 10 selbst vorbauen: Review-Zustand mit Freigabe, Ablehnung und Freigabeverlust nach Edit; ohne neue menschliche Freigabe keine Wirkung.",
-    10: "Drill 11 selbst vorbauen: Haftpflicht-Routing und sichtbare Eingriffs-Queue mit Timer, Edit und Stopp; Auto-Versand nur im bestätigten Drill-11-Checkpoint.",
-    11: "Drill 12 selbst vorbauen: aus aggregierten lokalen Workshop-Zahlen einen knappen reveal.js-/D3-Management-Report entwickeln; keine erfundenen KPIs.",
-    12: "Für das Whiteboard einen begrenzten Event- oder Zeit-Trigger mit Rechten, Retry-Regel und menschlicher Stopplinie skizzieren; keinen Produktiv-Worker starten.",
-}
+BONUS_TASK = (
+    "Bonus mit restlichem Guthaben: ein 30–60-Sekunden-Video deiner Lösung mit Remotion bauen "
+    "(docs/BONUS_VIDEO.md) und als letzte Folie in deinen Report einbinden."
+)
+
+
+def advance_task(drill: int) -> str:
+    """The opt-in task for fast participants: the next drill's build task on their own branch."""
+    if drill + 1 in DRILL_BRIEFS:
+        return f"Vorausbauen im eigenen Branch: {DRILL_BRIEFS[drill + 1]['buildTask']}"
+    return BONUS_TASK
 
 
 def normalize_checkpoint(value: str) -> str:
@@ -217,7 +209,9 @@ def current_checkpoint(db: sqlite3.Connection | None = None) -> str:
         return normalize_checkpoint(configured)
     db = db or get_database()
     row = db.execute("SELECT checkpoint FROM workshop_state WHERE id = 1").fetchone()
-    return normalize_checkpoint(row["checkpoint"] if row else "drill-08-start")
+    # A database from the earlier 8–12 numbering may hold a retired name.
+    stored = row["checkpoint"] if row else None
+    return normalize_checkpoint(stored if stored in CHECKPOINTS else "drill-06-start")
 
 
 def checkpoint_profile(db: sqlite3.Connection | None = None) -> dict[str, Any]:
@@ -279,51 +273,62 @@ def available_checkpoints() -> list[dict[str, Any]]:
     return [{"name": name, **profile} for name, profile in CHECKPOINTS.items()]
 
 
+
+HINTS = {
+    6: [
+        "Prüfe die vollständige Inbox-Adresse. Sende eine Mail, synchronisiere und vergleiche Sync-Zeit, Betreff und Ticket-ID in Cockpit und MCP. Die Empfänger-Allowlist filtert den Eingang nicht.",
+        "Lege erst nach dem Lesen der neuen Nachricht ein Todo mit genau dieser Ticket-ID und einem konkreten nächsten Prüfschritt an. Schließe es nach der Prüfung ab.",
+        "Für den Code: In sync_agentmail gibt es genau eine Stelle, an der ein neues Ticket entsteht. create_todo kennt schon einen idempotency_key – z. B. 'intake:PF-1001'.",
+    ],
+    7: [
+        "Trenne Nachrichtentext (Behauptung) von vertrauenswürdigen Tarifquellen (Beleg).",
+        "Suche den Kunden, verknüpfe den Vertrag und lies die exakt passende Tarifgeneration vor dem Entwurf (list_contract_documents).",
+        "Für den Code: In save_draft sind Ticket und linkedContracts bekannt. Suche im Text nach den Generationen aus der Tabelle documents und vergleiche sie mit tariffGenerationId des Vertrags.",
+    ],
+    8: [
+        "Beobachte, an welcher Stelle eine externe Wirkung technisch blockiert bleibt: Claude hat kein Freigabe- und kein Sende-Werkzeug.",
+        "Claude legt mit submit_ticket_reply zur Prüfung vor; du entscheidest im Cockpit unter „Freigaben“. Nach einer Ablehnung überarbeitet Claude den Entwurf.",
+        "Für den Code: Die Ereignisse draft_rejected und review_invalidated stehen schon in ticket['events']; controlNotice ist das jüngste davon, solange kein neueres Kontrollereignis folgt.",
+    ],
+    9: [
+        "Route zuerst nach Sparte; die Kontrollregel folgt aus der Sparte.",
+        "Claude plant mit submit_ticket_reply ein; Eingriffe (bearbeiten, aus Queue nehmen) und den Zeitsprung machst du im Cockpit.",
+        "Für den Code: schedule_cancelled und queue_removed sind schon Ereignisse. Für den Duplikattest dispatch_due_replies zweimal aufrufen und die gesendeten Fake-Mails zählen.",
+    ],
+    10: [
+        "Der Snapshot zählt nur lokale Workshop-Fälle; lies /api/management-report und unterscheide demo=true von echten Inbox-Tickets.",
+        "Nutze die vorhandene reveal.js-/D3-Basis unter /slides/index.html?deck=management; ändere nur slides/management.js.",
+        "Zeige Beobachtung, Kontrollgrenze, Empfehlung und Unsicherheit; ein schöner Chart ohne Beschriftung ist kein Management-Befund.",
+    ],
+}
+
+
 def drill_guide(
     hint_level: int = 0, db: sqlite3.Connection | None = None, *, include_advance_task: bool = False
 ) -> dict[str, Any]:
     profile = checkpoint_profile(db)
-    hints = {
-        8: [
-            "Prüfe die vollständige Inbox-Adresse. Sende eine Testmail, synchronisiere und vergleiche letzte Sync-Zeit, Betreff und Ticket-ID in Cockpit und MCP. Die Empfänger-Allowlist filtert den Eingang nicht.",
-            "Lege erst nach dem Lesen der neuen Nachricht ein Todo mit genau dieser Ticket-ID und einem konkreten nächsten Prüfschritt an. Schließe es nach der Prüfung ab.",
-            "Für die kleine Codeänderung: Finde den Ticket-Import in `agentmail_service.py`, verknüpfe ein Todo nur beim ersten Import und teste zwei Syncs ohne Duplikat.",
-        ],
-        9: [
-            "Beginne beim Eingang und trenne Nachrichtentext konsequent von vertrauenswürdigen Tarifquellen.",
-            "Suche den Kunden, bestätige den Vertrag und lies die exakt passende Tarifgeneration vor dem Entwurf.",
-            "Erzeuge einen begründeten Entwurf, ändere ihn als Mensch und löse den Versand ausdrücklich selbst aus.",
-        ],
-        10: [
-            "Beobachte, an welcher Stelle eine externe Wirkung technisch blockiert bleibt.",
-            "Reiche den exakten Entwurf zur Prüfung ein; teste Freigabe, Ablehnung und erneute Bearbeitung.",
-            "Nach jeder Textänderung muss eine alte Freigabe ungültig sein. Prüfe das Audit Log.",
-        ],
-        11: [
-            "Route zuerst nach Sparte und mache dann die unterschiedliche Kontrollregel sichtbar.",
-            "Plane Haftpflichtantworten ein und beobachte Countdown sowie Queue-Aktionen.",
-            "Lass einen Fall laufen, bearbeite einen zweiten, entferne einen dritten und spule erst danach die Workshop-Uhr vor.",
-        ],
-        12: [
-            "Der Snapshot zählt nur lokale Workshop-Fälle; lies /api/management-report und unterscheide demo=true von echten Workshop-Tickets.",
-            "Nutze die vorhandene reveal.js-/D3-Basis in slides/index.html?deck=management; ändere den kleinen Einstieg in slides/management.js.",
-            "Zeige Beobachtung, Kontrollgrenze, Empfehlung und Unsicherheit; ein schöner Chart ohne richtige Beschriftung ist kein Management-Befund.",
-        ],
-    }
+    drill = profile["drill"]
     bounded = max(0, min(hint_level, 3))
+    reference = REFERENCE_TAGS[drill]
+    previous = f"checkpoint/{profile['name']}" if profile["name"] != "drill-10-complete" else "checkpoint/drill-10-start"
     return {
         "checkpoint": profile,
-        **DRILL_BRIEFS[profile["drill"]],
+        **DRILL_BRIEFS[drill],
         "learningPath": {
-            "commonEvidence": "Fall im Cockpit und MCP nachvollziehen, eigene Codeänderung testen, Diff prüfen und auf eigenem Branch committen/pushen.",
-            "guided": "Nur nächsten Schritt, Dateistelle und kleinen Test zeigen; bei Bedarf offiziellen Checkpoint sicher laden.",
+            "commonEvidence": "Fall im Cockpit und MCP nachvollziehen, eigene Codeänderung testen, Diff prüfen und auf eigenem Branch committen.",
+            "guided": "Nur nächsten Schritt, Dateistelle und kleinen Test zeigen; bei Bedarf den offiziellen Checkpoint laden.",
             "building": "Akzeptanzkriterien geben, Code in kleinen Iterationen mit der Person bauen und verifizieren.",
-            "advance": "Erst nach aktuellem Fallnachweis und ausdrücklichem Opt-in anbieten; nächstes Ziel auf eigenem Branch, nicht ungefragt freischalten.",
+            "advance": "Erst nach aktuellem Fallnachweis und ausdrücklichem Opt-in: nächsten Bauauftrag im eigenen Branch.",
         },
-        "advanceTask": ADVANCE_TASKS[profile["drill"]] if include_advance_task else None,
+        "referenceSolution": {
+            "tag": f"checkpoint/{reference}",
+            "diff": f"git diff {previous} checkpoint/{reference}",
+            "rule": "Nur im Rettungsmodus oder auf ausdrücklichen Wunsch zeigen; sonst nur als Orientierung für die Richtung nutzen.",
+        },
+        "advanceTask": advance_task(drill) if include_advance_task else None,
         "hintLevel": bounded,
-        "hint": None if bounded == 0 else hints[profile["drill"]][bounded - 1],
-        "instruction": "Die vier Dialogetappen sind eine Landkarte, kein einzelner Copy-paste-Auftrag. Frage nach gewünschter Hilfstiefe (geführt, bauend, vorausbauend), beginne nur mit der aktuellen Etappe und warte an jedem 'yourMove'-Stopp. Ein Vorausbau ist erst nach aktuellem Fallnachweis und ausdrücklichem Wunsch erlaubt. Eigener Test, Diff, Commit und Push zum eigenen Fork gehören zum Abschluss; eine vollständige Lösung erst auf ausdrücklichen Wunsch.",
+        "hint": None if bounded == 0 else HINTS[drill][bounded - 1],
+        "instruction": "Die vier Dialogetappen sind eine Landkarte, kein Copy-paste-Auftrag. Frage nach der gewünschten Hilfstiefe (geführt, bauend, vorausbauend), beginne mit der aktuellen Etappe und warte an jedem 'yourMove'. Freigeben, Senden und Zeitsprung macht der Mensch im Cockpit. Eigener Test, Diff und Commit gehören zum Abschluss; eine vollständige Lösung nur auf ausdrücklichen Wunsch.",
     }
 
 
@@ -347,31 +352,31 @@ def verify_checkpoint(check_external_inbox: bool = False, db: sqlite3.Connection
         "agentmail-configuration",
         agentmail["ready"],
         "API key, one inbox ID and recipient allowlist configured" if agentmail["ready"] else "Configure API key, AGENTMAIL_INBOX_ID and WORKSHOP_ALLOWED_RECIPIENTS",
-        required=profile["drill"] != 12,
+        required=profile["drill"] != 10,
     )
     if check_external_inbox:
         check("agentmail-reachability", agentmail["reachable"] is True, "Configured inbox is reachable")
     check("checkpoint-profile", True, f"{profile['name']}: {profile['title']}")
     check("todo-storage", _table_exists(db, "workshop_todos"), "Todo storage available")
 
-    if profile["order"] >= 9:
+    if profile["order"] >= 7:
         life = [ticket for ticket in visible if ticket["productLine"] == "life"]
         check("life-scenario", bool(life), f"{len(life)} visible life scenario(s)")
         check("tariff-library", len(list_tariffs(db)) == 28, f"{len(list_tariffs(db))} indexed tariff documents")
-    if profile["order"] >= 10:
+    if profile["order"] >= 8:
         check("life-review-capability", "life_review" in profile["capabilities"], "Mandatory review capability active")
-    if profile["order"] >= 11:
+    if profile["order"] >= 9:
         liabilities = [ticket for ticket in visible if ticket["productLine"] == "liability"]
         check("liability-scenarios", len(liabilities) >= 3, f"{len(liabilities)} visible liability scenarios")
         check("intervention-queue", "intervention_queue" in profile["capabilities"], "Queue controls and workshop clock active")
-        if profile["drill"] == 11:
+        if profile["drill"] == 9:
             auto_send = os.getenv("AUTO_SEND_ENABLED", "").lower() == "true"
             check(
                 "automatic-dispatch", auto_send,
                 "Eingriffsfenster und automatischer Versand aktiv" if auto_send else
-                "Der Auto-Versand ist aus: offiziellen Drill-11-Checkpoint neu laden oder Lehrperson fragen",
+                "Der Auto-Versand ist aus: offiziellen Drill-9-Checkpoint neu laden oder Lehrperson fragen",
             )
-    if profile["drill"] == 12:
+    if profile["drill"] == 10:
         from .management_report import REPORT_SNAPSHOT
         from .constants import ROOT
         check("management-report-snapshot", (ROOT / REPORT_SNAPSHOT).is_file(), "Aggregierter Report-Schnappschuss vorhanden")

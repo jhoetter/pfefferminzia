@@ -38,6 +38,7 @@ def main() -> None:
     serve.add_argument("--host", default=os.getenv("HOST", "127.0.0.1"))
     serve.add_argument("--port", type=int, default=int(os.getenv("PORT", "3004")))
     serve.add_argument("--reload", action="store_true", help="Reload when Python files change")
+    serve.add_argument("--open", action="store_true", help="Open the cockpit in the default browser once it runs")
 
     subparsers.add_parser("mcp", help="Run the MCP server over stdio")
     subparsers.add_parser("setup", help="Prepare the pinned Falk dataset and local workshop DB before starting Claude")
@@ -66,10 +67,46 @@ def main() -> None:
     apply.add_argument("confirmation_token")
     apply.add_argument("--confirm-checkpoint-load", action="store_true", required=True)
 
+    instructor = subparsers.add_parser("instructor", help="Instructor tools: inboxes, handouts, scenario mails, progress")
+    instructor_commands = instructor.add_subparsers(dest="instructor_command", required=True)
+    provision = instructor_commands.add_parser("provision", help="Create one inbox and inbox-scoped key per participant")
+    provision.add_argument("--count", type=int, required=True)
+    provision.add_argument("--prefix", default="pfefferminzia")
+    provision.add_argument("--domain")
+    provision.add_argument("--yes", action="store_true", help="Really create inboxes and keys")
+    instructor_commands.add_parser("handouts", help="Write one paste-ready value sheet per participant")
+    scenarios = instructor_commands.add_parser("scenarios", help="Print the scenario messages")
+    scenarios.add_argument("drill", nargs="?", default=None)
+    send = instructor_commands.add_parser("send", help="Send one drill's scenario mails to all participants")
+    send.add_argument("drill", help="6, 7, 8, 9 or challenge")
+    send.add_argument("--slot", action="append", help="Only this participant slot, e.g. 03 (repeatable)")
+    send.add_argument("--yes", action="store_true", help="Really send; without it only the plan is shown")
+    send.add_argument("--resend", action="store_true", help="Send again even if the log says it was sent")
+    send.add_argument("--pause", type=float, default=2.0, help="Seconds between mails")
+    retag = instructor_commands.add_parser("retag", help="Point checkpoint tags at base and reference commits")
+    retag.add_argument("--base", default="main")
+    retag.add_argument("--reference", default="reference")
+    retag.add_argument("--yes", action="store_true")
+    status = instructor_commands.add_parser("status", help="Show which participant answered which scenario")
+    status.add_argument("--json", action="store_true")
+
     args = parser.parse_args()
     if args.command == "serve":
+        import socket
+        import threading
         import uvicorn
+        import webbrowser
 
+        with socket.socket() as probe:
+            if probe.connect_ex((args.host, args.port)) == 0:
+                print(
+                    f"Port {args.port} ist belegt – läuft Pfefferminzia schon (evtl. aus einem anderen Ordner)? "
+                    f"Alte App beenden oder http://{args.host}:{args.port} öffnen.",
+                    file=sys.stderr,
+                )
+                sys.exit(2)
+        if args.open:
+            threading.Timer(2.0, webbrowser.open, (f"http://{args.host}:{args.port}",)).start()
         uvicorn.run("pfefferminzia.app:app", host=args.host, port=args.port, reload=args.reload)
     elif args.command == "mcp":
         try:
@@ -162,6 +199,29 @@ def main() -> None:
             _json(plan_checkpoint_load(args.checkpoint, mode=args.mode))
         elif args.checkpoint_command == "apply":
             _json(apply_checkpoint_load(args.confirmation_token))
+    elif args.command == "instructor":
+        from . import instructor as tools
+        from .scenarios import SCENARIOS, scenarios_for
+
+        try:
+            if args.instructor_command == "provision":
+                _json(tools.provision(args.count, args.prefix, args.domain, execute=args.yes))
+            elif args.instructor_command == "handouts":
+                _json(tools.handouts())
+            elif args.instructor_command == "scenarios":
+                for item in scenarios_for(args.drill) if args.drill else SCENARIOS:
+                    print(f"## Drill {item['drill'] or 'Challenge'} · {item['key']}\nBetreff: {item['subject']}\n\n{item['text']}\n\nErwartung: {item['expectation']}\n")
+            elif args.instructor_command == "send":
+                slots = [f"{int(slot):02d}" for slot in args.slot] if args.slot else None
+                _json(tools.send_scenarios(args.drill, slots=slots, execute=args.yes, resend=args.resend, pause_seconds=args.pause))
+            elif args.instructor_command == "retag":
+                _json(tools.retag(args.base, args.reference, execute=args.yes))
+            elif args.instructor_command == "status":
+                result = tools.progress()
+                _json(result) if args.json else print(tools.format_progress(result))
+        except ValueError as error:
+            print(f"Fehler: {error}", file=sys.stderr)
+            sys.exit(2)
 
 
 if __name__ == "__main__":

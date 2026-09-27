@@ -386,7 +386,7 @@ def create_app() -> FastAPI:
                 if not ticket_data["humanApprovedAt"]:
                     raise ValueError("Approve the life draft in the mandatory review workflow before sending")
             else:
-                # Drill 9: the human's explicit send action is the approval.
+                # Drill 7: the human's explicit send action is the approval.
                 approve_draft(ticket_number, "human-ui")
         return await asyncio.to_thread(send_ticket_draft, ticket_number, "human-ui")
 

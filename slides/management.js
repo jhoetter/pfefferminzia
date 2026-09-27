@@ -1,16 +1,20 @@
-/* Participant-editable Drill-12 report. Reveal and D3 are already embedded in index.html. */
+/* Participant-editable Drill-10 report. Reveal and D3 are already embedded in index.html. */
 (() => {
+  // Bonus (docs/BONUS_VIDEO.md): Pfad zu deinem Remotion-Video, z. B. 'assets/report/demo.mp4'.
+  // Solange null, bleibt es bei drei Folien.
+  const DEMO_VIDEO = null;
+
   window.PFEFFERMINZIA_MANAGEMENT_SLIDES = [
     {
-      id: 'ManagementTitel', type: 'Management-Report', eyebrow: 'Drill 12 · Lokale Simulation',
+      id: 'ManagementTitel', type: 'Management-Report', eyebrow: 'Drill 10 · Lokale Simulation',
       title: 'Was hat unser Agent getan?',
       subtitle: 'Ein kurzer Bericht aus genau einer Pfefferminzia-Workshop-Instanz.',
       source: 'Quelle: lokaler aggregierter Workshop-Schnappschuss · keine Unternehmenskennzahlen',
       body: `<div class="day-grid two">
-        <div class="day-card mint-card"><h3>Beobachtet</h3><p id="report-tickets" class="day-emphasis">Lade lokale Zählwerte …</p><p>Tickets im übernommenen Drill-11-Schnappschuss</p></div>
+        <div class="day-card mint-card"><h3>Beobachtet</h3><p id="report-tickets" class="day-emphasis">Lade lokale Zählwerte …</p><p>Tickets im übernommenen Drill-9-Schnappschuss</p></div>
         <div class="day-card"><h3>Einordnung</h3><p>Dies ist eine Simulation, keine repräsentative Aussage über ein Versicherungsunternehmen.</p><p>Demo-Fälle und Inbox-Fälle bleiben unterscheidbar.</p></div>
       </div>`,
-      notes: 'ZEIT: 20 Sekunden. Den Bericht aus dem eigenen Fork zeigen. Keine Namen, Mailtexte oder erfundenen Kosten-/Zeitersparnisse nennen.'
+      notes: 'ZEIT: 20 Sekunden. Den Bericht aus der eigenen Kopie zeigen. Keine Namen, Mailtexte oder erfundenen Kosten-/Zeitersparnisse nennen.'
     },
     {
       id: 'ManagementDaten', type: 'D3 · Daten', eyebrow: 'Beobachtung',
@@ -32,6 +36,16 @@
       notes: 'ZEIT: 60 Sekunden. Der Platzhalter ist absichtlich die Bauaufgabe. Teilnehmer formulieren eine eigene Empfehlung und nennen Datenlücke sowie verantwortliche menschliche Rolle.'
     }
   ];
+  if (DEMO_VIDEO) {
+    window.PFEFFERMINZIA_MANAGEMENT_SLIDES.push({
+      id: 'ManagementVideo', type: 'Demo', eyebrow: 'Unsere Lösung in 60 Sekunden',
+      title: 'Was unser System heute kann.',
+      subtitle: 'Mit Remotion aus eigenen Screenshots erzeugt; lokale Simulation.',
+      source: 'Quelle: eigene Pfefferminzia-Instanz · synthetische Workshopdaten',
+      body: `<video src="${DEMO_VIDEO}" controls muted playsinline style="width:100%;max-height:430px;border:3px solid #171717;background:#000"></video>`,
+      notes: 'ZEIT: 60 Sekunden. Video abspielen, danach eine Kontrollstelle benennen.'
+    });
+  }
 
   if (new URLSearchParams(window.location.search).get('deck') !== 'management') return;
 
@@ -84,7 +98,7 @@
     })
     .catch(() => {
       label('#report-tickets', 'Kein Schnappschuss');
-      label('#report-controls', 'Lade zuerst den offiziellen Drill-12-Checkpoint aus deinem Drill-11-Arbeitsstand.');
+      label('#report-controls', 'Lade zuerst den offiziellen Drill-10-Checkpoint aus deinem Drill-9-Arbeitsstand.');
       label('#report-chart-note', 'Keine Daten. Prüfe /api/management-report und den aktiven Checkpoint.');
     });
 })();

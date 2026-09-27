@@ -72,7 +72,7 @@ def test_realistic_drills_8_to_11_without_network(monkeypatch, tmp_path, request
 
     monkeypatch.delenv("WORKSHOP_CHECKPOINT", raising=False)
     initialize_application()
-    assert current_checkpoint() == "drill-08-start"
+    assert current_checkpoint() == "drill-06-start"
 
     def client_for(stage):
         monkeypatch.setenv("WORKSHOP_CHECKPOINT", stage)
@@ -86,12 +86,12 @@ def test_realistic_drills_8_to_11_without_network(monkeypatch, tmp_path, request
         response = client.put(f"/api/tickets/{number}/draft", json={"body": text, "rationale": "Synthetic evidence"})
         assert response.status_code == 200, response.text
 
-    with client_for("drill-08-start") as client:
+    with client_for("drill-06-start") as client:
         fake.messages.sender = "personal-gmail@example.test"  # Inbound is not governed by the outbound allowlist.
-        fake.messages.available = ["Drill 8 onboarding"]
+        fake.messages.available = ["Drill 6 onboarding"]
         assert client.post("/api/sync").json()["importedTickets"] == 1
         assert client.get("/api/workshop").json()["lastInboxSync"]["importedMessages"] == 1
-        number = find(client, "Drill 8 onboarding")
+        number = find(client, "Drill 6 onboarding")
         status = client.get("/api/workshop").json()
         assert status["drillBrief"]["timeboxMinutes"]["selbstBauen"] == 25
         assert len(status["drillBrief"]["dialogueSteps"]) == 4
@@ -103,11 +103,11 @@ def test_realistic_drills_8_to_11_without_network(monkeypatch, tmp_path, request
         assert client.get("/api/tariffs").status_code == 400
         assert not any(t["productLine"] == "life" for t in client.get("/api/tickets").json())
 
-    with client_for("drill-09-start") as client:
+    with client_for("drill-07-start") as client:
         fake.messages.sender = "learner@example.test"
-        fake.messages.available = ["Drill 9 life"]
+        fake.messages.available = ["Drill 7 life"]
         assert client.post("/api/sync").json()["importedTickets"] == 1
-        number = find(client, "Drill 9 life")
+        number = find(client, "Drill 7 life")
         classify = client.post(f"/api/tickets/{number}/classify", json={"productLine": "life", "category": "contract_change", "summary": "Life request"})
         assert classify.status_code == 200, classify.text
         put_draft(client, number, "Agent's first draft")
@@ -116,10 +116,10 @@ def test_realistic_drills_8_to_11_without_network(monkeypatch, tmp_path, request
         sent = client.post(f"/api/tickets/{number}/send", json={})
         assert sent.status_code == 200, sent.text
         assert sent.json()["status"] == "sent"
-        assert fake.messages.sent[-1] == ("Drill 9 life", "Human-edited response")
+        assert fake.messages.sent[-1] == ("Drill 7 life", "Human-edited response")
 
-    with client_for("drill-10-start") as client:
-        fake.messages.available = ["Drill 10 approve", "Drill 10 reject"]
+    with client_for("drill-08-start") as client:
+        fake.messages.available = ["Drill 8 approve", "Drill 8 reject"]
         assert client.post("/api/sync").json()["importedTickets"] == 2
         for subject in fake.messages.available:
             number = find(client, subject)
@@ -128,8 +128,8 @@ def test_realistic_drills_8_to_11_without_network(monkeypatch, tmp_path, request
             response = client.post(f"/api/tickets/{number}/submit", json={})
             assert response.json()["status"] == "awaiting_human", response.text
             assert response.json()["humanApprovedAt"] is None
-        approved = find(client, "Drill 10 approve")
-        rejected = find(client, "Drill 10 reject")
+        approved = find(client, "Drill 8 approve")
+        rejected = find(client, "Drill 8 reject")
         try:
             send_ticket_draft(approved, "mcp-agent")
         except ValueError as error:
@@ -147,8 +147,8 @@ def test_realistic_drills_8_to_11_without_network(monkeypatch, tmp_path, request
         assert get_ticket(rejected)["humanApprovedAt"] is None
         assert client.post(f"/api/tickets/{rejected}/send", json={}).status_code == 400
 
-    with client_for("drill-11-start") as client:
-        fake.messages.available = ["Drill 11 run", "Drill 11 edit", "Drill 11 remove"]
+    with client_for("drill-09-start") as client:
+        fake.messages.available = ["Drill 9 run", "Drill 9 edit", "Drill 9 remove"]
         assert client.post("/api/sync").json()["importedTickets"] == 3
         numbers = {}
         for subject in fake.messages.available:
@@ -159,15 +159,15 @@ def test_realistic_drills_8_to_11_without_network(monkeypatch, tmp_path, request
             put_draft(client, number, f"Liability response for {subject}")
             scheduled = client.post(f"/api/tickets/{number}/submit", json={"delayHours": 24})
             assert scheduled.json()["status"] == "scheduled", scheduled.text
-        put_draft(client, numbers["Drill 11 edit"], "Human-edited liability reply")
-        removed = client.request("DELETE", f"/api/tickets/{numbers['Drill 11 remove']}/schedule", json={"reason": "Human stopped it"})
+        put_draft(client, numbers["Drill 9 edit"], "Human-edited liability reply")
+        removed = client.request("DELETE", f"/api/tickets/{numbers['Drill 9 remove']}/schedule", json={"reason": "Human stopped it"})
         assert removed.json()["status"] == "in_progress", removed.text
         dispatched = client.post("/api/workshop/clock/advance", json={"hours": 24, "confirmAdvance": True})
         assert dispatched.status_code == 200, dispatched.text
         assert dispatched.json()["dispatch"]["sent"] == 1
-        assert get_ticket(numbers["Drill 11 run"])["status"] == "sent"
-        assert get_ticket(numbers["Drill 11 edit"])["status"] == "in_progress"
-        assert get_ticket(numbers["Drill 11 remove"])["status"] == "in_progress"
+        assert get_ticket(numbers["Drill 9 run"])["status"] == "sent"
+        assert get_ticket(numbers["Drill 9 edit"])["status"] == "in_progress"
+        assert get_ticket(numbers["Drill 9 remove"])["status"] == "in_progress"
         assert len(fake.messages.sent) == 3
 
     source = tmp_path / "report-source"
@@ -175,7 +175,7 @@ def test_realistic_drills_8_to_11_without_network(monkeypatch, tmp_path, request
     (source / ".data").mkdir(parents=True)
     # Rehearsal used an explicit database path. Capture it without copying the
     # underlying database into the report worktree.
-    capture_report_snapshot(source, target, "drill-11-start", tmp_path / "rehearsal.db")
+    capture_report_snapshot(source, target, "drill-09-start", tmp_path / "rehearsal.db")
     report = read_report_snapshot(target)
     assert sum(item["count"] for item in report["tickets"] if not item["demo"]) >= 7
     assert any(item["type"] == "reply_sent" and item["mode"] == "automatic" for item in report["events"])

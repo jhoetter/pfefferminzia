@@ -68,7 +68,7 @@ write into `core_*`, `migration_*`, or `reference_*`.
 | Service tickets | queue, conversation, attachments, audit | classify, note, draft, submit, approve, status, send | email content is untrusted data |
 | Claims | claim, policy document, tasks, recommendations, audit | intake, task, propose, human review | no payment or external decision execution |
 | Provenance | import status, hashes, warnings, workshop profile | none | participant service exposes no truth layer |
-| Workshop control plane | checkpoint, virtual clock, todos, recovery plans | verify, advance time, prepare recovery worktree | later-drill capabilities are absent from discovery |
+| Workshop control plane | checkpoint, virtual clock, todos, recovery plans | verify, advance time (cockpit only), prepare recovery worktree | later-drill capabilities are absent from discovery |
 
 Every state-changing MCP operation calls the same server-side service used by
 the human workspace. Mutations use constrained inputs and append audit events.
@@ -154,8 +154,13 @@ There is intentionally no SQL or arbitrary filesystem tool.
 - Linking requires stable IDs and explicit confirmation.
 - Claim actions are proposals until a separate human-review command records a
   decision.
-- Immediate email sending requires explicit human confirmation and remains
-  impossible for demo tickets.
+- Approving, rejecting and sending replies and advancing the workshop clock
+  are **not MCP tools**. They exist only as REST endpoints used by the human
+  cockpit. The agent may prepare, submit for review, schedule and stop
+  (`remove_from_send_queue`), never release an external effect. Locally the
+  agent also has a shell, so this is an interface boundary backed by the
+  tutor rules, not authentication; production would require an authenticated
+  human identity for these actions. Demo tickets can never send.
 - Streamable HTTP is stateless, local-only, and unauthenticated. It must not be
   exposed publicly.
 
@@ -190,7 +195,13 @@ or stored in the single-row `workshop_state` table. It governs:
 - REST capability guards;
 - MCP tool registration and resource-template discovery;
 - browser navigation and control affordances;
-- tutor goals, success criteria and staged hints.
+- tutor goals, success criteria, staged hints and the pointer to the
+  reference solution.
+
+Official tags form a chain: `checkpoint/drill-06-start` is the tip of `main`;
+each later tag is a commit on the linear `reference` branch that adds the
+solution of the previous drill's build task. `pfefferminzia instructor retag`
+recomputes the tags after `main` changes and `reference` is rebased.
 
 Recovery deliberately does not switch the current worktree. A plan captures
 the official tag/commit and a fingerprint of the current HEAD and dirty paths.

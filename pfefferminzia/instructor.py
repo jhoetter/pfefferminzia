@@ -1,0 +1,261 @@
+"""Instructor tooling: provision participant inboxes, hand out values, send scenarios, watch progress.
+
+Everything instructor-specific lives in the Git-ignored `.instructor/` folder:
+
+- `.instructor/.env`       INSTRUCTOR_AGENTMAIL_API_KEY and INSTRUCTOR_INBOX_ID (the scenario sender)
+- `.instructor/roster.csv` one row per participant slot (written by `provision`, names editable)
+- `.instructor/sent.jsonl` log of sent scenarios, so a repeated `send` never mails twice
+- `.instructor/handouts/`  one paste-ready text per participant
+
+Commands that create inboxes or send mail only act with `--yes`; without it they print the plan.
+"""
+
+from __future__ import annotations
+
+import csv
+import io
+import json
+import os
+import re
+import time
+from pathlib import Path
+from typing import Any, Callable
+
+from dotenv import dotenv_values
+
+from .agentmail_service import _mapping, _value
+from .constants import ROOT
+from .scenarios import Scenario, scenarios_for
+from .util import utc_now
+
+INSTRUCTOR_DIR = ROOT / ".instructor"
+ROSTER_FIELDS = ["slot", "name", "email", "inbox_id", "api_key"]
+DEFAULT_REPO_URL = "https://github.com/jhoetter/pfefferminzia"
+
+
+def _config(directory: Path) -> dict[str, str]:
+    values = {key: value or "" for key, value in dotenv_values(directory / ".env").items()}
+    for key in ("INSTRUCTOR_AGENTMAIL_API_KEY", "INSTRUCTOR_INBOX_ID", "INSTRUCTOR_REPO_URL"):
+        values[key] = os.getenv(key) or values.get(key, "")
+    if not values["INSTRUCTOR_AGENTMAIL_API_KEY"] or not values["INSTRUCTOR_INBOX_ID"]:
+        raise ValueError(
+            f"Bitte {directory / '.env'} mit INSTRUCTOR_AGENTMAIL_API_KEY (Organisationsschlüssel) "
+            "und INSTRUCTOR_INBOX_ID (Szenario-Absender-Inbox) anlegen."
+        )
+    return values
+
+
+def _client(directory: Path) -> Any:
+    from agentmail import AgentMail
+
+    return AgentMail(api_key=_config(directory)["INSTRUCTOR_AGENTMAIL_API_KEY"])
+
+
+def _write_private(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.parent.chmod(0o700)
+    path.write_text(content, encoding="utf-8")
+    path.chmod(0o600)
+
+
+def read_roster(directory: Path = INSTRUCTOR_DIR) -> list[dict[str, str]]:
+    path = directory / "roster.csv"
+    if not path.is_file():
+        return []
+    with path.open(encoding="utf-8", newline="") as handle:
+        return [{field: row.get(field) or "" for field in ROSTER_FIELDS} for row in csv.DictReader(handle)]
+
+
+def write_roster(rows: list[dict[str, str]], directory: Path = INSTRUCTOR_DIR) -> Path:
+    path = directory / "roster.csv"
+    buffer = io.StringIO()
+    writer = csv.DictWriter(buffer, fieldnames=ROSTER_FIELDS, lineterminator="\n")
+    writer.writeheader()
+    writer.writerows(sorted(rows, key=lambda row: int(row["slot"])))
+    _write_private(path, buffer.getvalue())
+    return path
+
+
+def provision(count: int, prefix: str, domain: str | None = None, *, execute: bool = False,
+              directory: Path = INSTRUCTOR_DIR, client: Any = None) -> dict[str, Any]:
+    """Create one inbox plus one inbox-scoped key per slot. Idempotent: existing slots are kept."""
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]{1,30}", prefix):
+        raise ValueError("Prefix: nur Kleinbuchstaben, Ziffern und Bindestriche")
+    roster = {row["slot"]: row for row in read_roster(directory)}
+    planned = [f"{slot:02d}" for slot in range(1, count + 1) if not roster.get(f"{slot:02d}", {}).get("api_key")]
+    if not execute:
+        return {"execute": False, "existingSlots": sorted(roster), "slotsToCreate": planned,
+                "note": "Legt pro Platz eine Inbox und einen nur dafür gültigen Schlüssel an. Mit --yes ausführen."}
+    client = client or _client(directory)
+    for slot in planned:
+        username = f"{prefix}-{slot}"
+        request: dict[str, Any] = {"username": username, "display_name": f"Pfefferminzia {slot}", "client_id": username}
+        if domain:
+            request["domain"] = domain
+        inbox = _mapping(client.inboxes.create(request=request))
+        inbox_id = str(_value(inbox, "inbox_id", "inboxId"))
+        key = _mapping(client.inboxes.api_keys.create(inbox_id, name=f"{username}-workshop"))
+        row = roster.get(slot, {"slot": slot, "name": ""})
+        roster[slot] = {**row, "slot": slot, "email": str(_value(inbox, "email", default=inbox_id)),
+                        "inbox_id": inbox_id, "api_key": str(_value(key, "api_key", "apiKey"))}
+        write_roster(list(roster.values()), directory)  # persist after every slot: keys are shown only once
+    return {"execute": True, "created": planned, "roster": str(directory / "roster.csv"), "slots": len(roster)}
+
+
+def handouts(directory: Path = INSTRUCTOR_DIR) -> dict[str, Any]:
+    config = _config(directory)
+    repo = config.get("INSTRUCTOR_REPO_URL") or DEFAULT_REPO_URL
+    sender = config["INSTRUCTOR_INBOX_ID"]
+    rows = [row for row in read_roster(directory) if row["api_key"]]
+    if not rows:
+        raise ValueError("Roster ist leer: zuerst `instructor provision` ausführen")
+    texts = []
+    for row in rows:
+        name = f" · {row['name']}" if row["name"] else ""
+        text = (
+            f"PFEFFERMINZIA – DEINE PERSÖNLICHEN WORKSHOP-WERTE (Platz {row['slot']}{name})\n"
+            "Nur für dich und nur für diesen Workshop. Nicht in Gruppenchats, nicht in Git.\n\n"
+            f"AGENTMAIL_INBOX_ID={row['inbox_id']}\n"
+            f"AGENTMAIL_API_KEY={row['api_key']}\n"
+            f"WORKSHOP_ALLOWED_RECIPIENTS={sender}\n\n"
+            "Start: Terminal öffnen, `claude` starten und schreiben:\n"
+            f"  Klone {repo} nach ~/pfefferminzia, richte alles nach der README ein\n"
+            "  und starte die Kommandozentrale. Ich bin in Drill 6.\n\n"
+            "Wenn Claude nach deinen Inbox-Werten fragt, füge die drei Zeilen oben ein.\n"
+            f"Deine Workshop-Mailadresse (für Testmails): {row['email']}\n"
+        )
+        _write_private(directory / "handouts" / f"platz-{row['slot']}.txt", text)
+        texts.append(text)
+    _write_private(directory / "handouts" / "alle-zum-ausdrucken.txt", "\n\f\n".join(texts))
+    return {"handouts": len(texts), "folder": str(directory / "handouts")}
+
+
+def _sent_log(directory: Path) -> list[dict[str, Any]]:
+    path = directory / "sent.jsonl"
+    if not path.is_file():
+        return []
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+
+def send_scenarios(drill: str, *, slots: list[str] | None = None, execute: bool = False, resend: bool = False,
+                   pause_seconds: float = 2.0, directory: Path = INSTRUCTOR_DIR, client: Any = None,
+                   sleep: Callable[[float], None] = time.sleep) -> dict[str, Any]:
+    """Send one drill's scenario messages from the instructor inbox to every (or selected) participant."""
+    scenarios: list[Scenario] = scenarios_for(drill)
+    if not scenarios:
+        raise ValueError("Unbekannter Drill: 6, 7, 8, 9 oder challenge")
+    roster = [row for row in read_roster(directory) if row["email"] and (not slots or row["slot"] in slots)]
+    if not roster:
+        raise ValueError("Keine Empfänger: Roster leer oder Platz-Nummern passen nicht")
+    already = {(entry["scenario"], entry["email"]) for entry in _sent_log(directory)}
+    plan = [
+        {"slot": row["slot"], "name": row["name"], "email": row["email"], "scenario": item["key"], "subject": item["subject"]}
+        for row in roster for item in scenarios
+        if resend or (item["key"], row["email"]) not in already
+    ]
+    skipped = len(roster) * len(scenarios) - len(plan)
+    if not execute:
+        return {"execute": False, "mails": len(plan), "skippedAlreadySent": skipped, "plan": plan,
+                "note": "Nichts gesendet. Mit --yes wirklich versenden."}
+    config = _config(directory)
+    client = client or _client(directory)
+    by_key = {item["key"]: item for item in scenarios}
+    sent = []
+    for index, entry in enumerate(plan):
+        scenario = by_key[entry["scenario"]]
+        idempotency = f"pfm-{entry['scenario']}-{entry['slot']}" + (f"-{int(time.time())}" if resend else "")
+        response = _mapping(client.inboxes.messages.send(
+            config["INSTRUCTOR_INBOX_ID"], to=[entry["email"]], subject=scenario["subject"],
+            text=scenario["text"], idempotency_key=idempotency,
+        ))
+        record = {**entry, "messageId": str(_value(response, "message_id", "messageId")), "sentAt": utc_now()}
+        with (directory / "sent.jsonl").open("a", encoding="utf-8") as log:
+            log.write(json.dumps(record, ensure_ascii=False) + "\n")
+        sent.append(record)
+        if pause_seconds and index + 1 < len(plan):
+            sleep(pause_seconds)
+    return {"execute": True, "sent": len(sent), "skippedAlreadySent": skipped}
+
+
+def progress(directory: Path = INSTRUCTOR_DIR, client: Any = None) -> dict[str, Any]:
+    """Which participant has answered which scenario? Replies arrive in the instructor inbox."""
+    config = _config(directory)
+    client = client or _client(directory)
+    roster = read_roster(directory)
+    by_email = {row["email"].lower(): row for row in roster}
+    messages: list[Any] = []
+    page_token = None
+    for _ in range(20):
+        response = _mapping(client.inboxes.messages.list(config["INSTRUCTOR_INBOX_ID"], limit=100, page_token=page_token))
+        messages.extend(_value(response, "messages", default=[]) or [])
+        page_token = _value(response, "next_page_token", "nextPageToken")
+        if not page_token:
+            break
+    replies: dict[str, set[str]] = {row["slot"]: set() for row in roster}
+    from .scenarios import SCENARIOS
+
+    subjects = {item["subject"]: item["key"] for item in SCENARIOS}
+    for item in messages:
+        message = _mapping(item)
+        sender = str(_value(message, "from_", "from", "")).lower()
+        address = sender.split("<")[-1].rstrip(">").strip()
+        subject = re.sub(r"^(re|aw|antw):\s*", "", str(_value(message, "subject", default="")), flags=re.I).strip()
+        row = by_email.get(address)
+        if row and subject in subjects:
+            replies[row["slot"]].add(subjects[subject])
+    sent = _sent_log(directory)
+    return {
+        "participants": [
+            {"slot": row["slot"], "name": row["name"],
+             "received": sorted({entry["scenario"] for entry in sent if entry["email"] == row["email"]}),
+             "answered": sorted(replies[row["slot"]])}
+            for row in roster
+        ]
+    }
+
+
+def format_progress(result: dict[str, Any]) -> str:
+    from .scenarios import SCENARIOS
+
+    keys = [item["key"] for item in SCENARIOS if item["drill"] in (7, 8, 9)]
+    header = "Platz  Name                  " + "  ".join(key.split("-", 1)[1][:10].ljust(10) for key in keys)
+    lines = [header, "-" * len(header)]
+    for row in result["participants"]:
+        cells = [("✔ Antwort" if key in row["answered"] else "· erhalten" if key in row["received"] else "").ljust(10) for key in keys]
+        lines.append(f"{row['slot']:<6} {row['name'][:20]:<21} " + "  ".join(cells))
+    return "\n".join(lines)
+
+
+REFERENCE_SUBJECT = re.compile(r"^Reference (drill-\d\d-(?:start|complete)):")
+
+
+def retag(base: str = "main", reference: str = "reference", *, execute: bool = False, root: Path = ROOT) -> dict[str, Any]:
+    """Point every checkpoint tag at the right commit.
+
+    `drill-06-start` is the tip of `base`. Each commit on `reference` (a linear
+    branch on top of `base`) whose subject starts with `Reference drill-XX-…:`
+    carries the solution of the previous build task and becomes that tag.
+    After a change on `base`: `git rebase <base> <reference>`, then retag.
+    """
+    import subprocess
+
+    def git(*args: str) -> str:
+        return subprocess.run(["git", *args], cwd=root, check=True, capture_output=True, text=True).stdout.strip()
+
+    tags = {"drill-06-start": git("rev-parse", base)}
+    for line in git("log", "--reverse", "--format=%H %s", f"{base}..{reference}").splitlines():
+        commit, _, subject = line.partition(" ")
+        match = REFERENCE_SUBJECT.match(subject)
+        if match:
+            tags[match.group(1)] = commit
+    from .checkpoints import CHECKPOINTS
+
+    missing = sorted(set(CHECKPOINTS) - set(tags))
+    plan = {name: commit[:10] for name, commit in tags.items()}
+    if not execute or missing:
+        return {"execute": False, "tags": plan, "missing": missing,
+                "note": "Mit --yes setzen (nur wenn nichts fehlt). Danach: git push origin <base> <reference> && git push origin --tags --force"}
+    for name, commit in tags.items():
+        git("tag", "-f", "-a", f"checkpoint/{name}", commit, "-m", f"Pfefferminzia official {name} reference")
+    return {"execute": True, "tags": plan,
+            "next": f"git push origin {base} {reference} --force-with-lease && git push origin --tags --force"}

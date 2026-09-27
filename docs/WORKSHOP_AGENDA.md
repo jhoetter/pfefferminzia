@@ -24,8 +24,9 @@ enthält keine Einheiten von Jürgen Döllner oder Ralf Herbrich.
 
 ## Montag: Augmentation
 
-Der Montag schafft eine gemeinsame Daten- und Fachgrundlage. Falks aktueller
-Übungsbogen lautet:
+Der Montag schafft eine gemeinsame Daten- und Fachgrundlage in Falks
+**Drills 1–5** (die genaue Aufteilung liegt bei Falk; der Dienstag setzt mit
+Drill 6 fort). Inhaltlich geht es um:
 
 1. Claude Code einrichten, den Datensatz klonen und erste Fragen stellen.
 2. Als neue Chief AI & Data Officer den geerbten Bestand erkunden und eine
@@ -49,14 +50,14 @@ Die letzte Frage bildet bewusst die Brücke von Augmentation zu Automation.
 
 | Zeit | Programmpunkt | Inhalt und Ergebnis |
 | --- | --- | --- |
-| 08:30–09:45 | **Input – Vom Assistenten zum Agenten: Wenn KI handelt** | Johannes zeigt seine fertigen Anwendungen live (app/design/tracker.sonaloop.com), erklärt Vibe Coding mit Claude Code, MCP, Verifizierbarkeit und die zwei Kontrollmuster. Danach Fork-/Tagesbriefing. |
-| 10:00–11:00 | **Drill 8 – Die Kommandozentrale für Agenten** | Eigenen Fork/Branch anlegen, Python-App und MCP starten, persönliche Mail bis zum Ticket verfolgen, eine erste Eingangsverbesserung mit Claude bauen, testen, committen und pushen. |
-| 11:15–12:15 | **Drill 9 – Leben: Der Mensch bearbeitet, der Agent bereitet vor** | Kunde, Vertrag und Tarifgeneration prüfen; belegten Entwurf redigieren und bewusst selbst versenden. Einen Beleg-Guard mit Claude bauen. |
+| 08:30–09:45 | **Input – Vom Assistenten zum Agenten: Wenn KI handelt** | Johannes zeigt seine fertigen Anwendungen live (app/design/tracker.sonaloop.com), erklärt Vibe Coding mit Claude Code, MCP, Verifizierbarkeit und die zwei Kontrollmuster. Danach: ein Satz an Claude, und jede Person hat ihre eigene Kommandozentrale. |
+| 10:00–11:00 | **Drill 6 – Die Kommandozentrale für Agenten** | Claude klont und startet die Software; persönliche Mail bis zum Ticket in Cockpit und MCP verfolgen; mit Claude ein automatisches Prüfen-Todo bauen, testen und committen. |
+| 11:15–12:15 | **Drill 7 – Leben: Der Mensch bearbeitet, der Agent bereitet vor** | Kunde, Vertrag und Tarifgeneration prüfen; belegten Entwurf redigieren und bewusst selbst versenden. Eine Tarif-Belegprüfung mit Claude bauen. |
 | 12:15–13:15 | **Mittagspause** | Abstand vor den Automationsmustern. |
-| 13:15–14:15 | **Drill 10 – Leben: Der Agent bearbeitet, der Mensch gibt frei** | Zwei Entscheidungsvorlagen prüfen; eine freigeben, eine ablehnen. Review-Zustand selbst verbessern und belegen, dass ein Edit die Freigabe entwertet. |
-| 14:30–15:30 | **Drill 11 – Haftpflicht: Automatisch, solange niemand widerspricht** | Haftpflichtfälle routen; einen laufen lassen, einen ändern, einen stoppen. Workshop-Uhr nach Bestätigung vorspulen und die Wirkung im Audit prüfen. |
-| 15:45–16:30 | **Mini-Drill 12 – Management-Report** | Aus einem aggregierten Schnappschuss der eigenen Drill-11-Instanz mit reveal.js und D3 maximal vier Folien bauen: Beobachtung, Grafik, Kontrollentscheidung und Grenze der Aussage. |
-| 16:45–18:00 | **Whiteboard-Abschluss – Wo darf der Agent handeln?** | Laptops zu: Den Report als Gesprächsauftakt nutzen, Pflichtfreigabe und Eingriffsfenster vergleichen. Terminal-Prompts gegen Event-/Cron-Trigger samt Retry, Rechten, Audit und Verantwortung halten; Automation Contract formulieren. |
+| 13:15–14:15 | **Drill 8 – Leben: Der Agent bearbeitet, der Mensch gibt frei** | Claude bereitet zwei Fälle vor; im Cockpit einen freigeben, einen ablehnen (Claude hat kein Freigabe-Werkzeug). Review-Zustand selbst verbessern und belegen, dass ein Edit die Freigabe entwertet. |
+| 14:30–15:30 | **Drill 9 – Haftpflicht: Automatisch, solange niemand widerspricht** | Haftpflichtfälle routen; einen laufen lassen, einen ändern, einen stoppen. Workshop-Uhr im Cockpit vorspulen und die Wirkung im Audit prüfen. Doppelversand per Test ausschließen. |
+| 15:45–16:30 | **Drill 10 – Management-Report (45 Min.)** | Aus einem aggregierten Schnappschuss der eigenen Drill-9-Instanz mit reveal.js und D3 maximal vier Folien bauen: Beobachtung, Grafik, Kontrollentscheidung und Grenze der Aussage. Bonus: Video der eigenen Lösung mit Remotion. |
+| 16:45–18:00 | **Whiteboard-Abschluss – Wo darf der Agent handeln?** | Ohne Rechner: Pflichtfreigabe und Eingriffsfenster vergleichen, Automation Contract formulieren (Moderationsnotizen im Runbook). |
 
 ### Die zwei Kontrollmuster
 
@@ -83,20 +84,21 @@ Eingriffe und das endgültige Ergebnis fest.
 Vier operative Drills dauern je 60 Minuten; der Report-Mini-Drill dauert
 45 Minuten. Jeder hat eine beobachtbare Produktmission **und** eigenen Code. Der
 Verifier prüft nur die Startbereitschaft; abgeschlossen ist ein Drill erst
-mit Fallnachweis, getesteter Änderung und eigenem Commit/Push. Geführte
+mit Fallnachweis, getesteter Änderung und eigenem Commit. Geführte
 Teilnehmende verändern eine klar abgegrenzte Stelle; Bauende implementieren
 mehrere kleine Schritte; Schnelle dürfen nach dem Kernnachweis auf eigenen
-Wunsch bereits die nächste Fähigkeit bauen. Der offizielle Checkpoint ist
-ein sicherer Rückweg, keine Musterlösungspflicht. Details:
+Wunsch bereits den nächsten Bauauftrag beginnen. Der nächste offizielle
+Checkpoint enthält die Lösung des vorigen Bauauftrags und ist der sichere
+Rückweg für alle, die hängen. Details:
 [Lernpfad](LEARNING_PATH.md).
 
 | Drill | Kernpfad | Selbst bauen | Nachweis + Rückblick |
 | --- | ---: | ---: | ---: |
-| 8 · Eingang verstehen | 20 Min. | 25 Min. | 15 Min. |
-| 9 · Belegter Entwurf | 30 Min. | 20 Min. | 10 Min. |
-| 10 · Pflichtfreigabe | 30 Min. | 20 Min. | 10 Min. |
-| 11 · Eingriffsfenster | 30 Min. | 15 Min. | 15 Min. |
-| 12 · Management-Report | 5 Min. | 20 Min. | 20 Min. |
+| 6 · Eingang verstehen | 20 Min. | 25 Min. | 15 Min. |
+| 7 · Belegter Entwurf | 30 Min. | 20 Min. | 10 Min. |
+| 8 · Pflichtfreigabe | 30 Min. | 20 Min. | 10 Min. |
+| 9 · Eingriffsfenster | 30 Min. | 15 Min. | 15 Min. |
+| 10 · Management-Report | 5 Min. | 20 Min. | 20 Min. |
 
 Die genauen Teilziele, Dateieinstiege und Zeitboxen stehen in den
 [Drill-Karten](DRILL_CARDS.md) und im MCP-Werkzeug `get_drill_guide` schon bei
@@ -107,7 +109,7 @@ und am menschlichen Stopp warten, nicht alle Prompts als einen autonomen
 Auftrag ausführen oder bloß ein zufälliges Todo vorschlagen.
 
 Die Teilnehmenden können in Paaren zusammenarbeiten, betreiben aber jeweils ein
-isoliertes lokales System mit eigener Inbox und eigenem Fork. Der Lehrende
+isoliertes lokales System mit eigener Inbox und eigener Kopie. Der Lehrende
 kann nach jeder Phase gemeinsam weitergehen; Vorausbau ist freiwillig und
 kein Grund, andere zu bremsen oder spätere Funktionen ungefragt zu zeigen.
 
@@ -117,7 +119,7 @@ Die Challenges vertiefen einen bestehenden Drill. Generische Kosten- oder
 Deckungsfragen benötigen dafür keinen eigenen Programmpunkt.
 
 Wer den Fall und den Codebeitrag früh nachweist, kann stattdessen auf
-ausdrücklichen Wunsch den **nächsten** Drill selbst vorbauen. Die
+ausdrücklichen Wunsch den **nächsten** Bauauftrag selbst beginnen. Die
 Akzeptanzkriterien kommen vor der Lösung; beim gemeinsamen Wechsel kann die
 Person ihren Branch behalten oder nach Rückfrage den offiziellen Checkpoint
 in einem neuen Worktree laden. Diese Wahl wird nie über einen Reset erzwungen.
@@ -178,18 +180,14 @@ ausschließlich fiktive Workshop-Inhalte enthalten.
 
 ## Vorbereitung
 
-- Pro Person einen getesteten Repository-Checkout und eine isolierte Inbox
-  bereitstellen.
-- Vor jedem Drill einen deterministischen Reset-Punkt vorbereiten.
-- Mindestens drei Lebens- und drei Haftpflichtnachrichten für Kernpfade und
-  Eingriffsvarianten vorbereiten.
-- Freigabe, Bearbeitung, Rückgabe an den Agenten, Abbruch und Entfernen aus der
-  Queue in der Oberfläche sichtbar und über kontrollierte MCP-Funktionen
-  verfügbar machen.
-- Sicherstellen, dass tatsächliche Workshop-E-Mails nur an freigegebene
-  Workshop-Adressen versendet werden können.
-- Challenge Cards und die Whiteboard-Vorlage für den Automation Contract
-  vorbereiten.
+- Inboxen, Schlüssel und Zettel pro Person: `instructor provision` und
+  `instructor handouts` (siehe Runbook).
+- Szenario-Mails pro Drill: `instructor send <drill> --yes`.
+- Freigabe, Ablehnung, Versand und Zeitsprung nur im Cockpit; Vorbereiten,
+  Einplanen und Stoppen auch über MCP.
+- Checkpoint-Tags mit Referenzlösungen nach jeder Änderung neu setzen
+  (`instructor retag`).
+- Whiteboard-Vorlage für den Automation Contract bereitlegen.
 - Das genaue Format des Mittwochs offenhalten, bis die Fälle der Teilnehmenden
   und die Ergebnisse vom Montag bekannt sind.
 

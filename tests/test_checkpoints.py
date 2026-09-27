@@ -5,8 +5,8 @@ from pfefferminzia.workshop import ensure_workshop_fixtures
 def test_checkpoint_activation_resets_clock_and_guides_without_spoilers(monkeypatch, full_db):
     monkeypatch.delenv("WORKSHOP_CHECKPOINT", raising=False)
     ensure_workshop_fixtures(full_db)
-    profile = activate_checkpoint("drill-9", full_db)
-    assert profile["name"] == "drill-09-start"
+    profile = activate_checkpoint("drill-7", full_db)
+    assert profile["name"] == "drill-07-start"
     assert checkpoint_profile(full_db)["capabilities"] == ["core", "inbox", "todos", "knowledge", "draft", "manual_send"]
     first_hint = drill_guide(1, full_db)
     assert first_hint["hintLevel"] == 1
@@ -14,15 +14,17 @@ def test_checkpoint_activation_resets_clock_and_guides_without_spoilers(monkeypa
     assert sum(first_hint["timeboxMinutes"].values()) == 60
     assert "Tarifgeneration" in first_hint["buildTask"]
     assert first_hint["advanceTask"] is None
-    assert "Review-Zustand" in drill_guide(0, full_db, include_advance_task=True)["advanceTask"]
+    advance = drill_guide(0, full_db, include_advance_task=True)
+    assert "controlNotice" in advance["advanceTask"]
+    assert advance["referenceSolution"]["tag"] == "checkpoint/drill-08-start"
 
 
-def test_drill_eight_guide_starts_with_a_real_inbox_mission(monkeypatch, full_db):
-    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-08-start")
+def test_drill_six_guide_starts_with_a_real_inbox_mission(monkeypatch, full_db):
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-06-start")
     guide = drill_guide(0, full_db)
     assert guide["hint"] is None
     assert "Ticket-ID" in guide["mission"]
-    assert "zweimal synchronisiert" in guide["buildTask"]
+    assert "zweiter Sync" in guide["buildTask"]
     assert "genau ein" in guide["buildTaskShort"]
     assert "guided" in guide["learningPath"]
     assert sum(guide["timeboxMinutes"].values()) == 60
@@ -33,14 +35,14 @@ def test_adopt_checkpoint_keeps_cases_and_clock(monkeypatch, full_db):
     ensure_workshop_fixtures(full_db)
     full_db.execute("UPDATE workshop_state SET clock_offset_seconds = 3600 WHERE id = 1")
     before = full_db.execute("SELECT COUNT(*) FROM tickets").fetchone()[0]
-    profile = adopt_checkpoint("drill-10-start", full_db)
-    assert profile["name"] == "drill-10-start"
+    profile = adopt_checkpoint("drill-08-start", full_db)
+    assert profile["name"] == "drill-08-start"
     assert full_db.execute("SELECT clock_offset_seconds FROM workshop_state WHERE id = 1").fetchone()[0] == 3600
     assert full_db.execute("SELECT COUNT(*) FROM tickets").fetchone()[0] == before
 
 
 def test_each_drill_guides_separate_claude_questions_and_human_stops(monkeypatch, full_db):
-    for drill in (8, 9, 10, 11, 12):
+    for drill in (6, 7, 8, 9, 10):
         monkeypatch.setenv("WORKSHOP_CHECKPOINT", f"drill-{drill:02d}-start")
         guide = drill_guide(0, full_db)
         steps = guide["dialogueSteps"]
@@ -48,13 +50,14 @@ def test_each_drill_guides_separate_claude_questions_and_human_stops(monkeypatch
         assert all(set(step) == {"phase", "askClaude", "yourMove"} for step in steps)
         assert all(step["askClaude"] and step["yourMove"] for step in steps)
         assert "vier Dialogetappen" in guide["instruction"]
-        assert sum(guide["timeboxMinutes"].values()) == (45 if drill == 12 else 60)
-    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-11-start")
-    assert "nicht vorspulen" in drill_guide(0, full_db)["dialogueSteps"][1]["askClaude"]
+        assert sum(guide["timeboxMinutes"].values()) == (45 if drill == 10 else 60)
+        assert "Cockpit" in guide["instruction"]
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-09-start")
+    assert "Cockpit" in drill_guide(0, full_db)["dialogueSteps"][3]["yourMove"]
 
 
 def test_checkpoint_verifier_reports_actionable_preflight(monkeypatch, full_db):
-    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-11-start")
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-09-start")
     monkeypatch.setenv("AGENTMAIL_API_KEY", "")
     monkeypatch.setenv("AUTO_SEND_ENABLED", "false")
     ensure_workshop_fixtures(full_db)
@@ -68,7 +71,7 @@ def test_checkpoint_verifier_reports_actionable_preflight(monkeypatch, full_db):
 def test_report_checkpoint_needs_snapshot_but_not_live_inbox(monkeypatch, full_db, tmp_path):
     import pfefferminzia.constants as constants
 
-    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-12-start")
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-10-start")
     monkeypatch.setenv("AGENTMAIL_API_KEY", "")
     monkeypatch.setenv("AUTO_SEND_ENABLED", "false")
     monkeypatch.setattr(constants, "ROOT", tmp_path)

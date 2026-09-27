@@ -8,7 +8,7 @@ def test_python_host_serves_api_and_browser_workspace(monkeypatch, tmp_path):
     monkeypatch.setenv("AGENTMAIL_API_KEY", "")
     monkeypatch.setenv("AUTO_SEND_ENABLED", "false")
     monkeypatch.setenv("WORKSHOP_PROFILE", "participant")
-    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-08-start")
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-06-start")
     close_database()
 
     from pfefferminzia.app import create_app
@@ -20,7 +20,7 @@ def test_python_host_serves_api_and_browser_workspace(monkeypatch, tmp_path):
         dashboard = client.get("/api/dashboard")
         assert dashboard.status_code == 200
         assert dashboard.json()["tickets"] == []
-        assert dashboard.json()["workshop"]["checkpoint"]["name"] == "drill-08-start"
+        assert dashboard.json()["workshop"]["checkpoint"]["name"] == "drill-06-start"
         page = client.get("/")
         assert page.status_code == 200
         assert '<div id="app" aria-live="polite"></div>' in page.text
@@ -68,7 +68,7 @@ def test_agentmail_config_becomes_visible_without_restart(monkeypatch, tmp_path)
     monkeypatch.setenv("AGENTMAIL_INBOX_ID", "")
     monkeypatch.setenv("WORKSHOP_ALLOWED_RECIPIENTS", "")
     monkeypatch.setenv("AUTO_SEND_ENABLED", "false")
-    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-08-start")
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-06-start")
     close_database()
 
     with TestClient(create_app()) as client:
@@ -90,7 +90,7 @@ def test_http_surface_follows_checkpoint(monkeypatch, tmp_path):
     monkeypatch.setenv("AGENTMAIL_API_KEY", "")
     monkeypatch.setenv("AUTO_SEND_ENABLED", "false")
     monkeypatch.setenv("WORKSHOP_PROFILE", "participant")
-    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-08-start")
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-06-start")
     close_database()
 
     from pfefferminzia.app import create_app
@@ -99,7 +99,7 @@ def test_http_surface_follows_checkpoint(monkeypatch, tmp_path):
 
     with TestClient(app) as client:
         dashboard = client.get("/api/dashboard").json()
-        assert dashboard["workshop"]["checkpoint"]["name"] == "drill-08-start"
+        assert dashboard["workshop"]["checkpoint"]["name"] == "drill-06-start"
         assert dashboard["tickets"] == []
         assert sum(dashboard["counts"].values()) == 0
         assert dashboard["workshop"]["demoTickets"] == 0
@@ -109,7 +109,7 @@ def test_http_surface_follows_checkpoint(monkeypatch, tmp_path):
         assert blocked.status_code == 400
         assert "intentionally unavailable" in blocked.json()["error"]
 
-        monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-09-start")
+        monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-07-start")
         dashboard = client.get("/api/dashboard").json()
         assert [ticket["ticketNumber"] for ticket in dashboard["tickets"]] == ["PF-10002"]
         assert client.get("/api/tariffs").status_code == 200

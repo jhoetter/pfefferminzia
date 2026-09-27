@@ -29,7 +29,7 @@ DEMO_TICKETS = [
     {
         "ticketNumber": "PF-10002", "partnerId": "PTR-00000001", "contractId": "VTR-00000102",
         "email": "simone.niederberger@mail.example", "customerName": "Simone Niederberger", "subject": "Bezugsberechtigung meiner RisikoLeben",
-        "status": "in_progress", "productLine": "life", "category": "contract_change", "priority": "normal", "minStage": 9,
+        "status": "in_progress", "productLine": "life", "category": "contract_change", "priority": "normal", "minStage": 7,
         "summary": "Kundin möchte wissen, wie sie die Bezugsberechtigung ihrer RisikoLeben-Police ändern kann.",
         "body": "Guten Tag\n\nich möchte die bezugsberechtigte Person in meiner RisikoLeben-Police VTR-00000102 ändern. Welche Unterlagen benötigen Sie?\n\nFreundliche Grüsse\nSimone Niederberger",
         "createdAt": "2026-09-29T09:35:00Z",
@@ -37,7 +37,7 @@ DEMO_TICKETS = [
     {
         "ticketNumber": "PF-10004", "partnerId": "PTR-00000002", "contractId": "VTR-00000202",
         "email": "jana.ortlepp@mail.example", "customerName": "Jana Ortlepp", "subject": "Leistungsprüfung RisikoLeben",
-        "status": "new", "productLine": "life", "category": "claim", "priority": "high", "minStage": 10,
+        "status": "new", "productLine": "life", "category": "claim", "priority": "high", "minStage": 8,
         "summary": "Lebens-Leistungsfall benötigt eine vollständig vorbereitete Entscheidung und Antwort mit menschlicher Freigabe.",
         "body": "Guten Tag\n\nzum Vertrag VTR-00000202 reiche ich die Unterlagen für die Leistungsprüfung ein. Bitte bestätigen Sie das weitere Vorgehen.\n\nFreundliche Grüsse\nJana Ortlepp",
         "createdAt": "2026-09-29T12:55:00Z",
@@ -45,7 +45,7 @@ DEMO_TICKETS = [
     {
         "ticketNumber": "PF-10006", "partnerId": "PTR-00000006", "contractId": "VTR-00000602",
         "email": "farid.nazari@mail.example", "customerName": "Farid Nazari", "subject": "Rückfrage zur Leistungsentscheidung",
-        "status": "new", "productLine": "life", "category": "claim", "priority": "normal", "minStage": 10,
+        "status": "new", "productLine": "life", "category": "claim", "priority": "normal", "minStage": 8,
         "summary": "Zweiter Lebens-Leistungsfall für Ablehnung, Kontextnachforderung und Überarbeitung.",
         "body": "Guten Tag\n\nich habe eine Rückfrage zur angekündigten Entscheidung für Vertrag VTR-00000602. Bitte prüfen Sie die Unterlagen erneut und erläutern Sie die Grundlage.\n\nFreundliche Grüsse\nFarid Nazari",
         "createdAt": "2026-09-29T13:05:00Z",
@@ -53,7 +53,7 @@ DEMO_TICKETS = [
     {
         "ticketNumber": "PF-10001", "partnerId": "PTR-00000001", "contractId": "VTR-00000101", "claimId": "SCH-00000118",
         "email": "simone.niederberger@mail.example", "customerName": "Simone Niederberger", "subject": "E-Bike des Nachbarn beschädigt",
-        "status": "in_progress", "productLine": "liability", "category": "coverage_question", "priority": "normal", "minStage": 11,
+        "status": "in_progress", "productLine": "liability", "category": "coverage_question", "priority": "normal", "minStage": 9,
         "summary": "Kundin fragt nach Deckung für den durch ihr Kind verursachten E-Bike-Schaden.",
         "body": "Guten Tag\n\nmein Sohn hat beim Spielen das E-Bike unseres Nachbarn umgestossen. Ich habe drei Fotos und den Kostenvoranschlag. Können Sie mir kurz sagen, ob das versichert ist?\n\nFreundliche Grüsse\nSimone Niederberger",
         "createdAt": "2025-05-18T09:15:00Z",
@@ -61,7 +61,7 @@ DEMO_TICKETS = [
     {
         "ticketNumber": "PF-10003", "partnerId": "PTR-00000003", "contractId": "VTR-00000301", "claimId": "SCH-00000318",
         "email": "broker.kaufmann@workshop.invalid", "customerName": "Schreinerei Kaufmann + Söhne GmbH", "subject": "Grossschaden Wasser – Entscheidung Teilzahlung",
-        "status": "awaiting_human", "productLine": "liability", "category": "claim", "priority": "high", "minStage": 11,
+        "status": "awaiting_human", "productLine": "liability", "category": "claim", "priority": "high", "minStage": 9,
         "summary": "Makler fordert eine Teilzahlung; Schadenhöhe und Regressursache benötigen Kompetenzfreigabe.",
         "body": "Sehr geehrte Damen und Herren\n\nzum Wasserschaden unseres Kunden liegt das Gutachten vor. Wir erwarten Ihre Stellungnahme zur beantragten Teilzahlung und zur weiteren Regressprüfung.\n\nFreundliche Grüsse\nBroker Mittelland AG",
         "createdAt": "2024-06-18T08:10:00Z",
@@ -69,7 +69,7 @@ DEMO_TICKETS = [
     {
         "ticketNumber": "PF-10008", "partnerId": "PTR-00000008", "contractId": "VTR-00000801", "claimId": "SCH-00000810",
         "email": "hpieper@bluemail.example", "customerName": "Hans-Georg Pieper", "subject": "BESCHWERDE – SCHADEN SCH-00000810",
-        "status": "awaiting_human", "productLine": "liability", "category": "complaint", "priority": "urgent", "minStage": 11,
+        "status": "awaiting_human", "productLine": "liability", "category": "complaint", "priority": "urgent", "minStage": 9,
         "summary": "Kunde widerspricht der systemseitigen Ablehnung und verweist auf den Hundehalter-Baustein seit 2019.",
         "body": "BESCHWERDE – SCHADEN NR. SCH-00000810\n\nIch lasse mir das nicht gefallen. Den Hundehalter-Baustein bezahle ich seit 2019. Prüfen Sie Ihre Unterlagen und bestätigen Sie mir binnen 14 Tagen die Regulierung.\n\nHochachtungsvoll\nH.-G. Pieper",
         "createdAt": "2025-03-28T10:00:00Z",
@@ -77,7 +77,7 @@ DEMO_TICKETS = [
     {
         "ticketNumber": "PF-10009", "partnerId": "PTR-00000009", "contractId": "VTR-00000901", "claimId": "SCH-00000918",
         "email": "marcel.grimm@workshop.invalid", "customerName": "Transportlogistik Grimm e.K.", "subject": "Wasserschaden beim Transport – Rechnung anbei",
-        "status": "in_progress", "productLine": "liability", "category": "claim", "priority": "urgent", "minStage": 11,
+        "status": "in_progress", "productLine": "liability", "category": "claim", "priority": "urgent", "minStage": 9,
         "summary": "Serienschaden mit Beleg- und Zeitabweichungen; Signale erfordern SIU- und Fairness-Prüfung.",
         "body": "hallo\n\nschaden ist passiert beim entladen, wasserkanister ist umgekippt. hab alles hochgeladen, kunde will sein geld.\n\nGruß Marcel",
         "createdAt": "2024-08-29T12:20:00Z",

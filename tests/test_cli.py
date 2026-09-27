@@ -22,7 +22,7 @@ def test_checkpoint_verify_exits_nonzero_when_preflight_fails(monkeypatch, capsy
 def test_setup_reports_missing_inbox_settings_without_secrets(monkeypatch, capsys):
     monkeypatch.setattr(sys, "argv", ["pfefferminzia", "setup"])
     monkeypatch.setattr(cli, "_initialize", lambda: {"imported": True})
-    monkeypatch.setattr(checkpoints, "checkpoint_profile", lambda: {"name": "drill-08-start"})
+    monkeypatch.setattr(checkpoints, "checkpoint_profile", lambda: {"name": "drill-06-start"})
     from pfefferminzia import agentmail_service
 
     monkeypatch.setattr(agentmail_service, "agentmail_configuration", lambda probe=False: {
@@ -35,4 +35,4 @@ def test_setup_reports_missing_inbox_settings_without_secrets(monkeypatch, capsy
     output = capsys.readouterr().out
     assert '"agentMailConfigured": false' in output
     assert '"AGENTMAIL_API_KEY"' in output
-    assert '"drill-08-start"' in output
+    assert '"drill-06-start"' in output

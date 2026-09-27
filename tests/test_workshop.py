@@ -8,7 +8,7 @@ from pfefferminzia.workshop import ensure_workshop_fixtures, get_workshop_status
 
 @pytest.fixture(autouse=True)
 def complete_workshop_profile(monkeypatch):
-    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-11-complete")
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-10-complete")
 
 
 def test_participant_fixtures_are_linked_and_non_sendable(full_db):

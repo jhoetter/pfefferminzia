@@ -6,7 +6,7 @@ const state = { dashboard: null, todos: [], ticket: null, view: 'inbox', selecte
 const html = value => String(value ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;')
   .replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
 const lines = value => html(value).replaceAll('\n', '<br>');
-const stage = () => state.dashboard?.workshop?.checkpoint?.drill ?? 8;
+const stage = () => state.dashboard?.workshop?.checkpoint?.drill ?? 6;
 const has = capability => state.dashboard?.workshop?.checkpoint?.capabilities?.includes(capability);
 const url = ticket => encodeURIComponent(ticket);
 const date = value => value ? new Intl.DateTimeFormat('de-DE', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(value)) : '—';
@@ -63,10 +63,10 @@ function navigation() {
   const tickets = state.dashboard.tickets;
   const views = [ ['inbox', 'Eingang', tickets.length] ];
   if (has('life_review')) views.push(['reviews', 'Freigaben', tickets.filter(t => t.productLine === 'life' && t.status === 'awaiting_human').length]);
-  if (has('intervention_queue') && stage() !== 12) views.push(['queue', 'Eingriffsfenster', tickets.filter(t => t.status === 'scheduled').length]);
+  if (has('intervention_queue') && stage() !== 10) views.push(['queue', 'Eingriffsfenster', tickets.filter(t => t.status === 'scheduled').length]);
   return `<nav class="tabs" aria-label="Arbeitsbereiche">${views.map(([key, label, count]) =>
     `<button type="button" data-view="${key}" class="${state.view === key ? 'active' : ''}" aria-current="${state.view === key ? 'page' : 'false'}">${label}<span>${count}</span></button>`).join('')}
-    ${stage() === 12 ? '<a href="/slides/index.html?deck=management" target="_blank" rel="noopener">Management-Report ↗</a>' : ''}</nav>`;
+    ${stage() === 10 ? '<a href="/slides/index.html?deck=management" target="_blank" rel="noopener">Management-Report ↗</a>' : ''}</nav>`;
 }
 
 function inboxBar() {
@@ -88,7 +88,7 @@ function ticketRow(ticket) {
 }
 
 function todoSection() {
-  if (stage() !== 8 || state.view !== 'inbox') return '';
+  if (stage() !== 6 || state.view !== 'inbox') return '';
   const todos = state.todos;
   const inboxTickets = state.dashboard.tickets.filter(ticket => !ticket.isDemo);
   return `<section class="todo-section"><div class="section-head"><h3>Nächster Prüfschritt</h3><span>${todos.filter(todo => todo.status === 'open').length} offen</span></div>
@@ -134,11 +134,11 @@ function draftArea(ticket) {
   let next = '';
   if (life && has('life_review')) {
     next = ticket.status === 'awaiting_human'
-      ? `<div class="decision-bar"><div><strong>${ticket.humanApprovedAt ? 'Freigegeben – Versand bleibt ein eigener Schritt' : 'Deine Entscheidung ist erforderlich'}</strong><span>${ticket.isDemo ? 'Demo-Fall: Freigabe/Ablehnung üben, kein echter Versand.' : 'Ohne aktuelle Freigabe verlässt nichts den Fall.'}</span></div>
+      ? `<div class="decision-bar"><div><strong>${ticket.humanApprovedAt ? 'Freigegeben – Versand bleibt ein eigener Schritt' : 'Deine Entscheidung ist erforderlich'}</strong><span>${ticket.isDemo ? 'Demo-Fall: Freigabe/Ablehnung üben, kein echter Versand.' : 'Nur du kannst hier freigeben – Claude hat dafür kein Werkzeug.'}</span></div>
         ${ticket.humanApprovedAt ? actionButton('Antwort senden', 'send', ticket.isDemo ? 'disabled' : '') : `${button('Ablehnen', 'reject')}${actionButton('Freigeben', 'approve')}`}</div>`
       : draft ? actionButton('Zur Freigabe vorlegen', 'submit') : '';
   } else if (life && draft) next = actionButton('Antwort bewusst senden', 'send', ticket.isDemo ? 'disabled' : '');
-  else if (liability && stage() === 11 && draft && ticket.status !== 'scheduled') next = actionButton('Für 24 h einplanen', 'schedule');
+  else if (liability && stage() === 9 && draft && ticket.status !== 'scheduled') next = actionButton('Für 24 h einplanen', 'schedule');
   if (ticket.status === 'scheduled') next = `<div class="decision-bar"><div><strong>Im Eingriffsfenster</strong><span>Bearbeiten entwertet die Planung. Stoppen nimmt die Antwort aus der Queue.</span></div>${button('Aus Queue nehmen', 'remove')}</div>`;
   return `<section class="draft-section"><div class="section-head"><h3>Antwortentwurf</h3>${draft ? badge(draft.status || 'Entwurf') : ''}</div>
     <p class="section-help">${draft ? 'Lies den genauen Text und die Quelle, bevor du handelst.' : 'Bitte Claude um einen belegten Entwurf – oder schreibe einen eigenen.'}</p>
@@ -150,7 +150,7 @@ function draftArea(ticket) {
 
 function classification(ticket) {
   if (!has('draft') || ticket.status === 'sent') return '';
-  const options = stage() >= 11 ? ['life', 'liability'] : ['life'];
+  const options = stage() >= 9 ? ['life', 'liability'] : ['life'];
   return `<details class="subtle-details"><summary>Sparte prüfen oder ändern</summary><form data-form="classify"><label for="product-line">Welcher Pfad passt?</label>
     <select id="product-line" name="productLine">${options.map(value => `<option value="${value}" ${ticket.productLine === value ? 'selected' : ''}>${productNames[value]}</option>`).join('')}</select>
     <button type="submit">Zuordnen</button></form><p>Kundentext ist eine Behauptung. Quelle und Kontrollregel separat prüfen.</p></details>`;
@@ -301,8 +301,8 @@ app.addEventListener('submit', event => {
     body: JSON.stringify({ body: values.get('body') }) }), 'Entwurf gespeichert.');
   if (form.dataset.form === 'classify') {
     const productLine = values.get('productLine');
-    const path = stage() >= 11 ? 'route' : 'classify';
-    const payload = stage() >= 11
+    const path = stage() >= 9 ? 'route' : 'classify';
+    const payload = stage() >= 9
       ? { route: productLine === 'life' ? 'life_mandatory_review' : 'liability_intervention_window', category: state.ticket.category === 'unknown' ? 'general_question' : state.ticket.category, summary: state.ticket.summary || state.ticket.subject, confidence: 1 }
       : { productLine, category: state.ticket.category === 'unknown' ? 'general_question' : state.ticket.category, summary: state.ticket.summary || state.ticket.subject };
     return mutate(() => request(`/api/tickets/${url(ticket)}/${path}`, { method: 'POST', body: JSON.stringify(payload) }), 'Sparte zugeordnet.');

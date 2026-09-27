@@ -1,312 +1,150 @@
-# Tuesday runbook: Pfefferminzia 2.0
+# Runbook für Dienstag, 29. September 2026
 
-This runbook is the facilitator's operational source for Tuesday, 29 September
-2026. The public schedule remains in `Stundenplan_AI_Studio_09_2026_V7.xlsx`;
-the learning arc is described in `WORKSHOP_AGENDA.md`.
+Das ist die operative Quelle für den Dozenten. Der öffentliche Stundenplan
+bleibt `Stundenplan_AI_Studio_09_2026_V7.xlsx`, der Lernbogen steht in
+[WORKSHOP_AGENDA.md](WORKSHOP_AGENDA.md), die Teilnehmersicht in
+[DRILL_CARDS.md](DRILL_CARDS.md). Nummerierung: Falk hat am Montag Drill 1–5,
+Dienstag ist Drill 6–10.
 
-## Backward-designed boundary states
+## Checkpoints und Referenzlösungen
 
-Five drills use six canonical boundaries; the legacy `drill-11-complete`
-tag remains for existing clones:
-
-| State | Observable outcome | Intentionally unavailable |
+| Tag `checkpoint/…` | Freigeschaltet | Enthält Lösung von |
 | --- | --- | --- |
-| `drill-08-start` | Python app and MCP start; personal inbox and general todos can be exercised | CRM/tariff work, drafting, review and automation |
-| `drill-09-start` | One life request can be resolved to customer, contract and exact tariff; Claude can prepare a draft and the human sends | Agent-owned decision, review workflow, liability automation |
-| `drill-10-start` | Several life cases can be prepared, rejected, reworked and explicitly approved | Liability router, intervention queue and workshop clock |
-| `drill-11-start` | Router selects mandatory life review or liability intervention window; countdown queue is active | Management report |
-| `drill-12-start` | Aggregated Drill-11 evidence feeds a local reveal.js/D3 management deck; auto-send is off | Nothing from the reporting exercise is hidden |
-| `drill-12-complete` | Report and both control patterns are ready for the whiteboard | Final reference state |
+| `drill-06-start` (= Spitze von `main`) | Inbox, Todos | – |
+| `drill-07-start` | + Kunden/Tarife, Entwurf, manueller Versand | Drill 6: Auto-Prüfen-Todo |
+| `drill-08-start` | + Pflichtfreigabe Leben, Claims | + Drill 7: Tarif-Belegprüfung |
+| `drill-09-start` | + Router, Eingriffsfenster, Workshop-Uhr, Auto-Versand an | + Drill 8: `controlNotice` im Review |
+| `drill-10-start` | + Management-Report, Auto-Versand aus | + Drill 9: Queue-Hinweise, Duplikattest |
+| `drill-10-complete` | wie oben | + Drill 10: zweite D3-Grafik, Beispiel-Empfehlung |
 
-The codebase is complete in every boundary. Server-side capabilities, MCP tool
-registration, resources, scenarios and UI affordances are restricted by the
-active profile, so later behavior is neither visible nor usable early.
-This is a **reference and rescue path**, not a substitute for building.
-Participants fork the repository, commit and push their own code. After a
-current-drill case is demonstrated, fast participants may explicitly opt in
-to building the next capability on their own branch. Default tutor guidance
-does not spoil the next drill. Everyone uses the same case evidence; the
-amount of code built varies. The learning model and Git commands are in
-[`LEARNING_PATH.md`](LEARNING_PATH.md).
-The participant-facing [drill cards](DRILL_CARDS.md) are the concrete handout
-for commands, evidence, hints, code exercises, stretch work and token fallback.
+Die Teilnehmenden klonen `main` und starten bei Drill 6. Die Lösungen liegen
+als lineare Commits auf dem Branch `reference` über `main`; die Tags zeigen
+darauf. Claude kennt über `get_drill_guide` → `referenceSolution` den
+passenden `git diff` und zeigt ihn nur im Rettungsmodus oder auf Wunsch.
 
-## Participant setup
-
-Each participant needs:
-
-- Python 3.12+, `uv`, Git and Claude Code;
-- a GitHub account with permission to fork this repository and push to their
-  **own** fork; test authentication before Tuesday;
-- their own fork/clone and a personal working branch;
-- exactly one personal AgentMail inbox and an API key scoped to that inbox;
-- their inbox ID, not only its email address;
-- the instructor's exact scenario-sender address on the local outbound allowlist.
-
-Participants do not need individual AgentMail Console accounts when inboxes
-are provisioned centrally. The instructor keeps the organization-level key;
-each participant receives only their own inbox ID and inbox-scoped key through
-an individual, secure channel. Never put the organization key or participant
-keys in Git, slides, shared chats, or a common handout. For this disposable,
-synthetic workshop, a participant may give their own inbox-scoped key, inbox
-ID and sender address to their individual Claude Code chat so Claude can write
-`.env` for them. The instructor must explain that real credentials, customer
-data and other sensitive material must never be put in a chat. The
-organization-level key is never shared. The AgentMail Console
-login is not part of the participant workflow: they use their local
-Pfefferminzia cockpit and their own Claude Code login.
-
-The planned cohort is **16 participants plus one instructor**. During the
-free-tier pilot, use the three available inboxes as one instructor inbox and
-two isolated participant pilots; do not upgrade or provision the remaining
-inboxes yet. Before the course, increase capacity to at least 17 inboxes and
-then provision one scoped key per participant. Two or three additional reserve
-inboxes need capacity beyond those 17. First test one newly provisioned inbox
-and key with `checkpoint verify --external`, an isolated inbound scenario and
-a reply to an allowlisted workshop address; then roll out the rest.
-
-Pilot evidence (23 September 2026): both participant keys authenticated with
-`scope_type=inbox`; each listed only its own inbox and access to the other was
-denied. Both passed the external Drill-8 verifier and imported a synthetic
-message. The first pilot also sent an audited reply back to the instructor
-inbox. No paid upgrade was made. The two pilot secrets exist only as local,
-Git-ignored files on the instructor machine, not in this repository.
-
-Configure `.env` from `.env.example`:
-
-```dotenv
-AGENTMAIL_API_KEY=...
-AGENTMAIL_INBOX_ID=...
-WORKSHOP_ALLOWED_RECIPIENTS=instructor-scenario-sender@agentmail.to
-AUTO_SEND_ENABLED=false
-WORKSHOP_CHECKPOINT=drill-08-start
-```
-
-Use a separate instructor inbox to distribute scenario messages. Do not give
-participants a shared instructor or organization key. Once capacity is
-available, prepare two or three complete reserve inboxes and scoped keys.
-
-Preflight every machine/account combination (this checks readiness, not whether
-the participant has completed the drill):
+**Nach jeder Änderung an `main`** die Lösungen neu aufsetzen und taggen:
 
 ```bash
-uv sync --frozen
-uv run pfefferminzia setup
-uv run pfefferminzia checkpoint verify --external
-uv run pfefferminzia serve
+git switch reference && git rebase main && uv run pytest -q
+uv run pfefferminzia instructor retag            # Plan ansehen
+uv run pfefferminzia instructor retag --yes
+git push origin main reference --force-with-lease && git push origin --tags --force
 ```
 
-The official Drill-11 checkpoint writes `AUTO_SEND_ENABLED=true` into its own
-worktree after the participant confirms the checkpoint plan. Earlier stages
-remain false; participants do not edit the switch. The verifier makes the
-difference visible. AgentMail `.env` changes hot-reload in an already running
-app/MCP process, so no restart is needed for a newly entered inbox key.
+## Vorbereitung vor Dienstag
 
-## Safe checkpoint recovery
+1. **AgentMail-Kapazität:** 16 Teilnehmende + 3 Reserve + 1 Dozenten-Inbox.
+2. **Dozenten-Zugang** in `.instructor/.env` (Git-ignoriert):
 
-Claude supports the natural-language request “Ich bin in Drill 9, hilf mir den
-Checkpoint zu laden.” Before planning, ask whether to carry the person's own
-code and cases (`continue`) or start from the official reference with fresh
-cases (`official`). The protocol is then deliberately two-phase:
+   ```dotenv
+   INSTRUCTOR_AGENTMAIL_API_KEY=…   # Organisationsschlüssel, nie weitergeben
+   INSTRUCTOR_INBOX_ID=…@agentmail.to   # Absender der Szenario-Mails
+   ```
 
-1. `plan_checkpoint_load` inspects the current HEAD and dirty paths and creates
-   a short-lived token for the selected mode. Nothing is switched or overwritten.
-2. Claude shows mode, source, new target directory, what is copied, and the preservation guarantee and
-   asks the participant again.
-3. Only after a clear yes does `apply_checkpoint_load` create a new branch in
-   a recovery worktree. Official mode checks out the tag and starts with a
-   fresh database. Continue mode starts from the participant's HEAD and copies
-   tracked/untracked edits plus a consistent SQLite backup. Both copy the local
-   `.env` without a shared database path, initialize dependencies and activate
-   the new stage. The source worktree is never changed.
-4. The participant starts Claude in the returned directory. Their original
-   branch, commits, untracked files and local database remain untouched.
-   The new branch can be pushed to their own fork after a diff/secret check.
+3. **Inboxen und Schlüssel anlegen** (idempotent, legt nur fehlende Plätze an):
 
-Terminal fallback:
+   ```bash
+   uv run pfefferminzia instructor provision --count 19 --prefix pfm26        # Plan
+   uv run pfefferminzia instructor provision --count 19 --prefix pfm26 --yes
+   ```
 
-```bash
-uv run pfefferminzia checkpoint plan drill-10-start
-# Or: uv run pfefferminzia checkpoint plan drill-10-start --mode continue
-# Read the plan and ask for confirmation.
-uv run pfefferminzia checkpoint apply TOKEN --confirm-checkpoint-load
-```
+   Ergebnis: `.instructor/roster.csv` (Rechte 600). Namen kannst du in der
+   Spalte `name` nachtragen.
+4. **Zettel erzeugen:** `uv run pfefferminzia instructor handouts` schreibt pro
+   Platz `.instructor/handouts/platz-NN.txt` und `alle-zum-ausdrucken.txt`
+   (Seitenumbruch pro Person): drei Werte plus der Start-Satz für Claude.
+   Ausdrucken und einzeln verteilen, nicht per Gruppenchat.
+5. **Einen Platz komplett durchspielen** mit einem frischen Terminal: Start-Satz
+   → Einrichtung → Neustart im Ordner → `instructor send 6 --slot 1 --yes` →
+   Sync → … bis Drill 10. Dabei einmal den offiziellen Checkpoint laden.
+6. **Claude-Zugänge** und zwei bis drei Reserve-Sitze klären.
 
-Use `uv run pfefferminzia checkpoint status` and
-`uv run pfefferminzia checkpoint verify` inside the recovered worktree.
+## Tagesablauf mit Befehlen
 
-The **normal transition** between drills uses the same plan/confirm/apply
-protocol. Stop the old webserver, start it in the returned worktree, and
-restart Claude there: the MCP tool set is registered at startup. Each new
-worktree has its own SQLite database. In official mode it is fresh; in
-continue mode it is a copy of the previous cases. Old work and old data stay
-in the previous folder. Inbox history may be imported again in official mode;
-participants should act only on newly announced scenario tickets. Continue
-mode preserves the participant's changes but they must still verify the next
-stage; official mode is the safety net when their build does not work.
+| Zeit | Du sagst | Du tust |
+| --- | --- | --- |
+| 08:30 | Input-Deck (`?deck=input`), Live-Beispiele | – |
+| 10:00 | Drill 6: „Sagt Claude den Satz vom Zettel … ihr seht ein Softwaregerüst. Erste Aufgabe: Mail an eure Adresse schicken und bis zum Ticket verfolgen; dann mit Claude das Auto-Prüfen-Todo bauen. Wenn ihr nicht weiterwisst: fragt Claude.“ | ~10:15 `instructor send 6 --yes` (Begrüßungsmail) |
+| 11:15 | Drill 7: „Ladet mit Claude Drill 7 – mitnehmen oder offiziell.“ | nach dem Laden `instructor send 7 --yes` |
+| 13:15 | Drill 8 | `instructor send 8 --yes` |
+| 14:30 | Drill 9 | `instructor send 9 --yes` |
+| 15:45 | Drill 10: Report aus dem Drill-9-Ordner laden | – |
+| 16:45 | Whiteboard, Laptops zu | – |
 
-## Drill facilitation
+Zwischendurch: `uv run pfefferminzia instructor status` zeigt pro Platz, welche
+Szenarien angekommen und welche beantwortet sind (Antworten landen in deiner
+Inbox). So siehst du, wer hängt. `send` versendet nichts doppelt; einzelne
+Personen mit `--slot 03` nachbeliefern, bewusst erneut mit `--resend`.
+`instructor scenarios` zeigt alle Texte; `send challenge --slot …` schickt die
+Prompt-Injection-Challenge gezielt an Schnelle.
 
-Each operational block is 60 minutes; the report mini-drill is 45. Both have
-a concrete case mission, a participant-built
-change and observable evidence. Use the drill-specific timeboxes in
-`docs/DRILL_CARDS.md` / `get_drill_guide`; don't let a green readiness check or
-an arbitrary completed todo stand in for learning. The instructor should ask
-each participant to show the same ticket in MCP and cockpit, explain their own
-code change, and say what they verified.
+Beim Checkpoint-Wechsel entsteht ein neuer Ordner. Die App aus dem alten
+Ordner muss aus sein (Claude beenden reicht meist); Claude startet sie im
+neuen Ordner. Im offiziellen Modus können alte Mails neu importiert werden:
+„Bearbeitet nur die neu angekündigten Fälle.“
 
-Preflight before the first block: confirm GitHub fork/push access, Python/uv,
-Claude Code and the scoped inbox key for each participant. Drill 8 has only
-15 minutes for setup and first mail; late account creation must not consume
-its 25-minute coding block. Keep the printed drill cards available for a
-token-free path.
+## Was nur der Mensch kann
 
-### Drill 12 — management report
+Freigeben, Ablehnen, Senden und der Zeitsprung existieren nur im Cockpit
+(REST für die Browser-App), nicht in MCP. Claude kann vorbereiten, einplanen
+und aus der Queue nehmen (bremsen). Ehrliche Grenze für Nachfragen: Lokal
+hat Claude auch eine Shell und könnte die REST-Endpunkte technisch aufrufen;
+`CLAUDE.md` verbietet das, und in Produktion bräuchte die Freigabe eine
+eigene, authentifizierte menschliche Identität. Genau das ist ein guter
+Whiteboard-Punkt.
 
-Transition **from the Drill-11 worktree** with the normal two-step checkpoint
-confirmation. The loader writes only grouped ticket and audit-event counts
-to the new worktree's ignored `.data/management-report.json`. The report
-artifact contains no message text, identity fields or credentials, and the
-old database is not copied. The ignored `.env` is copied separately as in
-every checkpoint. The
-new stage disables automatic dispatch. The participant opens
-`/slides/index.html?deck=management`, edits `slides/management.js` and
-adds a labeled D3 visualization and management recommendation. The deck
-inherits the locally embedded reveal.js and D3 assets, so no Node, npm or
-CDN is needed. Require an explicit limitation: this is one local synthetic
-simulation, not a company KPI or measured time saving. Two minutes per
-report, then move to the whiteboard.
+## Go/No-Go
 
-### Drill 8 — command centre
+- `uv run pytest -q` grün, auf `main` und auf `reference`.
+- `instructor retag` meldet keine fehlenden Tags; Tags sind gepusht.
+- Ein Platz einmal komplett von Drill 6 bis 10 durchgespielt, inklusive
+  offiziellem Checkpoint und echtem Mail-Roundtrip an die Dozenten-Inbox.
+- `instructor status` zeigt die Antworten dieses Durchlaufs.
+- Drill 9: Der Zeitsprung versendet genau die eine unveränderte Antwort.
+- Drill 10: Das Report-Deck zeigt die Zählwerte; Auto-Versand ist aus.
+- Reserve-Plätze getestet, nicht nur angelegt.
 
-Core path: clone, `uv sync`, app start, MCP status, inbox preflight, send one
-message to the full personal AgentMail address, and trace the new ticket in
-MCP and cockpit. Create a ticket-linked todo for a real next step, close it
-only after inspection, then add a small idempotent inbound-triage improvement
-with Claude and test it. Do not discuss tariffs, approval or delayed sending.
+Frühere Probe: [REHEARSAL_2026-09-23.md](REHEARSAL_2026-09-23.md) (noch mit
+alter Nummerierung 8–12).
 
-Normal external senders, including Gmail, can mail the inbox. The configured
-`WORKSHOP_ALLOWED_RECIPIENTS` restricts **outbound replies only**. A zero-new
-sync means nothing arrived by that check; inspect last sync time and retry
-after delivery. Never suggest the allowlist blocked incoming mail.
+## Schnelle Teilnehmende
 
-Checkpoint evidence: health is green, external inbox verification succeeds,
-one incoming ticket appears, and the todo lifecycle is visible in the cockpit.
+Nach Fallnachweis und eigenem Commit echte Wahl anbieten: diesen Drill mit
+einer Challenge vertiefen **oder** den nächsten Bauauftrag im eigenen Branch
+beginnen (Claude: `includeAdvanceTask`). Nicht der Gruppe verraten. Oder
+Buddy werden: Fragen stellen, nicht Tastatur oder Freigabe übernehmen.
 
-For every drill, present the four `dialogueSteps` from `get_drill_guide` as
-separate exchanges. The `askClaude` text is an example question, not a
-one-shot agent instruction. Stop at each `yourMove`: participants inspect the
-case, decide, edit code or verify evidence themselves before proceeding.
+- Drill 6: falsche Inbox-ID diagnostizieren; Todo-Historie anzeigen.
+- Drill 7: ähnliche Namen, fehlende Vertragsnummer, `send challenge` (Anweisung im Mailtext).
+- Drill 8: Nutzerwunsch, der dem zitierten Tarif widerspricht.
+- Drill 9: Timer-Reset nach Edit, transparente Router-Schwelle.
+- Drill 10: Bonus-Video mit Remotion ([BONUS_VIDEO.md](BONUS_VIDEO.md)).
 
-### Drill 9 — human works, agent prepares
+## Wenn Tokens ausgehen
 
-Core path: receive the prepared life request; resolve person and policy; inspect
-the exact tariff generation; let Claude prepare a cited draft; have the human
-edit the wording and explicitly send it. Claude must not decide the case or
-trigger autonomous communication.
+1. Paar-Modus: eine Claude-Sitzung, zwei eigene Systeme, getrennte Rollen.
+2. Drill-Karten und Cockpit funktionieren ohne Modell.
+3. Checkpoint im Terminal laden (`checkpoint plan` / `apply`).
 
-Checkpoint evidence: linked customer/policy, exact document, saved draft,
-visible human edit and an explicit human send event.
+Nie persönliche Accounts oder den Organisationsschlüssel teilen.
 
-### Drill 10 — agent works, human approves
+## Whiteboard (nur für dich, ohne Rechner)
 
-Core path: receive two life/performance cases; let Claude prepare decision and
-response; approve one; reject another with a reason; let Claude rework it. A
-text change invalidates any earlier approval.
+Den erlebten Fluss zeichnen:
 
-Checkpoint evidence: review todo, approval/rejection audit entries, rejected
-case back in progress, and no life send without current approval.
+`Mail → Kontext/Belege → Agenten-Vorschlag → Kontrollregel → externe Wirkung → Audit`
 
-### Drill 11 — intervention window
+Kontrollregel in Pflichtfreigabe und Eingriffsfenster teilen. Dann die Frage:
+Heute hat meist ein Mensch im Terminal den nächsten Schritt angestoßen. Wie
+sähe derselbe Agent als **Event** (neue Mail) oder **Cron** (jede Nacht) aus?
 
-Core path: route incoming cases; submit three liability replies; let one run,
-edit one, remove one; inspect the countdown; then advance workshop time by 24
-hours after explicit confirmation.
+`Ereignis oder Zeitplan → Worker → MCP-/Fachaktion → Kontrollregel → Wirkung → Audit und Fehlerweg`
 
-Checkpoint evidence: one automatic send, one `schedule_cancelled` or edited
-case, one `queue_removed` case and all actions in the audit history.
+- Wer betreibt den Worker, mit welchen Rechten und welcher Identität?
+- Was passiert bei Duplikaten, Ausfall, Retry, falschem Trigger?
+- Wer sieht eine wartende Freigabe, wer stoppt einen Timer?
+- Wie beweist das Audit hinterher, wer was ausgelöst hat?
 
-## Rehearsal and go/no-go
-
-Die [Generalprobe vom 23. September](REHEARSAL_2026-09-23.md) hält geprüfte
-Softwarepfade und noch offene organisatorische Voraussetzungen getrennt fest.
-
-Run before the workshop:
-
-```bash
-uv run pytest
-uv run pytest tests/test_workshop_end_to_end.py -q
-uv run pfefferminzia checkpoint verify --external
-```
-
-Then personally play Drill 8 → 12. During Drill 9 deliberately change a file
-and create an untracked note. Ask Claude to load `drill-10-start`; confirm that
-the new worktree works and the original changes still exist. Do one real email
-round-trip only to a pre-approved workshop address. From the worked Drill-11
-directory, load Drill 12 and confirm that the report retains grouped counts
-while the new worktree contains neither raw mail content nor the old DB.
-
-Go only if:
-
-- all automated tests pass;
-- participants can fork and authenticate a push to their own repository (or
-  have a pre-arranged instructor-assisted Git fallback);
-- every personal inbox passes the external preflight;
-- each official checkpoint tag resolves and loads;
-- the instructor can send all seven scenario messages;
-- the Drill-11 clock sends exactly the one untouched queued response;
-- the Drill-12 deck shows the captured counts, has a readable D3 chart and
-  auto-send is off;
-- reserve accounts are tested, not merely created.
-
-## Fast participants
-
-After the current case **and tested code contribution** are demonstrated,
-offer a genuine choice: deepen this drill with a Challenge Card **or** begin
-building the next capability in their own branch. Reveal the next task only
-after explicit opt-in. At the current checkpoint its UI/MCP capability
-remains gated, so the advance work starts with code and tests; integrated
-exercise follows at the next official boundary. A participant can also
-volunteer as a buddy. A buddy asks diagnostic questions and does not take
-over the keyboard or approve a case for someone else.
-
-- Drill 8: diagnose a deliberately wrong inbox ID or build an activity-log
-  view for todo changes.
-- Drill 9: resolve two similar names, a missing contract number, a superseded
-  tariff generation, or untrusted instructions in an attachment.
-- Drill 10: prove that editing invalidates approval; reject and rework a case;
-  handle a human request that contradicts the cited tariff.
-- Drill 11: test duplicate processing/idempotency, timer reset after editing,
-  removal and restoration, or a transparent router-confidence threshold.
-
-## Token-limit continuity
-
-Do not make shared personal credentials the primary fallback. Use centrally
-approved reserve seats/accounts where available and monitor usage before each
-drill. Keep three continuity layers:
-
-1. Pair mode: one active Claude session, two separate local systems and roles.
-2. Hint cards: goal, commands, file pointers and expected evidence are in the
-   repository and need no model call.
-3. Rescue mode: load the official next boundary in a separate worktree and
-   continue with the verifier and browser cockpit.
-
-For each drill, ask participants to show their own diff/test, commit and push
-to their own fork. At the end, compare how much they built, **not** whether
-they all wrote the same amount. The shared case evidence and control rule are
-the common learning outcome.
-
-Record who controls reserve access and how it is reassigned. Workshop-only,
-inbox-scoped keys may be handled in an individual Claude chat as described
-above; never paste real credentials, the instructor organization key, or
-customer data into any chat, and never place keys in slides, shared documents
-or Git.
-
-## Whiteboard handoff
-
-Draw the experienced flow:
-
-`Email → context/evidence → agent proposal → control rule → external effect → audit`
-
-Split the control rule into mandatory approval and intervention window. Use
-`AUTOMATION_CONTRACT.md` to transfer the pattern to Wednesday's own cases.
+Ergebnis ist ein einseitiger [Automation Contract](AUTOMATION_CONTRACT.md)
+(Auslöser, erlaubte Aktionen, Kontrollregel, Belege, Ausnahmeweg,
+verantwortliche Rolle) als Übergabe an Mittwoch.
