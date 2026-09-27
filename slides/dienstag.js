@@ -11,7 +11,11 @@
   const card = (title, content, extra = '') => `<div class="day-card ${extra}"><h3>${title}</h3>${content}</div>`;
   const grid = (items, columns = 'two') => `<div class="day-grid ${columns}">${items.join('')}</div>`;
   const prompt = text => `<div class="day-prompt">${text}</div>`;
-  const dialogueStep = (number, label, ask, human) => `<div class="day-dialogue-step"><strong>${number} · ${label}</strong><p>Claude: „${ask}“</p><small>DEIN SCHRITT: ${human}</small></div>`;
+  // One slide per drill stays on the projector while people work: start, four steps, done, early finish.
+  const taskBoard = (steps, done, early) => grid([
+    card('Eure vier Schritte', `<ol class="day-tasks">${steps.map(step => `<li>${step}</li>`).join('')}</ol>`, 'mint-card'),
+    card('Fertig, wenn …', `<p>${done}</p><h3 class="day-task-early">Früher fertig?</h3><p>${early}</p><p class="day-small">Hängst du? Frag Claude: „Was ist mein nächster Schritt?“ – oder winke mir.</p>`)
+  ]);
   const code = text => `<div class="day-command">${text}</div>`;
   const stage = (number, headline, summary, tags) => `<div class="day-big-num">${number}</div><div class="day-stage-title">DRILL ${number}</div><div class="day-stage-summary"><strong>${headline}</strong><br>${summary}</div><div class="day-stage-bottom">${tags.map(x => pill(x, 'mint')).join('')}</div>`;
 
@@ -121,13 +125,10 @@
       notes: 'ZEIT: 2 Minuten. SAGEN: Das ist eure eigene Instanz. Links die Bereiche, in der Mitte der Posteingang, rechts die Mail mit Antwortfeld. Senden kann nur der Mensch – Claude hat dafür kein Werkzeug.'
     },
     {
-      id: 'Drill6Auftrag', type: 'Drill', eyebrow: 'Drill 6 · Dialog statt Zauberprompt', title: 'Entscheiden. Bauen. Selbst senden.',
-      subtitle: 'Claude fragt zuerst nach deiner Entscheidung – dann bereitet es vor. Dein Senden ist der Beweis.', study: true,
-      body: grid([
-        card('1–2 · Antworten', `${dialogueStep(1, 'Ankommen', 'Was ist meine erste Aufgabe?', 'Mail lesen, Kernaussage der Antwort nennen.')}${dialogueStep(2, 'Entwurf', 'Entwirf aus meiner Kernaussage eine kurze Antwort. Noch nicht senden.', 'Im Cockpit ändern und speichern.')}`, 'mint-card'),
-        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Welche Szenarien müssen stimmen, bevor ich sende?', 'Regel und Szenarien festlegen, dann mit Claude bauen.')}${dialogueStep(4, 'Senden', 'Läuft meine Änderung? Dann sende ich.', 'Selbst senden: Aufgabe erledigt, Gegenfall offen.')}`)
-      ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: Die vier Prompts sind Gesprächsetappen. Persönliche Inbox, kein geteilter Schlüssel. Temporären inboxgebundenen Workshop-Key nur im individuellen Chat/lokal, nie echte Geheimnisse. Outbound-Allowlist ist kein Eingangsfilter. Grüner Preflight ist nur Startbereitschaft. Nach bestandenen Szenarien die Änderung prüfen und den Stand speichern. 15 Minuten Start, 10 Minuten antworten, 20 Minuten bauen, 10 Minuten nachweisen, 5 Minuten reflektieren.'
+      id: 'Drill6Auftrag', type: 'Drill', eyebrow: "Drill 6 · Eure Aufgaben · 60 Minuten", title: "Entscheiden. Bauen. Selbst senden.",
+      subtitle: "Start: Nach dem Einrichten neue Sitzung im Ordner pfefferminzia – „weiter mit Drill 6“.", study: true,
+      body: taskBoard(["Mail lesen und sagen, was du antworten willst.", "Claude entwirft, du änderst – <strong>noch nicht senden</strong>.", "Bauen: „Antworten“ erledigt sich beim Senden.", "Senden – und in den Aufgaben sehen, dass es wirkt."], "Antwort gesendet, „Antworten“ hat sich selbst erledigt, die zweite Aufgabe ist offen, Stand gespeichert.", "Denkanstoß von Claude holen, dann deine eigene Kommandozentrale erweitern – z. B. eine Mini-Wissensbasis. Nicht vorgreifen."),
+      notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Das sind eure Aufgaben für die nächste Stunde. Ihr entscheidet, Claude baut. Claude zeigt euch zuerst, was die Kommandozentrale kann, und führt euch Schritt für Schritt – aber es fragt euch, und ihr entscheidet. Wichtig: in Schritt 2 noch nicht senden, euer Senden ist in Schritt 4 der Beweis. Wer früher fertig ist, bekommt Denkanstöße und erweitert die eigene Kommandozentrale – nicht vorgreifen. Ich laufe rum. ZEITPLAN: 15 Min. Start, 10 Entwurf, 20 bauen, 10 senden und belegen, 5 Rückblick."
     },
     {
       id: 'Drill7Start', type: 'Kapitel', eyebrow: '11:15–12:15 · Meilenstein 2', title: 'Der Mensch bearbeitet', study: true,
@@ -144,13 +145,10 @@
       notes: 'ZEIT: 3 Minuten. SAGEN: Die Knöpfe auf der Folie sind absichtlich deaktiviert; die Übung findet in der App statt. Betonen: Nicht die erstbeste Tarif-PDF, sondern die zum Vertrag passende Generation.'
     },
     {
-      id: 'Drill7Auftrag', type: 'Drill', eyebrow: 'Drill 7 · Dialog statt Zauberprompt', title: 'Erst Quelle. Dann Entwurf. Dann du.',
-      subtitle: 'Der Mensch prüft Person und Tarif, redigiert und löst den Versand bewusst selbst aus.', study: true,
-      body: grid([
-        card('1–2 · Leben-Fall', `${dialogueStep(1, 'Quelle', 'Welche Person, Police und Tarifgeneration passen?', 'Behauptung und Beleg trennen; Zuordnung selbst bestätigen.')}${dialogueStep(2, 'Entwurf', 'Formuliere mit Beleg. Nicht versenden.', 'Den Satz ändern, den du nicht unterschreibst; selbst senden.')}`, 'mint-card'),
-        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Wann ist ein Tarifzitat falsch?', 'Szenarien und Wortlaut der Meldung festlegen.')}${dialogueStep(4, 'Belegen', 'Zeig mir Quelle, meine Änderung, Versand und Szenarien.', 'Die Prüfung im Cockpit selbst austricksen.')}`)
-      ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: Nicht alle Fragen zugleich eingeben. Die Person bestätigt erst Quelle und Identität. Schnelle bekommen Denkanstöße und erweitern ihre eigene Kommandozentrale (Vorschlag: Beleg-Kasten) – nie den nächsten Drill.'
+      id: 'Drill7Auftrag', type: 'Drill', eyebrow: "Drill 7 · Eure Aufgaben · 60 Minuten", title: "Erst Quelle. Dann Entwurf. Dann du.",
+      subtitle: "Start: „Ich will zu Drill 7. Frag mich, ob ich meinen Stand mitnehmen will.“ Dann neue Sitzung: „weiter mit Drill 7“.", study: true,
+      body: taskBoard(["Kundin, Vertrag und Tarifgeneration bestätigen.", "Entwurf mit Beleg ändern und selbst senden.", "Bauen: Ein falsches Tarifzitat wird gestoppt.", "An einem Beispielfall die Prüfung austricksen."], "Geänderte Antwort gesendet, ein falsches Tarifzitat wird mit deiner Meldung gestoppt, Stand gespeichert.", "Denkanstoß von Claude holen, dann deine eigene Kommandozentrale erweitern – z. B. einen Beleg-Kasten. Nicht vorgreifen."),
+      notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Nicht die erstbeste Tarif-PDF, sondern die zum Vertrag passende Generation. Die Mail ist eine Behauptung, der Vertrag ist der Beleg. Den Wortlaut der Fehlermeldung legt ihr selbst fest. Wer früher fertig ist: Denkanstöße und eigene Erweiterung (Vorschlag: Beleg-Kasten) – nie der nächste Drill. DOZENT: Drill-7-Mails nach dem Laden senden."
     },
     {
       id: 'Drill8Start', type: 'Kapitel', eyebrow: '13:15–14:15 · Meilenstein 3', title: 'Der Mensch gibt frei', study: true,
@@ -165,13 +163,10 @@
       notes: 'ZEIT: 4 Minuten. SAGEN: Die Foliendemo simuliert die Zustandslogik. Freigabe ist explizit; Ablehnung führt zurück in den Agenten-Loop; Bearbeitung widerruft die frühere Freigabe. In der echten App sind alle drei Wege im Protokoll sichtbar.'
     },
     {
-      id: 'Drill8Auftrag', type: 'Drill', eyebrow: 'Drill 8 · Dialog statt Zauberprompt', title: 'Claude bereitet vor. Du entscheidest.',
-      subtitle: 'Eine aktuelle menschliche Freigabe ist die Stopplinie vor jeder externen Wirkung.', study: true,
-      body: grid([
-        card('1–2 · Freigabe', `${dialogueStep(1, 'Vorlage', 'Bereite zwei Fälle bis zur Freigabe vor.', 'Erst eigene Prüfpunkte nennen, dann die Vorlagen daran messen.')}${dialogueStep(2, 'Entscheidung', 'Welche Folgen haben Freigabe und Ablehnung?', 'Im Cockpit: einen freigeben, einen begründet ablehnen.')}`, 'mint-card'),
-        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Was muss ein Hinweis zu Ablehnung und erloschener Freigabe sagen?', 'Inhalt und Szenarien festlegen, mit Claude bauen.')}${dialogueStep(4, 'Belegen', 'Was passiert, wenn ich einen freigegebenen Text ändere?', 'Die alte Freigabe muss erlöschen.')}`)
-      ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: Das sind vier Gesprächsetappen mit menschlichem Stopp dazwischen, kein einmaliger Auftrag. Nicht nur den Normalfall prüfen. Die Ablehnung muss dokumentiert sein und einen neuen Agenten-Loop auslösen. Versand bleibt eine eigene Bestätigung. Challenge: Freigabe durch Änderung invalidieren.'
+      id: 'Drill8Auftrag', type: 'Drill', eyebrow: "Drill 8 · Eure Aufgaben · 60 Minuten", title: "Claude bereitet vor. Du entscheidest.",
+      subtitle: "Start: „Ich will zu Drill 8. Frag mich, ob ich meinen Stand mitnehmen will.“ Dann neue Sitzung: „weiter mit Drill 8“.", study: true,
+      body: taskBoard(["Erst deine Prüfpunkte, dann die Vorlagen.", "Einen Fall freigeben, einen begründet ablehnen.", "Bauen: Der Ablehnungsgrund wird im Fall sichtbar.", "Freigegebenen Text ändern – die Freigabe erlischt."], "Freigabe und begründete Ablehnung im Protokoll, erloschene Freigabe gesehen, Stand gespeichert.", "Denkanstoß von Claude holen, dann deine eigene Kommandozentrale erweitern – z. B. eine Risiko-Einstufung. Nicht vorgreifen."),
+      notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Erst die eigenen Prüfpunkte, dann die Vorlage – sonst prüft man nur, was der Agent zeigt. Eine Ablehnung ist ein vollwertiger Erfolgspfad; die Begründung steuert Claude. Sind beide Entwürfe gut, den schwächeren ablehnen. Früher fertig: Denkanstöße und eigene Erweiterung (Vorschlag: Risiko-Einstufung). DOZENT: Drill-8-Mails nach dem Laden senden."
     },
     {
       id: 'Drill9Start', type: 'Kapitel', eyebrow: '14:30–15:30 · Meilenstein 4', title: 'Das Eingriffsfenster', study: true,
@@ -189,13 +184,10 @@
       notes: 'ZEIT: 4 Minuten. SAGEN: Erst die drei Eingriffe vorführen: eine Nachricht laufen lassen, eine bearbeiten, eine stoppen. Danach Uhr vorspulen. Der Knopf auf der Folie sendet nicht; im Workshop muss die echte App mit freigegebenen synthetischen Empfängern getestet werden.'
     },
     {
-      id: 'Drill9Auftrag', type: 'Drill', eyebrow: 'Drill 9 · Dialog statt Zauberprompt', title: 'Das Fenster ist sichtbar. Die Wirkung kommt später.',
-      subtitle: 'Du siehst den Countdown, greifst ein und bestätigst erst dann den Zeitsprung.', study: true,
-      body: grid([
-        card('1–2 · Eingriffsfenster', `${dialogueStep(1, 'Zuordnen', 'Welche Fälle sind Haftpflicht? Noch nichts planen.', 'Den Fall nennen, der dir für Automatik zu heikel ist.')}${dialogueStep(2, 'Warteschlange', 'Plane die Antworten ins 24-Stunden-Fenster ein.', 'Vorhersagen, was rausgeht; einen ändern, einen stoppen, einen lassen.')}`, 'mint-card'),
-        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Was wäre schlimmer: doppelt oder gestoppt doch versendet?', 'Die zwei wichtigsten Szenarien festlegen, mit Claude bauen.')}${dialogueStep(4, 'Wirkung', 'Was geht nach dem Zeitsprung wirklich raus?', 'Uhr im Cockpit vorspulen; mit der Vorhersage vergleichen.')}`)
-      ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: Jede Frage stoppt vor einer menschlichen Prüfung. Der offizielle Drill-9-Checkpoint aktiviert Auto-Send im neuen Worktree; niemand editiert dafür manuell .env. Auto-Send nur an freigegebene Workshop-Adressen. Den 24-Stunden-Sprung erst nach sichtbarem Eingriffsfenster und expliziter Bestätigung ausführen. Challenge: idempotentes Handling oder Timer-Reset nach Edit.'
+      id: 'Drill9Auftrag', type: 'Drill', eyebrow: "Drill 9 · Eure Aufgaben · 60 Minuten", title: "Das Fenster ist sichtbar. Die Wirkung kommt später.",
+      subtitle: "Start: „Ich will zu Drill 9. Frag mich, ob ich meinen Stand mitnehmen will.“ Dann neue Sitzung: „weiter mit Drill 9“.", study: true,
+      body: taskBoard(["Haftpflicht erkennen – was ist dir zu heikel?", "Vorhersagen, dann ändern, stoppen, laufen lassen.", "Bauen: Stopps erklären, nichts doppelt senden.", "„Zeit +24 h“ drücken, mit Vorhersage vergleichen."], "Eine Antwort ging automatisch raus, eine ist geändert, eine gestoppt – alles im Protokoll; Stand gespeichert.", "Denkanstoß von Claude holen, dann deine eigene Kommandozentrale erweitern – z. B. eine eigene Kennzahl. Nicht vorgreifen."),
+      notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Jetzt kippt die Voreinstellung: Ohne Eingriff passiert etwas. Erst vorhersagen, dann vorspulen. Der Drill-9-Stand schaltet den automatischen Versand selbst ein; niemand stellt etwas von Hand um. Früher fertig: Denkanstöße und eigene Erweiterung (Vorschlag: eigene Kennzahl für Drill 10). DOZENT: Drill-9-Mails nach dem Laden senden."
     },
     {
       id: 'Drill10Start', type: 'Kapitel', eyebrow: '15:45–16:30 · Meilenstein 5', title: 'Der Management-Report', study: true,
@@ -209,13 +201,10 @@
       notes: 'ZEIT: 2 Minuten. SAGEN: Claude kann Code und Formulierung helfen; die Management-Aussage wählt und verantwortet der Mensch. Im Snapshot gibt es nur Sparte/Status/Herkunft und ausgewählte Kontrollereignisse als Zählwerte.'
     },
     {
-      id: 'Drill10Auftrag', type: 'Drill', eyebrow: 'Drill 10 · Dialog statt Zauberprompt', title: 'Ein Chart. Eine Empfehlung. Eine Grenze.',
-      subtitle: 'Die Report-Basis steht; die Aussage und eine zweite Grafik baut ihr selbst.', study: true,
-      body: grid([
-        card('1–2 · Beobachten', `${dialogueStep(1, 'Befund', 'Welche Zahl ist wirklich belegt?', 'Eine Frage für den Vorstand und ihre Grenze wählen.')}${dialogueStep(2, 'Grafik', 'Welche Zahlen braucht die Grafik, und wie soll sie aussehen?', 'Skizze in Worten vorgeben; Beschriftung und Nullfälle prüfen.')}`, 'mint-card'),
-        card('3–4 · Entscheiden', `${dialogueStep(3, 'Empfehlung', 'Hier ist meine Empfehlung – kürze sie und frag kritisch nach.', 'Eigene Aussage formulieren; maximal vier Folien.')}${dialogueStep(4, 'Vorführen', 'Prüfe Zahlen, Datenschutz und was sich geändert hat.', 'Zwei Minuten zeigen, Stand speichern.')}`)
-      ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: In der eigenen Kopie slides/management.js bearbeiten. Wer danach noch Guthaben hat: Bonus-Video mit Remotion (docs/BONUS_VIDEO.md) als Zusatzfolie. Der Report läuft über den lokalen Python-Server; reveal.js und D3 sind bereits eingebettet, kein Node und kein CDN. Der Basis-Chart ist das Sicherheitsnetz, nicht das Endprodukt.'
+      id: 'Drill10Auftrag', type: 'Drill', eyebrow: "Drill 10 · Eure Aufgaben · 45 Minuten", title: "Eine Grafik. Eine Empfehlung. Eine Grenze.",
+      subtitle: "Start im Drill-9-Ordner: „Ich will zu Drill 10. Frag mich, ob ich meinen Stand mitnehmen will.“ Dann: „weiter mit Drill 10“.", study: true,
+      body: taskBoard(["Welche Frage soll dein Vorstand beantworten können?", "Grafik in Worten skizzieren, mit Claude bauen.", "Empfehlung mit Grenze formulieren.", "Zwei Minuten vorführen."], "Höchstens vier Folien mit Grafik, Empfehlung und Grenze; zwei Minuten vorgeführt; Stand gespeichert.", "Denkanstoß von Claude holen, dann deine eigene Kommandozentrale erweitern – z. B. eine Folie „Mein agentisches System“. Nicht vorgreifen."),
+      notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Nur zeigen, was die gezählten Ereignisse belegen – keine erfundenen Unternehmenszahlen. Die Empfehlung schreibt ihr selbst; Claude kürzt und fragt kritisch nach. Bonus-Video mit Remotion (docs/BONUS_VIDEO.md) nur mit restlichem Guthaben."
     },
     {
       id: 'Checkpoints', type: 'Code', eyebrow: 'Sicheres Aufholen', title: 'Ein Checkpoint rettet den Tag, nicht auf Kosten Ihrer Arbeit.',

@@ -43,9 +43,9 @@ def test_tuesday_deck_covers_all_five_milestones() -> None:
     assert len(ids) == len(set(ids))
     for milestone in ("Drill6Start", "Drill7Start", "Drill8Start", "Drill9Start", "Drill10Start"):
         assert milestone in ids
-    assert script.count("dialogueStep(") == 20
-    assert "DEIN SCHRITT" in script
-    assert "Dialog statt Zauberprompt" in script
+    # One task board per drill stays on the projector: four steps, done, early finish.
+    assert script.count("taskBoard([") == 5
+    assert script.count("Eure Aufgaben") == 5 and "Früher fertig?" in script
     assert "LiveBeispiele" in ids
     assert "Ausbauend" in script
     assert "Cron" in script
