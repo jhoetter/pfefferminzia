@@ -87,19 +87,28 @@ def provision(count: int, prefix: str, domain: str | None = None, *, execute: bo
         return {"execute": False, "existingSlots": sorted(roster), "slotsToCreate": planned,
                 "note": "Legt pro Platz eine Inbox und einen nur dafür gültigen Schlüssel an. Mit --yes ausführen."}
     client = client or _client(directory)
+    created: list[str] = []
     for slot in planned:
         username = f"{prefix}-{slot}"
         request: dict[str, Any] = {"username": username, "display_name": f"Pfefferminzia {slot}", "client_id": username}
         if domain:
             request["domain"] = domain
-        inbox = _mapping(client.inboxes.create(request=request))
+        try:
+            inbox = _mapping(client.inboxes.create(request=request))
+        except Exception as error:  # the SDK raises ApiError; only a plan limit is expected here
+            if "limit_exceeded" not in str(error):
+                raise
+            return {"execute": True, "created": created, "limitReached": True,
+                    "missingSlots": planned[len(created):], "roster": str(directory / "roster.csv"),
+                    "note": "AgentMail-Inbox-Limit erreicht: Limit in der Konsole erhöhen und erneut ausführen; es geht bei den fehlenden Plätzen weiter."}
         inbox_id = str(_value(inbox, "inbox_id", "inboxId"))
         key = _mapping(client.inboxes.api_keys.create(inbox_id, name=f"{username}-workshop"))
         row = roster.get(slot, {"slot": slot, "name": ""})
         roster[slot] = {**row, "slot": slot, "email": str(_value(inbox, "email", default=inbox_id)),
                         "inbox_id": inbox_id, "api_key": str(_value(key, "api_key", "apiKey"))}
         write_roster(list(roster.values()), directory)  # persist after every slot: keys are shown only once
-    return {"execute": True, "created": planned, "roster": str(directory / "roster.csv"), "slots": len(roster)}
+        created.append(slot)
+    return {"execute": True, "created": created, "roster": str(directory / "roster.csv"), "slots": len(roster)}
 
 
 def handouts(directory: Path = INSTRUCTOR_DIR) -> dict[str, Any]:

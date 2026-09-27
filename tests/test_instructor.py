@@ -138,3 +138,18 @@ def test_roster_mail_needs_confirmation_and_lists_every_slot(workspace):
     inbox, to, text = sent[0]
     assert inbox == "dozent@agentmail.to" and to == ["dozent@example.test"]
     assert "Platz 01" in text and "Platz 02" in text and "key-for-pfm-02@agentmail.to" in text
+
+
+def test_provision_stops_cleanly_at_the_plan_limit(workspace):
+    client = FakeClient()
+    original = client.inboxes.create
+
+    def limited(*, request):
+        if len(client.inboxes.created) >= 2:
+            raise RuntimeError("status_code: 403, body: {'code': 'limit_exceeded'}")
+        return original(request=request)
+
+    client.inboxes.create = limited
+    result = instructor.provision(4, "pfm", directory=workspace, client=client, execute=True)
+    assert result["limitReached"] and result["created"] == ["01", "02"] and result["missingSlots"] == ["03", "04"]
+    assert [row["slot"] for row in instructor.read_roster(workspace)] == ["01", "02"]
