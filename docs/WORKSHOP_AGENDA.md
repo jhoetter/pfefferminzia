@@ -51,7 +51,7 @@ Die letzte Frage bildet bewusst die Brücke von Augmentation zu Automation.
 | Zeit | Programmpunkt | Inhalt und Ergebnis |
 | --- | --- | --- |
 | 08:30–09:45 | **Input – Vom Assistenten zum Agenten: Wenn KI handelt** | Johannes zeigt seine fertigen Anwendungen live (app/design/tracker.sonaloop.com), erklärt Vibe Coding mit Claude Code, MCP, Verifizierbarkeit und die zwei Kontrollmuster. Danach: ein Satz an Claude, und jede Person hat ihre eigene Kommandozentrale. |
-| 10:00–11:00 | **Drill 6 – Die Kommandozentrale für Agenten** | Claude klont und startet die Software; persönliche Mail bis zum Ticket in Cockpit und MCP verfolgen; mit Claude ein automatisches Prüfen-Todo bauen, testen und committen. |
+| 10:00–11:00 | **Drill 6 – Die Kommandozentrale für Agenten** | Claude klont und startet die Software; die Mail der Lehrperson liegt mit Aufgabe im Posteingang: Claude entwirft die Antwort, der Mensch sendet im Cockpit. Danach bauen: Aufgabe erledigt sich beim Senden. |
 | 11:15–12:15 | **Drill 7 – Leben: Der Mensch bearbeitet, der Agent bereitet vor** | Kunde, Vertrag und Tarifgeneration prüfen; belegten Entwurf redigieren und bewusst selbst versenden. Eine Tarif-Belegprüfung mit Claude bauen. |
 | 12:15–13:15 | **Mittagspause** | Abstand vor den Automationsmustern. |
 | 13:15–14:15 | **Drill 8 – Leben: Der Agent bearbeitet, der Mensch gibt frei** | Claude bereitet zwei Fälle vor; im Cockpit einen freigeben, einen ablehnen (Claude hat kein Freigabe-Werkzeug). Review-Zustand selbst verbessern und belegen, dass ein Edit die Freigabe entwertet. |
@@ -94,7 +94,7 @@ Rückweg für alle, die hängen. Details:
 
 | Drill | Kernpfad | Selbst bauen | Nachweis + Rückblick |
 | --- | ---: | ---: | ---: |
-| 6 · Eingang verstehen | 20 Min. | 25 Min. | 15 Min. |
+| 6 · Erste Antwort | 25 Min. | 20 Min. | 15 Min. |
 | 7 · Belegter Entwurf | 30 Min. | 20 Min. | 10 Min. |
 | 8 · Pflichtfreigabe | 30 Min. | 20 Min. | 10 Min. |
 | 9 · Eingriffsfenster | 30 Min. | 15 Min. | 15 Min. |

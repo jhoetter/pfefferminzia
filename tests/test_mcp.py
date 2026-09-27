@@ -44,7 +44,7 @@ async def test_mcp_capability_surface(monkeypatch):
 @pytest.mark.parametrize(
     ("checkpoint", "present", "absent"),
     [
-        ("drill-06-start", {"create_todo", "sync_agentmail"}, {"draft_ticket_reply", "list_tariffs", "submit_ticket_reply", "route_ticket"}),
+        ("drill-06-start", {"create_todo", "sync_agentmail", "draft_ticket_reply"}, {"list_tariffs", "submit_ticket_reply", "route_ticket"}),
         ("drill-07-start", {"draft_ticket_reply", "list_tariffs"}, {"submit_ticket_reply", "route_ticket"}),
         ("drill-08-start", {"submit_ticket_reply", "list_claims"}, {"route_ticket", "remove_from_send_queue"}),
         ("drill-09-start", {"route_ticket", "remove_from_send_queue"}, set()),

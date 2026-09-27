@@ -13,7 +13,7 @@ uv run pfefferminzia instructor status           # wer hat schon geantwortet
 
 | Drill | Mails | Erwartung |
 | --- | --- | --- |
-| 6 | Begrüßung | Kommt als Ticket an; nicht beantworten |
+| 6 | Begrüßung mit Frage | Wird Ticket mit Aufgabe „Antworten“; Claude entwirft, Mensch sendet im Cockpit |
 | 7 | Niederberger, Bezugsrecht VTR-00000102 | PTR-00000001, PL-2017; Mensch redigiert und sendet im Cockpit |
 | 8 | Ortlepp VTR-00000202 · Nazari VTR-00000602 | PZ-2025; eine Freigabe, eine begründete Ablehnung |
 | 9 | E-Bike VTR-00000101 · Wasserschaden VTR-00000301 · Beschwerde Pieper VTR-00000801 | laufen lassen · im Fenster ändern · aus der Queue nehmen |

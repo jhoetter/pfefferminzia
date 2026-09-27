@@ -7,7 +7,7 @@ def test_checkpoint_activation_resets_clock_and_guides_without_spoilers(monkeypa
     ensure_workshop_fixtures(full_db)
     profile = activate_checkpoint("drill-7", full_db)
     assert profile["name"] == "drill-07-start"
-    assert checkpoint_profile(full_db)["capabilities"] == ["core", "inbox", "todos", "knowledge", "draft", "manual_send"]
+    assert checkpoint_profile(full_db)["capabilities"] == ["core", "inbox", "todos", "draft", "manual_send", "knowledge"]
     first_hint = drill_guide(1, full_db)
     assert first_hint["hintLevel"] == 1
     assert "24" not in first_hint["hint"]
@@ -23,9 +23,9 @@ def test_drill_six_guide_starts_with_a_real_inbox_mission(monkeypatch, full_db):
     monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-06-start")
     guide = drill_guide(0, full_db)
     assert guide["hint"] is None
-    assert "Ticket-ID" in guide["mission"]
-    assert "zweiter Sync" in guide["buildTask"]
-    assert "genau ein" in guide["buildTaskShort"]
+    assert "Antworten" in guide["mission"] and "Cockpit" in guide["mission"]
+    assert "reply" in guide["buildTask"]
+    assert "erledigen" in guide["buildTaskShort"]
     assert "guided" in guide["learningPath"]
     assert sum(guide["timeboxMinutes"].values()) == 60
 

@@ -46,7 +46,7 @@ Die Drill-Karten zum Nachlesen: [docs/DRILL_CARDS.md](docs/DRILL_CARDS.md).
 | Zeit | Block | Worum es geht |
 | --- | --- | --- |
 | 08:30–09:45 | Input | Live-Beispiele, Vibe Coding, MCP, zwei Kontrollmuster |
-| 10:00–11:00 | Drill 6 · Kommandozentrale | Mail → Ticket in Cockpit und MCP; erster eigener Code |
+| 10:00–11:00 | Drill 6 · Kommandozentrale | Erste Mail mit Claude beantworten; erster eigener Code |
 | 11:15–12:15 | Drill 7 · Leben, Mensch sendet | Belegter Entwurf; Tarif-Belegprüfung bauen |
 | 13:15–14:15 | Drill 8 · Leben, Mensch gibt frei | Freigabe/Ablehnung im Cockpit; Review-Zustand bauen |
 | 14:30–15:30 | Drill 9 · Haftpflicht, Eingriffsfenster | Auto-Versand, Edit, Stopp; Queue absichern |

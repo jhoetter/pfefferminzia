@@ -40,29 +40,28 @@ Claude hat dafür kein Werkzeug – das ist die Lektion des Tages.
 
 ## Drill 6 – Die Kommandozentrale (60 Min.)
 
-**Lernziel:** Eine externe Mail wird ein lokales Ticket mit demselben Zustand
-in Cockpit und MCP.
+**Lernziel:** Aus einer echten Mail wird ein Fall mit Aufgabe. Claude
+bereitet die Antwort vor – senden tust du.
 
-**Aufgabe:** Schick eine Mail an deine Workshop-Adresse, synchronisiere,
-finde dieselbe Ticket-ID im Cockpit und über Claude, lies Absender und
-Betreff und lege im Cockpit ein konkretes Todo zu diesem Ticket an („PF-…:
-Anliegen prüfen“). Schließe es erst nach der Prüfung.
+**Aufgabe:** In deinem Posteingang liegt eine Mail der Lehrperson und unter
+**Aufgaben** „Antworten: …“. Bitte Claude um einen kurzen Entwurf, ändere ihn
+im Cockpit und klicke selbst auf **Senden**.
 
-**Bauauftrag:** Beim Import eines neuen Tickets soll automatisch genau ein
-verknüpftes „Eingang prüfen“-Todo entstehen – auch wenn zweimal
-synchronisiert wird. Test zuerst.
-Einstieg: `sync_agentmail` in `pfefferminzia/agentmail_service.py`,
-`create_todo` in `pfefferminzia/todos.py`.
+**Bauauftrag:** Nach dem Senden ist die Aufgabe noch offen. Sie soll sich
+beim Senden von selbst erledigen – nur die Antwort-Aufgabe dieses Falls.
+Test zuerst. Einstieg: `send_ticket_draft` in
+`pfefferminzia/agentmail_service.py`, `complete_ticket_todos` in
+`pfefferminzia/todos.py`.
 
 | Etappe | Frag Claude | Dann du |
 | --- | --- | --- |
-| 1 · Inbox | „Was fehlt noch für Drill 6? Hilf mir, meine Inbox einzurichten.“ | Werte einfügen; externe Prüfung erlauben. |
-| 2 · Eingang | „Ich habe eine Mail geschickt. Synchronisiere und zeig mir Betreff, Absender und Ticket-ID.“ | Ticket im Cockpit finden; Todo anlegen. |
-| 3 · Bauen | „Wo wird ein Ticket importiert? Schreib mit mir zuerst einen Test für genau ein Prüfen-Todo.“ | Test lesen, Implementierung mit Claude bauen. |
-| 4 · Beleg | „Prüfe zwei Syncs und den Todo-Status. Dann hilf mir beim Commit.“ | Grüner Test, Diff ansehen, committen. |
+| 1 · Ankommen | „Was liegt in meinem Posteingang, und was ist meine erste Aufgabe?“ | Mail im Cockpit öffnen und lesen. |
+| 2 · Antworten | „Entwirf eine kurze, freundliche Antwort. Nicht senden – das mache ich.“ | Im Cockpit ändern, speichern, senden. |
+| 3 · Bauen | „Die Aufgabe ist nach dem Senden noch offen. Wo ändern wir das? Zuerst ein Test.“ | Kleine Änderung mit Claude bauen. |
+| 4 · Beleg | „Was ist belegt? Dann hilf mir beim Speichern meiner Änderung.“ | Gesendete Antwort und erledigte Aufgabe sehen. |
 
-**Fertig, wenn:** gleiche Ticket-ID in Cockpit und MCP, sinnvolles Todo
-abgeschlossen, eigene Änderung mit grünem Test committet. Nichts versendet.
+**Fertig, wenn:** deine geprüfte Antwort gesendet ist, sich die Aufgabe beim
+Senden von selbst erledigt und deine Änderung mit grünem Test committet ist.
 
 ## Drill 7 – Leben: Mensch bearbeitet, Agent bereitet vor (60 Min.)
 

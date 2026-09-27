@@ -19,12 +19,12 @@ CHECKPOINTS: dict[str, dict[str, Any]] = {
         "drill": 6,
         "title": "Die Kommandozentrale",
         "goal": "Eine selbst gesendete Testmail vom AgentMail-Postfach bis ins Cockpit und MCP verfolgen; daraus eine echte nächste Aufgabe ableiten.",
-        "capabilities": BASE_CAPABILITIES,
+        "capabilities": [*BASE_CAPABILITIES, "draft", "manual_send"],
         "successCriteria": [
-            "Pfefferminzia läuft lokal und Claude sieht den Pfefferminzia-MCP-Server.",
-            "Eine neue Testmail an die persönliche Inbox erscheint als dasselbe Ticket im Cockpit und über MCP.",
-            "Ein ticketbezogenes Todo benennt den nächsten sinnvollen Schritt und wird erst nach Prüfung abgeschlossen.",
-            "Ein eigener Codebeitrag am Eingangs-Workflow ist getestet und committet.",
+            "Pfefferminzia läuft lokal und Claude sieht den Pfefferminzia-Server.",
+            "Die Mail der Lehrperson ist als Ticket mit Aufgabe „Antworten“ angekommen.",
+            "Claude hat eine Antwort entworfen; der Mensch hat sie im Cockpit geprüft und gesendet.",
+            "Ein eigener Codebeitrag ist getestet und committet.",
         ],
     },
     "drill-07-start": {
@@ -32,7 +32,7 @@ CHECKPOINTS: dict[str, dict[str, Any]] = {
         "drill": 7,
         "title": "Leben: Mensch bearbeitet, Agent bereitet vor",
         "goal": "Aus einer Lebensanfrage einen belegten Entwurf machen; die letzte Textänderung und den Versand bewusst beim Menschen halten.",
-        "capabilities": [*BASE_CAPABILITIES, "knowledge", "draft", "manual_send"],
+        "capabilities": [*BASE_CAPABILITIES, "draft", "manual_send", "knowledge"],
         "successCriteria": [
             "Ein Lebensfall ist Kunde, Vertrag und Tarifgeneration zugeordnet.",
             "Claude hat einen belegten Antwortentwurf vorbereitet.",
@@ -111,18 +111,18 @@ REFERENCE_TAGS = {6: "drill-07-start", 7: "drill-08-start", 8: "drill-09-start",
 
 DRILL_BRIEFS: dict[int, dict[str, Any]] = {
     6: {
-        "learningObjective": "Verstehen, dass eine externe Mail als lokales Ticket in Cockpit und MCP denselben Zustand hat.",
-        "mission": "Sende eine Mail an deine persönliche Workshop-Adresse, synchronisiere, finde die neue Ticket-ID im Cockpit und über Claude/MCP, lies Absender und Betreff und lege dann ein konkretes Todo zu diesem Ticket an. Schließe es erst nach der Prüfung ab.",
-        "buildTaskShort": "Beim Import automatisch genau ein „Eingang prüfen“-Todo pro Ticket anlegen – auch nach zwei Syncs.",
-        "buildTask": "Wenn sync_agentmail ein neues Ticket anlegt, soll automatisch genau ein verknüpftes Todo „PF-…: Eingang prüfen“ entstehen. Ein zweiter Sync darf kein Duplikat erzeugen; ein manuell angelegtes Todo bleibt separat. Erst den Test schreiben (tests/test_workshop_end_to_end.py hat einen Fake-AgentMail-Client), dann implementieren. Einstieg: sync_agentmail in pfefferminzia/agentmail_service.py und create_todo (Parameter idempotency_key) in pfefferminzia/todos.py.",
+        "learningObjective": "Erleben, wie aus einer echten Mail ein Fall mit Aufgabe wird – und dass Claude die Antwort vorbereitet, der Mensch sie aber sendet.",
+        "mission": "In deinem Posteingang liegt die Mail der Lehrperson, dazu die Aufgabe „Antworten“. Bitte Claude, eine kurze Antwort zu entwerfen. Prüfe und ändere sie im Cockpit und sende sie dort selbst.",
+        "buildTaskShort": "Nach dem Senden soll sich die Antwort-Aufgabe von selbst erledigen.",
+        "buildTask": "Beim Senden einer Antwort bleibt die Aufgabe „Antworten: …“ bisher offen. Sie soll automatisch als erledigt markiert werden – nur die Antwort-Aufgabe dieses Tickets, keine anderen. Erst einen Test schreiben (tests/test_workshop_end_to_end.py hat einen Fake-Mailserver), dann umsetzen. Einstieg: send_ticket_draft in pfefferminzia/agentmail_service.py und complete_ticket_todos (Aufgabenart \"reply\") in pfefferminzia/todos.py.",
         "dialogueSteps": [
-            {"phase": "Inbox verbinden", "askClaude": "Ist meine Workshop-Inbox verbunden? Wenn nicht: nur den nächsten Schritt.", "yourMove": "Falls Claude fragt: den Schlüssel vom Zettel einfügen und die Prüfung der Inbox erlauben."},
-            {"phase": "Eingang verfolgen", "askClaude": "Ich habe eine Mail an meine Workshop-Adresse geschickt. Synchronisiere und zeig mir Betreff, Absender und die Ticket-ID.", "yourMove": "Vorher die Mail selbst senden. Danach dieselbe Ticket-ID im Cockpit finden und dort ein konkretes Todo zum Ticket anlegen."},
-            {"phase": "Selbst bauen", "askClaude": "Wo wird ein neues Ticket importiert? Schreib mit mir zuerst einen Test für genau ein automatisches Prüfen-Todo pro Ticket.", "yourMove": "Test lesen, dann die Implementierung mit Claude bauen; dein manuelles Todo bleibt separat."},
-            {"phase": "Beleg zeigen", "askClaude": "Prüfe zwei Syncs und den Todo-Status. Was ist belegt, was noch nicht? Dann hilf mir beim Commit.", "yourMove": "Grünen Test und Ticket im Cockpit zeigen, Diff ansehen, committen. Nichts versenden."},
+            {"phase": "Ankommen", "askClaude": "Was liegt in meinem Posteingang, und was ist meine erste Aufgabe?", "yourMove": "Die Mail im Cockpit öffnen und lesen. Falls noch nichts da ist: synchronisieren lassen."},
+            {"phase": "Antworten", "askClaude": "Entwirf eine kurze, freundliche Antwort auf die Mail. Nicht senden – das mache ich.", "yourMove": "Entwurf im Cockpit lesen, etwas Eigenes ändern, speichern und auf „Senden“ klicken."},
+            {"phase": "Selbst bauen", "askClaude": "Die Aufgabe ist nach dem Senden noch offen. Wo ändern wir das? Schreib mit mir zuerst einen Test.", "yourMove": "Test lesen, die kleine Änderung mit Claude bauen und im Cockpit prüfen."},
+            {"phase": "Beleg zeigen", "askClaude": "Zeig mir, was belegt ist: gesendete Antwort, erledigte Aufgabe, grüner Test. Dann hilf mir beim Speichern meiner Änderung.", "yourMove": "Im Verlauf die gesendete Antwort sehen, Änderung committen lassen."},
         ],
-        "timeboxMinutes": {"startUndEingang": 15, "erkunden": 5, "selbstBauen": 25, "nachweisen": 10, "reflexion": 5},
-        "doneWhen": "Neue Mail mit derselben Ticket-ID in Cockpit und MCP; ein sinnvolles Todo geprüft und abgeschlossen; eigene Codeänderung mit grünem Test committet.",
+        "timeboxMinutes": {"startUndPosteingang": 15, "antworten": 10, "selbstBauen": 20, "nachweisen": 10, "reflexion": 5},
+        "doneWhen": "Eine von dir geprüfte Antwort ist gesendet; die Antwort-Aufgabe erledigt sich beim Senden automatisch; eigene Änderung mit grünem Test committet.",
     },
     7: {
         "learningObjective": "Kontext und Quellen gegen den Nachrichtentext prüfen, bevor ein Mensch eine Antwort verschickt.",
@@ -276,9 +276,9 @@ def available_checkpoints() -> list[dict[str, Any]]:
 
 HINTS = {
     6: [
-        "Prüfe die vollständige Inbox-Adresse. Sende eine Mail, synchronisiere und vergleiche Sync-Zeit, Betreff und Ticket-ID in Cockpit und MCP. Die Empfänger-Allowlist filtert den Eingang nicht.",
-        "Lege erst nach dem Lesen der neuen Nachricht ein Todo mit genau dieser Ticket-ID und einem konkreten nächsten Prüfschritt an. Schließe es nach der Prüfung ab.",
-        "Für den Code: In sync_agentmail gibt es genau eine Stelle, an der ein neues Ticket entsteht. create_todo kennt schon einen idempotency_key – z. B. 'intake:PF-1001'.",
+        "Ist die Mail noch nicht da, kurz warten und erneut synchronisieren – Zustellung dauert manchmal einige Sekunden.",
+        "Claude speichert den Entwurf mit draft_ticket_reply; im Cockpit steht er unter der Mail. Senden kann nur der Mensch dort.",
+        "Für den Code: send_ticket_draft ruft am Ende schon complete_ticket_todos für 'review' und 'queue_intervention' auf. Es fehlt die Aufgabenart 'reply'.",
     ],
     7: [
         "Trenne Nachrichtentext (Behauptung) von vertrauenswürdigen Tarifquellen (Beleg).",

@@ -131,8 +131,11 @@ Die Lehrperson stellt die Aufgabe mündlich; der Drill-Guide
   ohne Beleg behaupten, die Mail sei an die falsche Adresse gegangen.
 - Eine echte private Testmail ist nur ein Verbindungstest, kein
   Versicherungsfall; ihren Inhalt nicht für spätere Drills verwenden.
-- Ein Todo in Drill 6 erst nach Prüfung des echten Tickets abschließen und
-  an einen sinnvollen nächsten Schritt knüpfen.
+- Jede neue Mail bringt automatisch die Aufgabe „Antworten: …“ mit. In
+  Drill 6 ist das der erste Fall: Du entwirfst mit `draft_ticket_reply`, der
+  Mensch ändert und sendet im Cockpit. Antworten gehen nur an die Adressen der
+  Antwort-Liste (Lehrperson); eine eigene Gmail-Testmail kann deshalb nicht
+  beantwortet werden – das kurz erklären, nicht umgehen.
 
 ## 5. Checkpoints: Übergang und Rettung
 

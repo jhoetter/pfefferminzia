@@ -248,7 +248,7 @@ def migrate(db: sqlite3.Connection) -> None:
           title TEXT NOT NULL,
           description TEXT NOT NULL DEFAULT '',
           status TEXT NOT NULL CHECK(status IN ('open', 'completed', 'cancelled')) DEFAULT 'open',
-          kind TEXT NOT NULL CHECK(kind IN ('general', 'review', 'queue_intervention')) DEFAULT 'general',
+          kind TEXT NOT NULL CHECK(kind IN ('general', 'reply', 'review', 'queue_intervention')) DEFAULT 'general',
           ticket_id INTEGER REFERENCES tickets(id) ON DELETE CASCADE,
           assigned_to TEXT,
           created_by TEXT NOT NULL,
@@ -298,6 +298,16 @@ def migrate(db: sqlite3.Connection) -> None:
     for name, definition in additions.items():
         if name not in existing:
             db.execute(f'ALTER TABLE documents ADD COLUMN "{name}" {definition}')
+    todo_sql = db.execute("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'workshop_todos'").fetchone()
+    if todo_sql and "'reply'" not in todo_sql["sql"]:
+        # Older databases only allowed three todo kinds; rebuild with the reply kind.
+        new_sql = todo_sql["sql"].replace("('general', 'review', 'queue_intervention')", "('general', 'reply', 'review', 'queue_intervention')")
+        db.executescript(
+            "ALTER TABLE workshop_todos RENAME TO workshop_todos_old;"
+            f"{new_sql};"
+            "INSERT INTO workshop_todos SELECT * FROM workshop_todos_old;"
+            "DROP TABLE workshop_todos_old;"
+        )
     ticket_columns = {row["name"] for row in db.execute("PRAGMA table_info(tickets)")}
     if "workshop_min_stage" not in ticket_columns:
         db.execute("ALTER TABLE tickets ADD COLUMN workshop_min_stage INTEGER NOT NULL DEFAULT 6")

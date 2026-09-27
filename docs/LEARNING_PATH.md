@@ -52,7 +52,7 @@ gebauter Beitrag.
 
 | Drill | Fall für alle | Bauauftrag | Lösung im Checkpoint |
 | --- | --- | --- | --- |
-| 6 · Eingang | Mail → Ticket in Cockpit und MCP → Todo | Automatisches Prüfen-Todo pro Ticket, idempotent | `drill-07-start` |
+| 6 · Erste Antwort | Mail kommt mit Aufgabe → Claude entwirft → Mensch sendet | Aufgabe erledigt sich beim Senden | `drill-07-start` |
 | 7 · Leben | Quelle prüfen → Entwurf → Mensch sendet | Tarif-Belegprüfung beim Speichern | `drill-08-start` |
 | 8 · Freigabe | Zwei Fälle → Freigabe und Ablehnung | `controlNotice`: Ablehnung und Freigabeverlust anzeigen | `drill-09-start` |
 | 9 · Eingriffsfenster | Auto-Versand, Edit und Stopp | Gestoppte Termine erklären, Doppelversand testen | `drill-10-start` |

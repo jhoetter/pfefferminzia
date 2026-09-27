@@ -259,8 +259,8 @@ def progress(directory: Path = INSTRUCTOR_DIR, client: Any = None) -> dict[str, 
 def format_progress(result: dict[str, Any]) -> str:
     from .scenarios import SCENARIOS
 
-    keys = [item["key"] for item in SCENARIOS if item["drill"] in (7, 8, 9)]
-    header = "Platz  Name                  " + "  ".join(key.split("-", 1)[1][:10].ljust(10) for key in keys)
+    keys = [item["key"] for item in SCENARIOS if item["drill"] in (6, 7, 8, 9)]
+    header = "Platz  Name                  " + "  ".join(key.split("-", 1)[-1][:10].ljust(10) for key in keys)
     lines = [header, "-" * len(header)]
     for row in result["participants"]:
         cells = [("✔ Antwort" if key in row["answered"] else "· erhalten" if key in row["received"] else "").ljust(10) for key in keys]

@@ -8,7 +8,7 @@ from .util import utc_now
 
 
 TODO_STATUSES = ("open", "completed", "cancelled")
-TODO_KINDS = ("general", "review", "queue_intervention")
+TODO_KINDS = ("general", "reply", "review", "queue_intervention")
 
 
 def _map(row: sqlite3.Row) -> dict[str, Any]:

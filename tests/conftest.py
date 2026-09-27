@@ -18,3 +18,13 @@ def full_db() -> sqlite3.Connection:
     ensure_workshop_claims(db)
     yield db
     db.close()
+
+
+@pytest.fixture(autouse=True)
+def isolated_env_file(monkeypatch, tmp_path_factory):
+    """Tests never read the developer's real .env (it may hold live AgentMail keys)."""
+    from pfefferminzia import runtime_config
+
+    monkeypatch.setattr(runtime_config, "ENV_PATH", tmp_path_factory.mktemp("env") / ".env")
+    monkeypatch.setattr(runtime_config, "_last_signature", None)
+    monkeypatch.setattr(runtime_config, "_last_file_keys", set())

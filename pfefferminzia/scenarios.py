@@ -24,11 +24,12 @@ SCENARIOS: list[Scenario] = [
         "subject": "Willkommen in der Pfefferminzia-Kommandozentrale",
         "text": (
             "Guten Morgen,\n\n"
-            "dies ist die persönliche Verbindungskontrolle für Ihre Workshop-Inbox. "
-            "Hier können Sie prüfen, ob Betreff, Absender und Inhalt im System ankommen.\n\n"
-            "Freundliche Grüße\nWorkshop-Team"
+            "willkommen in Ihrer eigenen Kommandozentrale! Diese Mail ist Ihr erster Fall.\n\n"
+            "Bitte antworten Sie mir kurz – mit Claude: Was möchten Sie heute über Agenten lernen, "
+            "und bei welcher Aufgabe in Ihrem Alltag würden Sie sich einen helfen lassen?\n\n"
+            "Freundliche Grüße\nJohannes"
         ),
-        "expectation": "Erscheint nach Sync als neues Ticket; nichts beantworten.",
+        "expectation": "Wird Ticket mit Aufgabe „Antworten“; Claude entwirft, der Mensch sendet im Cockpit.",
     },
     {
         "key": "leben-bezugsrecht",

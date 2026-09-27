@@ -9,8 +9,8 @@ Dienstag ist Drill 6–10.
 
 | Tag `checkpoint/…` | Freigeschaltet | Enthält Lösung von |
 | --- | --- | --- |
-| `drill-06-start` (= Spitze von `main`) | Inbox, Todos | – |
-| `drill-07-start` | + Kunden/Tarife, Entwurf, manueller Versand | Drill 6: Auto-Prüfen-Todo |
+| `drill-06-start` (= Spitze von `main`) | Posteingang, Aufgaben, Entwurf, Senden im Cockpit | – |
+| `drill-07-start` | + Kunden/Tarife | Drill 6: Antwort-Aufgabe erledigt sich beim Senden |
 | `drill-08-start` | + Pflichtfreigabe Leben, Claims | + Drill 7: Tarif-Belegprüfung |
 | `drill-09-start` | + Router, Eingriffsfenster, Workshop-Uhr, Auto-Versand an | + Drill 8: `controlNotice` im Review |
 | `drill-10-start` | + Management-Report, Auto-Versand aus | + Drill 9: Queue-Hinweise, Duplikattest |
@@ -96,7 +96,7 @@ Code-Sitzung mit dem neuen Ordner.
 | Zeit | Du sagst | Du tust |
 | --- | --- | --- |
 | 08:30 | Input-Deck (`?deck=input`), Live-Beispiele | – |
-| 10:00 | Drill 6: „Sagt Claude den Satz vom Zettel … ihr seht ein Softwaregerüst. Erste Aufgabe: Mail an eure Adresse schicken und bis zum Ticket verfolgen; dann mit Claude das Auto-Prüfen-Todo bauen. Wenn ihr nicht weiterwisst: fragt Claude.“ | ~10:15 `instructor send 6 --yes` (Begrüßungsmail) |
+| 10:00 | Drill 6: „Sagt Claude den Satz vom Zettel … ihr seht ein Softwaregerüst. Erste Aufgabe liegt schon im Posteingang: meine Mail beantworten – Claude schreibt, ihr sendet. Dann mit Claude bauen, dass sich die Aufgabe beim Senden erledigt. Wenn ihr nicht weiterwisst: fragt Claude.“ | **Vorher** (z. B. 09:45): „Schick die Drill-6-Begrüßung an alle“ oder eigene Mail per BCC |
 | 11:15 | Drill 7: „Ladet mit Claude Drill 7 – mitnehmen oder offiziell.“ | nach dem Laden `instructor send 7 --yes` |
 | 13:15 | Drill 8 | `instructor send 8 --yes` |
 | 14:30 | Drill 9 | `instructor send 9 --yes` |
@@ -146,7 +146,7 @@ einer Challenge vertiefen **oder** den nächsten Bauauftrag im eigenen Branch
 beginnen (Claude: `includeAdvanceTask`). Nicht der Gruppe verraten. Oder
 Buddy werden: Fragen stellen, nicht Tastatur oder Freigabe übernehmen.
 
-- Drill 6: falsche Inbox-ID diagnostizieren; Todo-Historie anzeigen.
+- Drill 6: auf die eigene Gmail-Testmail antworten und verstehen, warum die App das blockiert (Antwort-Liste).
 - Drill 7: ähnliche Namen, fehlende Vertragsnummer, `send challenge` (Anweisung im Mailtext).
 - Drill 8: Nutzerwunsch, der dem zitierten Tarif widerspricht.
 - Drill 9: Timer-Reset nach Edit, transparente Router-Schwelle.

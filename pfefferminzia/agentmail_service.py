@@ -19,7 +19,7 @@ from .crm import auto_link_exact_customer
 from .database import get_database
 from .runtime_config import reload_agentmail_environment_if_changed
 from .store import add_event, get_ticket, list_tickets
-from .todos import complete_ticket_todos
+from .todos import complete_ticket_todos, create_todo
 from .util import utc_now
 from .workshop_clock import workshop_now_iso
 
@@ -190,6 +190,15 @@ def sync_agentmail(db: sqlite3.Connection | None = None) -> dict[str, Any]:
                     ticket_id = cursor.lastrowid
                     add_event(ticket_id, "ticket_imported", "agentmail-sync", {"inboxId": active_inbox, "threadId": thread_id}, db)
                     auto_link_exact_customer(ticket_number, db)
+                    # Every new conversation starts as a visible task for the human.
+                    create_todo(
+                        f"Antworten: {subject or '(Ohne Betreff)'}",
+                        kind="reply",
+                        ticket_number=ticket_number,
+                        actor="agentmail-sync",
+                        idempotency_key=f"reply:{active_inbox}:{thread_id}",
+                        db=db,
+                    )
                     result["importedTickets"] += 1
                 else:
                     ticket_id = ticket["id"]

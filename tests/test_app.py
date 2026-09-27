@@ -28,9 +28,10 @@ def test_python_host_serves_api_and_browser_workspace(monkeypatch, tmp_path):
         assert '/assets/' not in page.text
         assert client.get("/workshop.js").headers["content-type"].startswith("text/javascript")
         assert client.get("/workshop.css").headers["content-type"].startswith("text/css")
-        assert 'Die Versicherungs-Werkstatt' in client.get("/workshop.js").text
-        assert '<div class="dialog-backdrop">' in client.get("/workshop.js").text
-        assert 'data-action="cancel"><div class="dialog"' not in client.get("/workshop.js").text
+        script = client.get("/workshop.js").text
+        assert 'class="sidebar"' in script and "Posteingang" in script and "Aufgaben" in script
+        # No workshop instructions inside the product UI: guidance happens in Claude.
+        assert "Mit Claude starten" not in script and "Bauauftrag" not in script
         assert client.get("/logo.svg").headers["content-type"].startswith("image/svg+xml")
 
     close_database()

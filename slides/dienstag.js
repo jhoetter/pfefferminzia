@@ -35,7 +35,7 @@
       subtitle: 'Jeder Drill: ein Fall für alle, ein eigener Bauauftrag – und ein Checkpoint mit Lösung, falls es klemmt.',
       body: `<div class="day-timeline">
         <div class="day-timeline-row"><strong>08:30–09:45</strong><em>Input</em><span>Live-Apps; Vibe Coding, MCP, Kontrolle</span></div>
-        <div class="day-timeline-row"><strong>10:00–11:00</strong><em>Drill 6</em><span>Kommandozentrale, Inbox, erster Code</span></div>
+        <div class="day-timeline-row"><strong>10:00–11:00</strong><em>Drill 6</em><span>Kommandozentrale: erste Mail mit Claude beantworten</span></div>
         <div class="day-timeline-row"><strong>11:15–12:15</strong><em>Drill 7</em><span>Leben: belegter Entwurf, Mensch sendet</span></div>
         <div class="day-timeline-row"><strong>13:15–14:15</strong><em>Drill 8</em><span>Leben: Freigabe oder Ablehnung</span></div>
         <div class="day-timeline-row"><strong>14:30–15:30</strong><em>Drill 9</em><span>Haftpflicht: Queue mit Eingriffsfenster</span></div>
@@ -111,8 +111,8 @@
     },
     {
       id: 'Drill6Start', type: 'Kapitel', eyebrow: '10:00–11:00 · Meilenstein 1', title: 'Die Kommandozentrale', study: true,
-      body: stage('6', 'Von einem Satz an Claude zur ersten Nachricht.', 'Claude richtet alles ein und öffnet die Kommandozentrale. Dann: Inbox verbinden, erste Mail verfolgen, ersten Code bauen.', ['Start: drill-06-start', 'Ziel: Mail + eigenes Werk']),
-      notes: 'ZEIT: 1 Minute. SAGEN: Bis zum Ende dieses Drills muss jede Person die eigene Inbox sehen und eine Nachricht empfangen haben. Noch kein CRM, kein Entwurf, keine Freigabe, kein Timer.'
+      body: stage('6', 'Von einem Satz an Claude zur ersten Antwort.', 'Claude richtet alles ein und öffnet die Kommandozentrale. Im Posteingang liegt meine Mail – eure erste Aufgabe: antworten, mit Claude.', ['Start: drill-06-start', 'Ziel: Antwort + eigenes Werk']),
+      notes: 'ZEIT: 1 Minute. SAGEN: Bis zum Ende dieses Drills hat jede Person meine Mail beantwortet – den Text hat Claude vorbereitet, gesendet hat der Mensch. Noch kein Kundenkontext, keine Freigabe, kein Timer.'
     },
     {
       id: 'Drill6Los', type: 'Drill', eyebrow: 'Drill 6 · So startet ihr', title: 'Ein Satz an Claude. Dann seht ihr eure Kommandozentrale.',
@@ -121,25 +121,22 @@
         card('1 · Claude-App → Code → schreiben', `${prompt('Klone https://github.com/jhoetter/pfefferminzia nach ~/pfefferminzia, richte alles nach der README ein und starte die Kommandozentrale. Ich bin in Drill 6.')}<p class="day-small">Auf Nachfrage den Schlüssel vom Zettel einfügen – sonst nichts.</p>`, 'mint-card'),
         card('2 · Wenn ihr nicht weiterwisst', `<p class="day-emphasis">Fragt Claude. Es ist hier euer Tutor.</p><p>Es kennt den Drill, gibt Hinweise in kleinen Schritten und lädt euch beim nächsten Drill den offiziellen Stand, falls etwas klemmt.</p>`)
       ]),
-      notes: 'ZEIT: 10 Minuten inkl. Einrichtung. SAGEN: Claude-App öffnen, Bereich Code, neue Sitzung mit eurem Benutzerordner. Sagt Claude den Satz; danach bittet es euch einmal um eine neue Sitzung im Ordner pfefferminzia, dann öffnet sich die Kommandozentrale. Die erste Aufgabe: Schickt eine Mail an eure Workshop-Adresse und verfolgt sie bis zum Ticket – im Cockpit und über Claude. Danach baut ihr mit Claude, dass jedes neue Ticket automatisch ein Prüfen-Todo bekommt. Keine Sorge: Beim nächsten Drill gibt es einen Checkpoint. PARALLEL: Claude bitten „Schick die Drill-6-Begrüßung an alle“.'
+      notes: 'ZEIT: 10 Minuten inkl. Einrichtung. SAGEN: Claude-App öffnen, Bereich Code, neue Sitzung mit eurem Benutzerordner. Sagt Claude den Satz; danach bittet es euch einmal um eine neue Sitzung im Ordner pfefferminzia, dann öffnet sich die Kommandozentrale. Die erste Aufgabe steht schon in eurer Kommandozentrale: meine Mail beantworten – lasst Claude den Entwurf schreiben, ändert ihn und sendet selbst. Danach baut ihr mit Claude, dass sich die Aufgabe beim Senden von selbst erledigt. Keine Sorge: Beim nächsten Drill gibt es einen Checkpoint. VORHER: Claude bitten „Schick die Drill-6-Begrüßung an alle“ (oder eine eigene Mail per BCC an alle).'
     },
     {
-      id: 'Drill6Cockpit', type: 'Screenshot', eyebrow: 'Drill 6 · Das Cockpit', title: 'Die erste Nachricht wird zum bearbeitbaren Fall.',
-      subtitle: 'Die Ansicht ist eine Foliendemo des Pfefferminzia-Cockpits; im Drill arbeiten alle in ihrer eigenen Instanz.', study: true,
-      body: `<div class="day-app"><div class="day-app-top"><span>Pfefferminzia · Versicherungspost</span><span class="day-app-badge">Inbox verbunden · 1 neu</span></div>
-        <div class="day-app-main"><div class="day-app-left"><div class="day-app-label">Posteingang</div><div class="day-ticket selected"><strong>Neue Anfrage zur Police</strong><span>Mara Keller · heute 09:58</span></div><div class="day-ticket"><strong>Rückfrage zum Vertrag</strong><span>Max Berger · gestern</span></div></div>
-        <div class="day-app-mid"><div class="day-app-label">Nachricht</div><h3>Neue Anfrage zur Police</h3><p>Guten Tag, ich habe eine Frage zu meinem bestehenden Vertrag. Können Sie mir weiterhelfen?</p><div class="day-app-meta"><span>eingegangen</span><span>unbearbeitet</span></div><p class="day-app-note">Im ersten Schritt zählt: Eingang sehen, Status verstehen, eine Aufgabe anlegen.</p></div>
-        <div class="day-app-right"><div class="day-app-label">Workshop</div><h3>Drill 6</h3><p>Eine persönliche Inbox.<br>Ein lokales System.<br>Ein sichtbares Ereignis.</p><span class="day-app-badge">MCP bereit</span></div></div></div>`,
-      notes: 'ZEIT: 3 Minuten. SAGEN: Diese Folie ist eine schematische App-Ansicht, keine Live-Verbindung. Danach zur echten Instanz wechseln. Die genaue Kundenzuordnung ist erst Drill 7.'
+      id: 'Drill6Cockpit', type: 'Screenshot', eyebrow: 'Drill 6 · Die Kommandozentrale', title: 'Die erste Mail ist schon da – mit Aufgabe.',
+      subtitle: 'Posteingang, Aufgaben, Antwort: Claude schreibt den Entwurf, ihr sendet.', study: true,
+      body: `<img src="assets/cockpit-drill6.webp" alt="Pfefferminzia-Kommandozentrale mit geöffneter Mail und Antwortentwurf" style="display:block;width:100%;max-height:560px;object-fit:contain;border:1px solid #1712;border-radius:10px">`,
+      notes: 'ZEIT: 2 Minuten. SAGEN: Das ist eure eigene Instanz. Links die Bereiche, in der Mitte der Posteingang, rechts die Mail mit Antwortfeld. Senden kann nur der Mensch – Claude hat dafür kein Werkzeug.'
     },
     {
-      id: 'Drill6Auftrag', type: 'Drill', eyebrow: 'Drill 6 · Dialog statt Zauberprompt', title: 'Fragen. Selber prüfen. Dann weiterbauen.',
-      subtitle: 'Eine Nachricht wandert durch AgentMail, Cockpit und MCP – du hältst nach jeder Etappe kurz an.', study: true,
+      id: 'Drill6Auftrag', type: 'Drill', eyebrow: 'Drill 6 · Dialog statt Zauberprompt', title: 'Antworten. Selber prüfen. Dann weiterbauen.',
+      subtitle: 'Claude bereitet vor, du entscheidest – und nach jeder Etappe hältst du kurz an.', study: true,
       body: grid([
-        card('1–2 · Eingang', `${dialogueStep(1, 'Inbox', 'Was fehlt noch? Richte meine Inbox ein.', 'Schlüssel vom Zettel einfügen; Test erlauben.')}${dialogueStep(2, 'Mail', 'Zeig mir dieselbe Ticket-ID in MCP und Cockpit.', 'Vorher Testmail senden; danach Ticket-Todo prüfen.')}`, 'mint-card'),
-        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Wo entsteht ein Ticket? Gib mir zuerst einen Test.', 'Automatisches Prüfen-Todo selbst mit Claude coden.')}${dialogueStep(4, 'Belegen', 'Prüfe zwei Syncs und den Todo-Status.', 'Gleiche Ticket-ID und grünen Test zeigen.')}`)
+        card('1–2 · Antworten', `${dialogueStep(1, 'Ankommen', 'Was ist meine erste Aufgabe?', 'Mail im Cockpit öffnen und lesen.')}${dialogueStep(2, 'Entwurf', 'Entwirf eine kurze Antwort. Nicht senden.', 'Im Cockpit ändern, speichern, selbst senden.')}`, 'mint-card'),
+        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Die Aufgabe ist nach dem Senden noch offen – ändern wir das?', 'Erst Test, dann die kleine Änderung mit Claude.')}${dialogueStep(4, 'Belegen', 'Was ist belegt?', 'Gesendete Antwort, erledigte Aufgabe, grüner Test.')}`)
       ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: Die vier Prompts sind Gesprächsetappen. Persönliche Inbox, kein geteilter Schlüssel. Temporären inboxgebundenen Workshop-Key nur im individuellen Chat/lokal, nie echte Geheimnisse. Outbound-Allowlist ist kein Eingangsfilter. Grüner Preflight ist nur Startbereitschaft. Nach eigenem Test Diff prüfen und committen. 15 Minuten Start/Mail, 5 Minuten Ticket erkunden, 25 Minuten bauen, 10 Minuten nachweisen, 5 Minuten reflektieren.'
+      notes: 'ZEIT: 2 Minuten. SAGEN: Die vier Prompts sind Gesprächsetappen. Persönliche Inbox, kein geteilter Schlüssel. Temporären inboxgebundenen Workshop-Key nur im individuellen Chat/lokal, nie echte Geheimnisse. Outbound-Allowlist ist kein Eingangsfilter. Grüner Preflight ist nur Startbereitschaft. Nach eigenem Test Diff prüfen und committen. 15 Minuten Start, 10 Minuten antworten, 20 Minuten bauen, 10 Minuten nachweisen, 5 Minuten reflektieren.'
     },
     {
       id: 'Drill7Start', type: 'Kapitel', eyebrow: '11:15–12:15 · Meilenstein 2', title: 'Der Mensch bearbeitet', study: true,
