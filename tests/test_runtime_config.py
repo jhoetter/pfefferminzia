@@ -32,3 +32,17 @@ def test_agentmail_settings_hot_reload_without_checkpoint_or_auto_send(monkeypat
     assert runtime_config.reload_agentmail_environment_if_changed() is True
     assert runtime_config.os.getenv("AGENTMAIL_API_KEY") is None
     assert runtime_config.os.getenv("AGENTMAIL_INBOX_ID") == "other@agentmail.to"
+
+
+def test_env_file_wins_over_inherited_empty_variables(monkeypatch, tmp_path):
+    """A second Claude session may start the MCP server with empty AGENTMAIL_* variables."""
+    env_path = tmp_path / ".env"
+    env_path.write_text("AGENTMAIL_API_KEY=key\nAGENTMAIL_INBOX_ID=p@agentmail.to\nWORKSHOP_ALLOWED_RECIPIENTS=d@agentmail.to\n")
+    monkeypatch.setattr(runtime_config, "ENV_PATH", env_path)
+    monkeypatch.setattr(runtime_config, "_last_signature", None)
+    monkeypatch.setattr(runtime_config, "_last_file_keys", set())
+    for name in runtime_config.AGENTMAIL_SETTINGS:
+        monkeypatch.setenv(name, "")
+    from pfefferminzia.agentmail_service import agentmail_configuration
+
+    assert agentmail_configuration()["ready"] is True

@@ -67,9 +67,9 @@ dem Workshop rotieren.
    Die Zuordnung Platz → Inbox → Schlüssel als eine Mail an dich:
    `instructor mail-roster jt.hoetter@gmail.com --yes` oder Claude bitten
    („Schick mir die Inbox-Zuordnung“).
-   Weitere Adressen, an die alle antworten dürfen (z. B. deine Gmail für die
-   Live-Demo): `INSTRUCTOR_EXTRA_ALLOWED=…` in `.instructor/.env`, dann Zettel
-   und Zuordnung neu erzeugen.
+   Teilnehmende brauchen nur den Schlüssel; Claude verbindet damit die Inbox
+   (`connect`). An wen alle antworten dürfen, steht für alle gleich in
+   `.env.example` (`WORKSHOP_ALLOWED_RECIPIENTS`).
 7. **Eine Mail an alle (Live-Demo):** `instructor addresses` bzw. Claude
    („Gib mir alle Inbox-Adressen“) liefert die 16 Adressen als eine Zeile.
    In Gmail ins **BCC** einfügen und senden: Jede Instanz importiert die Mail

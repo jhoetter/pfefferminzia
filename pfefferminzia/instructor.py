@@ -35,7 +35,7 @@ DEFAULT_REPO_URL = "https://github.com/jhoetter/pfefferminzia"
 
 def _config(directory: Path) -> dict[str, str]:
     values = {key: value or "" for key, value in dotenv_values(directory / ".env").items()}
-    for key in ("INSTRUCTOR_AGENTMAIL_API_KEY", "INSTRUCTOR_INBOX_ID", "INSTRUCTOR_REPO_URL", "INSTRUCTOR_EXTRA_ALLOWED"):
+    for key in ("INSTRUCTOR_AGENTMAIL_API_KEY", "INSTRUCTOR_INBOX_ID", "INSTRUCTOR_REPO_URL"):
         values[key] = os.getenv(key) or values.get(key, "")
     if not values["INSTRUCTOR_AGENTMAIL_API_KEY"] or not values["INSTRUCTOR_INBOX_ID"]:
         raise ValueError(
@@ -49,12 +49,6 @@ def _client(directory: Path) -> Any:
     from agentmail import AgentMail
 
     return AgentMail(api_key=_config(directory)["INSTRUCTOR_AGENTMAIL_API_KEY"])
-
-
-def allowed_recipients(config: dict[str, str]) -> str:
-    """Participants may reply to the scenario sender plus the instructor's optional extra addresses."""
-    extras = [value.strip() for value in config.get("INSTRUCTOR_EXTRA_ALLOWED", "").split(",") if value.strip()]
-    return ",".join([config["INSTRUCTOR_INBOX_ID"], *extras])
 
 
 def participant_addresses(directory: Path = INSTRUCTOR_DIR) -> str:
@@ -125,7 +119,6 @@ def provision(count: int, prefix: str, domain: str | None = None, *, execute: bo
 def handouts(directory: Path = INSTRUCTOR_DIR) -> dict[str, Any]:
     config = _config(directory)
     repo = config.get("INSTRUCTOR_REPO_URL") or DEFAULT_REPO_URL
-    allowed = allowed_recipients(config)
     rows = [row for row in read_roster(directory) if row["api_key"]]
     if not rows:
         raise ValueError("Roster ist leer: zuerst `instructor provision` ausführen")
@@ -133,17 +126,17 @@ def handouts(directory: Path = INSTRUCTOR_DIR) -> dict[str, Any]:
     for row in rows:
         name = f" · {row['name']}" if row["name"] else ""
         text = (
-            f"PFEFFERMINZIA – DEINE PERSÖNLICHEN WORKSHOP-WERTE (Platz {row['slot']}{name})\n"
-            "Nur für dich und nur für diesen Workshop. Nicht in Gruppenchats, nicht in Git.\n\n"
-            f"AGENTMAIL_INBOX_ID={row['inbox_id']}\n"
-            f"AGENTMAIL_API_KEY={row['api_key']}\n"
-            f"WORKSHOP_ALLOWED_RECIPIENTS={allowed}\n\n"
-            "Start: Claude-App öffnen → Code → neue Sitzung mit deinem Benutzerordner, dann schreiben:\n"
-            f"  Klone {repo} nach ~/pfefferminzia, richte alles nach der README ein\n"
-            "  und starte die Kommandozentrale. Ich bin in Drill 6.\n\n"
-            "Wenn Claude nach deinen Inbox-Werten fragt, füge die drei Zeilen oben ein.\n"
-            "Kein Terminal nötig: Claude führt alle Befehle aus.\n"
-            f"Deine Workshop-Mailadresse (für Testmails): {row['email']}\n"
+            f"PFEFFERMINZIA – DEIN ZUGANG (Platz {row['slot']}{name})\n\n"
+            "Dein Workshop-Schlüssel (nur für dich, nur für diesen Workshop):\n"
+            f"  {row['api_key']}\n\n"
+            f"Deine Workshop-Mailadresse: {row['email']}\n\n"
+            "So startest du:\n"
+            "  1. Claude-App öffnen → Code → neue Sitzung mit deinem Benutzerordner.\n"
+            "  2. Schreiben:\n"
+            f"     Klone {repo} nach ~/pfefferminzia, richte alles nach der README ein\n"
+            "     und starte die Kommandozentrale. Ich bin in Drill 6.\n"
+            "  3. Wenn Claude nach deinem Schlüssel fragt: die Zeile oben einfügen.\n\n"
+            "Nicht in Gruppenchats teilen. Kein Terminal nötig – Claude erledigt die Technik.\n"
         )
         _write_private(directory / "handouts" / f"platz-{row['slot']}.txt", text)
         texts.append(text)
@@ -164,12 +157,12 @@ def roster_email(to: str, *, execute: bool = False, slots: list[str] | None = No
                 "note": "Eine Mail mit Platz, Name, Inbox und Schlüssel je Person. Mit Bestätigung senden."}
     config = _config(directory)
     sender = config["INSTRUCTOR_INBOX_ID"]
-    lines = ["Pfefferminzia – Zuordnung der Workshop-Inboxen (vertraulich, nur für die Verteilung)", ""]
+    lines = ["Pfefferminzia – Zuordnung der Workshop-Inboxen (vertraulich, nur für die Verteilung)",
+             "Teilnehmende brauchen nur ihren Schlüssel; Claude findet die Inbox dazu selbst.", ""]
     for row in rows:
         lines += [f"Platz {row['slot']}{' · ' + row['name'] if row['name'] else ''}",
-                  f"  AGENTMAIL_INBOX_ID={row['inbox_id']}",
-                  f"  AGENTMAIL_API_KEY={row['api_key']}",
-                  f"  WORKSHOP_ALLOWED_RECIPIENTS={allowed_recipients(config)}", ""]
+                  f"  Adresse:   {row['email']}",
+                  f"  Schlüssel: {row['api_key']}", ""]
     lines += ["Alle Inbox-Adressen (für BCC, um eine Mail an alle zu schicken):", participant_addresses(directory), "",
               "Die Schlüssel gelten nur für die jeweilige Inbox. Nach dem Workshop in AgentMail löschen."]
     client = client or _client(directory)

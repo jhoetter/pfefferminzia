@@ -48,6 +48,7 @@ def main() -> None:
     reset = subparsers.add_parser("workshop-reset", help="Reset only local workshop fixtures")
     reset.add_argument("--confirm-demo-reset", action="store_true", required=True)
     subparsers.add_parser("sync", help="Import new AgentMail messages once")
+    subparsers.add_parser("connect", help="Connect the personal inbox from the workshop key (read from stdin)")
     checkpoint = subparsers.add_parser("checkpoint", help="Inspect, verify, or safely prepare a workshop checkpoint")
     checkpoint_commands = checkpoint.add_subparsers(dest="checkpoint_command", required=True)
     checkpoint_commands.add_parser("list", help="List official checkpoint boundaries")
@@ -129,6 +130,11 @@ def main() -> None:
 
         mcp.run()
     elif args.command in ("setup", "data-init"):
+        from .inbox_setup import ensure_env_file
+
+        env_created = ensure_env_file()
+        if env_created:
+            load_dotenv(ROOT / ".env")
         try:
             result = _initialize()
         except (OSError, RuntimeError, ValueError) as error:
@@ -152,15 +158,20 @@ def main() -> None:
             "agentMailConfigured": mail["ready"],
             "missingAgentMailSettings": missing_settings,
             "nextStep": (
-                "Lass dir vom Dozenten einen nur für deine Inbox gültigen Workshop-Key, deine Inbox-ID und die "
-                "exakte Szenario-Absenderadresse geben. Claude kann diese persönlichen Workshop-Werte für dich "
-                "in `.env` eintragen; alternativ trägst du sie lokal ein. Keine echten Zugangsdaten oder "
-                "Kundendaten in Chats, nichts in Git. Kein AgentMail-Console-Login und kein Neustart wegen "
-                "einer `.env`-Änderung nötig: Claude prüft danach den Status erneut."
+                "Nach dem Workshop-Schlüssel vom Zettel fragen (beginnt mit am_) und ihn mit "
+                "`uv run pfefferminzia connect` (Schlüssel über stdin) verbinden. Nur dieser eine Wert ist nötig."
                 if missing_settings else
-                "Starte `uv run pfefferminzia serve` und danach Claude Code im Repo-Verzeichnis."
+                "Kommandozentrale mit `uv run pfefferminzia serve --open` im Hintergrund starten."
             ),
         })
+    elif args.command == "connect":
+        from .inbox_setup import connect_inbox
+
+        try:
+            _json(connect_inbox(sys.stdin.read()))
+        except ValueError as error:
+            print(f"Fehler: {error}", file=sys.stderr)
+            sys.exit(2)
     elif args.command == "data-import":
         from .upstream import ensure_falk_submodule, import_falk_dataset
 

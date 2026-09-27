@@ -11,7 +11,10 @@ from pfefferminzia.constants import ROOT
 def test_tuesday_deck_is_served_without_a_build_step() -> None:
     client = TestClient(create_app())
 
-    html = client.get("/slides/")
+    overview = client.get("/slides", follow_redirects=False)
+    assert overview.status_code in (302, 307) and overview.headers["location"] == "/slides/decks.html"
+    assert client.get("/slides/", follow_redirects=False).headers["location"] == "/slides/decks.html"
+    html = client.get("/slides/index.html")
     script = client.get("/slides/dienstag.js")
     agentic_script = client.get("/slides/agentisch.js")
     management_script = client.get("/slides/management.js")

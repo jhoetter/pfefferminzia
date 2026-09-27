@@ -20,13 +20,14 @@ Sitzung mit deinem Benutzerordner und schreibe:
 > Ich bin in Drill 6.
 
 Claude richtet alles ein und öffnet <http://127.0.0.1:3004>. Wenn es fragt,
-füge die drei Zeilen von deinem Zettel ein (Inbox-ID, Schlüssel,
-Szenario-Absender). Das ist **nur** in diesem synthetischen Workshop in
+füge den **Schlüssel von deinem Zettel** ein (beginnt mit `am_`); mehr
+brauchst du nicht. Das ist **nur** in diesem synthetischen Workshop in
 Ordnung; echte Zugangsdaten und Kundendaten gehören nie in einen Chat, den
 Schlüssel nie in Git, Gruppenchats oder Screenshots. Danach bittet Claude
 dich einmal, eine **neue Code-Sitzung mit dem Ordner `pfefferminzia`** zu
 öffnen, dort „weiter mit Drill 6“ zu schreiben und die Frage nach dem
-MCP-Server *pfefferminzia* mit Ja zu beantworten. Alles Weitere (Befehle,
+Pfefferminzia-Server mit Ja zu beantworten. Den Schlüssel musst du dort nicht
+noch einmal eingeben. Alles Weitere (Befehle,
 Tests, Commits) erledigt Claude für dich; du prüfst im Cockpit und im Chat.
 
 **Wichtig:** An deine Workshop-Adresse kann jede externe Adresse schreiben

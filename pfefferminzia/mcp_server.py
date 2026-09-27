@@ -343,6 +343,17 @@ def create_mcp_server() -> MCPServer:
         del confirmRemoval
         return _without_bodies(remove_from_send_queue_impl(ticketNumber, reason, "mcp-agent"))
 
+    @server.tool(annotations=ToolAnnotations(readOnlyHint=False, openWorldHint=True))
+    def connect_workshop_inbox(workshopKey: Annotated[str, Field(min_length=10, max_length=2000)]) -> dict[str, Any]:
+        """Connect the participant's personal inbox from the workshop key on their handout (starts with am_).
+        The whole pasted block is fine. Finds the key's single inbox and writes .env; the key is never echoed."""
+        from .inbox_setup import connect_inbox
+
+        try:
+            return connect_inbox(workshopKey)
+        except ValueError as error:
+            raise ToolError(str(error)) from error
+
     @server.tool(name="sync_agentmail", annotations=ToolAnnotations(readOnlyHint=False, openWorldHint=True))
     def sync_agentmail_tool(confirmExternalRead: Literal[True]) -> dict[str, Any]:
         """Import new messages from the configured inbox; never send email. The recipient allowlist restricts outbound replies, not inbound senders."""

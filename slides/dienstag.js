@@ -118,7 +118,7 @@
       id: 'Drill6Los', type: 'Drill', eyebrow: 'Drill 6 · So startet ihr', title: 'Ein Satz an Claude. Dann seht ihr eure Kommandozentrale.',
       subtitle: 'Kein Terminal: Claude klont, richtet ein und öffnet die Software im Browser – ein Softwaregerüst, das ihr heute ausbaut.', study: true,
       body: grid([
-        card('1 · Claude-App → Code → schreiben', `${prompt('Klone https://github.com/jhoetter/pfefferminzia nach ~/pfefferminzia, richte alles nach der README ein und starte die Kommandozentrale. Ich bin in Drill 6.')}<p class="day-small">Auf Nachfrage die drei Werte vom Zettel einfügen.</p>`, 'mint-card'),
+        card('1 · Claude-App → Code → schreiben', `${prompt('Klone https://github.com/jhoetter/pfefferminzia nach ~/pfefferminzia, richte alles nach der README ein und starte die Kommandozentrale. Ich bin in Drill 6.')}<p class="day-small">Auf Nachfrage den Schlüssel vom Zettel einfügen – sonst nichts.</p>`, 'mint-card'),
         card('2 · Wenn ihr nicht weiterwisst', `<p class="day-emphasis">Fragt Claude. Es ist hier euer Tutor.</p><p>Es kennt den Drill, gibt Hinweise in kleinen Schritten und lädt euch beim nächsten Drill den offiziellen Stand, falls etwas klemmt.</p>`)
       ]),
       notes: 'ZEIT: 10 Minuten inkl. Einrichtung. SAGEN: Claude-App öffnen, Bereich Code, neue Sitzung mit eurem Benutzerordner. Sagt Claude den Satz; danach bittet es euch einmal um eine neue Sitzung im Ordner pfefferminzia, dann öffnet sich die Kommandozentrale. Die erste Aufgabe: Schickt eine Mail an eure Workshop-Adresse und verfolgt sie bis zum Ticket – im Cockpit und über Claude. Danach baut ihr mit Claude, dass jedes neue Ticket automatisch ein Prüfen-Todo bekommt. Keine Sorge: Beim nächsten Drill gibt es einen Checkpoint. PARALLEL: Claude bitten „Schick die Drill-6-Begrüßung an alle“.'
@@ -136,7 +136,7 @@
       id: 'Drill6Auftrag', type: 'Drill', eyebrow: 'Drill 6 · Dialog statt Zauberprompt', title: 'Fragen. Selber prüfen. Dann weiterbauen.',
       subtitle: 'Eine Nachricht wandert durch AgentMail, Cockpit und MCP – du hältst nach jeder Etappe kurz an.', study: true,
       body: grid([
-        card('1–2 · Eingang', `${dialogueStep(1, 'Inbox', 'Was fehlt noch? Richte meine Inbox ein.', 'Drei Werte vom Zettel einfügen; Test erlauben.')}${dialogueStep(2, 'Mail', 'Zeig mir dieselbe Ticket-ID in MCP und Cockpit.', 'Vorher Testmail senden; danach Ticket-Todo prüfen.')}`, 'mint-card'),
+        card('1–2 · Eingang', `${dialogueStep(1, 'Inbox', 'Was fehlt noch? Richte meine Inbox ein.', 'Schlüssel vom Zettel einfügen; Test erlauben.')}${dialogueStep(2, 'Mail', 'Zeig mir dieselbe Ticket-ID in MCP und Cockpit.', 'Vorher Testmail senden; danach Ticket-Todo prüfen.')}`, 'mint-card'),
         card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Wo entsteht ein Ticket? Gib mir zuerst einen Test.', 'Automatisches Prüfen-Todo selbst mit Claude coden.')}${dialogueStep(4, 'Belegen', 'Prüfe zwei Syncs und den Todo-Status.', 'Gleiche Ticket-ID und grünen Test zeigen.')}`)
       ]),
       notes: 'ZEIT: 2 Minuten. SAGEN: Die vier Prompts sind Gesprächsetappen. Persönliche Inbox, kein geteilter Schlüssel. Temporären inboxgebundenen Workshop-Key nur im individuellen Chat/lokal, nie echte Geheimnisse. Outbound-Allowlist ist kein Eingangsfilter. Grüner Preflight ist nur Startbereitschaft. Nach eigenem Test Diff prüfen und committen. 15 Minuten Start/Mail, 5 Minuten Ticket erkunden, 25 Minuten bauen, 10 Minuten nachweisen, 5 Minuten reflektieren.'

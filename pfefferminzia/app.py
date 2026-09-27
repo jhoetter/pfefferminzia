@@ -10,7 +10,7 @@ from typing import Annotated, Any, Literal
 from dotenv import load_dotenv
 from fastapi import FastAPI, Query, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -427,6 +427,11 @@ def create_app() -> FastAPI:
         if not record:
             return JSONResponse(status_code=404, content={"error": "Attachment not found"})
         return FileResponse(resolve_storage_path(record["storage_path"]), media_type=record["content_type"], filename=record["filename"])
+
+    @app.get("/slides", include_in_schema=False)
+    @app.get("/slides/", include_in_schema=False)
+    async def slides_overview():
+        return RedirectResponse("/slides/decks.html")
 
     if SLIDES_ROOT.exists():
         app.mount("/slides", StaticFiles(directory=SLIDES_ROOT, html=True), name="slides")

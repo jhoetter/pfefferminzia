@@ -23,18 +23,18 @@ schreibe:
 > Ich bin in Drill 6.
 
 Claude richtet alles ein, öffnet die Kommandozentrale im Browser
-(<http://127.0.0.1:3004>) und fragt nach deinen drei persönlichen
-Inbox-Werten vom Zettel. Danach bittet es dich einmal, eine **neue
-Code-Sitzung mit dem Ordner `pfefferminzia`** zu öffnen, damit es direkt mit
-der Software sprechen kann (MCP).
+(<http://127.0.0.1:3004>) und fragt nach dem **Schlüssel von deinem Zettel**
+(beginnt mit `am_`). Danach bittet es dich einmal, eine **neue Code-Sitzung
+mit dem Ordner `pfefferminzia`** zu öffnen, damit es direkt mit der Software
+sprechen kann. Den Schlüssel musst du dort nicht noch einmal angeben.
 
 > **Für Claude Code – Einrichtung:** Lies `CLAUDE.md` in diesem Repo und
-> folge Abschnitt 1 „Erststart“. Kurz: Branch `workshop/mein-tag` anlegen,
-> `uv sync --frozen`, `uv run pfefferminzia setup`, `.env` aus `.env.example`
-> anlegen (Rechte 600), `uv run pfefferminzia serve --open` im Hintergrund
-> starten, nach den drei Inbox-Werten fragen und die Person dann bitten, eine
-> neue Code-Sitzung mit dem Repo-Ordner zu öffnen (MCP). Die Person bedient
-> kein Terminal: Alle Befehle führst du aus.
+> folge Abschnitt 0 (einfache Sprache) und 1 „Erststart“. Kurz: Branch
+> `workshop/mein-tag`, `uv sync --frozen`, `uv run pfefferminzia setup`,
+> `uv run pfefferminzia serve --open` im Hintergrund, nur nach dem Schlüssel
+> fragen und ihn per `uv run pfefferminzia connect` (über stdin) verbinden,
+> dann um eine neue Code-Sitzung im Ordner `pfefferminzia` bitten. Die Person
+> bedient kein Terminal und hört keinen Fachjargon.
 
 **Wenn du nicht weiterweißt, frag Claude.** Es ist hier dein Tutor: Es kennt
 den aktuellen Drill, gibt Hinweise in kleinen Schritten und kann dir zu jedem

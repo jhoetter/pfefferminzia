@@ -17,8 +17,10 @@ def _signature(path: Path) -> str | None:
     return hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
 
 
-_last_signature = _signature(ENV_PATH)
-_last_file_keys = set(dotenv_values(ENV_PATH)) & set(AGENTMAIL_SETTINGS) if ENV_PATH.is_file() else set()
+# Start "unseen": the first call applies the file even if the process inherited
+# empty AGENTMAIL_* variables (load_dotenv never overrides existing ones).
+_last_signature: str | None = None
+_last_file_keys: set[str] = set()
 
 
 def reload_agentmail_environment_if_changed() -> bool:
