@@ -103,16 +103,16 @@ def main() -> None:
     checkpoint_commands.add_parser("status", help="Show the active checkpoint")
     verify = checkpoint_commands.add_parser("verify", help="Run the active checkpoint's fast checks")
     verify.add_argument("--external", action="store_true", help="Also verify the configured AgentMail inbox")
-    activate = checkpoint_commands.add_parser("activate", help="Reset a fresh worktree to one checkpoint")
+    activate = checkpoint_commands.add_parser("activate", help="Reset this folder's cases to one checkpoint")
     activate.add_argument("checkpoint")
     activate.add_argument("--confirm-checkpoint-reset", action="store_true", required=True)
-    adopt = checkpoint_commands.add_parser("adopt", help="Advance a copied worktree without resetting cases")
+    adopt = checkpoint_commands.add_parser("adopt", help="Move this folder to a checkpoint, keeping cases")
     adopt.add_argument("checkpoint")
     adopt.add_argument("--confirm-checkpoint-adopt", action="store_true", required=True)
-    plan = checkpoint_commands.add_parser("plan", help="Plan a non-destructive recovery worktree")
+    plan = checkpoint_commands.add_parser("plan", help="Plan an in-place, non-destructive drill switch")
     plan.add_argument("checkpoint")
     plan.add_argument("--mode", choices=("official", "continue"), default="official")
-    apply = checkpoint_commands.add_parser("apply", help="Apply a prepared recovery-worktree plan")
+    apply = checkpoint_commands.add_parser("apply", help="Apply a prepared drill-switch plan")
     apply.add_argument("confirmation_token")
     apply.add_argument("--confirm-checkpoint-load", action="store_true", required=True)
 
@@ -172,9 +172,9 @@ def main() -> None:
             print(f"Pfefferminzia-MCP konnte nicht starten: {error}", file=sys.stderr)
             print("Bitte `uv run pfefferminzia setup` ausführen und die MCP-Verbindung erneut herstellen.", file=sys.stderr)
             sys.exit(2)
-        from .mcp_server import mcp
+        from .mcp_session import create_session_server
 
-        mcp.run()
+        create_session_server().run()
     elif args.command in ("setup", "data-init"):
         from .inbox_setup import ensure_env_file
 

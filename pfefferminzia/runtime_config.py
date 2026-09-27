@@ -26,8 +26,9 @@ _last_file_keys: set[str] = set()
 def reload_agentmail_environment_if_changed() -> bool:
     """Hot-reload only inbox settings; never change checkpoint or auto-send policy.
 
-    The MCP tool registry and background dispatch policy are fixed for a
-    worktree. AgentMail credentials are safe to refresh after editing `.env`.
+    The drill and auto-send policy change only through a drill switch, which
+    restarts the cockpit. AgentMail credentials are safe to refresh after
+    editing `.env`.
     """
     global _last_signature, _last_file_keys
 

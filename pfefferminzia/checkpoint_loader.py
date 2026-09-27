@@ -1,12 +1,26 @@
+"""Switch a participant's folder to another drill – in place, in the same Claude session.
+
+Two modes, both reversible and never destructive:
+
+- continue ("Eigenen Stand mitnehmen"): code and cases stay; only the drill
+  changes.
+- official ("Frischen offiziellen Stand laden"): the participant's code is
+  saved as a commit on their current branch, the official checkpoint is
+  checked out on a new branch, and the cases move to a backup database.
+
+Earlier versions created a separate worktree per drill. Participants then had
+to open a new Claude session in that folder, and the Claude app may run a
+session in its own copy of the main folder, so the new session saw the old
+drill and offered the switch again. Everything now happens in this folder.
+"""
+
 from __future__ import annotations
 
 import hashlib
 import json
 import os
-import re
 import secrets
 import shutil
-import sqlite3
 import subprocess
 import time
 from datetime import datetime, timezone
@@ -20,20 +34,7 @@ from .management_report import capture_report_snapshot
 
 PLAN_TTL_SECONDS = 15 * 60
 LoadMode = Literal["official", "continue"]
-
-
-def _recovery_base_name() -> str:
-    return STATE_ROOT.name.split("-drill-", 1)[0]
-
-
-def _target_folder(checkpoint: str) -> Path:
-    """A name participants can read: pfefferminzia-drill-07, then -2, -3 if it exists."""
-    drill = CHECKPOINTS[checkpoint]["drill"]
-    stem = f"{_recovery_base_name()}-drill-{drill:02d}" + ("-loesung" if checkpoint == "drill-10-complete" else "")
-    candidate, number = STATE_ROOT.parent / stem, 2
-    while candidate.exists():
-        candidate, number = STATE_ROOT.parent / f"{stem}-{number}", number + 1
-    return candidate
+MODE_LABELS = {"continue": "Eigenen Stand mitnehmen", "official": "Frischen offiziellen Stand laden"}
 
 
 def _current_checkpoint() -> str | None:
@@ -43,18 +44,15 @@ def _current_checkpoint() -> str | None:
         return None
 
 
-def _git_output(*args: str, cwd: Path = ROOT) -> str:
-    result = subprocess.run(
-        ["git", *args], cwd=cwd, check=True, capture_output=True, text=True
-    )
+def _git_output(*args: str, cwd: Path | None = None) -> str:
+    result = subprocess.run(["git", *args], cwd=cwd or ROOT, check=True, capture_output=True, text=True)
     return result.stdout.rstrip("\r\n")
 
 
 def _run(command: list[str], cwd: Path, *, clean_checkpoint_environment: bool = False) -> None:
     environment = os.environ.copy()
     if clean_checkpoint_environment:
-        # A running MCP server inherited the old worktree's .env. Let the
-        # child's own .env select its checkpoint and fresh SQLite database.
+        # Let the command read the drill and database from the freshly written .env.
         environment.pop("WORKSHOP_CHECKPOINT", None)
         environment.pop("PFEFFERMINZIA_DB_PATH", None)
         environment.pop("AUTO_SEND_ENABLED", None)
@@ -83,51 +81,35 @@ def _dirty_paths() -> list[str]:
     return [line[3:] for line in output.splitlines() if len(line) > 3]
 
 
-def _untracked_files() -> list[Path]:
-    result = subprocess.run(
-        ["git", "ls-files", "--others", "--exclude-standard", "-z"], cwd=ROOT,
-        check=True, capture_output=True,
-    )
-    return [Path(os.fsdecode(item)) for item in result.stdout.split(b"\0") if item]
+def _database_path() -> Path:
+    configured = os.getenv("PFEFFERMINZIA_DB_PATH")
+    return (STATE_ROOT / configured).resolve() if configured else STATE_ROOT / ".data" / "pfefferminzia.db"
 
 
-def _participant_content_fingerprint() -> str:
-    patch = subprocess.run(
-        ["git", "diff", "--binary", "HEAD"], cwd=ROOT, check=True, capture_output=True,
-    ).stdout
-    digest = hashlib.sha256(patch)
-    for relative in _untracked_files():
+def _branch_exists(name: str) -> bool:
+    return subprocess.run(
+        ["git", "rev-parse", "--verify", "--quiet", f"refs/heads/{name}"], cwd=ROOT, capture_output=True
+    ).returncode == 0
+
+
+def _new_branch_name(checkpoint: str) -> str:
+    drill = CHECKPOINTS[checkpoint]["drill"]
+    stem = f"workshop/drill-{drill:02d}" + ("-loesung" if checkpoint == "drill-10-complete" else "")
+    name, number = stem, 2
+    while _branch_exists(name):
+        name, number = f"{stem}-{number}", number + 1
+    return name
+
+
+def _source_fingerprint(commit: str, dirty_paths: list[str]) -> str:
+    """Commit, changed paths and their content: the plan the person agreed to must still match."""
+    digest = hashlib.sha256(json.dumps([commit, dirty_paths], ensure_ascii=False).encode())
+    for relative in dirty_paths:
         path = ROOT / relative
-        if path.is_symlink() or not path.is_file():
-            raise ValueError(f"Untracked path needs manual review before continuing: {relative}")
-        digest.update(os.fsencode(relative))
-        digest.update(path.read_bytes())
+        if path.is_file() and not path.is_symlink():
+            digest.update(os.fsencode(relative))
+            digest.update(path.read_bytes())
     return digest.hexdigest()
-
-
-def _carry_participant_changes(target: Path) -> None:
-    patch = subprocess.run(
-        ["git", "diff", "--binary", "HEAD"], cwd=ROOT, check=True, capture_output=True,
-    ).stdout
-    if patch:
-        subprocess.run(["git", "apply", "--binary", "-"], cwd=target, input=patch, check=True, capture_output=True)
-    for relative in _untracked_files():
-        source = ROOT / relative
-        destination = target / relative
-        if source.is_symlink() or not source.is_file() or not destination.resolve().is_relative_to(target.resolve()):
-            raise ValueError(f"Untracked path needs manual review before continuing: {relative}")
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(source, destination)
-
-
-def _copy_database(source: Path, target: Path) -> None:
-    if not source.is_file():
-        raise ValueError("Die bisherige Workshop-Datenbank fehlt; für Mitnehmen den alten Drill zuerst starten")
-    destination = target / ".data" / "pfefferminzia.db"
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    with sqlite3.connect(f"file:{source}?mode=ro", uri=True) as source_db:
-        with sqlite3.connect(destination) as target_db:
-            source_db.backup(target_db)
 
 
 def plan_checkpoint_load(
@@ -136,173 +118,182 @@ def plan_checkpoint_load(
     if mode not in ("official", "continue"):
         raise ValueError("Mode must be 'official' or 'continue'")
     checkpoint = normalize_checkpoint(target_checkpoint)
-    if checkpoint == _current_checkpoint() and not allow_same_drill:
-        drill = CHECKPOINTS[checkpoint]["drill"]
+    source_checkpoint = _current_checkpoint() or "drill-06-start"
+    drill = CHECKPOINTS[checkpoint]["drill"]
+    if checkpoint == source_checkpoint and not allow_same_drill:
         raise ValueError(
             f"Dieser Ordner ist schon auf Drill {drill}. Nichts laden – einfach mit Drill {drill} weitermachen. "
             "Nur wenn die Person ausdrücklich neu anfangen will: allowSameDrill."
         )
-    automatic_dispatch = checkpoint == "drill-09-start"
-    report_snapshot = checkpoint in ("drill-10-start", "drill-10-complete")
-    configured_database = os.getenv("PFEFFERMINZIA_DB_PATH")
-    source_database = (
-        (STATE_ROOT / configured_database).resolve() if configured_database else STATE_ROOT / ".data" / "pfefferminzia.db"
-    )
-    reference, commit, official_tag = _official_ref(checkpoint)
+    reference, official_commit, official_tag = _official_ref(checkpoint)
     source_head = _git_output("rev-parse", "HEAD")
+    source_branch = _git_output("branch", "--show-current")
     dirty_paths = _dirty_paths()
-    content_fingerprint = _participant_content_fingerprint() if mode == "continue" else None
-    if mode == "continue" and not source_database.is_file():
-        raise ValueError("Für 'continue' muss die bisherige Workshop-Datenbank vorhanden sein")
+    database = _database_path()
+    if mode == "continue" and not database.is_file():
+        raise ValueError("Für 'Eigenen Stand mitnehmen' fehlt die bisherige Fall-Datenbank")
+    report = checkpoint in ("drill-10-start", "drill-10-complete")
+    branch = _new_branch_name(checkpoint) if mode == "official" else source_branch
     token = secrets.token_urlsafe(24)
-    suffix = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
-    target = _target_folder(checkpoint)
-    branch = f"workshop/{checkpoint}-{suffix}-{token[:6]}"
     plan = {
         "token": token,
         "checkpoint": checkpoint,
         "mode": mode,
         "reference": reference,
-        "commit": source_head if mode == "continue" else commit,
-        "officialCommit": commit,
+        "officialCommit": official_commit,
         "sourceHead": source_head,
-        "officialTag": official_tag,
-        "sourcePath": str(ROOT),
-        "targetPath": str(target),
+        "sourceBranch": source_branch,
+        "sourceCheckpoint": source_checkpoint,
+        "sourceDatabase": str(database),
         "branch": branch,
         "dirtyPaths": dirty_paths,
         "createdAtEpoch": time.time(),
         "sourceFingerprint": _source_fingerprint(source_head, dirty_paths),
-        "sourceContentFingerprint": content_fingerprint,
-        "sourceCheckpoint": os.getenv("WORKSHOP_CHECKPOINT", "drill-06-start"),
-        "sourceDatabase": str(source_database),
     }
-    plans_dir = _plans_dir()
-    plans_dir.mkdir(parents=True, exist_ok=True)
-    plan_path = plans_dir / f"{token}.json"
+    plan_path = _plans_dir() / f"{token}.json"
     plan_path.write_text(json.dumps(plan, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     plan_path.chmod(0o600)
+    if mode == "continue":
+        consequence = "Dein Code und deine bisherigen Fälle bleiben, wie sie sind; nur der Drill wird umgestellt."
+    else:
+        consequence = (
+            "Dein bisheriger Code wird auf deinem Zweig gesichert"
+            + (" (auch noch nicht Gespeichertes)" if dirty_paths else "")
+            + f", der offizielle Stand kommt auf den neuen Zweig {branch}, und deine bisherigen Fälle wandern in eine "
+            "Sicherungsdatei. Es geht nichts verloren."
+        )
     return {
         "checkpoint": checkpoint,
+        "drill": drill,
         "mode": mode,
-        "modeLabel": "Eigenen Stand mitnehmen" if mode == "continue" else "Frischen offiziellen Stand laden",
+        "modeLabel": MODE_LABELS[mode],
+        "folder": str(ROOT),
+        "sameFolderAndSession": True,
+        "branch": branch,
         "officialReference": reference,
         "officialTagAvailable": official_tag,
-        "commit": source_head if mode == "continue" else commit,
-        "sourcePath": str(ROOT),
-        "targetPath": str(target),
-        "branch": branch,
         "participantChangesDetected": bool(dirty_paths),
         "participantChangePaths": dirty_paths[:30],
-        "participantChangesPreserved": True,
-        "participantChangesCarried": mode == "continue",
         "localCasesCarried": mode == "continue",
-        "environmentCopied": (STATE_ROOT / ".env").exists(),
-        "automaticDispatchWillBeEnabled": automatic_dispatch,
-        "aggregateReportWillBeCopied": report_snapshot,
-        "reportSourceDatabasePresent": source_database.is_file() if report_snapshot else None,
+        "automaticDispatchWillBeEnabled": checkpoint == "drill-09-start",
+        "aggregateReportWillBeCopied": report,
         "confirmationToken": token,
         "expiresInSeconds": PLAN_TTL_SECONDS,
         "confirmationQuestion": (
-            f"Soll ich {checkpoint} als '{'Eigenen Stand mitnehmen' if mode == 'continue' else 'Frischen offiziellen Stand laden'}' in {target} vorbereiten? "
-            "Dein aktuelles Arbeitsverzeichnis bleibt unverändert. "
-            + ("Dein Code (auch uncommittierte Änderungen) und die bisherigen Fälle werden in den neuen Worktree kopiert. "
-               if mode == "continue" else "Der neue Worktree erhält offiziellen Code und eine frische Fall-Datenbank; deine Änderungen bleiben nur im alten Ordner. ")
-            + (
-                " In Drill 9 wird Auto-Versand für später eingereichte Haftpflichtantworten nach dem sichtbaren Zeitfenster aktiviert."
-                if automatic_dispatch else ""
-            )
-            + (
-                " Für den Drill-10-Report werden nur aggregierte Zählwerte aus deiner bisherigen Datenbank übernommen; keine Mailtexte, Namen oder Schlüssel im Report. Die lokale .env wird wie bei jedem Checkpoint separat kopiert. Auto-Versand ist dort aus."
-                if report_snapshot else ""
-            )
+            f"Soll ich Drill {drill} hier in diesem Ordner laden ({MODE_LABELS[mode]})? {consequence} "
+            "Du bleibst in dieser Sitzung."
+            + (" In Drill 9 gehen Haftpflichtantworten nach dem sichtbaren Zeitfenster automatisch raus." if checkpoint == "drill-09-start" else "")
+            + (" Für den Report werden nur gezählte Ereignisse übernommen, keine Namen oder Mailtexte." if report else "")
         ),
-        "warning": None,
     }
+
+
+def _git_identity() -> list[str]:
+    configured = subprocess.run(["git", "config", "user.email"], cwd=ROOT, capture_output=True, text=True).stdout.strip()
+    return [] if configured else ["-c", "user.name=Pfefferminzia-Teilnehmer", "-c", "user.email=teilnehmer@pfefferminzia.invalid"]
+
+
+def _write_checkpoint_environment(folder: Path, checkpoint: str) -> None:
+    source = folder / ".env"
+    lines = source.read_text(encoding="utf-8").splitlines() if source.exists() else []
+    replaced = {"WORKSHOP_CHECKPOINT", "PFEFFERMINZIA_DB_PATH", "AUTO_SEND_ENABLED"}
+    retained = [line for line in lines if line.partition("=")[0].strip() not in replaced]
+    retained.append(f"WORKSHOP_CHECKPOINT={checkpoint}")
+    retained.append(f"AUTO_SEND_ENABLED={'true' if checkpoint == 'drill-09-start' else 'false'}")
+    destination = folder / ".env"
+    destination.write_text("\n".join(retained) + "\n", encoding="utf-8")
+    destination.chmod(0o600)
+
+
+def _stop_running_app() -> None:
+    # The cockpit holds the database open; Claude starts it again afterwards.
+    from .cli import _stop_running_pfefferminzia
+
+    try:
+        _stop_running_pfefferminzia("127.0.0.1", 3004)
+    except RuntimeError:
+        pass
 
 
 def apply_checkpoint_load(confirmation_token: str) -> dict[str, Any]:
     if not confirmation_token or any(character not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_" for character in confirmation_token):
         raise ValueError("Invalid checkpoint confirmation token")
-    plans_dir = _plans_dir()
-    plans_dir.mkdir(parents=True, exist_ok=True)
-    plan_path = plans_dir / f"{confirmation_token}.json"
+    plan_path = _plans_dir() / f"{confirmation_token}.json"
     if not plan_path.exists():
         raise ValueError("Checkpoint plan not found or already used; prepare a new plan")
     plan = json.loads(plan_path.read_text(encoding="utf-8"))
     if time.time() - float(plan["createdAtEpoch"]) > PLAN_TTL_SECONDS:
         plan_path.unlink(missing_ok=True)
         raise ValueError("Checkpoint plan expired; prepare it again")
-
-    current_commit = _git_output("rev-parse", "HEAD")
-    current_dirty = _dirty_paths()
-    if _source_fingerprint(current_commit, current_dirty) != plan["sourceFingerprint"]:
-        raise ValueError("Repository changed after the plan was prepared; inspect and prepare a new plan")
-    if plan.get("mode") == "continue" and _participant_content_fingerprint() != plan["sourceContentFingerprint"]:
+    if _source_fingerprint(_git_output("rev-parse", "HEAD"), _dirty_paths()) != plan["sourceFingerprint"]:
         raise ValueError("Participant files changed after the plan; inspect and prepare a new plan")
 
-    target = Path(plan["targetPath"]).resolve()
-    expected_parent = STATE_ROOT.parent.resolve()
-    drill = CHECKPOINTS[plan["checkpoint"]]["drill"]
-    expected_name = rf"{re.escape(_recovery_base_name())}-drill-{drill:02d}(-loesung)?(-\d+)?"
-    if target.parent != expected_parent or not re.fullmatch(expected_name, target.name) or target.exists():
-        raise ValueError("Checkpoint target path failed the safety check")
-    if target.exists():
-        raise ValueError(f"Checkpoint target already exists: {target}")
-
-    _run(["git", "worktree", "add", "-b", plan["branch"], str(target), plan["commit"]], ROOT)
+    checkpoint, mode = plan["checkpoint"], plan.get("mode", "official")
+    env_file = STATE_ROOT / ".env"
+    env_before = env_file.read_text(encoding="utf-8") if env_file.exists() else None
+    database = Path(plan["sourceDatabase"])
+    backup: Path | None = None
+    switched = False
+    saved_commit: str | None = None
+    _stop_running_app()
     try:
-        _run(["git", "submodule", "update", "--init", "--recursive"], target)
-        if plan.get("mode") == "continue":
-            _carry_participant_changes(target)
-        _write_checkpoint_environment(target, plan["checkpoint"])
-        if plan.get("mode") == "continue":
-            _copy_database(Path(plan["sourceDatabase"]), target)
-        if plan["checkpoint"] in ("drill-10-start", "drill-10-complete"):
-            capture_report_snapshot(STATE_ROOT, target, plan["sourceCheckpoint"], Path(plan["sourceDatabase"]))
-        _run(["uv", "sync", "--frozen"], target)
+        if checkpoint in ("drill-10-start", "drill-10-complete"):
+            capture_report_snapshot(STATE_ROOT, STATE_ROOT, plan["sourceCheckpoint"], database)
+        if mode == "official":
+            if plan["dirtyPaths"]:
+                _run(["git", *_git_identity(), "add", "-A"], ROOT)
+                _run(["git", *_git_identity(), "commit", "-m", f"Stand vor Drill {CHECKPOINTS[checkpoint]['drill']} gesichert"], ROOT)
+                saved_commit = _git_output("rev-parse", "HEAD")
+            _run(["git", "switch", "-c", plan["branch"], plan["officialCommit"]], ROOT)
+            switched = True
+            _run(["git", "submodule", "update", "--init", "--recursive"], ROOT)
+            if database.is_file():
+                stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
+                backup = STATE_ROOT / ".data" / "sicherung" / f"{plan['sourceCheckpoint']}-{stamp}.db"
+                backup.parent.mkdir(parents=True, exist_ok=True)
+                shutil.move(str(database), backup)
+        _write_checkpoint_environment(STATE_ROOT, checkpoint)
+        _run(["uv", "sync", "--frozen"], ROOT)
         _run(
-            [
-                "uv", "run", "pfefferminzia", "checkpoint", "adopt" if plan.get("mode") == "continue" else "activate", plan["checkpoint"],
-                "--confirm-checkpoint-adopt" if plan.get("mode") == "continue" else "--confirm-checkpoint-reset",
-            ],
-            target,
-            clean_checkpoint_environment=True,
+            ["uv", "run", "pfefferminzia", "checkpoint", "adopt" if mode == "continue" else "activate", checkpoint,
+             "--confirm-checkpoint-adopt" if mode == "continue" else "--confirm-checkpoint-reset"],
+            ROOT, clean_checkpoint_environment=True,
         )
     except Exception:
-        # Only this unique, just-created worktree is removed. The participant's
-        # source directory and plan remain untouched for a safe retry.
-        _run(["git", "worktree", "remove", "--force", str(target)], ROOT)
-        _run(["git", "branch", "-D", plan["branch"]], ROOT)
+        # Put everything back as it was: branch, uncommitted work, cases, .env.
+        if switched:
+            _run(["git", "switch", "--force", plan["sourceBranch"] or plan["sourceHead"]], ROOT)
+            _run(["git", "branch", "-D", plan["branch"]], ROOT)
+        if saved_commit:
+            _run(["git", "reset", "--soft", "HEAD~1"], ROOT)
+        if backup and backup.exists():
+            database.parent.mkdir(parents=True, exist_ok=True)
+            if database.exists():
+                database.unlink()
+            shutil.move(str(backup), database)
+        if env_before is None:
+            env_file.unlink(missing_ok=True)
+        else:
+            env_file.write_text(env_before, encoding="utf-8")
         raise
     plan_path.unlink(missing_ok=True)
+    drill = CHECKPOINTS[checkpoint]["drill"]
     return {
-        "checkpoint": plan["checkpoint"],
-        "mode": plan.get("mode", "official"),
-        "sourcePath": str(ROOT),
-        "worktreePath": str(target),
+        "checkpoint": checkpoint,
+        "drill": drill,
+        "mode": mode,
+        "folder": str(ROOT),
         "branch": plan["branch"],
-        "sourceUntouched": True,
-        "participantChangesPreserved": True,
-        "nextCommands": [f"cd {target}", "claude"],
-        "message": "Checkpoint prepared on a new branch in a separate worktree. Restart app and Claude from that directory; the source remains untouched.",
+        "previousBranch": plan["sourceBranch"],
+        "participantWorkSavedAs": saved_commit,
+        "casesBackup": str(backup) if backup else None,
+        "sameFolderAndSession": True,
+        "message": (
+            f"Drill {drill} ist geladen – hier im selben Ordner, in derselben Sitzung. Starte die Kommandozentrale "
+            "neu (uv run pfefferminzia serve --open im Hintergrund) und beginne mit der Orientierung aus "
+            "get_drill_guide. Keine neue Sitzung, kein anderer Ordner."
+        ),
     }
-
-
-def _source_fingerprint(commit: str, dirty_paths: list[str]) -> str:
-    return hashlib.sha256(json.dumps([commit, dirty_paths], ensure_ascii=False).encode()).hexdigest()
-
-
-def _write_checkpoint_environment(target: Path, checkpoint: str) -> None:
-    source = STATE_ROOT / ".env"
-    lines = source.read_text(encoding="utf-8").splitlines() if source.exists() else []
-    replaced = {"WORKSHOP_CHECKPOINT", "PFEFFERMINZIA_DB_PATH", "AUTO_SEND_ENABLED"}
-    retained = [line for line in lines if line.partition("=")[0].strip() not in replaced]
-    retained.append(f"WORKSHOP_CHECKPOINT={checkpoint}")
-    retained.append(f"AUTO_SEND_ENABLED={'true' if checkpoint == 'drill-09-start' else 'false'}")
-    destination = target / ".env"
-    destination.write_text("\n".join(retained) + "\n", encoding="utf-8")
-    destination.chmod(0o600)
 
 
 def remove_expired_plans() -> int:

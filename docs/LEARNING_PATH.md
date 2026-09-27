@@ -91,9 +91,10 @@ gebauter Beitrag.
 
 Claude legt beim Start den Branch `workshop/mein-tag` an. Am Ende jedes
 Drills zeigt es `git status` und den Diff, prüft, dass `.env` und `.data/`
-nicht dabei sind, und committet nach deiner Zustimmung. Ein Checkpoint-Wechsel
-legt einen neuen Ordner auf einem neuen Branch an; der alte bleibt, wie er
-ist.
+nicht dabei sind, und committet nach deiner Zustimmung. Ein Drill-Wechsel
+passiert im selben Ordner und in derselben Sitzung: Beim frischen offiziellen
+Stand wird dein Code vorher auf deinem Zweig gesichert, der offizielle Stand
+kommt auf einen neuen Zweig, deine Fälle in eine Sicherungsdatei.
 
 **Optional – deinen Stand mitnehmen:** Wenn du einen GitHub-Account hast,
 kannst du das Repo auf GitHub forken und Claude bitten: „Richte meinen Fork

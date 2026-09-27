@@ -280,8 +280,8 @@ nötig sind, legst du fest.
 4. Du führst zwei Minuten vor.
 
 **Start:** „Ich will zu Drill 10. Frag mich, ob ich meinen Stand mitnehmen
-will.“ Claude lädt den neuen Stand aus deinem **Drill-9-Ordner** und
-übernimmt nur gezählte Ereignisse (keine Namen, Mailtexte, Schlüssel).
+will.“ Claude übernimmt aus deinen Drill-9-Fällen nur gezählte Ereignisse
+(keine Namen, Mailtexte, Schlüssel).
 
 **Bauauftrag:** Eine zweite beschriftete Grafik (z. B. Freigaben,
 Ablehnungen, Stopps, automatische Versände) und deine eigene Empfehlung mit
@@ -312,18 +312,17 @@ mit Remotion als letzte Folie – siehe [BONUS_VIDEO.md](BONUS_VIDEO.md).
 Sag Claude: „Ich will zu Drill N. Frag mich, ob ich meinen Stand mitnehmen
 will.“ Du wählst:
 
-| Modus | Im neuen Ordner | Wann sinnvoll |
+| Modus | Was passiert | Wann sinnvoll |
 | --- | --- | --- |
-| **Eigenen Stand mitnehmen** | Dein Code (auch noch nicht Gespeichertes) und deine bisherigen Fälle | Dein Bau funktioniert. |
-| **Frischen offiziellen Stand laden** | Offizieller Code **mit Lösungen aller bisherigen Bauaufträge**, frische Fälle | Du hängst fest oder willst die Referenz sehen. |
+| **Eigenen Stand mitnehmen** | Dein Code (auch noch nicht Gespeichertes) und deine Fälle bleiben; nur der Drill wird umgestellt | Dein Bau funktioniert. |
+| **Frischen offiziellen Stand laden** | Offizieller Code **mit Lösungen aller bisherigen Bauaufträge**, frische Fälle; dein Code und deine Fälle werden vorher gesichert | Du hängst fest oder willst die Referenz sehen. |
 
-Claude zeigt dir den Plan und fragt vor dem Laden noch einmal. Beide Modi
-legen einen **neuen Ordner auf neuem Branch** an; dein bisheriger Ordner
-bleibt unverändert. Danach öffnest du in der Claude-App eine **neue
-Code-Sitzung mit dem neuen Ordner** (Claude nennt ihn dir) und schreibst
-„weiter mit Drill N“; Claude startet dort die App. Im offiziellen Modus können alte Mails beim Sync noch
-einmal auftauchen – schon beantwortete stehen dann als „gesendet“ da. Bearbeite
-nur die neu angekündigten Fälle.
+Claude zeigt dir den Plan und fragt vor dem Laden noch einmal. Der Wechsel
+passiert **im selben Ordner und in derselben Sitzung** – du musst nichts neu
+öffnen. Claude startet die Kommandozentrale neu und zeigt dir, was im neuen
+Drill dazukommt. Im offiziellen Modus können alte Mails beim Abrufen noch
+einmal auftauchen – schon beantwortete stehen dann als „gesendet“ da.
+Bearbeite nur die neu angekündigten Fälle.
 
 ## Ohne Claude-Tokens
 

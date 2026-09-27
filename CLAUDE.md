@@ -228,9 +228,10 @@ lernen müssen sie nicht – den Code schreibst du.
      Fragen auf einmal. Dann ein Risiko und eine Alternative nennen; die Person
      entscheidet. Den Steckbrief in `MEINE_ERWEITERUNGEN.md` festhalten.
   3. Im gewohnten Rhythmus klein bauen, testen, im Cockpit oder im Chat
-     ausprobieren, committen. Ein neues Werkzeug für Claude erscheint erst in
-     einer neuen Code-Sitzung – das kurz erklären und dann um „weiter mit
-     Drill N“ in einer neuen Sitzung bitten.
+     ausprobieren, committen. Ein **neues** Werkzeug, das die Person selbst
+     baut, erscheint erst in einer neuen Code-Sitzung (Änderungen an
+     bestehenden Werkzeugen wirken sofort) – das kurz erklären und dann um
+     „weiter mit Drill N“ in einer neuen Sitzung bitten.
   Nur erfundene Daten (auch „meine Kontakte“ sind erfunden). Beim nächsten
   Drill-Wechsel *mitnehmen* empfehlen, sonst fehlt die Erweiterung im neuen
   Ordner.
@@ -305,23 +306,24 @@ Bauaufträge. Beim normalen Drill-Wechsel und wenn jemand festhängt:
    **„Frischen offiziellen Stand laden“** (`mode="official"`: Referenzcode mit
    Lösungen, frische Fälle). Empfiehl *mitnehmen*, wenn der eigene Bau läuft,
    *offiziell* zur Rettung. Nie still den Modus wechseln.
-2. `plan_checkpoint_load` aufrufen; Quelle, Ziel, übernommene Änderungen und
-   Fälle sowie Folgen zeigen (Drill 9: Auto-Versand an, Drill 10: nur
-   aggregierte Zahlen, Auto-Versand aus).
+2. `plan_checkpoint_load` aufrufen und die `confirmationQuestion` in eigenen,
+   einfachen Worten zeigen: Es passiert **hier im selben Ordner und in dieser
+   Sitzung**; was mit Code und Fällen geschieht; Folgen (Drill 9: Auto-Versand
+   an, Drill 10: nur gezählte Ereignisse, Auto-Versand aus).
 3. Nur nach neuem, klarem Ja `apply_checkpoint_load` mit genau diesem Token.
    Alles andere ist ein Nein: „passt schon“, „der jetzige ist doch gut“,
    „leg los“ oder eine Gegenfrage heißen **nicht laden** – dann einfach im
    aktuellen Ordner weiterarbeiten.
-4. Der neue Stand liegt in einem **eigenen Ordner auf neuem Branch**; der alte
-   bleibt unverändert. Nie `reset`, `stash` oder Überschreiben der Arbeit.
-   Stoppe selbst die alte App (dein Hintergrundprozess) und sag der Person in
-   einfachen Worten, etwa: „Drill 7 liegt jetzt im Ordner pfefferminzia-drill-07
-   neben deinem bisherigen – der alte bleibt als Sicherung liegen. Ich arbeite
-   immer in genau einem Ordner, deshalb: Öffne eine neue Code-Sitzung mit
-   pfefferminzia-drill-07 und schreibe dort ‚weiter mit Drill 7‘. Dein Schlüssel
-   ist schon drin.“ Dort startest du die App neu und beginnst mit der
-   Orientierung – ohne erneute Frage nach dem Wechsel. Im Mitnehmen-Modus Diff und Tests
-   im neuen Ordner prüfen – eigener Code kann eine kleine Anpassung brauchen.
+4. **Keine neue Sitzung, kein anderer Ordner.** Der Wechsel passiert hier:
+   Beim Mitnehmen bleiben Code und Fälle; beim frischen Stand wird der eigene
+   Code automatisch auf dem bisherigen Zweig gesichert, der offizielle Stand
+   kommt auf einen neuen Zweig, die Fälle in eine Sicherungsdatei. Nichts geht
+   verloren; nie selbst `reset`, `stash` oder Überschreiben. Danach startest du
+   sofort die Kommandozentrale neu (Schritt 3 aus Abschnitt 1), rufst
+   `get_drill_guide` auf und beginnst mit der Orientierung des neuen Drills –
+   ohne erneute Frage nach dem Wechsel. Deine Werkzeuge kennen den neuen Drill
+   ab dem nächsten Aufruf. Im Mitnehmen-Modus kurz `uv run pytest -q` – eigener
+   Code kann eine kleine Anpassung brauchen.
 
 `verify_workshop_checkpoint` prüft nur die Startbereitschaft, nicht den
 Abschluss eines Drills; der steht im Guide unter `doneWhen` und in
@@ -329,8 +331,8 @@ Abschluss eines Drills; der steht im Guide unter `doneWhen` und in
 
 ## 6. Drill 10: Management-Report
 
-Der Report-Checkpoint wird **aus dem Drill-9-Ordner** geladen; er kopiert nur
-gruppierte Zählwerte. Lies sie mit `get_management_report_data`. Baue mit der
+Beim Wechsel zu Drill 10 werden aus den Fällen von Drill 9 nur gruppierte
+Zählwerte übernommen. Lies sie mit `get_management_report_data`. Baue mit der
 Person in `slides/management.js`: eine beschriftete D3-Grafik, eine belegte
 Empfehlung, eine Grenze der Aussage, höchstens vier Folien. Keine erfundenen
 Unternehmens-KPIs oder Zeitersparnisse. Wer danach noch Guthaben hat, kann

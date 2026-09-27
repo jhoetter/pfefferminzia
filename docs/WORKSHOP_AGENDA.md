@@ -127,8 +127,8 @@ im Großen zeigt, z. B. eine Mini-Wissensbasis vor den Tarifen in Drill 7.
 Eigene Ideen – etwa ein Sende-Werkzeug für Claude oder eine neue Ansicht –
 beginnen mit einem Steckbrief (`MEINE_ERWEITERUNGEN.md`). Beim gemeinsamen
 Wechsel kann die Person ihren Stand mitnehmen oder nach Rückfrage den
-offiziellen Checkpoint in einem neuen Worktree laden. Diese Wahl wird nie über
-einen Reset erzwungen.
+offiziellen Checkpoint laden – im selben Ordner, ihr eigener Stand wird
+vorher gesichert. Diese Wahl wird nie über einen Reset erzwungen.
 
 - Zwei Kunden haben sehr ähnliche Namen.
 - In der eingehenden Nachricht fehlt die Vertragsnummer.

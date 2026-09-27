@@ -188,12 +188,14 @@ the configured participant inbox.
 
 ## Checkpoint control plane
 
-The active checkpoint is fixed by `WORKSHOP_CHECKPOINT` in recovery worktrees
-or stored in the single-row `workshop_state` table. It governs:
+The active checkpoint is set by `WORKSHOP_CHECKPOINT` in `.env` (written by a
+drill switch) or stored in the single-row `workshop_state` table. It governs:
 
 - visible deterministic fixtures;
 - REST capability guards;
-- MCP tool registration and resource-template discovery;
+- which MCP tools and resources answer (the session server lists all of them
+  and runs each call in a short-lived process with the current code and
+  drill, so a switch needs no new Claude session);
 - browser navigation and control affordances;
 - tutor goals, success criteria, staged hints and the pointer to the
   reference solution.
@@ -203,12 +205,16 @@ each later tag is a commit on the linear `reference` branch that adds the
 solution of the previous drill's build task. `pfefferminzia instructor retag`
 recomputes the tags after `main` changes and `reference` is rebased.
 
-Recovery deliberately does not switch the current worktree. A plan captures
-the official tag/commit and a fingerprint of the current HEAD and dirty paths.
-A short-lived one-time token must be confirmed before the loader creates a
-separate detached Git worktree, copies the participant environment without a
-shared database path, initializes dependencies and activates the requested
-profile. If the source changes between plan and apply, the token is rejected.
+A drill switch happens in place. A plan captures the official tag/commit and
+a fingerprint of HEAD, changed paths and their content; a short-lived one-time
+token must be confirmed. `continue` rewrites `.env` and adopts the checkpoint
+without touching code or cases. `official` commits the participant's work on
+their branch, switches to a new branch at the tag, moves the case database to
+`.data/sicherung/` and activates the checkpoint in a fresh one. Any failure
+restores branch, uncommitted work, cases and `.env`. If the folder changes
+between plan and apply, the token is rejected. (Separate worktrees per drill
+were dropped: the Claude app may run a session in its own copy of the main
+folder, which then saw the old drill.)
 
 The workshop clock stores only an offset in `workshop_state`; the host system
 clock is never changed. Scheduling and due-dispatch compare against this

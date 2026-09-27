@@ -495,7 +495,7 @@ def activate_checkpoint(name: str, db: sqlite3.Connection | None = None) -> dict
         configured = normalize_checkpoint(os.environ["WORKSHOP_CHECKPOINT"])
         if configured != checkpoint:
             raise ValueError(
-                f"WORKSHOP_CHECKPOINT fixes this worktree to {configured}; change its .env instead of mutating the database"
+                f"WORKSHOP_CHECKPOINT in .env fixes this folder to {configured}; change .env instead of mutating the database"
             )
     db = db or get_database()
     db.execute(
@@ -510,11 +510,11 @@ def activate_checkpoint(name: str, db: sqlite3.Connection | None = None) -> dict
 
 
 def adopt_checkpoint(name: str, db: sqlite3.Connection | None = None) -> dict[str, Any]:
-    """Advance a copied worktree without resetting its cases or workshop clock."""
+    """Move this folder to a checkpoint without resetting its cases or workshop clock."""
     checkpoint = normalize_checkpoint(name)
     configured = os.getenv("WORKSHOP_CHECKPOINT")
     if configured and normalize_checkpoint(configured) != checkpoint:
-        raise ValueError(f"WORKSHOP_CHECKPOINT fixes this worktree to {configured}")
+        raise ValueError(f"WORKSHOP_CHECKPOINT in .env fixes this folder to {configured}")
     db = db or get_database()
     db.execute(
         "UPDATE workshop_state SET checkpoint = ?, updated_at = ? WHERE id = 1",

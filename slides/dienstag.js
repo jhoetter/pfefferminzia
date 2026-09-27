@@ -146,7 +146,7 @@
     },
     {
       id: 'Drill7Auftrag', type: 'Drill', eyebrow: "Drill 7 · Eure Aufgaben · 60 Minuten", title: "Erst Quelle. Dann Entwurf. Dann du.",
-      subtitle: "Start: „Ich will zu Drill 7. Frag mich, ob ich meinen Stand mitnehmen will.“ Dann neue Sitzung: „weiter mit Drill 7“.", study: true,
+      subtitle: "Start: „Ich will zu Drill 7. Frag mich, ob ich meinen Stand mitnehmen will.“ Claude lädt – im selben Ordner, ohne neue Sitzung.", study: true,
       body: taskBoard(["Kundin, Vertrag und Tarifgeneration bestätigen.", "Entwurf mit Beleg ändern und selbst senden.", "Bauen: Ein falsches Tarifzitat wird gestoppt.", "An einem Beispielfall die Prüfung austricksen."], "Geänderte Antwort gesendet, ein falsches Tarifzitat wird mit deiner Meldung gestoppt, Stand gespeichert.", "Denkanstoß von Claude holen, dann deine eigene Kommandozentrale erweitern – z. B. einen Beleg-Kasten. Nicht vorgreifen."),
       notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Nicht die erstbeste Tarif-PDF, sondern die zum Vertrag passende Generation. Die Mail ist eine Behauptung, der Vertrag ist der Beleg. Den Wortlaut der Fehlermeldung legt ihr selbst fest. Wer früher fertig ist: Denkanstöße und eigene Erweiterung (Vorschlag: Beleg-Kasten) – nie der nächste Drill. DOZENT: Drill-7-Mails nach dem Laden senden."
     },
@@ -164,7 +164,7 @@
     },
     {
       id: 'Drill8Auftrag', type: 'Drill', eyebrow: "Drill 8 · Eure Aufgaben · 60 Minuten", title: "Claude bereitet vor. Du entscheidest.",
-      subtitle: "Start: „Ich will zu Drill 8. Frag mich, ob ich meinen Stand mitnehmen will.“ Dann neue Sitzung: „weiter mit Drill 8“.", study: true,
+      subtitle: "Start: „Ich will zu Drill 8. Frag mich, ob ich meinen Stand mitnehmen will.“ Claude lädt – im selben Ordner, ohne neue Sitzung.", study: true,
       body: taskBoard(["Erst deine Prüfpunkte, dann die Vorlagen.", "Einen Fall freigeben, einen begründet ablehnen.", "Bauen: Der Ablehnungsgrund wird im Fall sichtbar.", "Freigegebenen Text ändern – die Freigabe erlischt."], "Freigabe und begründete Ablehnung im Protokoll, erloschene Freigabe gesehen, Stand gespeichert.", "Denkanstoß von Claude holen, dann deine eigene Kommandozentrale erweitern – z. B. eine Risiko-Einstufung. Nicht vorgreifen."),
       notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Erst die eigenen Prüfpunkte, dann die Vorlage – sonst prüft man nur, was der Agent zeigt. Eine Ablehnung ist ein vollwertiger Erfolgspfad; die Begründung steuert Claude. Sind beide Entwürfe gut, den schwächeren ablehnen. Früher fertig: Denkanstöße und eigene Erweiterung (Vorschlag: Risiko-Einstufung). DOZENT: Drill-8-Mails nach dem Laden senden."
     },
@@ -185,7 +185,7 @@
     },
     {
       id: 'Drill9Auftrag', type: 'Drill', eyebrow: "Drill 9 · Eure Aufgaben · 60 Minuten", title: "Das Fenster ist sichtbar. Die Wirkung kommt später.",
-      subtitle: "Start: „Ich will zu Drill 9. Frag mich, ob ich meinen Stand mitnehmen will.“ Dann neue Sitzung: „weiter mit Drill 9“.", study: true,
+      subtitle: "Start: „Ich will zu Drill 9. Frag mich, ob ich meinen Stand mitnehmen will.“ Claude lädt – im selben Ordner, ohne neue Sitzung.", study: true,
       body: taskBoard(["Haftpflicht erkennen – was ist dir zu heikel?", "Vorhersagen, dann ändern, stoppen, laufen lassen.", "Bauen: Stopps erklären, nichts doppelt senden.", "„Zeit +24 h“ drücken, mit Vorhersage vergleichen."], "Eine Antwort ging automatisch raus, eine ist geändert, eine gestoppt – alles im Protokoll; Stand gespeichert.", "Denkanstoß von Claude holen, dann deine eigene Kommandozentrale erweitern – z. B. eine eigene Kennzahl. Nicht vorgreifen."),
       notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Jetzt kippt die Voreinstellung: Ohne Eingriff passiert etwas. Erst vorhersagen, dann vorspulen. Der Drill-9-Stand schaltet den automatischen Versand selbst ein; niemand stellt etwas von Hand um. Früher fertig: Denkanstöße und eigene Erweiterung (Vorschlag: eigene Kennzahl für Drill 10). DOZENT: Drill-9-Mails nach dem Laden senden."
     },
@@ -202,18 +202,18 @@
     },
     {
       id: 'Drill10Auftrag', type: 'Drill', eyebrow: "Drill 10 · Eure Aufgaben · 45 Minuten", title: "Eine Grafik. Eine Empfehlung. Eine Grenze.",
-      subtitle: "Start im Drill-9-Ordner: „Ich will zu Drill 10. Frag mich, ob ich meinen Stand mitnehmen will.“ Dann: „weiter mit Drill 10“.", study: true,
+      subtitle: "Start: „Ich will zu Drill 10. Frag mich, ob ich meinen Stand mitnehmen will.“ Claude lädt – im selben Ordner.", study: true,
       body: taskBoard(["Welche Frage soll dein Vorstand beantworten können?", "Grafik in Worten skizzieren, mit Claude bauen.", "Empfehlung mit Grenze formulieren.", "Zwei Minuten vorführen."], "Höchstens vier Folien mit Grafik, Empfehlung und Grenze; zwei Minuten vorgeführt; Stand gespeichert.", "Denkanstoß von Claude holen, dann deine eigene Kommandozentrale erweitern – z. B. eine Folie „Mein agentisches System“. Nicht vorgreifen."),
       notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Nur zeigen, was die gezählten Ereignisse belegen – keine erfundenen Unternehmenszahlen. Die Empfehlung schreibt ihr selbst; Claude kürzt und fragt kritisch nach. Bonus-Video mit Remotion (docs/BONUS_VIDEO.md) nur mit restlichem Guthaben."
     },
     {
       id: 'Checkpoints', type: 'Code', eyebrow: 'Sicheres Aufholen', title: 'Ein Checkpoint rettet den Tag, nicht auf Kosten Ihrer Arbeit.',
-      subtitle: 'Wähle zuerst, was der neue Arbeitsordner enthalten soll. Danach fragt Claude vor dem Laden erneut.',
+      subtitle: 'Du wählst, Claude zeigt den Plan und fragt noch einmal. Alles passiert im selben Ordner, in derselben Sitzung.',
       body: grid([
-        card('Eigenen Stand mitnehmen', `<p>Dein Code, auch uncommittierte Änderungen, und eine Kopie deiner Fälle gehen in den nächsten Drill.</p><p class="day-small">Wenn dein eigener Bau funktioniert und weiterwachsen soll.</p>`, 'mint-card'),
-        card('Frisch offiziell starten', `<p>Referenzcode und neue Fälle. Der alte Arbeitsordner bleibt trotzdem vollständig erhalten.</p><p class="day-small">Wenn du einen Rettungsstand brauchst. Nach der Wahl: Plan ansehen, ausdrücklich bestätigen, prüfen.</p>`)
+        card('Eigenen Stand mitnehmen', `<p>Dein Code, auch noch nicht Gespeichertes, und deine Fälle bleiben. Nur der Drill wird umgestellt.</p><p class="day-small">Wenn dein eigener Bau funktioniert und weiterwachsen soll.</p>`, 'mint-card'),
+        card('Frisch offiziell starten', `<p>Referenzcode und neue Fälle. Dein Code und deine Fälle werden vorher gesichert – nichts geht verloren.</p><p class="day-small">Wenn du einen Rettungsstand brauchst. Nach der Wahl: Plan ansehen, ausdrücklich bestätigen, prüfen.</p>`)
       ]),
-      notes: 'ZEIT: 3 Minuten. SAGEN: Claude fragt zuerst nach Mitnehmen oder frisch offiziell. Beide Modi legen einen neuen Worktree an und lassen den alten Ordner unangetastet. Mitnehmen kopiert Code und Fälle; offiziell startet mit Referenzcode und frischen Fällen. Der Plan ist noch keine Umschaltung. Erst nach sichtbarem Plan und erneutem Ja wird geladen. App und Claude im neuen Ordner starten, Status und Tests prüfen.'
+      notes: 'ZEIT: 3 Minuten. SAGEN: Claude fragt zuerst nach Mitnehmen oder frisch offiziell, zeigt den Plan und lädt erst nach einem klaren Ja. Alles passiert im selben Ordner und in derselben Sitzung – niemand öffnet etwas neu. Mitnehmen stellt nur den Drill um; offiziell sichert den eigenen Code und die Fälle und lädt den Referenzstand. Danach startet Claude die Kommandozentrale neu und zeigt, was im neuen Drill dazukommt.'
     },
     {
       id: 'Tempo', type: 'Inhalt', eyebrow: 'Adaptiver Lernpfad', title: 'Wer schneller ist, gestaltet mit. Wer hängt, bekommt Halt.',

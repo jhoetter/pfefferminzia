@@ -103,9 +103,11 @@ Der Tag hat die Stände `drill-06-start` → `drill-07-start` → … →
 `drill-10-start` → `drill-10-complete`. Jeder Stand schaltet nur die
 Fähigkeiten seines Drills frei (Cockpit, REST, MCP) und liegt als Tag
 `checkpoint/<name>` im Repo. Ab `drill-07-start` enthalten die Tags die
-Referenzlösungen aller früheren Bauaufträge. Laden ist nie destruktiv: Es
-entsteht ein neuer Git-Worktree auf eigenem Branch, wahlweise mit dem eigenen
-Stand (`continue`) oder dem offiziellen (`official`).
+Referenzlösungen aller früheren Bauaufträge. Laden ist nie destruktiv und
+passiert im selben Ordner und in derselben Claude-Sitzung: `continue` stellt
+nur den Drill um; `official` sichert den eigenen Code als Commit, lädt den
+offiziellen Stand auf einen neuen Branch und legt die Fälle unter
+`.data/sicherung/` ab.
 
 ```bash
 uv run pfefferminzia checkpoint status

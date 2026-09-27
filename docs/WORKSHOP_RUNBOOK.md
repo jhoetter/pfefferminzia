@@ -90,8 +90,9 @@ Claude zeigt immer erst den Plan. Die Terminal-Befehle unten sind der
 Fallback.
 
 Die Teilnehmenden arbeiten **nur** in der Claude-App (Code) und im Cockpit;
-Claude führt alle Befehle für sie aus. Ordnerwechsel beim Checkpoint = neue
-Code-Sitzung mit dem neuen Ordner.
+Claude führt alle Befehle für sie aus. Der Drill-Wechsel passiert im selben
+Ordner und in derselben Sitzung; nur beim allerersten Start (Klonen) gibt es
+einmal eine neue Code-Sitzung im Ordner `pfefferminzia`.
 
 | Zeit | Du sagst | Du tust |
 | --- | --- | --- |
@@ -100,7 +101,7 @@ Code-Sitzung mit dem neuen Ordner.
 | 11:15 | Drill 7: „Ladet mit Claude Drill 7 – mitnehmen oder offiziell.“ | nach dem Laden `instructor send 7 --yes` |
 | 13:15 | Drill 8 | `instructor send 8 --yes` |
 | 14:30 | Drill 9 | `instructor send 9 --yes` |
-| 15:45 | Drill 10: Report aus dem Drill-9-Ordner laden | – |
+| 15:45 | Drill 10: „Ich will zu Drill 10“ – übernimmt die Zählwerte aus Drill 9 | – |
 | 16:45 | Whiteboard, Laptops zu | – |
 
 Zwischendurch: `uv run pfefferminzia instructor status` zeigt pro Platz, welche
@@ -110,9 +111,12 @@ Personen mit `--slot 03` nachbeliefern, bewusst erneut mit `--resend`.
 `instructor scenarios` zeigt alle Texte; `send challenge --slot …` schickt die
 Prompt-Injection-Challenge gezielt an Schnelle.
 
-Beim Checkpoint-Wechsel entsteht ein neuer Ordner. Die App aus dem alten
-Ordner muss aus sein (Claude beenden reicht meist); Claude startet sie im
-neuen Ordner. Im offiziellen Modus werden alte Mails neu importiert; schon
+Beim Drill-Wechsel bleibt alles im selben Ordner und in derselben Sitzung.
+Frisch offiziell sichert den eigenen Code als Commit auf dem bisherigen
+Zweig, lädt den offiziellen Stand auf einen neuen Zweig (`workshop/drill-07`)
+und legt die bisherigen Fälle unter `.data/sicherung/` ab; Mitnehmen stellt
+nur den Drill um. Claude startet die Kommandozentrale neu. Im offiziellen
+Modus werden alte Mails neu importiert; schon
 beantwortete erscheinen als „gesendet“ mit der alten Antwort im Verlauf und
 erledigter Aufgabe. „Bearbeitet nur die neu angekündigten Fälle.“
 
