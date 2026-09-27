@@ -6,11 +6,11 @@ Deck; die [Gesamtpräsentation](../slides/index.html?deck=gesamt) ist vor allem
 für Vorbereitung und Nacharbeit gedacht. Der separate Vortrag
 [„Jede Aufgabe zuerst agentisch“](../slides/index.html?deck=agentisch)
 überträgt Johannes’ 35-seitige PDF `input-agentisches-arbeiten (2).pdf` als
-36-Folien-Vortrag in Falks Golden-Age-Design. HLE- und METR-Folien sowie alle
-15 Bildbeispiele inklusive Token-Dashboard, Produkt-Screenshots, Personas und
-Council sind enthalten. Persönliche Einschätzungen und illustrative
-Benchmarkreihen sind als solche gekennzeichnet; die Originalbilder lassen sich
-auf der Folie zur Detailansicht öffnen.
+35-Folien-Vortrag in Falks Golden-Age-Design. HLE- und METR-Folien sowie alle
+14 Bildbeispiele inklusive Token-Dashboard, Produkt-Screenshots, Personas und
+Council sind enthalten. Persönliche Einschätzungen sind als solche
+gekennzeichnet; die Originalbilder lassen sich auf der Folie zur
+Detailansicht öffnen.
 
 Die Input-Folien beginnen mit Johannes' drei live gezeigten Anwendungen und
 führen dann über Vibe Coding und MCP zu den zwei Kontrollmustern. Das
@@ -29,7 +29,7 @@ Formulierungen, Handlungen und Nachweise stehen in den
 
 | Deck | Live-Einsatz | Folien |
 | --- | --- | ---: |
-| [Input](../slides/index.html?deck=input) | 08:30 · Live-Beispiele, Vibe Coding, MCP, Kontrolle | 10 |
+| [Input](../slides/index.html?deck=input) | 08:30 · Live-Beispiele, Vibe Coding, MCP, Kontrolle | 9 |
 | [Drill 6](../slides/index.html?deck=drill-06) | 10:00 · Start-Satz, Cockpit und Inbox | 5 |
 | [Drill 7](../slides/index.html?deck=drill-07) | 11:15 · Leben: Mensch bearbeitet | 4 |
 | [Drill 8](../slides/index.html?deck=drill-08) | 13:15 · Leben: Mensch gibt frei | 4 |

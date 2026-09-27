@@ -1,9 +1,9 @@
 /* Faithful, visual-first remake of Johannes' 35-page June 2026 talk. No build step. */
 (() => {
   const picture = (id, page, title, subtitle, file, caption, focus = 'top') => ({
-    id, type: 'Praxisbild', eyebrow: `Originalvortrag · Folie ${page}`, title, subtitle, visual: true,
+    id, type: 'Praxisbild', title, subtitle, visual: true,
     body: `<a class="day-evidence ${focus}" href="./assets/agentisch/${file}.webp" target="_blank" rel="noopener" aria-label="Originalbild ${caption} in voller Größe öffnen"><img src="./assets/agentisch/${file}.webp" alt="${caption}"><span>Originalbild öffnen ↗</span></a>`,
-    notes: `Originalfolie ${page} aus Johannes Hötters PDF (Juni 2026). ${caption}. Das Bild ist ein Zeitzeugnis des damaligen Arbeitsstands; für Details das Originalbild öffnen.`
+    notes: `${caption}. Aus Johannes’ PDF (Juni 2026); für Details das Originalbild öffnen.`
   });
 
   const hle = [
@@ -12,8 +12,8 @@
   ];
   const hleChart = `<div class="day-benchmark-bars">${hle.map(([label, value]) =>
     `<div class="day-benchmark-column"><span>${String(value).replace('.', ',')} %</span><div style="height:${Math.max(15, Math.round(value / 64.7 * 265))}px"></div><small>${label}</small></div>`
-  ).join('')}</div><div class="day-benchmark-warning">Illustrativer Verlauf aus dem Originalvortrag · verschiedene Modelle/Setups, kein Like-for-like-Vergleich</div>`;
-  const metrChart = `<div class="day-metr"><div class="day-metr-number">89 <small>Tage</small></div><p>Verdopplungszeit des geschätzten <strong>50%-Time-Horizon</strong> seit 2024 (METR TH1.1).</p><div class="day-metr-track"><span>2023 · 0,05 h</span><span>2024 · 0,5 h</span><span>2025 · 4 h</span><span>2026 · 14,5 h</span></div><small>Stufenwerte aus Johannes’ Originalfolie: illustrativ, keine METR-Zeitreihe.</small></div>`;
+  ).join('')}</div>`;
+  const metrChart = `<div class="day-metr"><div class="day-metr-number">89 <small>Tage</small></div><p>Verdopplungszeit des geschätzten <strong>50%-Time-Horizon</strong> seit 2024 (METR TH1.1).</p><div class="day-metr-track"><span>2023 · 0,05 h</span><span>2024 · 0,5 h</span><span>2025 · 4 h</span><span>2026 · 14,5 h</span></div></div>`;
 
   window.PFEFFERMINZIA_AGENTISCH_SLIDES = [
     {
@@ -31,7 +31,7 @@
     {
       id: 'AgentischStatus', type: 'Kapitel', eyebrow: '00 · Kurzer Status quo',
       title: 'Wie gut ist KI heute?', subtitle: 'Zwei Benchmarks, zwei sehr verschiedene Messfragen.',
-      body: `<div class="day-hero-line">Fähigkeit ≠ Verlässlichkeit.</div>`,
+      body: `<div class="day-hero-line">Fähigkeit ist nicht Verlässlichkeit.</div>`,
       notes: 'Originalfolie 3. HLE misst geschlossene Expertenfragen. METR misst die menschliche Dauer von Aufgaben, die ein Agent mit bestimmter Erfolgswahrscheinlichkeit löst. Nicht verwechseln.'
     },
     {
@@ -39,7 +39,7 @@
       title: '2,7 → 64,7 %: ein starkes Signal, kein sauberer Zeitvergleich.',
       subtitle: 'HLE prüft schwierige, geschlossene Expertenfragen. Die Originalkurve ist illustrativ.',
       body: hleChart,
-      source: 'Originalfolie 4 (illustrativ) · <a href="https://labs.scale.com/leaderboard/humanitys_last_exam" target="_blank" rel="noopener">Scale Labs HLE</a> · <a href="https://www-cdn.anthropic.com/08ab9158070959f88f296514c21b7facce6f52bc.pdf" target="_blank" rel="noopener">Anthropic System Card 2026: 64,7 % mit Tools</a>',
+      source: '<a href="https://labs.scale.com/leaderboard/humanitys_last_exam" target="_blank" rel="noopener">Scale Labs HLE</a> · <a href="https://www-cdn.anthropic.com/08ab9158070959f88f296514c21b7facce6f52bc.pdf" target="_blank" rel="noopener">Anthropic System Card 2026: 64,7 % mit Tools</a>',
       notes: 'Originalfolie 4 rekonstruieren. 64,7 % ist für Claude Mythos Preview mit Tools in Anthropic’s System Card (April 2026) ausgewiesen. Die 2,7 % und Zwischenwerte stammen aus Johannes’ illustrativer Originalgrafik; sie vergleichen weder dasselbe Modell noch zwingend dasselbe HLE-Protokoll. Scale Labs hat HLE seither aktualisiert. Diese Einschränkung ausdrücklich sagen.'
     },
     {
@@ -47,16 +47,8 @@
       title: 'Der gemessene Aufgabenhorizont wächst schnell.',
       subtitle: 'Seit 2024 schätzt METR für TH1.1 eine Verdopplung etwa alle 89 Tage.',
       body: metrChart,
-      source: '<a href="https://metr.org/blog/2026-1-29-time-horizon-1-1/" target="_blank" rel="noopener">METR, Time Horizon 1.1 (2026)</a> · Originalfolie 5 (Stufenwerte illustrativ)',
+      source: '<a href="https://metr.org/blog/2026-1-29-time-horizon-1-1/" target="_blank" rel="noopener">METR, Time Horizon 1.1 (2026)</a>',
       notes: 'METR TH1.1 berichtet für P50 seit 2024 rund 88,6 Tage Verdopplungszeit. Die Zahlen 0,05/0,5/4/14,5 Stunden sind Johannes’ illustrative Folienwerte und keine abgelesene METR-Serie. Die Originalaussage „Zeit, die KI autonom durcharbeitet“ ist methodisch zu grob.'
-    },
-    {
-      id: 'AgentischMETRDefinition', type: 'Statement', eyebrow: 'Wichtig für die Einordnung',
-      title: '14,5 Stunden heißt nicht: Der Agent arbeitet 14,5 Stunden allein.',
-      subtitle: 'Time Horizon = menschliche Aufgabendauer bei prognostizierten 50 % Agentenerfolg.',
-      body: `<div class="day-hero-line">Aufgabenschwierigkeit,<br>nicht Laufzeit.</div>`,
-      source: '<a href="https://metr.org/time-horizons/" target="_blank" rel="noopener">METR: Definition und Einschränkungen</a>',
-      notes: 'METR sagt explizit: Ein 50%-Time-Horizon ist keine tatsächliche autonome Laufzeit. Die Aufgaben sind überwiegend Software, ML und Cybersecurity, gut spezifiziert und automatisch prüfbar. Nicht auf beliebige Jobs übertragen.'
     },
     {
       id: 'AgentischPraxisKapitel', type: 'Kapitel', eyebrow: '01 · Aus der Praxis',
@@ -114,21 +106,30 @@
       body: `<div class="day-hero-line">Eine Frage vor jedem Schritt.</div>`,
       notes: 'Originalfolie 19. „Meist kann sie das auch noch besser als ich“ als persönliche Erfahrung einordnen; Prüfbarkeit bleibt Voraussetzung.'
     },
+    {
+      id: 'AgentischBeispiele', type: 'Inhalt', eyebrow: 'Drei laufende Beispiele',
+      title: 'Zuerst gefragt, dann agentisch gelöst.',
+      subtitle: 'Kein Experiment mehr, sondern laufender Betrieb bei mir.',
+      body: `<div class="day-grid three">
+        <div class="day-card mint-card"><h3>Google Ads</h3><p>Kampagnensteuerung an Claude übergeben.</p><p class="day-emphasis">CPC von 4,50&nbsp;€ auf 2,60&nbsp;€.</p></div>
+        <div class="day-card"><h3>DWH &amp; Dashboards</h3><p>Unser Data Warehouse und interne Analytics-Dashboards entstehen mit Claude.</p></div>
+        <div class="day-card mint-card"><h3>Release-Videos</h3><p>Produktvideos entstehen mit Claude, z.&nbsp;B. das <a href="https://www.privatemode.ai/de" target="_blank" rel="noopener">Privatemode-Decisions-Video</a>.</p></div>
+      </div>`,
+      notes: 'Konkrete, laufende Beispiele statt nur die Prinzip-Aussage. Zahlen sind persönliche Erfahrung, keine Fallstudie oder Werbeaussage für Dritte.'
+    },
     picture('AgentischExposure', 20, 'Welche Arbeit verändert sich?',
       'Die Originalfolie nutzt eine Job-Exposure-Treemap als Diskussionsanstoß.', 'exposure', 'Treemap zu Job-Exposure', 'center'),
     picture('AgentischCode', 21, 'Der Agent arbeitet an echtem Code.',
       'Diffs und Tests machen den Eingriff überprüfbar.', 'code-review', 'Agenten-Session mit Code-Diff'),
     picture('AgentischTracker', 22, 'Arbeit braucht Status und Eigentümer.',
       'Ein Tracker macht Agenten- und Menschenarbeit gemeinsam sichtbar.', 'tracker', 'Sonaloop-Aufgaben-Tracker'),
-    picture('AgentischDeckBuilder', 23, 'Sogar dieser Foliensatz ist ein Artefakt.',
-      'Inhalt, Visual und Ausgabe in einer Oberfläche.', 'deck-builder', 'Foliensatz-Editor mit Vorschau und Formular'),
     {
-      id: 'AgentischVerifier', type: 'Statement', eyebrow: 'Verifier’s Law',
+      id: 'AgentischVerifier', type: 'Diagramm', eyebrow: 'Verifier’s Law', visual: true,
       title: 'Leicht überprüfbare Aufgaben werden leichter delegierbar.',
-      subtitle: 'Prüfung ist kein Nachgedanke, sondern Teil des Arbeitsdesigns.',
-      body: `<div class="day-hero-line">Auftrag → Beleg → Abnahme.</div>`,
-      source: 'Originalfolie 24 · Jason Wei, Verifier’s Law (2025)',
-      notes: 'Die Originalfolie zitiert Jason Wei. Hier eine deutsche Paraphrase. Nicht als Gewissheit über alle Aufgaben oder einen Freibrief für externe Wirkung auslegen.'
+      subtitle: 'Vorab geschriebene Testfälle oder ein Antwortschlüssel machen eine schwer prüfbare Aufgabe günstig prüfbar.',
+      body: `<a class="day-evidence top" href="./assets/agentisch/verifiers-law.png" target="_blank" rel="noopener" aria-label="Streudiagramm zur Asymmetrie von Erzeugung und Prüfung in voller Größe öffnen"><img src="./assets/agentisch/verifiers-law.png" alt="Streudiagramm: Aufgaben nach Erzeugungs- und Prüfaufwand, mit und ohne privilegierte Information"><span>Originalbild öffnen ↗</span></a>`,
+      source: '<a href="https://www.jasonwei.net/blog/asymmetry-of-verification-and-verifiers-law" target="_blank" rel="noopener">Jason Wei, Asymmetry of Verification and Verifier’s Law (2025)</a>',
+      notes: 'Wei: leicht erzeugbare, aber schwer prüfbare Aufgaben (Best diet) sind für RL kaum trainierbar; leicht prüfbare (Sudoku, Wettbewerbsmathe mit Antwortschlüssel) sehr wohl. Vorab Testfälle oder einen Answer Key schreiben verschiebt eine Aufgabe von schwer nach leicht prüfbar – „privilegierte Information“. Übertragung: eine gute Quellenangabe leistet für eine Kundenantwort dasselbe.'
     },
     {
       id: 'AgentischSystemKapitel', type: 'Kapitel', eyebrow: '03 · Größer gedacht',
@@ -158,10 +159,10 @@
       notes: 'Originalfolie 29. Pfefferminzia 2.0 ist die praktische Brücke: Browser und Claude nutzen dieselbe Python-Fachlogik.'
     },
     {
-      id: 'AgentischQualitaet', type: 'Statement', eyebrow: 'Law of Amplification',
+      id: 'AgentischQualitaet', type: 'Inhalt', eyebrow: 'Law of Amplification',
       title: 'Wenn Durchsatz ×100 wird: Wie hält Qualität mit?',
-      subtitle: 'Die Zahl ist ein Gedankenexperiment, keine gemessene Prognose.',
-      body: `<div class="day-hero-line">Der Engpass wandert.</div>`,
+      subtitle: 'Die Zahl ist ein Gedankenexperiment, keine gemessene Prognose. Der Engpass wandert – er verschwindet nicht.',
+      body: `<div class="day-flow"><div class="day-flow-step"><b>Erzeugen</b><span>wird ×100<br>schneller</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Prüfen</b><span>bleibt menschlich<br>begrenzt</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Vertrauen</b><span>entsteht über Belege,<br>nicht über Tempo</span></div></div>`,
       notes: 'Originalfolie 30. Den 100-fachen Durchsatz als rhetorisches Szenario kennzeichnen. Frage: Welche Kontrollen skalieren, welche bleiben bewusst menschlich?'
     },
     picture('AgentischPersonas', 31, 'Personas machen Unterschiede sichtbar.',
@@ -169,10 +170,13 @@
     picture('AgentischCouncil', 32, 'Personas können Ideen widersprechen.',
       'Die Council-Ansicht zeigt Stimmen, Einwände und Belege.', 'council', 'Projektansicht mit Persona-Stimmen und Skepsis'),
     {
-      id: 'AgentischSprache', type: 'Statement', eyebrow: 'Interface-Shift',
-      title: 'Manchmal ist Sprechen schneller als Klicken.',
-      subtitle: 'Kontext und Absicht diktieren, statt in Menüs zusammensuchen.',
-      body: `<div class="day-hero-line">Sprache statt Maus?</div>`,
+      id: 'AgentischSprache', type: 'Inhalt', eyebrow: 'Interface-Shift',
+      title: 'Manchmal ist Zeigen schneller als Tippen.',
+      subtitle: 'Von Tippen über Sprechen bis Zeigen: Kontext ersetzt Klicks.',
+      body: `<div class="day-grid two">
+        <div class="day-card mint-card"><h3>Sprache statt Maus</h3><p>Kontext und Absicht diktieren, statt in Menüs zusammenzusuchen.</p></div>
+        <div class="day-card"><h3>Noch eine Stufe: Video</h3><p>Ich teile Bildschirmaufnahmen direkt mit Claude – <strong>capture.sonaloop.com</strong>.</p><p>Das Video ersetzt die Beschreibung.</p></div>
+      </div>`,
       notes: 'Originalfolie 33. Persönliche Arbeitsweise, keine universelle Regel. Zugänglichkeit, Umgebungen und Textkorrektur mitdenken.'
     },
     {

@@ -39,7 +39,7 @@ def test_tuesday_deck_covers_all_five_milestones() -> None:
     script = (ROOT / "slides" / "dienstag.js").read_text(encoding="utf-8")
     ids = re.findall(r"\bid: '([^']+)'", script)
 
-    assert len(ids) == 30
+    assert len(ids) == 29
     assert len(ids) == len(set(ids))
     for milestone in ("Drill6Start", "Drill7Start", "Drill8Start", "Drill9Start", "Drill10Start"):
         assert milestone in ids
@@ -51,7 +51,7 @@ def test_tuesday_deck_covers_all_five_milestones() -> None:
     assert "Cron" in script
     assert "keine echte Aktion" in script
     assert "Ich bin in Drill 6" in script
-    assert "nur im Cockpit" in script
+    assert "kein Werkzeug" in script
     for deck in ("gesamt", "input", "drill-06", "drill-07", "drill-08", "drill-09", "drill-10", "management", "abschluss", "agentisch"):
         assert f"{deck}:" in script or f"'{deck}':" in script
     assert 'svg[aria-label^="Comicfigur Johannes"]' in script
@@ -61,8 +61,8 @@ def test_agentic_talk_retains_benchmarks_and_original_visuals() -> None:
     script = (ROOT / "slides" / "agentisch.js").read_text(encoding="utf-8")
     statements = re.findall(r"\bid: 'Agentisch[^']+'", script)
     pictures = re.findall(r"\bpicture\('Agentisch[^']+'", script)
-    assert len(statements) + len(pictures) == 36
-    assert len(pictures) == 15
+    assert len(statements) + len(pictures) == 35
+    assert len(pictures) == 14
     assert "Humanity’s Last Exam" in script
     assert "METR" in script
     assert "89" in script

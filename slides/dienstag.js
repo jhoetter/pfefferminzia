@@ -5,7 +5,7 @@
   const johannesAvatar = sourceSlides.querySelector('svg[aria-label^="Comicfigur Johannes"]')?.outerHTML || '';
   const deckName = new URLSearchParams(window.location.search).get('deck') || 'gesamt';
   const source = deckName === 'agentisch'
-    ? 'Inhalt: Johannes Hötter, „Arbeiten in Agentischen Teams“ (Juni 2026) · Gestaltung nach Falk Uebernickel'
+    ? ''
     : 'Gestaltung: Falk Uebernickel · Fiktive Pfefferminzia-Workshopfälle';
   const pill = (text, tone = '') => `<span class="day-pill ${tone}">${text}</span>`;
   const card = (title, content, extra = '') => `<div class="day-card ${extra}"><h3>${title}</h3>${content}</div>`;
@@ -45,22 +45,13 @@
       notes: 'ZEIT: 2 Minuten. SAGEN: Vier 60-Minuten-Drills plus 45-Minuten-Report-Drill, dazwischen Puffer und Mittagspause 12:15–13:15. Jede Person arbeitet in ihrer eigenen Kopie, baut und committet Code. Nach den operativen Kontrollmustern wird ein kurzer Report daraus; die 75 Minuten Whiteboard bleiben erhalten.'
     },
     {
-      id: 'LiveBeispiele', type: 'Input', eyebrow: 'Morgens · Blick nach vorn', title: 'Erst das Ziel sehen. Dann selbst bauen.',
-      subtitle: 'Johannes zeigt eigene Anwendungen live – als Möglichkeitshorizont, nicht als Pfefferminzia-Musterlösung.',
+      id: 'LiveBeispiele', type: 'Input', eyebrow: 'Morgens · Blick nach vorn', title: 'Ich zeige, wie ich arbeite. Dann baut ihr selbst.',
+      subtitle: 'Heute Abend: ein Gefühl dafür, welche Aufgaben autonom laufen, welche Planung brauchen und wo Kontrolle oder Freigabe nötig ist.',
       body: grid([
-        card('Live-Demo', `<p><strong>app.sonaloop.com</strong><br><strong>design.sonaloop.com</strong><br><strong>tracker.sonaloop.com</strong></p><p>Drei eigene Anwendungen, direkt im Browser gezeigt.</p>`, 'mint-card'),
+        card('Live-Demo', `<p>Drei eigene Anwendungen, direkt im Browser gezeigt – als Möglichkeitshorizont, nicht als Pfefferminzia-Musterlösung.</p>`, 'mint-card'),
         card('Danach ihr', `<p>Eigene Kopie. Eigener Code. Claude Code als Programmierpartner und Tutor.</p><p>Aus einem Prompt wird erst mit Test, Diff und sichtbarer Wirkung Software.</p>`)
       ]),
-      notes: 'ZEIT: 5 Minuten plus Live-Demo. Die drei Seiten live im Browser öffnen; Folie behauptet absichtlich nichts über ihren Inhalt. Überleitung: nicht die Beispiele kopieren, sondern denselben Entwicklungsmodus an Pfefferminzia lernen.'
-    },
-    {
-      id: 'Wirkung', type: 'Inhalt', eyebrow: 'Der neue Einsatzpunkt', title: 'Ein Agent braucht nicht mehr Text, sondern begrenzte Rechte.',
-      subtitle: 'Operative Fähigkeiten machen aus einem Vorschlag einen Prozess mit Zuständen und Konsequenzen.',
-      body: grid([
-        card('Was der Agent darf', `<p>Nachrichten lesen, Fälle zuordnen, Daten und Tarifbelege holen, Entwürfe erstellen.</p><p>Je nach Pfad: Review anfordern oder einen Versand terminieren.</p>`),
-        card('Was das System begrenzt', `<p>Freigaberegel, Empfänger-Allowlist, idempotente Aktionen, Aktivitätsprotokoll und sichtbare Queue.</p><p>Freigeben und Senden gibt es <strong>nur im Cockpit</strong> – der Agent hat dafür schlicht kein Werkzeug.</p>`, 'red-card')
-      ]),
-      notes: 'ZEIT: 4 Minuten. SAGEN: Ein Prompt allein ist keine Berechtigungsschranke. Die Grenze liegt in der Schnittstelle: Über MCP kann Claude vorbereiten und bremsen, aber nicht freigeben, senden oder die Uhr vorspulen. EHRLICH: Lokal hat Claude auch eine Shell; in Produktion braucht die Freigabe eine eigene, authentifizierte menschliche Identität. FRAGE: Wer verhindert den Versand, wenn der Agent sich irrt?'
+      notes: 'ZEIT: 5 Minuten plus Live-Demo. Die eigenen Seiten live im Browser öffnen; Folie behauptet absichtlich nichts über ihren Inhalt. Überleitung: nicht die Beispiele kopieren, sondern denselben Entwicklungsmodus an Pfefferminzia lernen. Welche Aufgabe lief autonom, welche brauchte Planung, wo saß die Freigabe?'
     },
     {
       id: 'Architektur', type: 'Inhalt', eyebrow: 'MCP-first-Betriebsmodell', title: 'Mensch und Agent benutzen dieselben Fachfunktionen.',
@@ -96,7 +87,7 @@
       subtitle: 'Jeder Startzustand zeigt nur die Fähigkeiten des aktuellen Drills.',
       body: grid([
         card('Der gemeinsame Kern', `<p>Eingang → Router → Kunde und Vertrag → Tarifbelege → Antwortvorschlag → Audit.</p><p>Die Kontrollregel liegt <strong>zwischen Vorschlag und externer Wirkung</strong>.</p>`),
-        card('Fünf Etappen', `<p><strong>8</strong> Eingang &amp; MCP<br><strong>9</strong> Mensch sendet Leben<br><strong>10</strong> Mensch genehmigt Leben<br><strong>11</strong> Haftpflicht-Queue<br><strong>12</strong> Management-Report</p>`, 'mint-card')
+        card('Fünf Etappen', `<p><strong>6</strong> Eingang &amp; MCP<br><strong>7</strong> Mensch sendet Leben<br><strong>8</strong> Mensch genehmigt Leben<br><strong>9</strong> Haftpflicht-Queue<br><strong>10</strong> Management-Report</p>`, 'mint-card')
       ]),
       notes: 'ZEIT: 4 Minuten. SAGEN: Jeder Startzustand zeigt nur die Fähigkeiten des aktuellen Drills. Der nächste Checkpoint enthält die Lösung des vorigen Bauauftrags – wer hängt, lädt ihn und macht mit der Gruppe weiter. Die Teilnehmenden bauen im eigenen Branch weiter; eine Recovery liegt getrennt, ohne ihre Arbeit zu überschreiben.'
     },
@@ -265,8 +256,8 @@
   const management = window.PFEFFERMINZIA_MANAGEMENT_SLIDES || [];
 
   const deckIds = {
-    gesamt: ['Titel', 'Bruecke', 'LiveBeispiele', 'Agenda', 'Wirkung', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus', 'Tempo', 'Whiteboard', 'Contract'],
-    input: ['Titel', 'Bruecke', 'LiveBeispiele', 'Agenda', 'Wirkung', 'Architektur', 'Belege', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus'],
+    gesamt: ['Titel', 'Bruecke', 'LiveBeispiele', 'Agenda', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus', 'Tempo', 'Whiteboard', 'Contract'],
+    input: ['Titel', 'Bruecke', 'LiveBeispiele', 'Agenda', 'Architektur', 'Belege', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus'],
     'drill-06': ['Drill6Start', 'Drill6Los', 'Drill6Cockpit', 'Drill6Auftrag', 'Checkpoints'],
     'drill-07': ['Drill7Start', 'Drill7Kontext', 'Drill7Auftrag', 'Checkpoints'],
     'drill-08': ['Drill8Start', 'Drill8Review', 'Drill8Auftrag', 'Checkpoints'],
@@ -285,8 +276,9 @@
     : 'AI Studio and the Future of Work · Insurance Edition · Johannes Hötter';
 
   function render(slide, index) {
+    const bubbleText = slide.avatarBubble || (slide.id === 'AgentischTitel' ? 'Hi, ich bin Johannes.' : slide.study ? 'Nur dieser Drill. Versprochen.' : '');
     const avatar = johannesAvatar && (slide.cover || slide.avatar || slide.id.endsWith('Start') || slide.id === 'AgentischBruecke')
-      ? `<div class="day-avatar-sticker ${slide.cover ? 'cover' : ''}">${johannesAvatar}<div class="day-avatar-bubble">${slide.avatarBubble || (slide.id === 'AgentischTitel' ? 'Moin, ich bin Johannes.' : slide.study ? 'Nur dieser Drill. Versprochen.' : 'Kontrolle ist kein Prompt.')}</div></div>`
+      ? `<div class="day-avatar-sticker ${slide.cover ? 'cover' : ''}">${johannesAvatar}${bubbleText ? `<div class="day-avatar-bubble">${bubbleText}</div>` : ''}</div>`
       : '';
     const frame = slide.cover
       ? `<div class="day-frame"><div class="day-head"><div class="caption">${slide.eyebrow}</div><img class="day-logo" src="${logo}" alt="Universität St.Gallen"></div>${slide.body}${avatar}<div class="day-foot"><div>${footerLabel}</div><div>${slide.type} · <strong>${String(index + 1).padStart(2, '0')} / ${selectedSlides.length}</strong></div></div></div>`
