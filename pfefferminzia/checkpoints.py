@@ -18,13 +18,13 @@ CHECKPOINTS: dict[str, dict[str, Any]] = {
         "order": 6,
         "drill": 6,
         "title": "Die Kommandozentrale",
-        "goal": "Eine selbst gesendete Testmail vom AgentMail-Postfach bis ins Cockpit und MCP verfolgen; daraus eine echte nächste Aufgabe ableiten.",
+        "goal": "Eine Mail vom Postfach bis ins Cockpit verfolgen und sehen, was Claude damit tun kann und was nicht; daraus eine echte nächste Aufgabe ableiten.",
         "capabilities": [*BASE_CAPABILITIES, "draft", "manual_send"],
         "successCriteria": [
-            "Pfefferminzia läuft lokal und Claude sieht den Pfefferminzia-Server.",
+            "Die Kommandozentrale läuft, und Claude ist mit ihr verbunden.",
             "Die Mail der Lehrperson ist als Ticket mit Aufgabe „Antworten“ angekommen.",
             "Claude hat eine Antwort entworfen; der Mensch hat sie im Cockpit geprüft und gesendet.",
-            "Ein eigener Codebeitrag ist getestet und committet.",
+            "Ein eigener Beitrag ist geprüft und gespeichert.",
         ],
     },
     "drill-07-start": {
@@ -37,7 +37,7 @@ CHECKPOINTS: dict[str, dict[str, Any]] = {
             "Ein Lebensfall ist Kunde, Vertrag und Tarifgeneration zugeordnet.",
             "Claude hat einen belegten Antwortentwurf vorbereitet.",
             "Ein Mensch hat den Entwurf im Cockpit bearbeitet und dort versendet.",
-            "Ein eigener Codebeitrag an der Belegprüfung ist getestet und committet.",
+            "Ein eigener Beitrag an der Belegprüfung ist geprüft und gespeichert.",
         ],
     },
     "drill-08-start": {
@@ -50,7 +50,7 @@ CHECKPOINTS: dict[str, dict[str, Any]] = {
             "Mehrere Lebensfälle wurden vollständig vorbereitet.",
             "Ohne Freigabe im Cockpit konnte keine Antwort das System verlassen.",
             "Mindestens ein Vorschlag wurde abgelehnt und überarbeitet.",
-            "Ein eigener Codebeitrag am Review-Pfad ist getestet und committet.",
+            "Ein eigener Beitrag an der Freigabe ist geprüft und gespeichert.",
         ],
     },
     "drill-09-start": {
@@ -63,26 +63,26 @@ CHECKPOINTS: dict[str, dict[str, Any]] = {
             "router", "intervention_queue", "workshop_clock",
         ],
         "successCriteria": [
-            "Router trennt Leben und Haftpflicht nachvollziehbar.",
+            "Leben und Haftpflicht sind nachvollziehbar getrennt.",
             "Eine Haftpflichtantwort lief nach dem Zeitfenster automatisch durch.",
-            "Eine zweite Antwort wurde im Zeitfenster bearbeitet, eine dritte aus der Queue genommen.",
-            "Ein eigener Codebeitrag an Queue oder Timer ist getestet und committet.",
+            "Eine zweite Antwort wurde im Zeitfenster geändert, bei einer dritten wurde der Versand gestoppt.",
+            "Ein eigener Beitrag am Eingriffsfenster ist geprüft und gespeichert.",
         ],
     },
     "drill-10-start": {
         "order": 10,
         "drill": 10,
         "title": "Management-Report: Was darf der Agent?",
-        "goal": "Die erlebten Kontrollmuster als kurze, überprüfbare Management-Präsentation mit reveal.js und D3 erklären.",
+        "goal": "Die erlebten Kontrollmuster als kurze, überprüfbare Management-Präsentation erklären.",
         "capabilities": [
             *BASE_CAPABILITIES, "knowledge", "draft", "manual_send", "life_review", "claims",
             "router", "intervention_queue", "workshop_clock", "management_report",
         ],
         "successCriteria": [
-            "Ein aggregierter Schnappschuss aus dem Drill-9-Arbeitsstand ist vorhanden.",
-            "Eine D3-Grafik in einer reveal.js-Präsentation zeigt echte lokale Workshop-Zählwerte.",
+            "Die gezählten Ereignisse aus Drill 9 sind übernommen.",
+            "Eine Grafik in den Folien zeigt die echten gezählten Ereignisse aus dem Workshop.",
             "Eine Management-Aussage nennt Beleg, Kontrollgrenze und Unsicherheit.",
-            "Eigener Folien-/Chart-Code ist getestet und committet.",
+            "Eigene Folien und Grafik sind geprüft und gespeichert.",
         ],
     },
     "drill-10-complete": {
@@ -124,7 +124,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
             {"phase": "Ankommen", "askClaude": "Was liegt in meinem Posteingang, und was ist meine erste Aufgabe?", "decision": "Was will die Absenderin von dir – und was möchtest du ihr in einem Satz antworten?", "yourMove": "Die Mail im Cockpit öffnen, lesen und Claude die eigene Kernaussage für die Antwort nennen."},
             {"phase": "Entwerfen", "askClaude": "Entwirf aus meiner Kernaussage eine kurze, freundliche Antwort. Noch nicht senden.", "decision": "Was änderst du am Entwurf, und warum? Und warum könnte Claude hier gar nicht senden, selbst wenn es wollte?", "yourMove": "Entwurf im Cockpit lesen, etwas Eigenes ändern und speichern – noch nicht senden."},
             {"phase": "Selbst bauen", "askClaude": "Bevor ich sende: Welche Szenarien müssen stimmen, damit ich mich darauf verlassen kann, dass sich die Aufgabe beim Senden erledigt? Hilf mir, sie aufzuschreiben, dann bauen wir es.", "decision": "Wie sollte das System wissen, welche Aufgabe mit dem Senden erledigt ist – und welche zweite Aufgabe legen wir als Gegenfall an, die offen bleiben muss?", "yourMove": "Mit Claude eine zweite Aufgabe zum Fall anlegen (z. B. „Rückruf planen“), die Szenarien in eigenen Worten festlegen – was soll passieren, was darf nie passieren –, dann Claude die kleine Änderung bauen lassen."},
-            {"phase": "Senden und belegen", "askClaude": "Läuft die App mit meiner Änderung? Dann sende ich jetzt. Danach zeig mir: gesendete Antwort, Aufgaben, bestandene Szenarien – und hilf mir beim Commit.", "decision": "Woran siehst du selbst, dass es funktioniert – ohne Claude zu glauben?", "yourMove": "Im Cockpit auf „Senden“ klicken; unter „Aufgaben“ prüfen: „Antworten“ erledigt, die zweite Aufgabe offen; Commit freigeben."},
+            {"phase": "Senden und belegen", "askClaude": "Läuft die App mit meiner Änderung? Dann sende ich jetzt. Danach zeig mir: gesendete Antwort, Aufgaben, bestandene Szenarien – und hilf mir, meinen Stand zu speichern.", "decision": "Woran siehst du selbst, dass es funktioniert – ohne Claude zu glauben?", "yourMove": "Im Cockpit auf „Senden“ klicken; unter „Aufgaben“ prüfen: „Antworten“ erledigt, die zweite Aufgabe offen; Speichern freigeben."},
         ],
         "reflection": "Was hast du heute entschieden, und was hat Claude gemacht? Wo war eine Grenze eingebaut, statt nur erbeten?",
         "thinkingPrompts": [
@@ -133,7 +133,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
             "Woran merkst du bei einer neuen Kollegin, dass sie eine Mail nur überflogen hat – und woran würdest du es bei Claude merken?",
         ],
         "timeboxMinutes": {"startUndPosteingang": 15, "antworten": 10, "selbstBauen": 20, "nachweisen": 10, "reflexion": 5},
-        "doneWhen": "Eine von dir geprüfte Antwort ist gesendet; die Antwort-Aufgabe erledigt sich beim Senden automatisch; eigene Änderung mit bestandenen Szenarien committet.",
+        "doneWhen": "Eine von dir geprüfte Antwort ist gesendet; die Antwort-Aufgabe erledigt sich beim Senden automatisch; eigene Änderung mit bestandenen Szenarien gespeichert.",
         "bridge": "Heute baust du an einer echten kleinen Kommandozentrale: Mails kommen herein, Claude bereitet vor, du entscheidest. Achte darauf, was Claude tun kann – und was nicht.",
         "focusBlocks": ["Eingänge", "Werkzeuge", "Oberfläche"],
         "extension": {
@@ -165,7 +165,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
             {"phase": "Quelle finden", "askClaude": "Welche Person, Police und Tarifgeneration passen zu der neuen Lebensanfrage? Zeig mir die Belege; noch keinen Entwurf.", "decision": "Welche Aussage in der Mail ist nur Behauptung der Kundin, welche ist durch Vertrag und Tarif belegt? Stimmt die Zuordnung – woran machst du das fest?", "yourMove": "Zuordnung und exakte Tarifgeneration selbst bestätigen oder widersprechen."},
             {"phase": "Entwurf prüfen", "askClaude": "Erstelle jetzt einen begründeten Antwortentwurf mit Fundstelle. Nicht versenden – das mache ich im Cockpit.", "decision": "Welchen Satz im Entwurf würdest du so nicht unterschreiben, und wie lautet er besser?", "yourMove": "Text und Empfänger im Cockpit prüfen, den Satz selbst ändern, speichern und bewusst senden."},
             {"phase": "Selbst bauen", "askClaude": "Wir bauen eine Prüfung gegen falsch zitierte Tarifgenerationen. Frag mich zuerst nach der Regel und den Szenarien, die sie bestehen muss, dann bauen wir.", "decision": "Wann ist ein Tarifzitat für dich falsch – auch wenn gar keiner oder zwei genannt sind? Und wie soll die Meldung wörtlich lauten, damit die Sachbearbeitung sofort weiß, was zu tun ist?", "yourMove": "Beispieltabelle mit einem eigenen Gegenfall ergänzen, Meldungstext selbst formulieren, dann mit Claude bauen."},
-            {"phase": "Beleg zeigen", "askClaude": "Zeig mir Quelle, menschliche Textänderung, Versandereignis und geprüfte Szenarien. Was fehlt noch? Dann hilf mir beim Commit.", "decision": "Versuch die Prüfung auszutricksen: Welchen Entwurf schreibst du im Cockpit, damit sie greifen müsste?", "yourMove": "Im Cockpit einen falsch zitierenden Entwurf speichern und die eigene Meldung sehen; Protokoll prüfen; keinen zweiten Versand auslösen; committen."},
+            {"phase": "Beleg zeigen", "askClaude": "Zeig mir Quelle, menschliche Textänderung, Versandereignis und geprüfte Szenarien. Was fehlt noch? Dann hilf mir, meinen Stand zu speichern.", "decision": "Versuch die Prüfung auszutricksen: Welchen Entwurf schreibst du im Cockpit, damit sie greifen müsste?", "yourMove": "Im Cockpit einen falsch zitierenden Entwurf speichern und die eigene Meldung sehen; Protokoll prüfen; keinen zweiten Versand auslösen; Stand speichern."},
         ],
         "reflection": "Wo hast du heute einer Quelle mehr geglaubt als der Mail – und würde die Regel in deinem Haus sperren oder nur warnen?",
         "thinkingPrompts": [
@@ -174,7 +174,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
             "Die Prüfregel stoppt einen falschen Tarif. Welche andere Zusage an Kunden würdest du gern automatisch prüfen lassen?",
         ],
         "timeboxMinutes": {"fallUndQuellen": 15, "entwurfUndMensch": 15, "selbstBauen": 20, "nachweisen": 5, "reflexion": 5},
-        "doneWhen": "Ein belegter Lebensentwurf wurde vom Menschen im Cockpit verändert und gesendet; die Tarif-Belegprüfung ist getestet und committet.",
+        "doneWhen": "Ein belegter Lebensentwurf wurde vom Menschen im Cockpit verändert und gesendet; die Tarif-Belegprüfung ist geprüft und gespeichert.",
         "bridge": "In Drill 6 kannte Claude nur die Mail. Jetzt bekommt es die Wissensbasis des Versicherers: Kunden, Verträge, Tarife – über Werkzeuge, die nur lesen dürfen.",
         "focusBlocks": ["Wissen", "Kontrollen"],
         "extension": {
@@ -199,14 +199,14 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
             "Eine Ablehnung so begründen, dass der Agent sie umsetzen kann – Feedback als Steuerung.",
             "Begründen, warum eine Freigabe an genau einen Textstand gebunden ist, und was ein Prüfer im Moment der Entscheidung sehen muss.",
         ],
-        "mission": "Lass Claude zwei neue Lebensfälle bis zur Review-Vorlage bearbeiten. Gib im Cockpit einen frei und lehne einen begründet ab. Ändere danach testweise einen freigegebenen Text und beobachte, dass die Freigabe verfällt.",
+        "mission": "Lass Claude zwei neue Lebensfälle bis zur Freigabe-Vorlage bearbeiten. Gib im Cockpit einen frei und lehne einen begründet ab. Ändere danach testweise einen freigegebenen Text und beobachte, dass die Freigabe verfällt.",
         "buildTaskShort": "Ablehnungsgrund und erloschene Freigabe im Cockpit sichtbar machen.",
         "buildTask": "get_ticket soll ein Feld controlNotice liefern ({kind, text, actor, at}), wenn das letzte Kontrollereignis eine Ablehnung (draft_rejected, mit Begründung) oder eine erloschene Freigabe (review_invalidated) ist. Das Cockpit zeigt dieses Feld bereits als gelben Hinweis über dem Antwortfeld an, sobald es geliefert wird. Erst Test in tests/test_workflow.py (ablehnen → controlNotice mit Begründung; neu vorlegen → Hinweis weg), dann get_ticket in pfefferminzia/store.py.",
         "dialogueSteps": [
-            {"phase": "Fälle vorbereiten", "askClaude": "Bereite die zwei neuen Lebensfälle mit Belegen und Antwort bis zur Review-Vorlage vor. Freigeben kann nur ich im Cockpit.", "decision": "Bevor du die Vorlagen ansiehst: Nach welchen zwei, drei Punkten prüfst du eine Antwort, bevor du sie freigibst?", "yourMove": "Die eigenen Prüfpunkte nennen, dann beide Vorlagen im Cockpit unter „Freigaben“ daran messen."},
+            {"phase": "Fälle vorbereiten", "askClaude": "Bereite die zwei neuen Lebensfälle mit Belegen und Antwort bis zur Freigabe-Vorlage vor. Freigeben kann nur ich im Cockpit.", "decision": "Bevor du die Vorlagen ansiehst: Nach welchen zwei, drei Punkten prüfst du eine Antwort, bevor du sie freigibst?", "yourMove": "Die eigenen Prüfpunkte nennen, dann beide Vorlagen im Cockpit unter „Freigaben“ daran messen."},
             {"phase": "Mensch entscheidet", "askClaude": "Welche Folgen haben Freigabe und Ablehnung bei diesen beiden Fällen?", "decision": "Welchen Fall lehnst du ab – sind beide gut, den, der einen deiner Prüfpunkte am schwächsten erfüllt – und welcher eine Satz Begründung sagt Claude genau, was zu ändern ist?", "yourMove": "Im Cockpit einen Fall freigeben und senden, den anderen mit eigener Begründung ablehnen; prüfen, ob Claudes Überarbeitung die Begründung trifft."},
             {"phase": "Selbst bauen", "askClaude": "Wie zeigen wir Ablehnungsgrund oder erloschene Freigabe im Cockpit klarer? Frag mich zuerst, was der Hinweis sagen soll und in welchen Szenarien er erscheinen muss.", "decision": "Jemand öffnet den Fall morgen: Was muss im Hinweis stehen (wer, wann, warum), und wann soll er wieder verschwinden?", "yourMove": "Inhalt und Verschwinden des Hinweises festlegen, die Verbesserung mit Claude bauen und im Browser prüfen."},
-            {"phase": "Beleg zeigen", "askClaude": "Prüfe im Audit Freigabe und Ablehnung. Was passiert, wenn ich einen freigegebenen Text ändere? Dann hilf mir beim Commit.", "decision": "Soll schon ein geändertes Komma eine Freigabe aufheben – was spricht dafür (Sicherheit), was dagegen (Aufwand)?", "yourMove": "Einen freigegebenen Text im Cockpit ändern, den Freigabeverlust sehen; Szenarien bestanden; committen."},
+            {"phase": "Beleg zeigen", "askClaude": "Prüfe im Protokoll Freigabe und Ablehnung. Was passiert, wenn ich einen freigegebenen Text ändere? Dann hilf mir, meinen Stand zu speichern.", "decision": "Soll schon ein geändertes Komma eine Freigabe aufheben – was spricht dafür (Sicherheit), was dagegen (Aufwand)?", "yourMove": "Einen freigegebenen Text im Cockpit ändern, den Freigabeverlust sehen; Szenarien bestanden; Stand speichern."},
         ],
         "reflection": "Welche Arbeit darf der Agent in deinem Haus komplett vorbereiten – und an welcher Stelle muss ein Name unter der Entscheidung stehen?",
         "thinkingPrompts": [
@@ -215,7 +215,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
             "Deine Ablehnung hat Claude gesteuert. Was unterscheidet das von Feedback an eine neue Mitarbeiterin – und was nicht?",
         ],
         "timeboxMinutes": {"faelleVorbereiten": 15, "freigabeUndAblehnung": 15, "selbstBauen": 20, "nachweisen": 5, "reflexion": 5},
-        "doneWhen": "Eine Freigabe und eine Ablehnung im Audit; eine Änderung entwertet die alte Freigabe; eigene Review-Verbesserung getestet und committet.",
+        "doneWhen": "Eine Freigabe und eine Ablehnung im Protokoll; eine Änderung entwertet die alte Freigabe; eigene Verbesserung an der Freigabe geprüft und gespeichert.",
         "bridge": "Bisher hast du jeden Entwurf selbst geändert und gesendet. Jetzt bereitet Claude alles vor, und du entscheidest nur noch: freigeben oder ablehnen.",
         "focusBlocks": ["Kontrollen", "Oberfläche"],
         "extension": {
@@ -240,14 +240,14 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
             "Festlegen, welche Fälle automatisch laufen dürfen und welche nie.",
             "Vorher sagen, was die Automatik tun wird, und es danach am Protokoll überprüfen.",
         ],
-        "mission": "Route drei neue Haftpflichtfälle und plane Antworten ein: einen laufen lassen, einen im Fenster ändern, einen aus der Queue nehmen. Spule die Workshop-Uhr im Cockpit vor und prüfe Versand und Audit.",
+        "mission": "Ordne drei neue Haftpflichtfälle zu und plane Antworten ein: einen laufen lassen, einen im Fenster ändern, bei einem den Versand stoppen. Spule die Workshop-Uhr im Cockpit vor und prüfe Versand und Protokoll.",
         "buildTaskShort": "Gestoppte Termine sichtbar machen und Doppelversand ausschließen.",
         "buildTask": "Erweitere controlNotice in get_ticket um schedule_cancelled (Text im Fenster geändert) und queue_removed (mit Begründung), damit das Cockpit gestoppte Termine erklärt. Teste in tests/test_workshop_end_to_end.py: Ein geänderter Termin wird nach dem Zeitsprung nicht gesendet, und zweimal dispatch_due_replies versendet den unveränderten Fall genau einmal. Einstieg: pfefferminzia/store.py, dispatch_due_replies in pfefferminzia/agentmail_service.py.",
         "dialogueSteps": [
             {"phase": "Routing prüfen", "askClaude": "Ordne die drei neuen Fälle nachvollziehbar zu. Welche sind Haftpflicht, und ist der Empfänger für Antworten erlaubt? Noch nichts einplanen.", "decision": "Welcher Fall wäre dir für einen automatischen Versand zu heikel – und woran erkennst du das?", "yourMove": "Sparte, Quellen und erlaubten Empfänger selbst prüfen; den heiklen Fall benennen."},
-            {"phase": "Queue erleben", "askClaude": "Bereite belegte Antworten vor und plane sie ins 24-Stunden-Fenster ein.", "decision": "Welchen lässt du laufen, welchen änderst du, welchen stoppst du – je ein Satz Begründung. Und: Wie viele Mails gehen nach +24 h raus, und welche?", "yourMove": "Die Vorhersage aufschreiben, dann im Cockpit unter „Eingriffsfenster“ einen Text ändern, einen mit Begründung aus der Queue nehmen, einen laufen lassen."},
-            {"phase": "Selbst bauen", "askClaude": "Wie machen wir gestoppte Termine und Duplikatschutz überprüfbar? Frag mich zuerst, welche Fehler am schlimmsten wären – die prüfen wir dann als Szenarien.", "decision": "Was wäre schlimmer: eine Antwort doppelt oder eine gestoppte Antwort doch versendet? Welche zwei Szenarien müssen wir deshalb unbedingt prüfen?", "yourMove": "Die Szenarien festlegen, die nie schiefgehen dürfen, und die Queue-Verbesserung mit Claude bauen."},
-            {"phase": "Wirkung belegen", "askClaude": "Was würde nach dem Zeitsprung automatisch rausgehen? Danach prüfe Versand und Audit mit mir und hilf mir beim Commit.", "decision": "Stimmt das Ergebnis mit deiner Vorhersage überein? Würdest du das Fenster in echt kürzer oder länger machen – wovon hängt es ab?", "yourMove": "Im Cockpit „Workshop-Zeit +24 h“ drücken; genau einen Auto-Versand prüfen und mit der Vorhersage vergleichen; committen."},
+            {"phase": "Warteschlange erleben", "askClaude": "Bereite belegte Antworten vor und plane sie ins 24-Stunden-Fenster ein.", "decision": "Welchen lässt du laufen, welchen änderst du, welchen stoppst du – je ein Satz Begründung. Und: Wie viele Mails gehen nach +24 h raus, und welche?", "yourMove": "Die Vorhersage aufschreiben, dann im Cockpit unter „Eingriffsfenster“ einen Text ändern, bei einem mit Begründung den Versand stoppen, einen laufen lassen."},
+            {"phase": "Selbst bauen", "askClaude": "Wie machen wir gestoppte Termine und Duplikatschutz überprüfbar? Frag mich zuerst, welche Fehler am schlimmsten wären – die prüfen wir dann als Szenarien.", "decision": "Was wäre schlimmer: eine Antwort doppelt oder eine gestoppte Antwort doch versendet? Welche zwei Szenarien müssen wir deshalb unbedingt prüfen?", "yourMove": "Die Szenarien festlegen, die nie schiefgehen dürfen, und die Verbesserung am Eingriffsfenster mit Claude bauen."},
+            {"phase": "Wirkung belegen", "askClaude": "Was würde nach dem Zeitsprung automatisch rausgehen? Danach prüfe Versand und Protokoll mit mir und hilf mir, meinen Stand zu speichern.", "decision": "Stimmt das Ergebnis mit deiner Vorhersage überein? Würdest du das Fenster in echt kürzer oder länger machen – wovon hängt es ab?", "yourMove": "Im Cockpit „Workshop-Zeit +24 h“ drücken; genau einen Auto-Versand prüfen und mit der Vorhersage vergleichen; Stand speichern."},
         ],
         "reflection": "Für welche Fälle in deinem Haus wäre „läuft, wenn niemand widerspricht“ vertretbar – und wer schaut dann ins Fenster?",
         "thinkingPrompts": [
@@ -256,7 +256,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
             "Welche Routine läuft bei euch heute schon nach „geht raus, wenn niemand widerspricht“ – nur ohne Agent?",
         ],
         "timeboxMinutes": {"routeUndQueue": 15, "eingreifen": 15, "selbstBauen": 15, "versandNachweis": 10, "reflexion": 5},
-        "doneWhen": "Ein Auto-Versand, ein Edit und ein Stopp sind im Audit nachvollziehbar; eigene Queue-Verbesserung getestet und committet.",
+        "doneWhen": "Ein automatischer Versand, eine Änderung und ein Stopp sind im Protokoll nachvollziehbar; eigene Verbesserung am Eingriffsfenster geprüft und gespeichert.",
         "bridge": "Eine Freigabe für jeden Fall kostet Zeit. Jetzt probierst du die Alternative: Antworten laufen automatisch, wenn niemand im Zeitfenster eingreift.",
         "focusBlocks": ["Kontrollen", "Protokoll"],
         "extension": {
@@ -281,14 +281,14 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
             "Das eigene agentische System aus seinen sechs Bausteinen erklären: was es darf, wo der Mensch entscheidet.",
             "Eine Grafik so anlegen, dass sie genau eine Frage beantwortet.",
         ],
-        "mission": "Nimm den aggregierten Schnappschuss aus Drill 9 und baue mit reveal.js und D3 einen Report mit höchstens vier Folien: Beobachtung, Grafik, Empfehlung, Grenze der Aussage.",
-        "buildTaskShort": "Eine zweite, beschriftete D3-Grafik und eine eigene belegte Empfehlung bauen.",
+        "mission": "Nimm die gezählten Ereignisse aus Drill 9 und baue daraus einen kurzen Bericht mit höchstens vier Folien: Beobachtung, Grafik, Empfehlung, Grenze der Aussage.",
+        "buildTaskShort": "Eine zweite, beschriftete Grafik und eine eigene belegte Empfehlung bauen.",
         "buildTask": "Ergänze in slides/management.js eine zweite D3-Ansicht (z. B. Kontrollereignisse: Freigaben, Ablehnungen, Stopps, Auto-Versände) mit Achsen/Beschriftung und Nullfall, und ersetze den Empfehlungs-Platzhalter durch deine eigene begründete Empfehlung mit Grenze. Nur /api/management-report verwenden; keine Mailtexte, Namen, Secrets oder erfundenen KPIs. Test: tests/test_management_report.py.",
         "dialogueSteps": [
             {"phase": "Befund wählen", "askClaude": "Welche Beobachtungen aus unserem Drill-9-Schnappschuss sind wirklich belegt? Bitte keine Management-Aussage erfinden.", "decision": "Welche eine Frage soll dein Vorstand nach zwei Minuten beantworten können? Welche Zahl stützt die Antwort, und was würde sie widerlegen?", "yourMove": "Frage, Aussage und Grenze selbst wählen; Demo- und Inbox-Fälle unterscheiden."},
-            {"phase": "Visualisieren", "askClaude": "Zeig mir für diese Aussage erst Datenform und Skizze einer D3-Grafik in slides/management.js, dann den Code.", "decision": "Was soll man in fünf Sekunden sehen – was kommt auf die Achsen, was wird hervorgehoben, und was steht da, wenn ein Wert null ist?", "yourMove": "Skizze in Worten vorgeben, Grafik mit Claude bauen; Achsen, Beschriftung und Nullfälle im Browser prüfen."},
+            {"phase": "Visualisieren", "askClaude": "Zeig mir für diese Aussage erst, welche Zahlen die Grafik braucht und wie sie aussehen soll – dann bauen wir sie.", "decision": "Was soll man in fünf Sekunden sehen – was kommt auf die Achsen, was wird hervorgehoben, und was steht da, wenn ein Wert null ist?", "yourMove": "Skizze in Worten vorgeben, Grafik mit Claude bauen; Achsen, Beschriftung und Nullfälle im Browser prüfen."},
             {"phase": "Entscheidung formulieren", "askClaude": "Hier ist meine Empfehlung in eigenen Worten. Kürze sie und stell mir eine kritische Rückfrage – schreib sie nicht neu.", "decision": "Wie lautet deine Empfehlung in zwei Sätzen: was, auf welchem Beleg, mit welcher Kontrollregel – und was beweist sie ausdrücklich nicht?", "yourMove": "Empfehlung und Einschränkung selbst schreiben; höchstens vier Folien."},
-            {"phase": "Vorführen", "askClaude": "Prüfe, ob die Folien lokal laufen, die Zahlen zum Snapshot passen und keine persönlichen Daten enthalten. Dann hilf mir beim Commit.", "decision": "Welche Rückfrage aus dem Vorstand fürchtest du am meisten, und was antwortest du?", "yourMove": "Report zwei Minuten zeigen, Rückfrage beantworten, Prüfungen laufen lassen, committen."},
+            {"phase": "Vorführen", "askClaude": "Prüfe, ob die Folien lokal laufen, die Zahlen zu Drill 9 passen und keine persönlichen Daten enthalten. Dann hilf mir, meinen Stand zu speichern.", "decision": "Welche Rückfrage aus dem Vorstand fürchtest du am meisten, und was antwortest du?", "yourMove": "Report zwei Minuten zeigen, Rückfrage beantworten, Prüfungen laufen lassen, Stand speichern."},
         ],
         "reflection": "Was nimmst du aus dem Tag als Regel mit: Welche Arbeit darf ein Agent bei euch allein, mit Fenster oder nur mit Freigabe tun?",
         "thinkingPrompts": [
@@ -297,7 +297,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
             "Was müsste im Protokoll stehen, damit du einem Prüfer in einem Jahr erklären kannst, warum eine Antwort rausging?",
         ],
         "timeboxMinutes": {"snapshotUndFrage": 5, "selbstBauen": 20, "interpretation": 10, "nachweisen": 5, "reflexion": 5},
-        "doneWhen": "Höchstens vier präsentierbare Folien; D3-Grafik mit lokalen Zählwerten; belegte Empfehlung mit Grenze; eigener Commit.",
+        "doneWhen": "Höchstens vier präsentierbare Folien; eine Grafik mit euren gezählten Ereignissen; belegte Empfehlung mit Grenze; eigener Stand gespeichert.",
         "bridge": "Alles, was heute passiert ist, steht im Protokoll. Jetzt machst du daraus eine belegte Aussage für dein Management – und zeigst dein System.",
         "focusBlocks": ["Protokoll"],
         "extension": {
@@ -308,7 +308,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
             "task": "Eine Zusatzfolie am Ende (zählt nicht zu den vier Report-Folien) in slides/management.js: dein System in sechs Bausteinen – was Claude darf, wo du entscheidest, was du heute selbst gebaut hast (aus MEINE_ERWEITERUNGEN.md) und was du als Nächstes bauen würdest.",
             "decision": "Welchen Baustein würdest du in deinem Haus als Erstes bauen – und welchen auf keinen Fall ohne menschliche Kontrolle?",
             "inspiration": [
-                "Bonus mit restlichem Guthaben: ein 30–60-Sekunden-Video deiner Lösung mit Remotion (docs/BONUS_VIDEO.md) als letzte Folie.",
+                "Bonus mit restlichem Guthaben: ein 30–60-Sekunden-Video deiner Lösung mit Remotion als letzte Folie.",
                 "Oberfläche: Die Grafik lässt sich zwischen Leben und Haftpflicht umschalten.",
                 "Protokoll: Eine Folie „Was wir nicht messen konnten“.",
             ],
@@ -361,7 +361,7 @@ CASE_EVIDENCE: dict[int, list[tuple[str, str]]] = {
     9: [("Eine Antwort lief nach dem Zeitfenster automatisch raus.",
          "SELECT COUNT(*) FROM ticket_events WHERE type = 'reply_sent' AND actor = 'auto-send-worker'"),
         ("Ein eingeplanter Text wurde im Fenster geändert.", "SELECT COUNT(*) FROM ticket_events WHERE type = 'schedule_cancelled'"),
-        ("Eine Antwort wurde mit Begründung aus der Queue genommen.", "SELECT COUNT(*) FROM ticket_events WHERE type = 'queue_removed'")],
+        ("Bei einer Antwort wurde der Versand mit Begründung gestoppt.", "SELECT COUNT(*) FROM ticket_events WHERE type = 'queue_removed'")],
     10: [],
 }
 
@@ -517,6 +517,9 @@ def drill_guide(
         "hintLevel": bounded,
         "hint": None if bounded == 0 else HINTS[drill][bounded - 1],
         "instruction": (
+            "Sprich wie mit einer Führungskraft ohne IT-Hintergrund (CLAUDE.md, Abschnitt 0): keine Datei- oder "
+            "Funktionsnamen, kein Code, keine englischen Technikwörter; arbeite still und melde nur Ergebnisse. "
+            "'buildTask', 'extension.task' und die Code-Hinweise sind nur deine Richtung – übersetzen, nie vorlesen. "
             "Die vier Dialogetappen sind eine Landkarte, kein Copy-paste-Auftrag. Frage nach der gewünschten Hilfstiefe, "
             "beginne mit der aktuellen Etappe und stelle dort zuerst die Frage aus 'decision' – bevor du etwas entwirfst, "
             "baust oder vorschlägst. Frag offen („Was meinst du, wie sollten wir … aufbauen?“), greif die Idee der Person auf, "
@@ -526,7 +529,7 @@ def drill_guide(
             "Denkanstoß aus 'thinkingPrompts' stellen und ihn auf ihr eigenes Haus beziehen. Beim Bauen: Regel in ihren "
             "Worten → Szenarien von der Person, auch eines, das nie passieren darf → du machst daraus automatische "
             "Prüfungen und baust klein → Ergebnis in Alltagssprache („3 von 3 Szenarien bestanden“), kein Test-Jargon "
-            "wie rot/grün oder TDD → Diff in drei Alltagssätzen → Person prüft im Cockpit. Warte an jedem 'yourMove'. Freigeben, Senden und Zeitsprung macht "
+            "wie rot/grün oder TDD → in drei Alltagssätzen sagen, was sich geändert hat → Person prüft im Cockpit. Warte an jedem 'yourMove'. Freigeben, Senden und Zeitsprung macht "
             "der Mensch im Cockpit. Vor dem Commit die Frage aus 'reflection' stellen. Zum Einstieg 'bridge' und die "
             "Bausteine aus 'focusBlocks' nennen. Den eigenen Bauauftrag nie überspringen; wer fertig ist, erweitert "
             "das eigene System ('extensions', erst wenn 'caseEvidence.complete' wahr ist) – nie den nächsten Drill vorwegnehmen."

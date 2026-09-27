@@ -83,7 +83,7 @@ gebauter Beitrag.
 | --- | --- | --- | --- |
 | 6 · Erste Antwort | Mail kommt mit Aufgabe → Claude entwirft → bauen → Mensch sendet (= Beweis) | Aufgabe erledigt sich beim Senden | `drill-07-start` |
 | 7 · Leben | Quelle prüfen → Entwurf → Mensch sendet | Tarif-Belegprüfung beim Speichern | `drill-08-start` |
-| 8 · Freigabe | Zwei Fälle → Freigabe und Ablehnung | `controlNotice`: Ablehnung und Freigabeverlust anzeigen | `drill-09-start` |
+| 8 · Freigabe | Zwei Fälle → Freigabe und Ablehnung | Ablehnung und erloschene Freigabe im Cockpit anzeigen | `drill-09-start` |
 | 9 · Eingriffsfenster | Auto-Versand, Edit und Stopp | Gestoppte Termine erklären, Doppelversand testen | `drill-10-start` |
 | 10 · Report | Erlebte Kontrolle als Management-Befund | Zweite D3-Grafik und eigene Empfehlung | `drill-10-complete` |
 

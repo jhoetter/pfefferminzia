@@ -32,7 +32,7 @@ const EVENTS = {
   ticket_imported: 'Mail empfangen', workshop_fixture_loaded: 'Fall angelegt', draft_saved: 'Entwurf gespeichert',
   human_review_required: 'Zur Freigabe vorgelegt', draft_approved: 'Freigegeben', draft_rejected: 'Abgelehnt',
   review_invalidated: 'Freigabe erloschen', reply_scheduled: 'Eingeplant', schedule_cancelled: 'Termin abgebrochen',
-  queue_removed: 'Aus Queue genommen', reply_sent: 'Antwort gesendet', internal_note: 'Notiz',
+  queue_removed: 'Versand gestoppt', earlier_reply_imported: 'Frühere Antwort übernommen', reply_sent: 'Antwort gesendet', internal_note: 'Notiz',
   status_changed: 'Status geändert', classification_updated: 'Sparte zugeordnet', ticket_routed: 'Weitergeleitet',
   customer_linked: 'Kunde verknüpft', contract_linked: 'Vertrag verknüpft',
 };
@@ -110,7 +110,7 @@ function sidebar() {
     </nav>
     <div class="sidebar-foot">
       <div class="inbox-chip ${mail.ready ? 'ok' : 'off'}" title="${sync ? `Zuletzt abgeglichen ${longDate(sync.at)}` : ''}">
-        <span class="dot"></span><span class="address">${html(mail.inboxId || 'Inbox nicht verbunden')}</span>
+        <span class="dot"></span><span class="address">${html(mail.inboxId || 'Postfach nicht verbunden')}</span>
         <button type="button" class="icon-button" data-action="sync" ${mail.ready ? '' : 'disabled'} aria-label="Posteingang abgleichen" title="Abgleichen">${icon('sync', 14)}</button>
       </div>
       ${has('management_report') ? `<a class="nav-item small" href="/slides/index.html?deck=management" target="_blank" rel="noopener">${icon('report', 14)}<span>Report</span></a>` : ''}
@@ -178,7 +178,7 @@ const senderName = value => {
 
 function primaryAction(ticket) {
   const noSend = ticket.isDemo ? 'disabled title="Demo-Fall: kein Versand"' : '';
-  if (ticket.status === 'scheduled') return `<span class="hint countdown" data-scheduled="${html(ticket.scheduledFor)}"></span><button type="button" data-action="remove">Aus Queue nehmen</button>`;
+  if (ticket.status === 'scheduled') return `<span class="hint countdown" data-scheduled="${html(ticket.scheduledFor)}"></span><button type="button" data-action="remove">Versand stoppen</button>`;
   if (!ticket.draft) return '';
   if (ticket.productLine === 'life' && has('life_review')) {
     if (ticket.status !== 'awaiting_human') return '<button type="button" class="primary" data-action="submit">Zur Freigabe vorlegen</button>';
@@ -256,7 +256,7 @@ function dialogMarkup() {
   const [title, copy, confirm, kind] = {
     send: ['Antwort senden?', `Der Text geht jetzt an ${html(ticket?.customerEmail || '')}.`, 'Senden', 'danger'],
     reject: ['Ablehnen', 'Warum? Claude überarbeitet den Entwurf danach.', 'Ablehnen', 'primary'],
-    remove: ['Aus der Queue nehmen?', 'Die Antwort wird nicht automatisch gesendet. Warum?', 'Herausnehmen', 'primary'],
+    remove: ['Versand stoppen?', 'Die Antwort wird nicht automatisch gesendet. Warum?', 'Stoppen', 'primary'],
     schedule: ['Für 24 Stunden einplanen?', 'Danach geht die Antwort automatisch raus – außer jemand greift vorher ein.', 'Einplanen', 'primary'],
     clock: ['Workshop-Zeit um 24 h vorspulen?', 'Fällige Antworten werden dann wirklich gesendet.', 'Vorspulen', 'danger'],
   }[state.dialog];
@@ -382,7 +382,7 @@ app.addEventListener('submit', event => {
     const actions = {
       send: [() => request(`/api/tickets/${url(ticket)}/send`, { method: 'POST', body: '{}' }), 'Antwort gesendet'],
       reject: [() => request(`/api/tickets/${url(ticket)}/reject`, { method: 'POST', body: JSON.stringify({ note: reason }) }), 'Abgelehnt'],
-      remove: [() => request(`/api/tickets/${url(ticket)}/schedule`, { method: 'DELETE', body: JSON.stringify({ reason }) }), 'Aus der Queue genommen'],
+      remove: [() => request(`/api/tickets/${url(ticket)}/schedule`, { method: 'DELETE', body: JSON.stringify({ reason }) }), 'Versand gestoppt'],
       schedule: [() => request(`/api/tickets/${url(ticket)}/submit`, { method: 'POST', body: JSON.stringify({ delayHours: 24 }) }), 'Eingeplant'],
       clock: [() => request('/api/workshop/clock/advance', { method: 'POST', body: JSON.stringify({ hours: 24, confirmAdvance: true }) }), 'Zeit vorgespult'],
     }[state.dialog];

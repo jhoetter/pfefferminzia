@@ -77,7 +77,16 @@ def test_each_drill_guides_separate_claude_questions_and_human_stops(monkeypatch
         # Participants think in scenarios; red/green test jargon stays with Claude.
         spoken = " ".join(step[field] for step in steps for field in ("askClaude", "decision", "yourMove"))
         assert not re.search(r"\bTest|rot oder grün|fehlschlagend", spoken)
-        assert "Szenarien" in guide["instruction"]
+        assert "Szenarien" in guide["instruction"] and "ohne IT-Hintergrund" in guide["instruction"]
+        # Everything a participant may read or hear stays in everyday words.
+        extension = DRILL_BRIEFS[drill]["extension"]
+        heard = [guide["mission"], guide["buildTaskShort"], guide["doneWhen"], guide["bridge"], guide["reflection"],
+                 *guide["learningGoals"], *guide["thinkingPrompts"], *guide["checkpoint"]["successCriteria"],
+                 *(step[field] for step in steps for field in ("askClaude", "decision", "yourMove")),
+                 extension["title"], extension["designQuestion"], extension["prepares"], extension["decision"],
+                 *extension["inspiration"]]
+        jargon = re.compile(r"`|_|\.py\b|\.js\b|\b(Review|Audit|Queue|Commit|committ\w*|Diff|D3|reveal|Snapshot|MCP|Router|Branch|Sync|Code\w*)\b", re.I)
+        assert not [text for text in heard if jargon.search(text)]
         assert extension["block"] in {*guide["buildingBlocks"], "alle"}
         assert "vier Dialogetappen" in guide["instruction"]
         assert sum(guide["timeboxMinutes"].values()) == (45 if drill == 10 else 60)
@@ -127,5 +136,5 @@ def test_extensions_wait_for_the_auto_send_edit_and_stop_in_drill_nine(monkeypat
             (ticket, kind, actor),
         )
     guide = drill_guide(0, full_db, include_extensions=True)
-    assert guide["caseEvidence"]["missing"] == ["Eine Antwort wurde mit Begründung aus der Queue genommen."]
+    assert guide["caseEvidence"]["missing"] == ["Bei einer Antwort wurde der Versand mit Begründung gestoppt."]
     assert guide["extensions"]["unlocked"] is False and "recommended" not in guide["extensions"]

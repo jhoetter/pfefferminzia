@@ -12,7 +12,7 @@ Claude. Verwende nie echte Kundendaten.
 
 **Wenn du nicht weiterweißt, frag Claude.** Es ist dein Tutor: „Was ist mein
 nächster Schritt?“, „Gib mir einen Hinweis“, „Zeig mir die Stelle im Code“.
-Beim nächsten Drill gibt es immer einen Checkpoint mit Lösung.
+Beim nächsten Drill gibt es immer einen offiziellen Zwischenstand mit Lösung.
 
 ## Start (einmal, zu Beginn von Drill 6)
 
@@ -32,10 +32,10 @@ dich einmal, eine **neue Code-Sitzung mit dem Ordner `pfefferminzia`** zu
 öffnen, dort „weiter mit Drill 6“ zu schreiben und die Frage nach dem
 Pfefferminzia-Server mit Ja zu beantworten. Den Schlüssel musst du dort nicht
 noch einmal eingeben. Alles Weitere (Befehle,
-Tests, Commits) erledigt Claude für dich; du prüfst im Cockpit und im Chat.
+Prüfungen, Speichern) erledigt Claude für dich; du prüfst im Cockpit und im Chat.
 
 **Wichtig:** An deine Workshop-Adresse kann jede externe Adresse schreiben
-(auch Gmail). `WORKSHOP_ALLOWED_RECIPIENTS` sperrt nur **ausgehende**
+(auch Gmail). Die Antwort-Liste sperrt nur **ausgehende**
 Antworten. Eine private Testmail ist nur ein Verbindungstest, kein
 Versicherungsfall.
 
@@ -59,19 +59,17 @@ entwerfen und ändere den Entwurf im Cockpit. **Noch nicht senden.**
 **Bauauftrag:** Nach dem Senden bliebe die Aufgabe offen. Baue mit Claude,
 dass sie sich beim Senden von selbst erledigt – nur die Antwort-Aufgabe
 dieses Falls; eine zweite Aufgabe (z. B. „Rückruf planen“) bleibt offen.
-Vorher legst du fest, welche Szenarien stimmen müssen. Danach sendest du selbst im Cockpit – das ist der Beweis. Einstieg: `send_ticket_draft` in
-`pfefferminzia/agentmail_service.py`, `complete_ticket_todos` in
-`pfefferminzia/todos.py`.
+Vorher legst du fest, welche Szenarien stimmen müssen. Danach sendest du
+selbst im Cockpit – das ist der Beweis.
 
 | Etappe | Frag Claude | Du entscheidest | Dann du |
 | --- | --- | --- | --- |
 | 1 · Ankommen | „Was liegt in meinem Posteingang, und was ist meine erste Aufgabe?“ | Was will die Absenderin von dir – und was möchtest du ihr in einem Satz antworten? | Die Mail im Cockpit öffnen, lesen und Claude die eigene Kernaussage für die Antwort nennen. |
 | 2 · Entwerfen | „Entwirf aus meiner Kernaussage eine kurze, freundliche Antwort. Noch nicht senden.“ | Was änderst du am Entwurf, und warum? Und warum könnte Claude hier gar nicht senden, selbst wenn es wollte? | Entwurf im Cockpit lesen, etwas Eigenes ändern und speichern – noch nicht senden. |
 | 3 · Selbst bauen | „Bevor ich sende: Welche Szenarien müssen stimmen, damit ich mich darauf verlassen kann, dass sich die Aufgabe beim Senden erledigt? Hilf mir, sie aufzuschreiben, dann bauen wir es.“ | Wie sollte das System wissen, welche Aufgabe mit dem Senden erledigt ist – und welche zweite Aufgabe legen wir als Gegenfall an, die offen bleiben muss? | Mit Claude eine zweite Aufgabe zum Fall anlegen (z. B. „Rückruf planen“), die Szenarien in eigenen Worten festlegen – was soll passieren, was darf nie passieren –, dann Claude die kleine Änderung bauen lassen. |
-| 4 · Senden und belegen | „Läuft die App mit meiner Änderung? Dann sende ich jetzt. Danach zeig mir: gesendete Antwort, Aufgaben, bestandene Szenarien – und hilf mir beim Commit.“ | Woran siehst du selbst, dass es funktioniert – ohne Claude zu glauben? | Im Cockpit auf „Senden“ klicken; unter „Aufgaben“ prüfen: „Antworten“ erledigt, die zweite Aufgabe offen; Commit freigeben. |
+| 4 · Senden und belegen | „Läuft die App mit meiner Änderung? Dann sende ich jetzt. Danach zeig mir: gesendete Antwort, Aufgaben, bestandene Szenarien – und hilf mir, meinen Stand zu speichern.“ | Woran siehst du selbst, dass es funktioniert – ohne Claude zu glauben? | Im Cockpit auf „Senden“ klicken; unter „Aufgaben“ prüfen: „Antworten“ erledigt, die zweite Aufgabe offen; Speichern freigeben. |
 
-**Fertig, wenn:** deine geprüfte Antwort gesendet ist, sich die Aufgabe beim
-Senden von selbst erledigt und deine Änderung mit bestandenen Szenarien committet ist.
+**Fertig, wenn:** Eine von dir geprüfte Antwort ist gesendet; die Antwort-Aufgabe erledigt sich beim Senden automatisch; eigene Änderung mit bestandenen Szenarien gespeichert.
 
 **Zum Schluss:** Was hast du heute entschieden, und was hat Claude gemacht? Wo war eine Grenze eingebaut, statt nur erbeten?
 
@@ -99,18 +97,17 @@ ordnet Person, Police und Tarifgeneration zu und entwirft mit Beleg. Du
 
 **Bauauftrag:** Ein Entwurf, der eine **falsche Tarifgeneration** zitiert
 (z. B. „PL-2012“, wenn der Vertrag PL-2017 hat), wird beim Speichern mit
-klarer Meldung abgewiesen. Ein korrekter Entwurf bleibt erlaubt.
-Einstieg: `save_draft` in `pfefferminzia/store.py`, Tests in `tests/test_workflow.py`.
+klarer Meldung abgewiesen. Ein korrekter Entwurf bleibt erlaubt. Den
+Wortlaut der Meldung legst du fest.
 
 | Etappe | Frag Claude | Du entscheidest | Dann du |
 | --- | --- | --- | --- |
-| 1 · Quelle | „Welche Person, Police und Tarifgeneration passen? Zeig mir die Belege, noch kein Entwurf.“ | Welche Aussage in der Mail ist nur Behauptung der Kundin, welche ist durch Vertrag und Tarif belegt? Stimmt die Zuordnung – woran machst du das fest? | Zuordnung selbst bestätigen. |
-| 2 · Entwurf | „Erstelle einen begründeten Entwurf mit Fundstelle. Senden mache ich im Cockpit.“ | Welchen Satz im Entwurf würdest du so nicht unterschreiben, und wie lautet er besser? | Im Cockpit ändern, speichern, bewusst senden. |
-| 3 · Bauen | „Welche Szenarien muss eine Tarif-Prüfung bestehen, damit ich ihr vertraue?“ | Wann ist ein Tarifzitat für dich falsch – auch wenn gar keiner oder zwei genannt sind? Und wie soll die Meldung wörtlich lauten, damit die Sachbearbeitung sofort weiß, was zu tun ist? | Schutzregel mit Claude bauen, Gegenfall testen. |
-| 4 · Beleg | „Zeig mir Quelle, meine Änderung, Versand und geprüfte Szenarien. Dann Commit.“ | Versuch die Prüfung auszutricksen: Welchen Entwurf schreibst du im Cockpit, damit sie greifen müsste? | Activity Log prüfen, committen. |
+| 1 · Quelle finden | „Welche Person, Police und Tarifgeneration passen zu der neuen Lebensanfrage? Zeig mir die Belege; noch keinen Entwurf.“ | Welche Aussage in der Mail ist nur Behauptung der Kundin, welche ist durch Vertrag und Tarif belegt? Stimmt die Zuordnung – woran machst du das fest? | Zuordnung und exakte Tarifgeneration selbst bestätigen oder widersprechen. |
+| 2 · Entwurf prüfen | „Erstelle jetzt einen begründeten Antwortentwurf mit Fundstelle. Nicht versenden – das mache ich im Cockpit.“ | Welchen Satz im Entwurf würdest du so nicht unterschreiben, und wie lautet er besser? | Text und Empfänger im Cockpit prüfen, den Satz selbst ändern, speichern und bewusst senden. |
+| 3 · Selbst bauen | „Wir bauen eine Prüfung gegen falsch zitierte Tarifgenerationen. Frag mich zuerst nach der Regel und den Szenarien, die sie bestehen muss, dann bauen wir.“ | Wann ist ein Tarifzitat für dich falsch – auch wenn gar keiner oder zwei genannt sind? Und wie soll die Meldung wörtlich lauten, damit die Sachbearbeitung sofort weiß, was zu tun ist? | Beispieltabelle mit einem eigenen Gegenfall ergänzen, Meldungstext selbst formulieren, dann mit Claude bauen. |
+| 4 · Beleg zeigen | „Zeig mir Quelle, menschliche Textänderung, Versandereignis und geprüfte Szenarien. Was fehlt noch? Dann hilf mir, meinen Stand zu speichern.“ | Versuch die Prüfung auszutricksen: Welchen Entwurf schreibst du im Cockpit, damit sie greifen müsste? | Im Cockpit einen falsch zitierenden Entwurf speichern und die eigene Meldung sehen; Protokoll prüfen; keinen zweiten Versand auslösen; Stand speichern. |
 
-**Fertig, wenn:** ein belegter Entwurf von dir geändert und gesendet wurde
-und die Tarif-Belegprüfung getestet und committet ist.
+**Fertig, wenn:** Ein belegter Lebensentwurf wurde vom Menschen im Cockpit verändert und gesendet; die Tarif-Belegprüfung ist geprüft und gespeichert.
 
 **Zum Schluss:** Wo hast du heute einer Quelle mehr geglaubt als der Mail – und würde die Regel in deinem Haus sperren oder nur warnen?
 
@@ -133,24 +130,22 @@ und die Tarif-Belegprüfung getestet und committet ist.
 **Baustein im Fokus:** Kontrollen, Oberfläche. Bisher hast du jeden Entwurf selbst geändert und gesendet. Jetzt bereitet Claude alles vor, und du entscheidest nur noch: freigeben oder ablehnen.
 
 **Aufgabe:** Zwei neue Lebensfälle. Claude bereitet beide bis zur
-Review-Vorlage vor. Im Cockpit unter **Freigaben** gibst du einen frei und
+Freigabe-Vorlage vor. Im Cockpit unter **Freigaben** gibst du einen frei und
 sendest ihn; den anderen lehnst du begründet ab, Claude überarbeitet. Ändere
 dann testweise einen freigegebenen Text: Die Freigabe verfällt.
 
-**Bauauftrag:** Ablehnungsgrund und erloschene Freigabe im Cockpit sichtbar
-machen: `get_ticket` liefert ein Feld `controlNotice`; das Cockpit zeigt es
-automatisch als Hinweis über dem Antwortfeld.
-Einstieg: `get_ticket` in `pfefferminzia/store.py`, Test in `tests/test_workflow.py`.
+**Bauauftrag:** Wer einen Fall später öffnet, soll sofort sehen, warum er
+abgelehnt wurde oder dass eine Freigabe erloschen ist – als Hinweis über dem
+Antwortfeld. Was im Hinweis steht, legst du fest.
 
 | Etappe | Frag Claude | Du entscheidest | Dann du |
 | --- | --- | --- | --- |
-| 1 · Vorlage | „Bereite beide Fälle bis zur Review-Vorlage vor. Freigeben kann nur ich.“ | Bevor du die Vorlagen ansiehst: Nach welchen zwei, drei Punkten prüfst du eine Antwort, bevor du sie freigibst? | Vorlagen und Fundstellen prüfen. |
-| 2 · Entscheidung | „Welche Folgen haben Freigabe und Ablehnung hier?“ | Welchen Fall lehnst du ab – sind beide gut, den, der einen deiner Prüfpunkte am schwächsten erfüllt – und welcher eine Satz Begründung sagt Claude genau, was zu ändern ist? | Im Cockpit freigeben + senden bzw. begründet ablehnen. |
-| 3 · Bauen | „Wie zeigen wir Ablehnung und Freigabeverlust klarer? Welche Szenarien prüfen wir?“ | Jemand öffnet den Fall morgen: Was muss im Hinweis stehen (wer, wann, warum), und wann soll er wieder verschwinden? | Verbesserung bauen, im Browser prüfen. |
-| 4 · Beleg | „Was zeigt das Audit nach Ablehnung und nach einem Edit? Dann Commit.“ | Soll schon ein geändertes Komma eine Freigabe aufheben – was spricht dafür (Sicherheit), was dagegen (Aufwand)? | Freigabeverlust sehen, committen. |
+| 1 · Fälle vorbereiten | „Bereite die zwei neuen Lebensfälle mit Belegen und Antwort bis zur Freigabe-Vorlage vor. Freigeben kann nur ich im Cockpit.“ | Bevor du die Vorlagen ansiehst: Nach welchen zwei, drei Punkten prüfst du eine Antwort, bevor du sie freigibst? | Die eigenen Prüfpunkte nennen, dann beide Vorlagen im Cockpit unter „Freigaben“ daran messen. |
+| 2 · Mensch entscheidet | „Welche Folgen haben Freigabe und Ablehnung bei diesen beiden Fällen?“ | Welchen Fall lehnst du ab – sind beide gut, den, der einen deiner Prüfpunkte am schwächsten erfüllt – und welcher eine Satz Begründung sagt Claude genau, was zu ändern ist? | Im Cockpit einen Fall freigeben und senden, den anderen mit eigener Begründung ablehnen; prüfen, ob Claudes Überarbeitung die Begründung trifft. |
+| 3 · Selbst bauen | „Wie zeigen wir Ablehnungsgrund oder erloschene Freigabe im Cockpit klarer? Frag mich zuerst, was der Hinweis sagen soll und in welchen Szenarien er erscheinen muss.“ | Jemand öffnet den Fall morgen: Was muss im Hinweis stehen (wer, wann, warum), und wann soll er wieder verschwinden? | Inhalt und Verschwinden des Hinweises festlegen, die Verbesserung mit Claude bauen und im Browser prüfen. |
+| 4 · Beleg zeigen | „Prüfe im Protokoll Freigabe und Ablehnung. Was passiert, wenn ich einen freigegebenen Text ändere? Dann hilf mir, meinen Stand zu speichern.“ | Soll schon ein geändertes Komma eine Freigabe aufheben – was spricht dafür (Sicherheit), was dagegen (Aufwand)? | Einen freigegebenen Text im Cockpit ändern, den Freigabeverlust sehen; Szenarien bestanden; Stand speichern. |
 
-**Fertig, wenn:** eine Freigabe und eine Ablehnung im Audit stehen, ein Edit
-die Freigabe entwertet hat und deine Verbesserung committet ist.
+**Fertig, wenn:** Eine Freigabe und eine Ablehnung im Protokoll; eine Änderung entwertet die alte Freigabe; eigene Verbesserung an der Freigabe geprüft und gespeichert.
 
 **Zum Schluss:** Welche Arbeit darf der Agent in deinem Haus komplett vorbereiten – und an welcher Stelle muss ein Name unter der Entscheidung stehen?
 
@@ -172,29 +167,26 @@ die Freigabe entwertet hat und deine Verbesserung committet ist.
 
 **Baustein im Fokus:** Kontrollen, Protokoll. Eine Freigabe für jeden Fall kostet Zeit. Jetzt probierst du die Alternative: Antworten laufen automatisch, wenn niemand im Zeitfenster eingreift.
 
-**Aufgabe:** Drei Haftpflichtfälle. Claude routet und plant die Antworten
+**Aufgabe:** Drei Haftpflichtfälle. Claude ordnet sie zu und plant die Antworten
 ins 24-Stunden-Fenster ein. Du änderst im Cockpit unter **Eingriffsfenster**
-einen Text, nimmst einen mit Begründung aus der Queue und lässt einen laufen.
+einen Text, stoppst bei einem mit Begründung den Versand und lässt einen laufen.
 Dann drückst du **Workshop-Zeit +24 h**: Genau eine Antwort geht automatisch
-raus. (Der Drill-9-Checkpoint schaltet den Auto-Versand an; du musst nichts
-einstellen.)
+raus. (Der automatische Versand ist in Drill 9 schon eingeschaltet; du musst
+nichts einstellen.)
 
-**Bauauftrag:** Gestoppte Termine erklären und Doppelversand ausschließen:
-`controlNotice` auch für `schedule_cancelled` und `queue_removed`; ein Test
-zeigt, dass zweimaliges `dispatch_due_replies` genau einmal sendet und ein
-geänderter Termin gar nicht.
-Einstieg: `pfefferminzia/store.py`, `pfefferminzia/agentmail_service.py`,
-`tests/test_workshop_end_to_end.py`.
+**Bauauftrag:** Auch gestoppte und geänderte Termine sollen im Cockpit
+erklärt werden. Und es soll geprüft sein, dass keine Antwort doppelt
+rausgeht und eine geänderte gar nicht automatisch. Welche Szenarien dafür
+nötig sind, legst du fest.
 
 | Etappe | Frag Claude | Du entscheidest | Dann du |
 | --- | --- | --- | --- |
-| 1 · Routing | „Welche Fälle sind Haftpflicht, und ist der Empfänger erlaubt? Noch nichts einplanen.“ | Welcher Fall wäre dir für einen automatischen Versand zu heikel – und woran erkennst du das? | Sparte und Quellen prüfen. |
-| 2 · Queue | „Bereite belegte Antworten vor und plane sie ein.“ | Welchen lässt du laufen, welchen änderst du, welchen stoppst du – je ein Satz Begründung. Und: Wie viele Mails gehen nach +24 h raus, und welche? | Im Cockpit: einen ändern, einen stoppen, einen lassen. |
-| 3 · Bauen | „Wie machen wir Stopp und Duplikatschutz überprüfbar? Welche Szenarien prüfen wir?“ | Was wäre schlimmer: eine Antwort doppelt oder eine gestoppte Antwort doch versendet? Welche zwei Szenarien müssen wir deshalb unbedingt prüfen? | Verbesserung mit Claude bauen. |
-| 4 · Wirkung | „Was würde nach dem Zeitsprung rausgehen? Danach prüfen und Commit.“ | Stimmt das Ergebnis mit deiner Vorhersage überein? Würdest du das Fenster in echt kürzer oder länger machen – wovon hängt es ab? | Zeitsprung im Cockpit, Audit prüfen, committen. |
+| 1 · Routing prüfen | „Ordne die drei neuen Fälle nachvollziehbar zu. Welche sind Haftpflicht, und ist der Empfänger für Antworten erlaubt? Noch nichts einplanen.“ | Welcher Fall wäre dir für einen automatischen Versand zu heikel – und woran erkennst du das? | Sparte, Quellen und erlaubten Empfänger selbst prüfen; den heiklen Fall benennen. |
+| 2 · Warteschlange erleben | „Bereite belegte Antworten vor und plane sie ins 24-Stunden-Fenster ein.“ | Welchen lässt du laufen, welchen änderst du, welchen stoppst du – je ein Satz Begründung. Und: Wie viele Mails gehen nach +24 h raus, und welche? | Die Vorhersage aufschreiben, dann im Cockpit unter „Eingriffsfenster“ einen Text ändern, bei einem mit Begründung den Versand stoppen, einen laufen lassen. |
+| 3 · Selbst bauen | „Wie machen wir gestoppte Termine und Duplikatschutz überprüfbar? Frag mich zuerst, welche Fehler am schlimmsten wären – die prüfen wir dann als Szenarien.“ | Was wäre schlimmer: eine Antwort doppelt oder eine gestoppte Antwort doch versendet? Welche zwei Szenarien müssen wir deshalb unbedingt prüfen? | Die Szenarien festlegen, die nie schiefgehen dürfen, und die Verbesserung am Eingriffsfenster mit Claude bauen. |
+| 4 · Wirkung belegen | „Was würde nach dem Zeitsprung automatisch rausgehen? Danach prüfe Versand und Protokoll mit mir und hilf mir, meinen Stand zu speichern.“ | Stimmt das Ergebnis mit deiner Vorhersage überein? Würdest du das Fenster in echt kürzer oder länger machen – wovon hängt es ab? | Im Cockpit „Workshop-Zeit +24 h“ drücken; genau einen Auto-Versand prüfen und mit der Vorhersage vergleichen; Stand speichern. |
 
-**Fertig, wenn:** ein Auto-Versand, ein Edit (`schedule_cancelled`) und ein
-Stopp (`queue_removed`) im Audit stehen und deine Verbesserung committet ist.
+**Fertig, wenn:** Ein automatischer Versand, eine Änderung und ein Stopp sind im Protokoll nachvollziehbar; eigene Verbesserung am Eingriffsfenster geprüft und gespeichert.
 
 **Zum Schluss:** Für welche Fälle in deinem Haus wäre „läuft, wenn niemand widerspricht“ vertretbar – und wer schaut dann ins Fenster?
 
@@ -206,7 +198,7 @@ Stopp (`queue_removed`) im Audit stehen und deine Verbesserung committet ist.
 
 **Früher fertig?** Nicht den nächsten Drill vorwegnehmen – gestalte deine eigene Kommandozentrale weiter. Was hättest du gern? Oder denk über den Vorschlag **Eine Kennzahl für deinen Report** (Baustein Protokoll) nach: Welche Frage würde dein Vorstand zum Eingriffsfenster stellen – und was müssten wir dafür mitzählen? *Warum jetzt:* In Drill 10 wird aus dem Protokoll ein Management-Bericht. Was dort nicht gezählt wird, kannst du nicht belegen. Claude fragt dich nach deiner Idee, hilft beim Steckbrief ([MEINE_ERWEITERUNGEN.md](../MEINE_ERWEITERUNGEN.md)) und baut dann mit dir.
 
-## Drill 10 – Management-Report mit reveal.js und D3 (45 Min.)
+## Drill 10 – Management-Report (45 Min.)
 
 **Du kannst danach:**
 
@@ -217,21 +209,19 @@ Stopp (`queue_removed`) im Audit stehen und deine Verbesserung committet ist.
 **Baustein im Fokus:** Protokoll. Alles, was heute passiert ist, steht im Protokoll. Jetzt machst du daraus eine belegte Aussage für dein Management – und zeigst dein System.
 
 **Start:** „Ich will zu Drill 10. Frag mich, ob ich meinen Stand mitnehmen
-will.“ Der Checkpoint wird aus dem **Drill-9-Ordner** geladen und übernimmt
-nur gruppierte Zählwerte (keine Namen, Mailtexte, Schlüssel).
+will.“ Claude lädt den neuen Stand aus deinem **Drill-9-Ordner** und
+übernimmt nur gezählte Ereignisse (keine Namen, Mailtexte, Schlüssel).
 
-**Bauauftrag:** In `slides/management.js` eine zweite beschriftete
-D3-Grafik (z. B. Freigaben, Ablehnungen, Stopps, Auto-Versände) und deine
-eigene Empfehlung mit Grenze. Ansicht:
-<http://127.0.0.1:3004/slides/index.html?deck=management>. Kein Node, npm
-oder CDN.
+**Bauauftrag:** Eine zweite beschriftete Grafik (z. B. Freigaben,
+Ablehnungen, Stopps, automatische Versände) und deine eigene Empfehlung mit
+Grenze. Ansicht: <http://127.0.0.1:3004/slides/index.html?deck=management>.
 
 | Etappe | Frag Claude | Du entscheidest | Dann du |
 | --- | --- | --- | --- |
-| 1 · Befund | „Welche Beobachtung aus dem Snapshot ist wirklich belegt?“ | Welche eine Frage soll dein Vorstand nach zwei Minuten beantworten können? Welche Zahl stützt die Antwort, und was würde sie widerlegen? | Eine Aussage und ihre Grenze wählen. |
-| 2 · D3 | „Erst Datenform und Skizze, dann der Grafik-Code.“ | Was soll man in fünf Sekunden sehen – was kommt auf die Achsen, was wird hervorgehoben, und was steht da, wenn ein Wert null ist? | Achsen, Beschriftung, Nullfälle prüfen. |
-| 3 · Empfehlung | „Verdichte Beleg, Kontrollregel und Unsicherheit auf eine Folie.“ | Wie lautet deine Empfehlung in zwei Sätzen: was, auf welchem Beleg, mit welcher Kontrollregel – und was beweist sie ausdrücklich nicht? | Empfehlung selbst formulieren; max. 4 Folien. |
-| 4 · Vorführen | „Prüfe Folien, Zahlen und Datenschutz. Dann Commit.“ | Welche Rückfrage aus dem Vorstand fürchtest du am meisten, und was antwortest du? | Zwei Minuten präsentieren. |
+| 1 · Befund wählen | „Welche Beobachtungen aus unserem Drill-9-Schnappschuss sind wirklich belegt? Bitte keine Management-Aussage erfinden.“ | Welche eine Frage soll dein Vorstand nach zwei Minuten beantworten können? Welche Zahl stützt die Antwort, und was würde sie widerlegen? | Frage, Aussage und Grenze selbst wählen; Demo- und Inbox-Fälle unterscheiden. |
+| 2 · Visualisieren | „Zeig mir für diese Aussage erst, welche Zahlen die Grafik braucht und wie sie aussehen soll – dann bauen wir sie.“ | Was soll man in fünf Sekunden sehen – was kommt auf die Achsen, was wird hervorgehoben, und was steht da, wenn ein Wert null ist? | Skizze in Worten vorgeben, Grafik mit Claude bauen; Achsen, Beschriftung und Nullfälle im Browser prüfen. |
+| 3 · Entscheidung formulieren | „Hier ist meine Empfehlung in eigenen Worten. Kürze sie und stell mir eine kritische Rückfrage – schreib sie nicht neu.“ | Wie lautet deine Empfehlung in zwei Sätzen: was, auf welchem Beleg, mit welcher Kontrollregel – und was beweist sie ausdrücklich nicht? | Empfehlung und Einschränkung selbst schreiben; höchstens vier Folien. |
+| 4 · Vorführen | „Prüfe, ob die Folien lokal laufen, die Zahlen zu Drill 9 passen und keine persönlichen Daten enthalten. Dann hilf mir, meinen Stand zu speichern.“ | Welche Rückfrage aus dem Vorstand fürchtest du am meisten, und was antwortest du? | Report zwei Minuten zeigen, Rückfrage beantworten, Prüfungen laufen lassen, Stand speichern. |
 
 **Zum Schluss:** Was nimmst du aus dem Tag als Regel mit: Welche Arbeit darf ein Agent bei euch allein, mit Fenster oder nur mit Freigabe tun?
 
@@ -253,7 +243,7 @@ will.“ Du wählst:
 
 | Modus | Im neuen Ordner | Wann sinnvoll |
 | --- | --- | --- |
-| **Eigenen Stand mitnehmen** | Dein Code (auch Uncommittetes) und deine bisherigen Fälle | Dein Bau funktioniert. |
+| **Eigenen Stand mitnehmen** | Dein Code (auch noch nicht Gespeichertes) und deine bisherigen Fälle | Dein Bau funktioniert. |
 | **Frischen offiziellen Stand laden** | Offizieller Code **mit Lösungen aller bisherigen Bauaufträge**, frische Fälle | Du hängst fest oder willst die Referenz sehen. |
 
 Claude zeigt dir den Plan und fragt vor dem Laden noch einmal. Beide Modi
@@ -268,5 +258,5 @@ nur die neu angekündigten Fälle.
 
 Cockpit im Browser, diese Karte und ein Buddy: Die zweite Person fragt und
 prüft mit, bedient aber nicht deine Freigabe- oder Send-Knöpfe. Nie
-Logins oder Schlüssel teilen. Im Fehlerfall **kein** `git reset --hard`;
+Logins oder Schlüssel teilen. Im Fehlerfall nichts löschen oder zurücksetzen;
 zeig der Lehrperson die Meldung ohne Schlüssel.
