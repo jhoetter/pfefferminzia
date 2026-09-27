@@ -156,3 +156,12 @@ def test_provision_stops_cleanly_at_the_plan_limit(workspace):
     result = instructor.provision(4, "pfm", directory=workspace, client=client, execute=True)
     assert result["limitReached"] and result["created"] == ["01", "02"] and result["missingSlots"] == ["03", "04"]
     assert [row["slot"] for row in instructor.read_roster(workspace)] == ["01", "02"]
+
+
+def test_roster_mail_can_contain_a_single_slot(workspace):
+    client = FakeClient()
+    instructor.provision(2, "pfm", directory=workspace, client=client, execute=True)
+    sent = []
+    client.inboxes.messages.send = lambda inbox, *, to, subject, text: sent.append(text) or {"message_id": "x"}
+    instructor.roster_email("dozent@example.test", slots=["02"], directory=workspace, client=client, execute=True)
+    assert "Platz 02" in sent[0] and "Platz 01" not in sent[0]

@@ -525,10 +525,15 @@ def _register_instructor_tools(server: MCPServer) -> None:
         return run(lambda: instructor.participant_addresses(instructor.INSTRUCTOR_DIR))
 
     @server.tool(annotations=ToolAnnotations(destructiveHint=False, openWorldHint=True))
-    def instructor_mail_roster(to: Annotated[str, Field(max_length=200)], send: bool = False) -> dict[str, Any]:
+    def instructor_mail_roster(
+        to: Annotated[str, Field(max_length=200)],
+        slots: list[Annotated[str, Field(pattern=r"^\d{1,2}$")]] | None = None,
+        send: bool = False,
+    ) -> dict[str, Any]:
         """Instructor: mail the slot → inbox → key assignment in one message to the given address (e.g. the instructor).
         Call first without `send`; set send=true only after explicit confirmation. Keys are never returned in chat."""
-        return run(lambda: instructor.roster_email(to, execute=send, directory=instructor.INSTRUCTOR_DIR))
+        selected = [f"{int(slot):02d}" for slot in slots] if slots else None
+        return run(lambda: instructor.roster_email(to, execute=send, slots=selected, directory=instructor.INSTRUCTOR_DIR))
 
     @server.tool()
     def instructor_write_handouts() -> dict[str, Any]:

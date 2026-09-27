@@ -86,6 +86,7 @@ def main() -> None:
     instructor_commands.add_parser("addresses", help="Print all participant inbox addresses (for BCC)")
     mail_roster = instructor_commands.add_parser("mail-roster", help="Mail the slot/inbox/key assignment to one address")
     mail_roster.add_argument("to")
+    mail_roster.add_argument("--slot", action="append", help="Only this slot, e.g. 17 (repeatable)")
     mail_roster.add_argument("--yes", action="store_true")
     retag = instructor_commands.add_parser("retag", help="Point checkpoint tags at base and reference commits")
     retag.add_argument("--base", default="main")
@@ -221,7 +222,8 @@ def main() -> None:
             elif args.instructor_command == "addresses":
                 print(tools.participant_addresses())
             elif args.instructor_command == "mail-roster":
-                _json(tools.roster_email(args.to, execute=args.yes))
+                slots = [f"{int(slot):02d}" for slot in args.slot] if args.slot else None
+                _json(tools.roster_email(args.to, execute=args.yes, slots=slots))
             elif args.instructor_command == "retag":
                 _json(tools.retag(args.base, args.reference, execute=args.yes))
             elif args.instructor_command == "status":
