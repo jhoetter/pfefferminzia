@@ -85,6 +85,12 @@ def test_each_drill_guides_separate_claude_questions_and_human_stops(monkeypatch
                  *(step[field] for step in steps for field in ("askClaude", "decision", "yourMove")),
                  extension["title"], extension["designQuestion"], extension["prepares"], extension["decision"],
                  *extension["inspiration"], *HINTS[drill][:2]]
+        orientation = guide["orientation"]
+        # Each drill opens by showing what the cockpit can do and where, and how the hour runs.
+        assert len(orientation["roadmap"]) == 4 and orientation["cockpit"] and orientation["claudeCannot"]
+        heard += [orientation["newToday"], orientation["claudeCan"], orientation["claudeCannot"],
+                  *orientation["cockpit"], *orientation["roadmap"]]
+        assert "orientation" in guide["instruction"]
         jargon = re.compile(r"`|_|\.py\b|\.js\b|\b(Review|Audit|Queue|Commit|committ\w*|Diff|D3|reveal|Snapshot|MCP|Router|Branch|Sync|Code\w*)\b", re.I)
         assert not [text for text in heard if jargon.search(text)]
         assert extension["block"] in {*guide["buildingBlocks"], "alle"}

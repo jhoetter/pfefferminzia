@@ -53,6 +53,20 @@ Claude hat dafür kein Werkzeug – das ist die Lektion des Tages.
 
 **Baustein im Fokus:** Eingänge, Werkzeuge, Oberfläche. Heute baust du an einer echten kleinen Kommandozentrale: Mails kommen herein, Claude bereitet vor, du entscheidest. Achte darauf, was Claude tun kann – und was nicht.
 
+**Was du heute im Cockpit siehst** – neu: Alles – das ist deine eigene kleine Kommandozentrale.
+
+- Links „Posteingang“: Jede Mail aus deinem Postfach wird ein Fall mit Nummer, z. B. PF-1008. Unten links holt der Pfeil neue Mails ab.
+- Links „Aufgaben“: Zu jeder neuen Mail entsteht von selbst die Aufgabe „Antworten: …“. Aufgaben kann man von Hand abhaken.
+- Klickst du einen Fall an, siehst du die Mail, darunter den Antwortentwurf mit „Speichern“ und „Senden“ und ganz unten die „Aktivität“ – das Protokoll, wer wann was getan hat.
+- Claude kann: Mails abholen, Fälle lesen, Aufgaben anlegen und Antworten entwerfen. Claude kann nicht: Senden – dafür hat Claude kein Werkzeug. Senden kannst nur du im Cockpit.
+
+**So läuft die Stunde:**
+
+1. Du liest die Mail und sagst, was du antworten willst.
+2. Claude entwirft, du änderst – aber du sendest noch nicht.
+3. Gemeinsam bauen: Die Aufgabe „Antworten“ soll sich beim Senden von selbst erledigen.
+4. Du sendest – und siehst in den Aufgaben, dass es wirkt.
+
 **Aufgabe:** In deinem Posteingang liegt eine Mail der Lehrperson und unter
 **Aufgaben** „Antworten: …“. Sag Claude, was du antworten willst, lass es
 entwerfen und ändere den Entwurf im Cockpit. **Noch nicht senden.**
@@ -66,7 +80,7 @@ selbst im Cockpit – das ist der Beweis.
 | Etappe | Frag Claude | Du entscheidest | Dann du |
 | --- | --- | --- | --- |
 | 1 · Ankommen | „Was liegt in meinem Posteingang, und was ist meine erste Aufgabe?“ | Was will die Absenderin von dir – und was möchtest du ihr in einem Satz antworten? | Die Mail im Cockpit öffnen, lesen und Claude die eigene Kernaussage für die Antwort nennen. |
-| 2 · Entwerfen | „Entwirf aus meiner Kernaussage eine kurze, freundliche Antwort. Noch nicht senden.“ | Was änderst du am Entwurf, und warum? Und warum könnte Claude hier gar nicht senden, selbst wenn es wollte? | Entwurf im Cockpit lesen, etwas Eigenes ändern und speichern – noch nicht senden. |
+| 2 · Entwerfen | „Entwirf aus meiner Kernaussage eine kurze, freundliche Antwort. Noch nicht senden – mein Senden soll nachher zeigen, dass unser Bau wirkt.“ | Was änderst du am Entwurf, und warum? Und warum könnte Claude hier gar nicht senden, selbst wenn es wollte? | Entwurf im Cockpit lesen, etwas Eigenes ändern und speichern – noch nicht senden. Senden ist in Etappe 4 der Beweis. |
 | 3 · Selbst bauen | „Bevor ich sende: Welche Szenarien müssen stimmen, damit ich mich darauf verlassen kann, dass sich die Aufgabe beim Senden erledigt? Hilf mir, sie aufzuschreiben, dann bauen wir es.“ | Wie sollte das System wissen, welche Aufgabe mit dem Senden erledigt ist – und welche zweite Aufgabe legen wir als Gegenfall an, die offen bleiben muss? | Mit Claude eine zweite Aufgabe zum Fall anlegen (z. B. „Rückruf planen“), die Szenarien in eigenen Worten festlegen – was soll passieren, was darf nie passieren –, dann Claude die kleine Änderung bauen lassen. |
 | 4 · Senden und belegen | „Läuft die App mit meiner Änderung? Dann sende ich jetzt. Danach zeig mir: gesendete Antwort, Aufgaben, bestandene Szenarien – und hilf mir, meinen Stand zu speichern.“ | Woran siehst du selbst, dass es funktioniert – ohne Claude zu glauben? | Im Cockpit auf „Senden“ klicken; unter „Aufgaben“ prüfen: „Antworten“ erledigt, die zweite Aufgabe offen; Speichern freigeben. |
 
@@ -92,6 +106,20 @@ selbst im Cockpit – das ist der Beweis.
 
 **Baustein im Fokus:** Wissen, Kontrollen. In Drill 6 kannte Claude nur die Mail. Jetzt bekommt es die Wissensbasis des Versicherers: Kunden, Verträge, Tarife – über Werkzeuge, die nur lesen dürfen.
 
+**Was du heute im Cockpit siehst** – neu: Claude kennt jetzt die Unterlagen des Versicherers: Kunden, Verträge und Tarife – nur zum Lesen.
+
+- Im Fall stehen jetzt „Kunde“ und „Vertrag“ mit Tarifgeneration, sobald der Fall zugeordnet ist.
+- Neben deinem Fall gibt es mitgelieferte Beispielfälle aus dem Leben-Bestand; an einem davon probierst du am Ende deine Prüfung aus.
+- Posteingang, Aufgaben, Entwurf, Senden und Aktivität kennst du aus Drill 6.
+- Claude kann: Kunden und Verträge suchen, den Fall zuordnen, die passende Tarifgeneration lesen und mit Fundstelle entwerfen. Claude kann nicht: Senden und an Verträgen oder Tarifen etwas ändern.
+
+**So läuft die Stunde:**
+
+1. Welche Kundin, welcher Vertrag, welche Tarifgeneration? Du bestätigst.
+2. Claude entwirft mit Beleg; du änderst den Text und sendest selbst.
+3. Gemeinsam bauen: Ein Entwurf mit falscher Tarifgeneration wird beim Speichern gestoppt.
+4. Du versuchst an einem Beispielfall, die Prüfung auszutricksen.
+
 **Aufgabe:** Die Lehrperson schickt eine fiktive Lebensanfrage. Claude
 ordnet Person, Police und Tarifgeneration zu und entwirft mit Beleg. Du
 änderst den Text im Cockpit und sendest dort selbst.
@@ -106,7 +134,7 @@ Wortlaut der Meldung legst du fest.
 | 1 · Quelle finden | „Welche Person, Police und Tarifgeneration passen zu der neuen Lebensanfrage? Zeig mir die Belege; noch keinen Entwurf.“ | Welche Aussage in der Mail ist nur Behauptung der Kundin, welche ist durch Vertrag und Tarif belegt? Stimmt die Zuordnung – woran machst du das fest? | Zuordnung und exakte Tarifgeneration selbst bestätigen oder widersprechen. |
 | 2 · Entwurf prüfen | „Erstelle jetzt einen begründeten Antwortentwurf mit Fundstelle. Nicht versenden – das mache ich im Cockpit.“ | Welchen Satz im Entwurf würdest du so nicht unterschreiben, und wie lautet er besser? | Text und Empfänger im Cockpit prüfen, den Satz selbst ändern, speichern und bewusst senden. |
 | 3 · Selbst bauen | „Wir bauen eine Prüfung gegen falsch zitierte Tarifgenerationen. Frag mich zuerst nach der Regel und den Szenarien, die sie bestehen muss, dann bauen wir.“ | Wann ist ein Tarifzitat für dich falsch – auch wenn gar keiner oder zwei genannt sind? Und wie soll die Meldung wörtlich lauten, damit die Sachbearbeitung sofort weiß, was zu tun ist? | Beispieltabelle mit einem eigenen Gegenfall ergänzen, Meldungstext selbst formulieren, dann mit Claude bauen. |
-| 4 · Beleg zeigen | „Zeig mir Quelle, menschliche Textänderung, Versandereignis und geprüfte Szenarien. Was fehlt noch? Dann hilf mir, meinen Stand zu speichern.“ | Versuch die Prüfung auszutricksen: Welchen Entwurf schreibst du im Cockpit, damit sie greifen müsste? | Im Cockpit einen falsch zitierenden Entwurf speichern und die eigene Meldung sehen; Protokoll prüfen; keinen zweiten Versand auslösen; Stand speichern. |
+| 4 · Beleg zeigen | „Zeig mir Quelle, menschliche Textänderung, Versandereignis und geprüfte Szenarien. Was fehlt noch? Dann hilf mir, meinen Stand zu speichern.“ | Versuch die Prüfung auszutricksen: Welchen Entwurf schreibst du im Cockpit, damit sie greifen müsste? | An einem Beispielfall aus dem Leben-Bestand (etwa PF-10002 mit PL-2017) im Cockpit einen falsch zitierenden Entwurf speichern und die eigene Meldung sehen; Protokoll prüfen; keinen zweiten Versand auslösen; Stand speichern. |
 
 **Fertig, wenn:** Ein belegter Lebensentwurf wurde vom Menschen im Cockpit verändert und gesendet; die Tarif-Belegprüfung ist geprüft und gespeichert.
 
@@ -129,6 +157,20 @@ Wortlaut der Meldung legst du fest.
 - Begründen, warum eine Freigabe an genau einen Textstand gebunden ist, und was ein Prüfer im Moment der Entscheidung sehen muss.
 
 **Baustein im Fokus:** Kontrollen, Oberfläche. Bisher hast du jeden Entwurf selbst geändert und gesendet. Jetzt bereitet Claude alles vor, und du entscheidest nur noch: freigeben oder ablehnen.
+
+**Was du heute im Cockpit siehst** – neu: Claude darf Lebensfälle jetzt komplett vorbereiten – aber nichts verlässt das Haus ohne deine aktuelle Freigabe.
+
+- Links neu „Freigaben“: Dort liegen die Lebensantworten, die Claude dir vorgelegt hat.
+- Im Fall: „Freigeben“ oder „Ablehnen“ mit Begründung. Erst nach deiner Freigabe kannst du senden.
+- Änderst du einen freigegebenen Text, erlischt die Freigabe – das steht dann in der Aktivität.
+- Claude kann: Fälle zuordnen, Antworten mit Beleg entwerfen, zur Freigabe vorlegen und nach einer Ablehnung überarbeiten. Claude kann nicht: Freigeben, ablehnen oder senden.
+
+**So läuft die Stunde:**
+
+1. Bevor du etwas ansiehst: Nach welchen Punkten prüfst du?
+2. Claude bereitet zwei Fälle vor; du gibst einen frei und lehnst einen begründet ab.
+3. Gemeinsam bauen: Wer den Fall später öffnet, sieht sofort, warum abgelehnt wurde.
+4. Du änderst einen freigegebenen Text und siehst die Freigabe erlöschen.
 
 **Aufgabe:** Zwei neue Lebensfälle. Claude bereitet beide bis zur
 Freigabe-Vorlage vor. Im Cockpit unter **Freigaben** gibst du einen frei und
@@ -167,6 +209,20 @@ Antwortfeld. Was im Hinweis steht, legst du fest.
 - Vorher sagen, was die Automatik tun wird, und es danach am Protokoll überprüfen.
 
 **Baustein im Fokus:** Kontrollen, Protokoll. Eine Freigabe für jeden Fall kostet Zeit. Jetzt probierst du die Alternative: Antworten laufen automatisch, wenn niemand im Zeitfenster eingreift.
+
+**Was du heute im Cockpit siehst** – neu: Zum ersten Mal geht etwas automatisch raus – wenn niemand rechtzeitig widerspricht.
+
+- Links neu „Eingriffsfenster“: Haftpflichtantworten, die nach 24 Stunden automatisch rausgehen, mit Countdown.
+- Im Fall: Text ändern (dann wird der Termin gestoppt) oder „Versand stoppen“ mit Begründung.
+- Im Eingriffsfenster: „Zeit +24 h“ spult die Workshop-Uhr vor – das kannst nur du.
+- Claude kann: Sparte zuordnen, Antworten mit Beleg entwerfen, ins 24-Stunden-Fenster einplanen und einen Versand stoppen. Claude kann nicht: Die Uhr vorspulen, freigeben oder sofort senden.
+
+**So läuft die Stunde:**
+
+1. Welche Fälle sind Haftpflicht – und welcher wäre dir für Automatik zu heikel?
+2. Claude plant ein; du sagst vorher, was rausgeht, und greifst ein: ändern, stoppen, laufen lassen.
+3. Gemeinsam bauen: Gestoppte Termine werden erklärt, und nichts geht doppelt raus.
+4. Du spulst die Uhr vor und vergleichst mit deiner Vorhersage.
 
 **Aufgabe:** Drei Haftpflichtfälle. Claude ordnet sie zu und plant die Antworten
 ins 24-Stunden-Fenster ein. Du änderst im Cockpit unter **Eingriffsfenster**
@@ -208,6 +264,20 @@ nötig sind, legst du fest.
 - Eine Grafik so anlegen, dass sie genau eine Frage beantwortet.
 
 **Baustein im Fokus:** Protokoll. Alles, was heute passiert ist, steht im Protokoll. Jetzt machst du daraus eine belegte Aussage für dein Management – und zeigst dein System.
+
+**Was du heute im Cockpit siehst** – neu: Aus dem Protokoll wird ein Bericht für dein Management.
+
+- Unten links neu „Report“: deine Management-Folien mit einer ersten Grafik.
+- Die Zahlen sind die gezählten Ereignisse aus deinem Drill 9 – ohne Namen und Mailtexte.
+- Der automatische Versand ist wieder ausgeschaltet.
+- Claude kann: Die Zahlen lesen, Folien und Grafik mit dir bauen und kritisch nachfragen. Claude kann nicht: Namen oder Mailtexte sehen – und Zahlen erfinden darf es auch nicht.
+
+**So läuft die Stunde:**
+
+1. Welche Frage soll dein Vorstand nach zwei Minuten beantworten können?
+2. Du skizzierst die Grafik in Worten, Claude baut sie mit dir.
+3. Du formulierst deine Empfehlung mit Grenze.
+4. Du führst zwei Minuten vor.
 
 **Start:** „Ich will zu Drill 10. Frag mich, ob ich meinen Stand mitnehmen
 will.“ Claude lädt den neuen Stand aus deinem **Drill-9-Ordner** und

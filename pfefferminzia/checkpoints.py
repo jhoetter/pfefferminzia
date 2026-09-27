@@ -122,7 +122,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
         "buildTask": "Beim Senden einer Antwort bleibt die Aufgabe „Antworten: …“ bisher offen. Sie soll automatisch als erledigt markiert werden – nur die Antwort-Aufgabe dieses Tickets, keine anderen (Gegenfall: eine zweite Aufgabe zum selben Fall, z. B. „Rückruf planen“, bleibt offen). Erst einen Test schreiben (tests/test_workshop_end_to_end.py hat einen Fake-Mailserver), dann umsetzen. Einstieg: send_ticket_draft in pfefferminzia/agentmail_service.py und complete_ticket_todos (Aufgabenart \"reply\") in pfefferminzia/todos.py.",
         "dialogueSteps": [
             {"phase": "Ankommen", "askClaude": "Was liegt in meinem Posteingang, und was ist meine erste Aufgabe?", "decision": "Was will die Absenderin von dir – und was möchtest du ihr in einem Satz antworten?", "yourMove": "Die Mail im Cockpit öffnen, lesen und Claude die eigene Kernaussage für die Antwort nennen."},
-            {"phase": "Entwerfen", "askClaude": "Entwirf aus meiner Kernaussage eine kurze, freundliche Antwort. Noch nicht senden.", "decision": "Was änderst du am Entwurf, und warum? Und warum könnte Claude hier gar nicht senden, selbst wenn es wollte?", "yourMove": "Entwurf im Cockpit lesen, etwas Eigenes ändern und speichern – noch nicht senden."},
+            {"phase": "Entwerfen", "askClaude": "Entwirf aus meiner Kernaussage eine kurze, freundliche Antwort. Noch nicht senden – mein Senden soll nachher zeigen, dass unser Bau wirkt.", "decision": "Was änderst du am Entwurf, und warum? Und warum könnte Claude hier gar nicht senden, selbst wenn es wollte?", "yourMove": "Entwurf im Cockpit lesen, etwas Eigenes ändern und speichern – noch nicht senden. Senden ist in Etappe 4 der Beweis."},
             {"phase": "Selbst bauen", "askClaude": "Bevor ich sende: Welche Szenarien müssen stimmen, damit ich mich darauf verlassen kann, dass sich die Aufgabe beim Senden erledigt? Hilf mir, sie aufzuschreiben, dann bauen wir es.", "decision": "Wie sollte das System wissen, welche Aufgabe mit dem Senden erledigt ist – und welche zweite Aufgabe legen wir als Gegenfall an, die offen bleiben muss?", "yourMove": "Mit Claude eine zweite Aufgabe zum Fall anlegen (z. B. „Rückruf planen“), die Szenarien in eigenen Worten festlegen – was soll passieren, was darf nie passieren –, dann Claude die kleine Änderung bauen lassen."},
             {"phase": "Senden und belegen", "askClaude": "Läuft die App mit meiner Änderung? Dann sende ich jetzt. Danach zeig mir: gesendete Antwort, Aufgaben, bestandene Szenarien – und hilf mir, meinen Stand zu speichern.", "decision": "Woran siehst du selbst, dass es funktioniert – ohne Claude zu glauben?", "yourMove": "Im Cockpit auf „Senden“ klicken; unter „Aufgaben“ prüfen: „Antworten“ erledigt, die zweite Aufgabe offen; Speichern freigeben."},
         ],
@@ -134,6 +134,22 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
         ],
         "timeboxMinutes": {"startUndPosteingang": 15, "antworten": 10, "selbstBauen": 20, "nachweisen": 10, "reflexion": 5},
         "doneWhen": "Eine von dir geprüfte Antwort ist gesendet; die Antwort-Aufgabe erledigt sich beim Senden automatisch; eigene Änderung mit bestandenen Szenarien gespeichert.",
+        "orientation": {
+            "newToday": "Alles – das ist deine eigene kleine Kommandozentrale.",
+            "cockpit": [
+                "Links „Posteingang“: Jede Mail aus deinem Postfach wird ein Fall mit Nummer, z. B. PF-1008. Unten links holt der Pfeil neue Mails ab.",
+                "Links „Aufgaben“: Zu jeder neuen Mail entsteht von selbst die Aufgabe „Antworten: …“. Aufgaben kann man von Hand abhaken.",
+                "Klickst du einen Fall an, siehst du die Mail, darunter den Antwortentwurf mit „Speichern“ und „Senden“ und ganz unten die „Aktivität“ – das Protokoll, wer wann was getan hat.",
+            ],
+            "claudeCan": "Mails abholen, Fälle lesen, Aufgaben anlegen und Antworten entwerfen.",
+            "claudeCannot": "Senden – dafür hat Claude kein Werkzeug. Senden kannst nur du im Cockpit.",
+            "roadmap": [
+                "Du liest die Mail und sagst, was du antworten willst.",
+                "Claude entwirft, du änderst – aber du sendest noch nicht.",
+                "Gemeinsam bauen: Die Aufgabe „Antworten“ soll sich beim Senden von selbst erledigen.",
+                "Du sendest – und siehst in den Aufgaben, dass es wirkt.",
+            ],
+        },
         "bridge": "Heute baust du an einer echten kleinen Kommandozentrale: Mails kommen herein, Claude bereitet vor, du entscheidest. Achte darauf, was Claude tun kann – und was nicht.",
         "focusBlocks": ["Eingänge", "Werkzeuge", "Oberfläche"],
         "extension": {
@@ -165,7 +181,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
             {"phase": "Quelle finden", "askClaude": "Welche Person, Police und Tarifgeneration passen zu der neuen Lebensanfrage? Zeig mir die Belege; noch keinen Entwurf.", "decision": "Welche Aussage in der Mail ist nur Behauptung der Kundin, welche ist durch Vertrag und Tarif belegt? Stimmt die Zuordnung – woran machst du das fest?", "yourMove": "Zuordnung und exakte Tarifgeneration selbst bestätigen oder widersprechen."},
             {"phase": "Entwurf prüfen", "askClaude": "Erstelle jetzt einen begründeten Antwortentwurf mit Fundstelle. Nicht versenden – das mache ich im Cockpit.", "decision": "Welchen Satz im Entwurf würdest du so nicht unterschreiben, und wie lautet er besser?", "yourMove": "Text und Empfänger im Cockpit prüfen, den Satz selbst ändern, speichern und bewusst senden."},
             {"phase": "Selbst bauen", "askClaude": "Wir bauen eine Prüfung gegen falsch zitierte Tarifgenerationen. Frag mich zuerst nach der Regel und den Szenarien, die sie bestehen muss, dann bauen wir.", "decision": "Wann ist ein Tarifzitat für dich falsch – auch wenn gar keiner oder zwei genannt sind? Und wie soll die Meldung wörtlich lauten, damit die Sachbearbeitung sofort weiß, was zu tun ist?", "yourMove": "Beispieltabelle mit einem eigenen Gegenfall ergänzen, Meldungstext selbst formulieren, dann mit Claude bauen."},
-            {"phase": "Beleg zeigen", "askClaude": "Zeig mir Quelle, menschliche Textänderung, Versandereignis und geprüfte Szenarien. Was fehlt noch? Dann hilf mir, meinen Stand zu speichern.", "decision": "Versuch die Prüfung auszutricksen: Welchen Entwurf schreibst du im Cockpit, damit sie greifen müsste?", "yourMove": "Im Cockpit einen falsch zitierenden Entwurf speichern und die eigene Meldung sehen; Protokoll prüfen; keinen zweiten Versand auslösen; Stand speichern."},
+            {"phase": "Beleg zeigen", "askClaude": "Zeig mir Quelle, menschliche Textänderung, Versandereignis und geprüfte Szenarien. Was fehlt noch? Dann hilf mir, meinen Stand zu speichern.", "decision": "Versuch die Prüfung auszutricksen: Welchen Entwurf schreibst du im Cockpit, damit sie greifen müsste?", "yourMove": "An einem Beispielfall aus dem Leben-Bestand (etwa PF-10002 mit PL-2017) im Cockpit einen falsch zitierenden Entwurf speichern und die eigene Meldung sehen; Protokoll prüfen; keinen zweiten Versand auslösen; Stand speichern."},
         ],
         "reflection": "Wo hast du heute einer Quelle mehr geglaubt als der Mail – und würde die Regel in deinem Haus sperren oder nur warnen?",
         "thinkingPrompts": [
@@ -175,6 +191,22 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
         ],
         "timeboxMinutes": {"fallUndQuellen": 15, "entwurfUndMensch": 15, "selbstBauen": 20, "nachweisen": 5, "reflexion": 5},
         "doneWhen": "Ein belegter Lebensentwurf wurde vom Menschen im Cockpit verändert und gesendet; die Tarif-Belegprüfung ist geprüft und gespeichert.",
+        "orientation": {
+            "newToday": "Claude kennt jetzt die Unterlagen des Versicherers: Kunden, Verträge und Tarife – nur zum Lesen.",
+            "cockpit": [
+                "Im Fall stehen jetzt „Kunde“ und „Vertrag“ mit Tarifgeneration, sobald der Fall zugeordnet ist.",
+                "Neben deinem Fall gibt es mitgelieferte Beispielfälle aus dem Leben-Bestand; an einem davon probierst du am Ende deine Prüfung aus.",
+                "Posteingang, Aufgaben, Entwurf, Senden und Aktivität kennst du aus Drill 6.",
+            ],
+            "claudeCan": "Kunden und Verträge suchen, den Fall zuordnen, die passende Tarifgeneration lesen und mit Fundstelle entwerfen.",
+            "claudeCannot": "Senden und an Verträgen oder Tarifen etwas ändern.",
+            "roadmap": [
+                "Welche Kundin, welcher Vertrag, welche Tarifgeneration? Du bestätigst.",
+                "Claude entwirft mit Beleg; du änderst den Text und sendest selbst.",
+                "Gemeinsam bauen: Ein Entwurf mit falscher Tarifgeneration wird beim Speichern gestoppt.",
+                "Du versuchst an einem Beispielfall, die Prüfung auszutricksen.",
+            ],
+        },
         "bridge": "In Drill 6 kannte Claude nur die Mail. Jetzt bekommt es die Wissensbasis des Versicherers: Kunden, Verträge, Tarife – über Werkzeuge, die nur lesen dürfen.",
         "focusBlocks": ["Wissen", "Kontrollen"],
         "extension": {
@@ -216,6 +248,22 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
         ],
         "timeboxMinutes": {"faelleVorbereiten": 15, "freigabeUndAblehnung": 15, "selbstBauen": 20, "nachweisen": 5, "reflexion": 5},
         "doneWhen": "Eine Freigabe und eine Ablehnung im Protokoll; eine Änderung entwertet die alte Freigabe; eigene Verbesserung an der Freigabe geprüft und gespeichert.",
+        "orientation": {
+            "newToday": "Claude darf Lebensfälle jetzt komplett vorbereiten – aber nichts verlässt das Haus ohne deine aktuelle Freigabe.",
+            "cockpit": [
+                "Links neu „Freigaben“: Dort liegen die Lebensantworten, die Claude dir vorgelegt hat.",
+                "Im Fall: „Freigeben“ oder „Ablehnen“ mit Begründung. Erst nach deiner Freigabe kannst du senden.",
+                "Änderst du einen freigegebenen Text, erlischt die Freigabe – das steht dann in der Aktivität.",
+            ],
+            "claudeCan": "Fälle zuordnen, Antworten mit Beleg entwerfen, zur Freigabe vorlegen und nach einer Ablehnung überarbeiten.",
+            "claudeCannot": "Freigeben, ablehnen oder senden.",
+            "roadmap": [
+                "Bevor du etwas ansiehst: Nach welchen Punkten prüfst du?",
+                "Claude bereitet zwei Fälle vor; du gibst einen frei und lehnst einen begründet ab.",
+                "Gemeinsam bauen: Wer den Fall später öffnet, sieht sofort, warum abgelehnt wurde.",
+                "Du änderst einen freigegebenen Text und siehst die Freigabe erlöschen.",
+            ],
+        },
         "bridge": "Bisher hast du jeden Entwurf selbst geändert und gesendet. Jetzt bereitet Claude alles vor, und du entscheidest nur noch: freigeben oder ablehnen.",
         "focusBlocks": ["Kontrollen", "Oberfläche"],
         "extension": {
@@ -257,6 +305,22 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
         ],
         "timeboxMinutes": {"routeUndQueue": 15, "eingreifen": 15, "selbstBauen": 15, "versandNachweis": 10, "reflexion": 5},
         "doneWhen": "Ein automatischer Versand, eine Änderung und ein Stopp sind im Protokoll nachvollziehbar; eigene Verbesserung am Eingriffsfenster geprüft und gespeichert.",
+        "orientation": {
+            "newToday": "Zum ersten Mal geht etwas automatisch raus – wenn niemand rechtzeitig widerspricht.",
+            "cockpit": [
+                "Links neu „Eingriffsfenster“: Haftpflichtantworten, die nach 24 Stunden automatisch rausgehen, mit Countdown.",
+                "Im Fall: Text ändern (dann wird der Termin gestoppt) oder „Versand stoppen“ mit Begründung.",
+                "Im Eingriffsfenster: „Zeit +24 h“ spult die Workshop-Uhr vor – das kannst nur du.",
+            ],
+            "claudeCan": "Sparte zuordnen, Antworten mit Beleg entwerfen, ins 24-Stunden-Fenster einplanen und einen Versand stoppen.",
+            "claudeCannot": "Die Uhr vorspulen, freigeben oder sofort senden.",
+            "roadmap": [
+                "Welche Fälle sind Haftpflicht – und welcher wäre dir für Automatik zu heikel?",
+                "Claude plant ein; du sagst vorher, was rausgeht, und greifst ein: ändern, stoppen, laufen lassen.",
+                "Gemeinsam bauen: Gestoppte Termine werden erklärt, und nichts geht doppelt raus.",
+                "Du spulst die Uhr vor und vergleichst mit deiner Vorhersage.",
+            ],
+        },
         "bridge": "Eine Freigabe für jeden Fall kostet Zeit. Jetzt probierst du die Alternative: Antworten laufen automatisch, wenn niemand im Zeitfenster eingreift.",
         "focusBlocks": ["Kontrollen", "Protokoll"],
         "extension": {
@@ -298,6 +362,22 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
         ],
         "timeboxMinutes": {"snapshotUndFrage": 5, "selbstBauen": 20, "interpretation": 10, "nachweisen": 5, "reflexion": 5},
         "doneWhen": "Höchstens vier präsentierbare Folien; eine Grafik mit euren gezählten Ereignissen; belegte Empfehlung mit Grenze; eigener Stand gespeichert.",
+        "orientation": {
+            "newToday": "Aus dem Protokoll wird ein Bericht für dein Management.",
+            "cockpit": [
+                "Unten links neu „Report“: deine Management-Folien mit einer ersten Grafik.",
+                "Die Zahlen sind die gezählten Ereignisse aus deinem Drill 9 – ohne Namen und Mailtexte.",
+                "Der automatische Versand ist wieder ausgeschaltet.",
+            ],
+            "claudeCan": "Die Zahlen lesen, Folien und Grafik mit dir bauen und kritisch nachfragen.",
+            "claudeCannot": "Namen oder Mailtexte sehen – und Zahlen erfinden darf es auch nicht.",
+            "roadmap": [
+                "Welche Frage soll dein Vorstand nach zwei Minuten beantworten können?",
+                "Du skizzierst die Grafik in Worten, Claude baut sie mit dir.",
+                "Du formulierst deine Empfehlung mit Grenze.",
+                "Du führst zwei Minuten vor.",
+            ],
+        },
         "bridge": "Alles, was heute passiert ist, steht im Protokoll. Jetzt machst du daraus eine belegte Aussage für dein Management – und zeigst dein System.",
         "focusBlocks": ["Protokoll"],
         "extension": {
@@ -520,6 +600,10 @@ def drill_guide(
             "Sprich wie mit einer Führungskraft ohne IT-Hintergrund (CLAUDE.md, Abschnitt 0): keine Datei- oder "
             "Funktionsnamen, kein Code, keine englischen Technikwörter; arbeite still und melde nur Ergebnisse. "
             "'buildTask', 'extension.task' und Hinweis-Level 3 sind nur deine Richtung – übersetzen, nie vorlesen. "
+            "Zum Einstieg die 'orientation' vorstellen: was im Cockpit wo zu sehen ist, was heute neu ist, was Claude "
+            "darf und nicht darf, und der Fahrplan in vier Schritten – kurz, als Liste; die Person einmal durch die Bereiche "
+            "klicken lassen. Halte den Fahrplan: Will die Person vorgreifen (etwa in Drill 6 schon vor dem Bauen senden), "
+            "erklär in einem Satz, warum wir warten. "
             "Die vier Dialogetappen sind eine Landkarte, kein Copy-paste-Auftrag. Frage nach der gewünschten Hilfstiefe, "
             "beginne mit der aktuellen Etappe und stelle dort zuerst die Frage aus 'decision' – bevor du etwas entwirfst, "
             "baust oder vorschlägst. Frag offen („Was meinst du, wie sollten wir … aufbauen?“), greif die Idee der Person auf, "
