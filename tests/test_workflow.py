@@ -46,3 +46,15 @@ def test_controlled_reply_workflows():
     with pytest.raises(ValueError, match="Demo tickets"):
         send_ticket_draft("PF-9004", "test", db)
     db.close()
+
+
+def test_draft_must_cite_the_linked_contracts_tariff_generation(monkeypatch, full_db):
+    from pfefferminzia.workshop import ensure_workshop_fixtures
+
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-07-start")
+    ensure_workshop_fixtures(full_db)
+    assert [c["tariffGenerationId"] for c in get_ticket("PF-10002", full_db)["linkedContracts"]] == ["PL-2017"]
+    with pytest.raises(ValueError, match="PL-2012.*VTR-00000102 hat PL-2017"):
+        save_draft("PF-10002", "Nach Tarif PL-2012 benötigen wir ein Formular.", "Beleg", "mcp-agent", full_db)
+    assert save_draft("PF-10002", "Nach Tarif PL-2017 benötigen wir ein Formular.", "PL-2017, Abschnitt 3", "mcp-agent", full_db)["draft"]
+    assert save_draft("PF-10002", "Wir melden uns mit den Unterlagen.", None, "human", full_db)["draft"]

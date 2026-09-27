@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 
 import json
+import re
 import sqlite3
 from datetime import timedelta
 from pathlib import Path
@@ -321,6 +322,7 @@ def save_draft(
         raise ValueError("Sent or closed tickets cannot modify their reply draft")
     if not body.strip():
         raise ValueError("Draft body cannot be empty")
+    _check_tariff_citation(ticket, f"{body}\n{rationale or ''}", db)
     stamp = utc_now()
     from .checkpoints import capability_enabled
 
@@ -349,6 +351,19 @@ def save_draft(
         complete_ticket_todos(ticket_number, "review", db)
     add_event(ticket["id"], "draft_saved", actor, {"rationale": rationale.strip() if rationale else None}, db)
     return get_ticket(ticket["id"], db)  # type: ignore[return-value]
+
+
+def _check_tariff_citation(ticket: dict[str, Any], text: str, db: sqlite3.Connection) -> None:
+    """Reject a draft that cites a tariff generation other than the linked contract's."""
+    linked = {contract["tariffGenerationId"] for contract in ticket.get("linkedContracts") or []}
+    if not linked:
+        return
+    known = {row[0] for row in db.execute("SELECT DISTINCT tariff_generation_id FROM documents")}
+    cited = {generation for generation in known if re.search(rf"(?<![\w-]){re.escape(generation)}(?![\w-])", text)}
+    wrong = sorted(cited - linked)
+    if wrong:
+        contracts = ", ".join(f"{c['contractId']} hat {c['tariffGenerationId']}" for c in ticket["linkedContracts"])
+        raise ValueError(f"Entwurf zitiert Tarifgeneration {', '.join(wrong)}, aber verknüpfter Vertrag {contracts}")
 
 
 def add_internal_note(
