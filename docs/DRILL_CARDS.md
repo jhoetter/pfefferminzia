@@ -98,10 +98,9 @@ sendest ihn; den anderen lehnst du begründet ab, Claude überarbeitet. Ändere
 dann testweise einen freigegebenen Text: Die Freigabe verfällt.
 
 **Bauauftrag:** Ablehnungsgrund und erloschene Freigabe im Cockpit sichtbar
-machen: `get_ticket` liefert ein Feld `controlNotice`, das Cockpit zeigt es
-über dem Entwurf.
-Einstieg: `pfefferminzia/store.py`, `draftArea` in `web/workshop.js`,
-Test in `tests/test_workflow.py`.
+machen: `get_ticket` liefert ein Feld `controlNotice`; das Cockpit zeigt es
+automatisch als Hinweis über dem Antwortfeld.
+Einstieg: `get_ticket` in `pfefferminzia/store.py`, Test in `tests/test_workflow.py`.
 
 | Etappe | Frag Claude | Dann du |
 | --- | --- | --- |
