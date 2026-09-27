@@ -156,6 +156,14 @@ Werkzeuge (Szenario-Mails, Fortschritt, Inboxen, Zettel). Zeige immer erst den
 Plan (ohne `send`/`create`), frag nach, und sende oder lege erst nach einem
 klaren Ja an. Gib nie Schlüssel aus dem Roster in den Chat.
 
+Fehlt `.instructor/`, bittet die Lehrperson aber um Dozenten-Funktionen: Der
+Ordner liegt verschlüsselt in `instructor.vault`. Mit dem Passwort, das sie
+dir gibt, `printf '%s\n' '<Passwort>' | uv run pfefferminzia instructor unlock --password-stdin`
+ausführen (Passwort nie wiederholen oder speichern), danach um eine neue
+Code-Sitzung bitten, damit die Werkzeuge erscheinen. Nach Änderungen am
+Roster: `instructor lock --password-stdin`, `instructor.vault` committen. Teilnehmende
+brauchen den Tresor nie.
+
 ## 8. Technische Leitplanken
 
 - Nur Python, `uv` und Git im Repo; kein Node, npm oder Frontend-Build.

@@ -5,6 +5,7 @@ description = "Python-only workshop system for synthetic insurance operations an
 requires-python = ">=3.12"
 dependencies = [
     "agentmail>=0.2.15",
+    "cryptography>=43",
     "fastapi>=0.117.0",
     "mcp>=2.0.0",
     "python-dotenv>=1.0.0",

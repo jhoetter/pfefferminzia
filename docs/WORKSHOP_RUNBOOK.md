@@ -30,6 +30,17 @@ uv run pfefferminzia instructor retag --yes
 git push origin main reference --force-with-lease && git push origin --tags --force
 ```
 
+## Dozenten-Tresor
+
+`.instructor/` (Organisationsschlüssel, Roster, Zettel, Versand-Log) ist
+Git-ignoriert, liegt aber verschlüsselt als `instructor.vault` im Repo
+(scrypt + AES-256-GCM). Auf einem neuen Rechner in der Claude-App sagen:
+„Entsperre den Dozenten-Tresor mit diesem Passwort: …“ – oder
+`uv run pfefferminzia instructor unlock`. Nach Änderungen (neue Inboxen,
+Versand) `instructor lock` und den Tresor committen. Das Passwort kam per Mail;
+das Repo ist öffentlich, also nirgends teilen und den AgentMail-Schlüssel nach
+dem Workshop rotieren.
+
 ## Vorbereitung vor Dienstag
 
 1. **AgentMail-Kapazität:** 16 Teilnehmende + 3 Reserve + 1 Dozenten-Inbox.

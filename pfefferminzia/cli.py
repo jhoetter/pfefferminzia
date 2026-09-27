@@ -88,6 +88,11 @@ def main() -> None:
     mail_roster.add_argument("to")
     mail_roster.add_argument("--slot", action="append", help="Only this slot, e.g. 17 (repeatable)")
     mail_roster.add_argument("--yes", action="store_true")
+    lock = instructor_commands.add_parser("lock", help="Encrypt .instructor/ into instructor.vault (may be committed)")
+    lock.add_argument("--password-stdin", action="store_true")
+    unlock = instructor_commands.add_parser("unlock", help="Restore .instructor/ from instructor.vault")
+    unlock.add_argument("--password-stdin", action="store_true")
+    unlock.add_argument("--force", action="store_true", help="Overwrite an existing .instructor/")
     retag = instructor_commands.add_parser("retag", help="Point checkpoint tags at base and reference commits")
     retag.add_argument("--base", default="main")
     retag.add_argument("--reference", default="reference")
@@ -224,6 +229,18 @@ def main() -> None:
             elif args.instructor_command == "mail-roster":
                 slots = [f"{int(slot):02d}" for slot in args.slot] if args.slot else None
                 _json(tools.roster_email(args.to, execute=args.yes, slots=slots))
+            elif args.instructor_command in ("lock", "unlock"):
+                from . import vault
+
+                password = (sys.stdin.readline().strip() if args.password_stdin else vault.password_from_environment())
+                if not password:
+                    import getpass
+
+                    password = getpass.getpass("Tresor-Passwort: ")
+                if args.instructor_command == "lock":
+                    _json(vault.lock(password, tools.INSTRUCTOR_DIR))
+                else:
+                    _json(vault.unlock(password, tools.INSTRUCTOR_DIR, overwrite=args.force))
             elif args.instructor_command == "retag":
                 _json(tools.retag(args.base, args.reference, execute=args.yes))
             elif args.instructor_command == "status":
