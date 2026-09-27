@@ -15,8 +15,15 @@ def create_database(db_path: str | Path | None = None) -> sqlite3.Connection:
     db = sqlite3.connect(path, isolation_level=None, check_same_thread=False)
     db.row_factory = sqlite3.Row
     db.execute("PRAGMA foreign_keys = ON")
+    db.execute("PRAGMA busy_timeout = 5000")
     if path != ":memory:":
-        db.execute("PRAGMA journal_mode = WAL")
+        # Not WAL: WAL relies on a shared-memory index between processes, which
+        # silently stops working on network/cloud-synced filesystems (common on
+        # workshop laptops with a redirected home directory) and other
+        # processes then read stale data indefinitely. The rollback journal
+        # only needs plain file locks, so writes from the MCP process and the
+        # web server become visible to each other immediately everywhere.
+        db.execute("PRAGMA journal_mode = DELETE")
     migrate(db)
     return db
 
