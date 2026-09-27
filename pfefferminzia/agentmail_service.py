@@ -332,6 +332,7 @@ def send_ticket_draft(
         (stamp, stamp, ticket["id"]),
     )
     add_event(ticket["id"], "reply_sent", actor, {"messageId": message_id}, db)
+    complete_ticket_todos(ticket_number, "reply", db)
     complete_ticket_todos(ticket_number, "review", db)
     complete_ticket_todos(ticket_number, "queue_intervention", db)
     return get_ticket(ticket["id"], db)  # type: ignore[return-value]

@@ -17,7 +17,7 @@ from pfefferminzia.store import (
     submit_draft,
     update_classification,
 )
-from pfefferminzia.todos import list_todos
+from pfefferminzia.todos import create_todo, list_todos
 from pfefferminzia.workshop_clock import advance_workshop_clock
 
 
@@ -137,6 +137,23 @@ def test_agentmail_life_and_liability_control_patterns(monkeypatch, full_db):
     assert result == {"enabled": True, "sent": 1, "skipped": 0}
     assert get_ticket(liability["ticketNumber"], full_db)["status"] == "sent"
     assert len(fake.inboxes.messages.replies) == 2
+
+
+def test_sending_a_reply_completes_its_reply_task(monkeypatch, full_db):
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-06-start")
+    monkeypatch.setattr(agentmail_service, "_client", lambda: FakeAgentMail())
+    monkeypatch.setenv("AGENTMAIL_API_KEY", "test-key")
+    monkeypatch.setenv("AGENTMAIL_INBOX_ID", "inbox-participant")
+    monkeypatch.setenv("WORKSHOP_ALLOWED_RECIPIENTS", "participant@example.test")
+    sync_agentmail(full_db)
+    number = imported_tickets(full_db)[0]["ticketNumber"]
+    manual = create_todo("Rückruf planen", ticket_number=number, db=full_db)
+    save_draft(number, "Danke für Ihre Nachricht.", "Kurz", "mcp-agent", full_db)
+    send_ticket_draft(number, "human-ui", full_db)
+
+    todos = {todo["id"]: todo for todo in list_todos(db=full_db) if todo["ticketNumber"] == number}
+    assert [todo["status"] for todo in todos.values() if todo["kind"] == "reply"] == ["completed"]
+    assert todos[manual["id"]]["status"] == "open"
 
 
 def imported_tickets(db):
