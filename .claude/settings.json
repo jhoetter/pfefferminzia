@@ -1,5 +1,11 @@
 {
-  "enabledMcpjsonServers": ["pfefferminzia"],
+  "promptSuggestionEnabled": false,
+  "env": {
+    "CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION": "false"
+  },
+  "enabledMcpjsonServers": [
+    "pfefferminzia"
+  ],
   "permissions": {
     "allow": [
       "mcp__pfefferminzia",

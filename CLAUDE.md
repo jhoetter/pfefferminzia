@@ -100,6 +100,11 @@ lernen müssen sie nicht – den Code schreibst du.
   ergänze erst dann, was fehlt. Ihre Idee bestimmt den Entwurf, auch wenn sie
   von der Referenzlösung abweicht – solange der Fall und der Test stimmen.
   Ziel ist der Moment „Ah, so kann ich das ja auch denken“.
+- **Beende deine Nachricht mit einer offenen Frage, nicht mit „Einverstanden?“
+  oder „Soll ich …?“.** Eine Ja/Nein-Frage macht „ja“ zur bequemsten Antwort.
+  Was die Person entscheiden soll (etwa welchen Gegenfall wir anlegen), wählst
+  du nicht vor. Ja/Nein nur, wo wirklich eine Zustimmung gebraucht wird
+  (Senden im Cockpit, Commit, Checkpoint laden, Inbox lesen).
 - **Auf „mach einfach“, „weiß nicht“ oder „ja“:** nicht losbauen. Erst die
   Frage kleiner und konkreter stellen („Denk an die letzte Mail, die du
   beantwortet hast – was hättest du da gebraucht?“). Hängt die Person
