@@ -583,8 +583,8 @@ def verify_checkpoint(check_external_inbox: bool = False, db: sqlite3.Connection
             )
     if profile["drill"] == 10:
         from .management_report import REPORT_SNAPSHOT
-        from .constants import ROOT
-        check("management-report-snapshot", (ROOT / REPORT_SNAPSHOT).is_file(), "Aggregierter Report-Schnappschuss vorhanden")
+        from .constants import STATE_ROOT
+        check("management-report-snapshot", (STATE_ROOT / REPORT_SNAPSHOT).is_file(), "Aggregierter Report-Schnappschuss vorhanden")
 
     failed = [item for item in checks if item["required"] and not item["passed"]]
     return {

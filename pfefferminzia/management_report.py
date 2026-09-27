@@ -11,7 +11,7 @@ import sqlite3
 from pathlib import Path
 from typing import Any
 
-from .constants import ROOT
+from .constants import STATE_ROOT
 from .util import utc_now
 
 
@@ -66,7 +66,7 @@ def capture_report_snapshot(
     return destination
 
 
-def read_report_snapshot(root: Path = ROOT) -> dict[str, Any]:
+def read_report_snapshot(root: Path = STATE_ROOT) -> dict[str, Any]:
     path = root / REPORT_SNAPSHOT
     if not path.is_file():
         raise ValueError("Report-Schnappschuss fehlt: Drill 10 aus dem Drill-9-Arbeitsstand laden")

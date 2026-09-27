@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 from .checkpoints import normalize_checkpoint
-from .constants import ROOT
+from .constants import ROOT, STATE_ROOT
 from .management_report import capture_report_snapshot
 
 
@@ -22,7 +22,7 @@ LoadMode = Literal["official", "continue"]
 
 
 def _recovery_base_name() -> str:
-    return ROOT.name.split("-drill-", 1)[0]
+    return STATE_ROOT.name.split("-drill-", 1)[0]
 
 
 def _git_output(*args: str, cwd: Path = ROOT) -> str:
@@ -44,7 +44,7 @@ def _run(command: list[str], cwd: Path, *, clean_checkpoint_environment: bool = 
 
 
 def _plans_dir() -> Path:
-    path = ROOT / ".data" / "checkpoint-plans"
+    path = STATE_ROOT / ".data" / "checkpoint-plans"
     path.mkdir(parents=True, exist_ok=True)
     return path
 
@@ -120,7 +120,7 @@ def plan_checkpoint_load(target_checkpoint: str, mode: LoadMode = "official") ->
     report_snapshot = checkpoint in ("drill-10-start", "drill-10-complete")
     configured_database = os.getenv("PFEFFERMINZIA_DB_PATH")
     source_database = (
-        (ROOT / configured_database).resolve() if configured_database else ROOT / ".data" / "pfefferminzia.db"
+        (STATE_ROOT / configured_database).resolve() if configured_database else STATE_ROOT / ".data" / "pfefferminzia.db"
     )
     reference, commit, official_tag = _official_ref(checkpoint)
     source_head = _git_output("rev-parse", "HEAD")
@@ -130,7 +130,7 @@ def plan_checkpoint_load(target_checkpoint: str, mode: LoadMode = "official") ->
         raise ValueError("Für 'continue' muss die bisherige Workshop-Datenbank vorhanden sein")
     token = secrets.token_urlsafe(24)
     suffix = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
-    target = ROOT.parent / f"{_recovery_base_name()}-{checkpoint}-{suffix}-{token[:6]}"
+    target = STATE_ROOT.parent / f"{_recovery_base_name()}-{checkpoint}-{suffix}-{token[:6]}"
     branch = f"workshop/{checkpoint}-{suffix}-{token[:6]}"
     plan = {
         "token": token,
@@ -171,7 +171,7 @@ def plan_checkpoint_load(target_checkpoint: str, mode: LoadMode = "official") ->
         "participantChangesPreserved": True,
         "participantChangesCarried": mode == "continue",
         "localCasesCarried": mode == "continue",
-        "environmentCopied": (ROOT / ".env").exists(),
+        "environmentCopied": (STATE_ROOT / ".env").exists(),
         "automaticDispatchWillBeEnabled": automatic_dispatch,
         "aggregateReportWillBeCopied": report_snapshot,
         "reportSourceDatabasePresent": source_database.is_file() if report_snapshot else None,
@@ -216,7 +216,7 @@ def apply_checkpoint_load(confirmation_token: str) -> dict[str, Any]:
         raise ValueError("Participant files changed after the plan; inspect and prepare a new plan")
 
     target = Path(plan["targetPath"]).resolve()
-    expected_parent = ROOT.parent.resolve()
+    expected_parent = STATE_ROOT.parent.resolve()
     expected_prefix = f"{_recovery_base_name()}-{plan['checkpoint']}-"
     if target.parent != expected_parent or not target.name.startswith(expected_prefix):
         raise ValueError("Checkpoint target path failed the safety check")
@@ -232,7 +232,7 @@ def apply_checkpoint_load(confirmation_token: str) -> dict[str, Any]:
         if plan.get("mode") == "continue":
             _copy_database(Path(plan["sourceDatabase"]), target)
         if plan["checkpoint"] in ("drill-10-start", "drill-10-complete"):
-            capture_report_snapshot(ROOT, target, plan["sourceCheckpoint"], Path(plan["sourceDatabase"]))
+            capture_report_snapshot(STATE_ROOT, target, plan["sourceCheckpoint"], Path(plan["sourceDatabase"]))
         _run(["uv", "sync", "--frozen"], target)
         _run(
             [
@@ -267,7 +267,7 @@ def _source_fingerprint(commit: str, dirty_paths: list[str]) -> str:
 
 
 def _write_checkpoint_environment(target: Path, checkpoint: str) -> None:
-    source = ROOT / ".env"
+    source = STATE_ROOT / ".env"
     lines = source.read_text(encoding="utf-8").splitlines() if source.exists() else []
     replaced = {"WORKSHOP_CHECKPOINT", "PFEFFERMINZIA_DB_PATH", "AUTO_SEND_ENABLED"}
     retained = [line for line in lines if line.partition("=")[0].strip() not in replaced]

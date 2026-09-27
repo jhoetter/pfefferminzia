@@ -6,7 +6,7 @@ from datetime import timedelta
 from pathlib import Path
 from typing import Any
 
-from .constants import CATEGORIES, PRIORITIES, PRODUCT_LINES, ROOT, TICKET_STATUSES
+from .constants import CATEGORIES, PRIORITIES, PRODUCT_LINES, STATE_ROOT, TICKET_STATUSES
 from .checkpoints import checkpoint_profile
 from .database import get_database
 from .todos import complete_ticket_todos, create_todo
@@ -549,9 +549,9 @@ def get_document_record(document_id: str, db: sqlite3.Connection | None = None) 
 
 
 def resolve_storage_path(storage_path: str) -> Path:
-    resolved = (ROOT / storage_path).resolve()
+    resolved = (STATE_ROOT / storage_path).resolve()
     try:
-        resolved.relative_to(ROOT.resolve())
+        resolved.relative_to(STATE_ROOT.resolve())
     except ValueError as error:
         raise ValueError("Invalid storage path") from error
     return resolved

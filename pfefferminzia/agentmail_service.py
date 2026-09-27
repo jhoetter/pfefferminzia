@@ -14,7 +14,7 @@ from typing import Any
 
 from agentmail import AgentMail
 
-from .constants import ROOT
+from .constants import STATE_ROOT
 from .crm import auto_link_exact_customer
 from .database import get_database
 from .runtime_config import reload_agentmail_environment_if_changed
@@ -238,7 +238,7 @@ def sync_agentmail(db: sqlite3.Connection | None = None) -> dict[str, Any]:
                     download_url = str(_value(metadata, "download_url", "downloadUrl"))
                     with urllib.request.urlopen(download_url, timeout=30) as response_data:  # noqa: S310 - URL comes from AgentMail SDK
                         content = response_data.read()
-                    folder = ROOT / ".data" / "attachments" / ticket_number
+                    folder = STATE_ROOT / ".data" / "attachments" / ticket_number
                     folder.mkdir(parents=True, exist_ok=True)
                     original_name = str(_value(attachment, "filename", default="attachment"))
                     filename = f"{_safe_filename(attachment_id)}-{_safe_filename(original_name)}"
@@ -250,7 +250,7 @@ def sync_agentmail(db: sqlite3.Connection | None = None) -> dict[str, Any]:
                         """INSERT OR IGNORE INTO attachments
                           (ticket_id, message_id, external_attachment_id, filename, content_type, size_bytes, storage_path, extracted_text, created_at)
                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-                        (ticket_id, local_message_id, attachment_id, original_name, content_type, len(content), str(absolute.relative_to(ROOT)), extracted, stamp),
+                        (ticket_id, local_message_id, attachment_id, original_name, content_type, len(content), str(absolute.relative_to(STATE_ROOT)), extracted, stamp),
                     )
                     result["importedAttachments"] += 1
         db.execute(

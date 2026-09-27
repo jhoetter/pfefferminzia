@@ -1,7 +1,26 @@
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_DB_PATH = ROOT / ".data" / "pfefferminzia.db"
+
+
+def _state_root(code_root: Path) -> Path:
+    """Where the key (.env) and the cases (.data) live.
+
+    The Claude app may run a session in its own copy under
+    `<folder>/.claude/worktrees/<name>`. That copy has the code but not the
+    participant's key or cases, and it disappears when the session is cleaned
+    up, so it shares both with the folder it was made from. Checkpoint folders
+    (siblings such as `pfefferminzia-drill-07-…`) keep their own state.
+    """
+    if code_root.parent.name == "worktrees" and code_root.parent.parent.name == ".claude":
+        main = code_root.parent.parent.parent
+        if (main / ".git").exists():
+            return main
+    return code_root
+
+
+STATE_ROOT = _state_root(ROOT)
+DEFAULT_DB_PATH = STATE_ROOT / ".data" / "pfefferminzia.db"
 
 TICKET_STATUSES = ("new", "in_progress", "awaiting_human", "scheduled", "sent", "closed")
 PRODUCT_LINES = ("unknown", "liability", "life")

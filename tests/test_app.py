@@ -16,7 +16,10 @@ def test_python_host_serves_api_and_browser_workspace(monkeypatch, tmp_path):
     app = create_app()
 
     with TestClient(app) as client:
-        assert client.get("/api/health").json() == {"ok": True, "service": "pfefferminzia"}
+        health = client.get("/api/health").json()
+        assert health["ok"] is True and health["service"] == "pfefferminzia"
+        # serve uses folder and process to replace a copy from an earlier session.
+        assert health["root"] and isinstance(health["pid"], int)
         dashboard = client.get("/api/dashboard")
         assert dashboard.status_code == 200
         assert dashboard.json()["tickets"] == []

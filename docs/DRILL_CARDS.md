@@ -24,7 +24,8 @@ Sitzung mit deinem Benutzerordner und schreibe:
 > Ich bin in Drill 6.
 
 Claude richtet alles ein und öffnet <http://127.0.0.1:3004>. Wenn es fragt,
-füge den **Schlüssel von deinem Zettel** ein (beginnt mit `am_`); mehr
+füge den **Schlüssel von deinem Zettel** ein (beginnt mit `am_`). Grauer
+Text im Eingabefeld ist nur ein Vorschlag der App – nicht übernehmen; mehr
 brauchst du nicht. Das ist **nur** in diesem synthetischen Workshop in
 Ordnung; echte Zugangsdaten und Kundendaten gehören nie in einen Chat, den
 Schlüssel nie in Git, Gruppenchats oder Screenshots. Danach bittet Claude

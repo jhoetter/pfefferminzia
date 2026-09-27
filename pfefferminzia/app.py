@@ -17,7 +17,7 @@ from pydantic import BaseModel, Field
 from .agentmail_service import agentmail_configuration, dispatch_due_replies, send_ticket_draft, sync_agentmail
 from .checkpoints import capability_enabled, require_capability, verify_checkpoint
 from .claims import create_claim_from_ticket, create_claim_task, ensure_workshop_claims, get_claim, list_claims, propose_claim_action, review_claim_action
-from .constants import ROOT
+from .constants import ROOT, STATE_ROOT
 from .crm import get_contract, get_customer, link_ticket_contract, link_ticket_party, resolve_ticket_customer, search_customers
 from .mcp_server import create_mcp_server
 from .management_report import read_report_snapshot
@@ -46,7 +46,7 @@ from .upstream import ensure_falk_submodule, get_upstream_status, import_falk_da
 from .workshop import ensure_workshop_fixtures, get_workshop_status
 from .workshop_clock import advance_workshop_clock
 
-load_dotenv(ROOT / ".env")
+load_dotenv(STATE_ROOT / ".env")
 WEB_ROOT = ROOT / "web"
 SLIDES_ROOT = ROOT / "slides"
 
@@ -201,7 +201,8 @@ def create_app() -> FastAPI:
 
     @app.get("/api/health")
     async def health() -> dict[str, Any]:
-        return {"ok": True, "service": "pfefferminzia"}
+        # Folder and process let `serve` recognise and replace an older copy.
+        return {"ok": True, "service": "pfefferminzia", "root": str(ROOT), "pid": os.getpid()}
 
     @app.get("/api/data-source")
     async def data_source() -> dict[str, Any]:

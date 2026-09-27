@@ -11,10 +11,10 @@ from pathlib import Path
 from typing import Any
 
 from .agentmail_service import _mapping, _value
-from .constants import ROOT
+from .constants import ROOT, STATE_ROOT
 from .runtime_config import reload_agentmail_environment_if_changed
 
-ENV_PATH = ROOT / ".env"
+ENV_PATH = STATE_ROOT / ".env"
 EXAMPLE_PATH = ROOT / ".env.example"
 KEY_PATTERN = re.compile(r"am_[A-Za-z0-9_]{16,}")
 

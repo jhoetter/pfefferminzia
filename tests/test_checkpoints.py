@@ -114,6 +114,7 @@ def test_report_checkpoint_needs_snapshot_but_not_live_inbox(monkeypatch, full_d
     monkeypatch.setenv("AGENTMAIL_API_KEY", "")
     monkeypatch.setenv("AUTO_SEND_ENABLED", "false")
     monkeypatch.setattr(constants, "ROOT", tmp_path)
+    monkeypatch.setattr(constants, "STATE_ROOT", tmp_path)
     ensure_workshop_fixtures(full_db)
     result = verify_checkpoint(False, full_db)
     assert result["ok"] is False

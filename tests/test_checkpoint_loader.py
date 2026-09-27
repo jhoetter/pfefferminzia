@@ -20,6 +20,7 @@ def test_checkpoint_loader_preserves_source_and_builds_separate_worktree(monkeyp
         encoding="utf-8",
     )
     monkeypatch.setattr(loader, "ROOT", source)
+    monkeypatch.setattr(loader, "STATE_ROOT", source)
     monkeypatch.setattr(loader, "_plans_dir", lambda: source / ".data" / "checkpoint-plans")
     monkeypatch.setattr(loader, "_official_ref", lambda checkpoint: (f"refs/tags/checkpoint/{checkpoint}", "abc123", True))
     monkeypatch.setattr(loader, "_dirty_paths", lambda: ["participant.py"])
@@ -77,6 +78,8 @@ def test_checkpoint_worktree_is_a_pushable_branch(monkeypatch, tmp_path):
     (source / ".env").write_text("WORKSHOP_CHECKPOINT=drill-06-start\n", encoding="utf-8")
 
     monkeypatch.setattr(loader, "ROOT", source)
+
+    monkeypatch.setattr(loader, "STATE_ROOT", source)
     monkeypatch.setattr(loader, "_plans_dir", lambda: source / ".data" / "checkpoint-plans")
     monkeypatch.setattr(loader, "_git_output", lambda *args, **kwargs: git(*args))
     real_run = loader._run
@@ -121,6 +124,8 @@ def test_continue_mode_carries_code_and_cases_without_touching_source(monkeypatc
     db.close()
 
     monkeypatch.setattr(loader, "ROOT", source)
+
+    monkeypatch.setattr(loader, "STATE_ROOT", source)
     monkeypatch.setattr(loader, "_plans_dir", lambda: source / ".data" / "checkpoint-plans")
     monkeypatch.setattr(loader, "_git_output", lambda *args, **kwargs: git(*args))
     real_run = loader._run
@@ -163,6 +168,7 @@ def test_report_checkpoint_carries_counts_without_source_database(monkeypatch, t
     db.close()
     monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-09-start")
     monkeypatch.setattr(loader, "ROOT", source)
+    monkeypatch.setattr(loader, "STATE_ROOT", source)
     monkeypatch.setattr(loader, "_plans_dir", lambda: source / ".data" / "checkpoint-plans")
     monkeypatch.setattr(loader, "_official_ref", lambda checkpoint: (f"refs/tags/checkpoint/{checkpoint}", "abc123", True))
     monkeypatch.setattr(loader, "_dirty_paths", lambda: [])
@@ -189,6 +195,7 @@ def test_checkpoint_loader_rejects_changed_source(monkeypatch, tmp_path):
     source = tmp_path / "pfefferminzia"
     source.mkdir()
     monkeypatch.setattr(loader, "ROOT", source)
+    monkeypatch.setattr(loader, "STATE_ROOT", source)
     monkeypatch.setattr(loader, "_plans_dir", lambda: source / ".data" / "checkpoint-plans")
     monkeypatch.setattr(loader, "_official_ref", lambda checkpoint: (f"refs/tags/checkpoint/{checkpoint}", "target123", True))
     dirty = [[]]
@@ -206,6 +213,7 @@ def test_recovery_worktree_names_do_not_grow_across_drills(monkeypatch, tmp_path
     recovery = tmp_path / "pfefferminzia-drill-07-start-20260922-token"
     recovery.mkdir()
     monkeypatch.setattr(loader, "ROOT", recovery)
+    monkeypatch.setattr(loader, "STATE_ROOT", recovery)
     monkeypatch.setattr(loader, "_plans_dir", lambda: recovery / ".data" / "checkpoint-plans")
     monkeypatch.setattr(loader, "_official_ref", lambda checkpoint: (f"refs/tags/checkpoint/{checkpoint}", "target123", True))
     monkeypatch.setattr(loader, "_dirty_paths", lambda: [])
@@ -251,6 +259,7 @@ def test_recovery_sets_automatic_dispatch_for_its_stage(monkeypatch, tmp_path, c
         encoding="utf-8",
     )
     monkeypatch.setattr(loader, "ROOT", source)
+    monkeypatch.setattr(loader, "STATE_ROOT", source)
     loader._write_checkpoint_environment(target, checkpoint)
     lines = (target / ".env").read_text(encoding="utf-8").splitlines()
     assert f"AUTO_SEND_ENABLED={expected}" in lines

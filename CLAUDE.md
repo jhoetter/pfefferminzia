@@ -78,8 +78,11 @@ Führe diese Schritte still selbst aus:
 2. `uv sync --frozen` und `uv run pfefferminzia setup` (legt auch `.env` an;
    liest und sendet keine Mails).
 3. App **im Hintergrund** starten: `uv run pfefferminzia serve --open`
-   (öffnet <http://127.0.0.1:3004>). Meldet der Befehl einen belegten Port,
-   läuft schon eine Pfefferminzia: alte beenden, neu starten.
+   (öffnet <http://127.0.0.1:3004>). Der Befehl beendet selbst eine ältere
+   Kommandozentrale, etwa aus einer früheren Sitzung oder einem anderen Ordner.
+   Verlass dich nie darauf, dass „schon eine läuft“ – starte immer mit diesem
+   Befehl und schau danach, dass im Browser das Cockpit erscheint und keine
+   Fehlermeldung.
 4. Sag in einfachen Worten: Die Kommandozentrale ist offen; es ist ein
    Softwaregerüst, das wir heute ausbauen. Frag dann nur nach **einem** Wert:
    „Bitte füge den Schlüssel von deinem Zettel ein (er beginnt mit am_).“
@@ -96,9 +99,12 @@ Führe diese Schritte still selbst aus:
    dazu, dass der Schlüssel gespeichert ist und nicht noch einmal nötig ist.
    (Nur wer im Terminal arbeitet: `cd ~/pfefferminzia && claude`.)
 
-**Bei jedem Sitzungsstart im Repo:** Prüfe mit
-`curl -s http://127.0.0.1:3004/api/health`, ob die App läuft; sonst starte sie
-wie in Schritt 3 im Hintergrund. Rufe dann `get_workshop_status` und
+**Bei jedem Sitzungsstart im Repo:** Starte die App wie in Schritt 3 im
+Hintergrund, auch wenn `curl -s http://127.0.0.1:3004/api/health` antwortet –
+dort kann eine ältere Kopie laufen (ihr Ordner steht unter `root`). Läuft die
+Sitzung in einer Arbeitskopie der Claude-App (`.claude/worktrees/…`), kommen
+Schlüssel und Fälle automatisch aus dem Hauptordner; nicht erneut nach dem
+Schlüssel fragen. Rufe dann `get_workshop_status` und
 `get_drill_guide` (Hinweis-Level 0) auf. Meldet der Status die Inbox als nicht
 verbunden, schau zuerst, ob in `.env` schon ein `AGENTMAIL_API_KEY` steht:
 Dann `connect` mit diesem gespeicherten Schlüssel erneut ausführen, **ohne**

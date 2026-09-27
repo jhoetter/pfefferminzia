@@ -6,10 +6,10 @@ from pathlib import Path
 
 from dotenv import dotenv_values
 
-from .constants import ROOT
+from .constants import STATE_ROOT
 
 
-ENV_PATH = ROOT / ".env"
+ENV_PATH = STATE_ROOT / ".env"
 AGENTMAIL_SETTINGS = ("AGENTMAIL_API_KEY", "AGENTMAIL_INBOX_ID", "WORKSHOP_ALLOWED_RECIPIENTS")
 
 

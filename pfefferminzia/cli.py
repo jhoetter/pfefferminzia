@@ -8,7 +8,7 @@ from typing import Any
 
 from dotenv import load_dotenv
 
-from .constants import ROOT
+from .constants import STATE_ROOT
 
 
 def _json(value: Any) -> None:
@@ -29,8 +29,56 @@ def _initialize() -> dict[str, Any]:
     return {**upstream, "submoduleInitialized": initialized}
 
 
+
+def _port_in_use(host: str, port: int) -> bool:
+    import socket
+
+    with socket.socket() as probe:
+        return probe.connect_ex((host, port)) == 0
+
+
+def _stop_running_pfefferminzia(host: str, port: int, wait_seconds: float = 10.0) -> str | None:
+    """Free the port from an older Pfefferminzia, e.g. one left from an earlier session.
+
+    Only a process that answers as Pfefferminzia is stopped; anything else on
+    the port is reported. Returns the folder of the stopped copy.
+    """
+    import shutil
+    import signal
+    import subprocess
+    import time
+    import urllib.request
+
+    if not _port_in_use(host, port):
+        return None
+    try:
+        with urllib.request.urlopen(f"http://{host}:{port}/api/health", timeout=3) as response:
+            health = json.load(response)
+    except Exception:  # noqa: BLE001 - anything unreadable is not ours to stop
+        health = {}
+    if health.get("service") != "pfefferminzia":
+        raise RuntimeError(f"Port {port} ist von einem anderen Programm belegt; bitte dieses beenden.")
+    pids = [int(health["pid"])] if health.get("pid") else []
+    if not pids and shutil.which("lsof"):
+        # Copies from before the health check reported their process.
+        found = subprocess.run(["lsof", "-ti", f"tcp:{port}", "-sTCP:LISTEN"], capture_output=True, text=True)
+        pids = [int(pid) for pid in found.stdout.split()]
+    if not pids:
+        raise RuntimeError(f"Auf Port {port} läuft eine ältere Kommandozentrale; bitte beenden und neu starten.")
+    for pid in pids:
+        try:
+            os.kill(pid, signal.SIGTERM)
+        except ProcessLookupError:
+            pass
+    deadline = time.monotonic() + wait_seconds
+    while _port_in_use(host, port):
+        if time.monotonic() > deadline:
+            raise RuntimeError(f"Die ältere Kommandozentrale auf Port {port} reagiert nicht; bitte von Hand beenden.")
+        time.sleep(0.2)
+    return str(health.get("root") or "unbekannter Ordner")
+
 def main() -> None:
-    load_dotenv(ROOT / ".env")
+    load_dotenv(STATE_ROOT / ".env")
     parser = argparse.ArgumentParser(prog="pfefferminzia", description="Python-only Pfefferminzia workshop system")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -103,19 +151,17 @@ def main() -> None:
 
     args = parser.parse_args()
     if args.command == "serve":
-        import socket
         import threading
         import uvicorn
         import webbrowser
 
-        with socket.socket() as probe:
-            if probe.connect_ex((args.host, args.port)) == 0:
-                print(
-                    f"Port {args.port} ist belegt – läuft Pfefferminzia schon (evtl. aus einem anderen Ordner)? "
-                    f"Alte App beenden oder http://{args.host}:{args.port} öffnen.",
-                    file=sys.stderr,
-                )
-                sys.exit(2)
+        try:
+            replaced = _stop_running_pfefferminzia(args.host, args.port)
+        except RuntimeError as error:
+            print(error, file=sys.stderr)
+            sys.exit(2)
+        if replaced:
+            print(f"Ältere Kommandozentrale beendet ({replaced}); starte die aktuelle.", file=sys.stderr)
         if args.open:
             threading.Timer(2.0, webbrowser.open, (f"http://{args.host}:{args.port}",)).start()
         uvicorn.run("pfefferminzia.app:app", host=args.host, port=args.port, reload=args.reload)
@@ -134,7 +180,7 @@ def main() -> None:
 
         env_created = ensure_env_file()
         if env_created:
-            load_dotenv(ROOT / ".env")
+            load_dotenv(STATE_ROOT / ".env")
         try:
             result = _initialize()
         except (OSError, RuntimeError, ValueError) as error:
