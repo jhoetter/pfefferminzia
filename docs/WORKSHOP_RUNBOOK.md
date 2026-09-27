@@ -1,7 +1,6 @@
 # Runbook für Dienstag, 29. September 2026
 
-Das ist die operative Quelle für den Dozenten. Der öffentliche Stundenplan
-bleibt `Stundenplan_AI_Studio_09_2026_V7.xlsx`, der Lernbogen steht in
+Das ist die operative Quelle für den Dozenten. Der Lernbogen steht in
 [WORKSHOP_AGENDA.md](WORKSHOP_AGENDA.md), die Teilnehmersicht in
 [DRILL_CARDS.md](DRILL_CARDS.md). Nummerierung: Falk hat am Montag Drill 1–5,
 Dienstag ist Drill 6–10.
