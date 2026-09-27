@@ -1,7 +1,7 @@
 /* Pfefferminzia cockpit: one small app, served as-is by Python (no build step). */
 const app = document.querySelector('#app');
 const state = {
-  dashboard: null, todos: [], ticket: null, view: 'inbox', selected: null,
+  dashboard: null, todos: [], ticket: null, evidence: null, view: 'inbox', selected: null,
   dialog: null, toast: null, busy: false, fetchedAt: Date.now(),
 };
 
@@ -84,6 +84,7 @@ async function refresh({ quiet = false } = {}) {
     state.fetchedAt = Date.now();
     if (state.view !== 'tasks' && state.selected && !ticketsFor(state.view).some(t => t.ticketNumber === state.selected)) state.selected = null;
     state.ticket = state.selected ? await request(`/api/tickets/${url(state.selected)}`) : null;
+    await loadEvidence();
   } catch (error) { toast(error.message, 'error'); }
   render();
 }
@@ -228,6 +229,33 @@ function properties(ticket) {
   </aside>`;
 }
 
+const money = (value, currency) => value == null ? '—' : `${Number(value).toLocaleString('de-CH')} ${html(currency || '')}`;
+const fact = (label, value) => value ? `<div class="fact"><span>${label}</span><div>${value}</div></div>` : '';
+
+function evidence(ticket) {
+  const data = state.evidence;
+  if (!has('knowledge') || !data || data.ticketNumber !== ticket.ticketNumber) return '';
+  const sample = data.isSample ? '<p class="muted small">Beispielfall aus dem Bestand – zum Üben; von hier wird nichts gesendet.</p>' : '';
+  if (!data.customers.length && !data.contracts.length) {
+    return `<section class="evidence"><div class="group-label">Unterlagen zum Fall</div>${sample}<p class="muted">Noch keine Kundin und kein Vertrag zugeordnet. Bitte Claude, den Fall zuzuordnen – danach stehen hier die Belege.</p></section>`;
+  }
+  const customers = data.customers.map(c => `<details class="source" open><summary><strong>Kunde</strong> ${html(c.name)}</summary>
+    ${fact('Geboren', html(c.birthDate))}${fact('Wohnort', html(c.residence))}${fact('E-Mail', html(c.email))}${fact('Telefon', html(c.phone))}</details>`).join('');
+  const contracts = data.contracts.map(c => `<details class="source" open><summary><strong>Vertrag</strong> ${html(c.contractId)} · ${html(c.product)}</summary>
+    ${fact('Tarifgeneration', `<strong>${html(c.tariffGenerationId)}</strong> <span class="muted">${html(c.tariffName)}</span>`)}
+    ${fact('Status', html(c.status))}${fact('Laufzeit', `${html(c.start)} – ${html(c.end || 'offen')}`)}
+    ${fact('Summe', money(c.insuredSum, c.currency))}${fact('Jahresprämie', money(c.annualPremium, c.currency))}
+    ${fact('Begünstigte', c.beneficiaries.map(b => `${html(b.name)}${b.share != null ? ` (${b.share} %)` : ''}`).join('<br>'))}
+    ${fact('Bausteine', c.modules.map(html).join(', '))}
+    ${fact('Tarifunterlagen', c.documents.map(d => `<a href="${html(d.url)}" target="_blank" rel="noopener">${html(d.title)}</a>`).join('<br>'))}
+    ${(c.claims || []).map(k => `<div class="claim"><strong>Schadenfall ${html(k.claimId)}</strong> · ${html(k.title)} <span class="label">${html(k.status)}</span>
+      <p>${html(k.summary)}</p>
+      <p class="muted small">Gemeldet ${money(k.reported, k.currency)} · Reserve ${money(k.reserve, k.currency)} · Bezahlt ${money(k.paid, k.currency)}</p>
+      ${k.recommendation ? `<p class="small">Empfehlung: <strong>${html(k.recommendation.action)}</strong> (${html(k.recommendation.status)}) – ${html(k.recommendation.rationale)}</p>` : ''}</div>`).join('')}
+    </details>`).join('');
+  return `<section class="evidence"><div class="group-label">Unterlagen zum Fall</div>${sample}${customers}${contracts}</section>`;
+}
+
 function activity(ticket) {
   const events = (ticket.events || []).slice().reverse();
   return `<section class="activity"><div class="group-label">Aktivität</div>${events.map(event => `<div class="event">
@@ -241,11 +269,11 @@ function detail() {
   if (!ticket) return '<div class="detail empty-detail"><p>Wähle eine Mail aus.</p></div>';
   return `<div class="detail"><header class="detail-head">
       <button type="button" class="icon-button back" data-action="close" aria-label="Zurück">${icon('back')}</button>
-      <span>${html(ticket.ticketNumber)}</span>${ticket.isDemo ? '<span class="label">Demo</span>' : ''}</header>
+      <span>${html(ticket.ticketNumber)}</span>${ticket.isDemo ? '<span class="label">Beispielfall</span>' : ''}</header>
     <div class="detail-grid"><div class="thread">
       <h1>${html(ticket.subject)}</h1>
       ${(ticket.messages || []).map(message).join('') || '<p class="empty">Keine Nachricht.</p>'}
-      ${composer(ticket)}${activity(ticket)}
+      ${evidence(ticket)}${composer(ticket)}${activity(ticket)}
     </div>${properties(ticket)}</div></div>`;
 }
 
@@ -316,9 +344,15 @@ async function mutate(work, message) {
 async function openTicket(number, view = state.view) {
   state.view = view;
   state.selected = number;
-  try { state.ticket = await request(`/api/tickets/${url(number)}`); }
+  try { state.ticket = await request(`/api/tickets/${url(number)}`); await loadEvidence(); }
   catch (error) { toast(error.message, 'error'); }
   render();
+}
+
+// From Drill 7 on the person checks the same sources Claude uses.
+async function loadEvidence() {
+  state.evidence = state.ticket && has('knowledge')
+    ? await request(`/api/tickets/${url(state.ticket.ticketNumber)}/evidence`).catch(() => null) : null;
 }
 
 function moveSelection(step) {

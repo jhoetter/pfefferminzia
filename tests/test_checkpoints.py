@@ -29,7 +29,7 @@ def test_checkpoint_activation_resets_clock_and_guides_without_spoilers(monkeypa
     extensions = opened["extensions"]
     assert extensions["unlocked"] and len(extensions["specQuestions"]) == 6
     # Fast participants extend their own system; they never start the next drill's build task.
-    assert extensions["recommended"]["title"] == "Beleg-Kasten im Cockpit"
+    assert extensions["recommended"]["title"] == "Beleg-Ampel am Entwurf"
     assert "controlNotice" not in str(extensions)
     assert opened["referenceSolution"]["tag"] == "checkpoint/drill-08-start"
 

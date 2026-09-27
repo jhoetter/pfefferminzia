@@ -108,8 +108,8 @@ selbst im Cockpit – das ist der Beweis.
 
 **Was du heute im Cockpit siehst** – neu: Claude kennt jetzt die Unterlagen des Versicherers: Kunden, Verträge und Tarife – nur zum Lesen.
 
-- Im Fall stehen jetzt „Kunde“ und „Vertrag“ mit Tarifgeneration, sobald der Fall zugeordnet ist.
-- Neben deinem Fall gibt es mitgelieferte Beispielfälle aus dem Leben-Bestand; an einem davon probierst du am Ende deine Prüfung aus.
+- Im Fall neu: „Unterlagen zum Fall“ zwischen Mail und Entwurf – Kundin, Vertrag mit Tarifgeneration, Begünstigte und das Tarifblatt zum Anklicken. Dort prüfst du selbst, was Claude behauptet.
+- Neben deinem Fall aus dem Postfach gibt es Beispielfälle aus dem Bestand (Markierung „Beispielfall“). Von dort wird nichts gesendet; an einem davon probierst du am Ende deine Prüfung aus.
 - Posteingang, Aufgaben, Entwurf, Senden und Aktivität kennst du aus Drill 6.
 - Claude kann: Kunden und Verträge suchen, den Fall zuordnen, die passende Tarifgeneration lesen und mit Fundstelle entwerfen. Claude kann nicht: Senden und an Verträgen oder Tarifen etwas ändern.
 
@@ -131,7 +131,7 @@ Wortlaut der Meldung legst du fest.
 
 | Etappe | Frag Claude | Du entscheidest | Dann du |
 | --- | --- | --- | --- |
-| 1 · Quelle finden | „Welche Person, Police und Tarifgeneration passen zu der neuen Lebensanfrage? Zeig mir die Belege; noch keinen Entwurf.“ | Welche Aussage in der Mail ist nur Behauptung der Kundin, welche ist durch Vertrag und Tarif belegt? Stimmt die Zuordnung – woran machst du das fest? | Zuordnung und exakte Tarifgeneration selbst bestätigen oder widersprechen. |
+| 1 · Quelle finden | „Welche Person, Police und Tarifgeneration passen zu der neuen Lebensanfrage? Zeig mir die Belege; noch keinen Entwurf.“ | Welche Aussage in der Mail ist nur Behauptung der Kundin, welche ist durch Vertrag und Tarif belegt? Stimmt die Zuordnung – woran machst du das fest? | Im Cockpit unter „Unterlagen zum Fall“ selbst nachsehen und die Zuordnung und exakte Tarifgeneration bestätigen oder widersprechen. |
 | 2 · Entwurf prüfen | „Erstelle jetzt einen begründeten Antwortentwurf mit Fundstelle. Nicht versenden – das mache ich im Cockpit.“ | Welchen Satz im Entwurf würdest du so nicht unterschreiben, und wie lautet er besser? | Text und Empfänger im Cockpit prüfen, den Satz selbst ändern, speichern und bewusst senden. |
 | 3 · Selbst bauen | „Wir bauen eine Prüfung gegen falsch zitierte Tarifgenerationen. Frag mich zuerst nach der Regel und den Szenarien, die sie bestehen muss, dann bauen wir.“ | Wann ist ein Tarifzitat für dich falsch – auch wenn gar keiner oder zwei genannt sind? Und wie soll die Meldung wörtlich lauten, damit die Sachbearbeitung sofort weiß, was zu tun ist? | Beispieltabelle mit einem eigenen Gegenfall ergänzen, Meldungstext selbst formulieren, dann mit Claude bauen. |
 | 4 · Beleg zeigen | „Zeig mir Quelle, menschliche Textänderung, Versandereignis und geprüfte Szenarien. Was fehlt noch? Dann hilf mir, meinen Stand zu speichern.“ | Versuch die Prüfung auszutricksen: Welchen Entwurf schreibst du im Cockpit, damit sie greifen müsste? | An einem Beispielfall aus dem Leben-Bestand (etwa PF-10002 mit PL-2017) im Cockpit einen falsch zitierenden Entwurf speichern und die eigene Meldung sehen; Protokoll prüfen; keinen zweiten Versand auslösen; Stand speichern. |
@@ -146,7 +146,7 @@ Wortlaut der Meldung legst du fest.
 - Claude darf Tarife nur lesen. Welche Quelle in deinem Haus dürfte ein Agent auf keinen Fall lesen – und warum?
 - Die Prüfregel stoppt einen falschen Tarif. Welche andere Zusage an Kunden würdest du gern automatisch prüfen lassen?
 
-**Früher fertig?** Nicht den nächsten Drill vorwegnehmen – gestalte deine eigene Kommandozentrale weiter. Was hättest du gern? Oder denk über den Vorschlag **Beleg-Kasten im Cockpit** (Baustein Oberfläche) nach: Stell dir vor, du musst in zehn Sekunden entscheiden, ob du einem Entwurf traust – wie sollte das Cockpit dir das zeigen? *Warum jetzt:* In Drill 8 gibst du Antworten frei, statt sie selbst zu schreiben. Dafür musst du auf einen Blick sehen, worauf sich ein Entwurf stützt. Claude fragt dich nach deiner Idee, hilft beim Steckbrief ([MEINE_ERWEITERUNGEN.md](../MEINE_ERWEITERUNGEN.md)) und baut dann mit dir.
+**Früher fertig?** Nicht den nächsten Drill vorwegnehmen – gestalte deine eigene Kommandozentrale weiter. Was hättest du gern? Oder denk über den Vorschlag **Beleg-Ampel am Entwurf** (Baustein Oberfläche) nach: Stell dir vor, du musst in zehn Sekunden entscheiden, ob du einem Entwurf traust – was müsste dir das Cockpit dafür signalisieren? *Warum jetzt:* In Drill 8 gibst du Antworten frei, statt sie selbst zu schreiben. Eine schnelle Einschätzung zeigt dir, wo du genauer hinschauen musst. Claude fragt dich nach deiner Idee, hilft beim Steckbrief ([MEINE_ERWEITERUNGEN.md](../MEINE_ERWEITERUNGEN.md)) und baut dann mit dir.
 
 ## Drill 8 – Leben: Agent bearbeitet, Mensch gibt frei (60 Min.)
 
@@ -163,6 +163,7 @@ Wortlaut der Meldung legst du fest.
 - Links neu „Freigaben“: Dort liegen die Lebensantworten, die Claude dir vorgelegt hat.
 - Im Fall: „Freigeben“ oder „Ablehnen“ mit Begründung. Erst nach deiner Freigabe kannst du senden.
 - Änderst du einen freigegebenen Text, erlischt die Freigabe – das steht dann in der Aktivität.
+- Unter „Unterlagen zum Fall“ siehst du wie in Drill 7 Kundin, Vertrag und Tarifblatt – daran misst du die Vorlage.
 - Claude kann: Fälle zuordnen, Antworten mit Beleg entwerfen, zur Freigabe vorlegen und nach einer Ablehnung überarbeiten. Claude kann nicht: Freigeben, ablehnen oder senden.
 
 **So läuft die Stunde:**
@@ -215,6 +216,7 @@ Antwortfeld. Was im Hinweis steht, legst du fest.
 - Links neu „Eingriffsfenster“: Haftpflichtantworten, die nach 24 Stunden automatisch rausgehen, mit Countdown.
 - Im Fall: Text ändern (dann wird der Termin gestoppt) oder „Versand stoppen“ mit Begründung.
 - Im Eingriffsfenster: „Zeit +24 h“ spult die Workshop-Uhr vor – das kannst nur du.
+- Unter „Unterlagen zum Fall“ stehen jetzt auch die Bausteine des Vertrags und der Schadenfall mit Beträgen und der letzten Empfehlung.
 - Claude kann: Sparte zuordnen, Antworten mit Beleg entwerfen, ins 24-Stunden-Fenster einplanen und einen Versand stoppen. Claude kann nicht: Die Uhr vorspulen, freigeben oder sofort senden.
 
 **So läuft die Stunde:**

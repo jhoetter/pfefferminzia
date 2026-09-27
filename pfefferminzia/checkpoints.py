@@ -178,7 +178,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
         "buildTaskShort": "Einen Entwurf abweisen, der eine falsche Tarifgeneration zitiert.",
         "buildTask": "Beim Speichern eines Entwurfs soll eine Belegprüfung greifen: Nennt Text oder Begründung eine bekannte Tarifgeneration (z. B. PL-2017), die nicht zum verknüpften Vertrag passt, wird der Entwurf mit klarer Meldung abgelehnt („zitiert PL-2012, Vertrag VTR-… hat PL-2017“). Ein korrekt zitierender Entwurf und ein Entwurf ohne Tarifzitat bleiben erlaubt. Erst Tests in tests/test_workflow.py, dann save_draft in pfefferminzia/store.py ergänzen (bekannte Generationen stehen in der Tabelle documents).",
         "dialogueSteps": [
-            {"phase": "Quelle finden", "askClaude": "Welche Person, Police und Tarifgeneration passen zu der neuen Lebensanfrage? Zeig mir die Belege; noch keinen Entwurf.", "decision": "Welche Aussage in der Mail ist nur Behauptung der Kundin, welche ist durch Vertrag und Tarif belegt? Stimmt die Zuordnung – woran machst du das fest?", "yourMove": "Zuordnung und exakte Tarifgeneration selbst bestätigen oder widersprechen."},
+            {"phase": "Quelle finden", "askClaude": "Welche Person, Police und Tarifgeneration passen zu der neuen Lebensanfrage? Zeig mir die Belege; noch keinen Entwurf.", "decision": "Welche Aussage in der Mail ist nur Behauptung der Kundin, welche ist durch Vertrag und Tarif belegt? Stimmt die Zuordnung – woran machst du das fest?", "yourMove": "Im Cockpit unter „Unterlagen zum Fall“ selbst nachsehen und die Zuordnung und exakte Tarifgeneration bestätigen oder widersprechen."},
             {"phase": "Entwurf prüfen", "askClaude": "Erstelle jetzt einen begründeten Antwortentwurf mit Fundstelle. Nicht versenden – das mache ich im Cockpit.", "decision": "Welchen Satz im Entwurf würdest du so nicht unterschreiben, und wie lautet er besser?", "yourMove": "Text und Empfänger im Cockpit prüfen, den Satz selbst ändern, speichern und bewusst senden."},
             {"phase": "Selbst bauen", "askClaude": "Wir bauen eine Prüfung gegen falsch zitierte Tarifgenerationen. Frag mich zuerst nach der Regel und den Szenarien, die sie bestehen muss, dann bauen wir.", "decision": "Wann ist ein Tarifzitat für dich falsch – auch wenn gar keiner oder zwei genannt sind? Und wie soll die Meldung wörtlich lauten, damit die Sachbearbeitung sofort weiß, was zu tun ist?", "yourMove": "Beispieltabelle mit einem eigenen Gegenfall ergänzen, Meldungstext selbst formulieren, dann mit Claude bauen."},
             {"phase": "Beleg zeigen", "askClaude": "Zeig mir Quelle, menschliche Textänderung, Versandereignis und geprüfte Szenarien. Was fehlt noch? Dann hilf mir, meinen Stand zu speichern.", "decision": "Versuch die Prüfung auszutricksen: Welchen Entwurf schreibst du im Cockpit, damit sie greifen müsste?", "yourMove": "An einem Beispielfall aus dem Leben-Bestand (etwa PF-10002 mit PL-2017) im Cockpit einen falsch zitierenden Entwurf speichern und die eigene Meldung sehen; Protokoll prüfen; keinen zweiten Versand auslösen; Stand speichern."},
@@ -194,8 +194,8 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
         "orientation": {
             "newToday": "Claude kennt jetzt die Unterlagen des Versicherers: Kunden, Verträge und Tarife – nur zum Lesen.",
             "cockpit": [
-                "Im Fall stehen jetzt „Kunde“ und „Vertrag“ mit Tarifgeneration, sobald der Fall zugeordnet ist.",
-                "Neben deinem Fall gibt es mitgelieferte Beispielfälle aus dem Leben-Bestand; an einem davon probierst du am Ende deine Prüfung aus.",
+                "Im Fall neu: „Unterlagen zum Fall“ zwischen Mail und Entwurf – Kundin, Vertrag mit Tarifgeneration, Begünstigte und das Tarifblatt zum Anklicken. Dort prüfst du selbst, was Claude behauptet.",
+                "Neben deinem Fall aus dem Postfach gibt es Beispielfälle aus dem Bestand (Markierung „Beispielfall“). Von dort wird nichts gesendet; an einem davon probierst du am Ende deine Prüfung aus.",
                 "Posteingang, Aufgaben, Entwurf, Senden und Aktivität kennst du aus Drill 6.",
             ],
             "claudeCan": "Kunden und Verträge suchen, den Fall zuordnen, die passende Tarifgeneration lesen und mit Fundstelle entwerfen.",
@@ -210,12 +210,12 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
         "bridge": "In Drill 6 kannte Claude nur die Mail. Jetzt bekommt es die Wissensbasis des Versicherers: Kunden, Verträge, Tarife – über Werkzeuge, die nur lesen dürfen.",
         "focusBlocks": ["Wissen", "Kontrollen"],
         "extension": {
-            "title": "Beleg-Kasten im Cockpit",
+            "title": "Beleg-Ampel am Entwurf",
             "block": "Oberfläche",
-            "prepares": "In Drill 8 gibst du Antworten frei, statt sie selbst zu schreiben. Dafür musst du auf einen Blick sehen, worauf sich ein Entwurf stützt.",
-            "designQuestion": "Stell dir vor, du musst in zehn Sekunden entscheiden, ob du einem Entwurf traust – wie sollte das Cockpit dir das zeigen?",
-            "task": "Zeige im Cockpit neben dem Entwurf, worauf er sich stützt: verknüpfter Vertrag, Tarifgeneration, Fundstelle – und einen klaren Hinweis, wenn etwas fehlt. Du legst fest, was drinsteht und in welcher Reihenfolge. Test: get_ticket liefert die Angaben; ohne verknüpften Vertrag kommt der Hinweis.",
-            "decision": "Was musst du sehen, um in zehn Sekunden zu entscheiden, ob du dem Entwurf traust?",
+            "prepares": "In Drill 8 gibst du Antworten frei, statt sie selbst zu schreiben. Eine schnelle Einschätzung zeigt dir, wo du genauer hinschauen musst.",
+            "designQuestion": "Stell dir vor, du musst in zehn Sekunden entscheiden, ob du einem Entwurf traust – was müsste dir das Cockpit dafür signalisieren?",
+            "task": "Eine kleine Ampel am Entwurf im Cockpit: grün, wenn er Vertrag, passende Tarifgeneration und Fundstelle nennt; gelb, wenn etwas fehlt; rot bei einem Widerspruch zu den Unterlagen zum Fall. Die Person legt die Regeln für jede Farbe fest. Szenarien: je ein Entwurf pro Farbe.",
+            "decision": "Was macht einen Entwurf für dich grün – und was ist sofort rot?",
             "inspiration": [
                 "Wissen: Deine Mini-Wissensbasis um Textbausteine je Tarifgeneration ergänzen, z. B. welche Unterlagen bei einer Bezugsrechtsänderung nötig sind.",
                 "Kontrollen: Eine zweite Prüfregel – der Entwurf nennt eine Vertragsnummer, die nicht zum Fall gehört.",
@@ -254,6 +254,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
                 "Links neu „Freigaben“: Dort liegen die Lebensantworten, die Claude dir vorgelegt hat.",
                 "Im Fall: „Freigeben“ oder „Ablehnen“ mit Begründung. Erst nach deiner Freigabe kannst du senden.",
                 "Änderst du einen freigegebenen Text, erlischt die Freigabe – das steht dann in der Aktivität.",
+                "Unter „Unterlagen zum Fall“ siehst du wie in Drill 7 Kundin, Vertrag und Tarifblatt – daran misst du die Vorlage.",
             ],
             "claudeCan": "Fälle zuordnen, Antworten mit Beleg entwerfen, zur Freigabe vorlegen und nach einer Ablehnung überarbeiten.",
             "claudeCannot": "Freigeben, ablehnen oder senden.",
@@ -311,6 +312,7 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
                 "Links neu „Eingriffsfenster“: Haftpflichtantworten, die nach 24 Stunden automatisch rausgehen, mit Countdown.",
                 "Im Fall: Text ändern (dann wird der Termin gestoppt) oder „Versand stoppen“ mit Begründung.",
                 "Im Eingriffsfenster: „Zeit +24 h“ spult die Workshop-Uhr vor – das kannst nur du.",
+                "Unter „Unterlagen zum Fall“ stehen jetzt auch die Bausteine des Vertrags und der Schadenfall mit Beträgen und der letzten Empfehlung.",
             ],
             "claudeCan": "Sparte zuordnen, Antworten mit Beleg entwerfen, ins 24-Stunden-Fenster einplanen und einen Versand stoppen.",
             "claudeCannot": "Die Uhr vorspulen, freigeben oder sofort senden.",

@@ -187,3 +187,13 @@ button.row:hover, .row.task:hover { background: var(--hover); }
   .detail-head .back { display: inline-grid; }
   .composer, .activity { margin-left: 0; }
 }
+
+/* Unterlagen zum Fall: the sources a human checks before trusting a draft. */
+.evidence { margin: 4px 0 18px; }
+.evidence .source { border: 1px solid var(--line, #3334); border-radius: 8px; padding: 8px 12px; margin: 6px 0; }
+.evidence .source summary { cursor: pointer; padding: 2px 0; }
+.evidence .fact { display: grid; grid-template-columns: 130px 1fr; gap: 10px; padding: 3px 0; font-size: 13px; }
+.evidence .fact > span { color: var(--muted, #888); }
+.evidence .claim { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line, #3334); font-size: 13px; }
+.evidence .claim p { margin: 4px 0; }
+.evidence a { color: inherit; text-decoration: underline; }

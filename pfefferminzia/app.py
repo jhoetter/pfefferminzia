@@ -274,6 +274,13 @@ def create_app() -> FastAPI:
         require_capability("claims")
         return create_claim_task(claim_id=claim_id, task_type=data.type, description=data.description, assigned_to=data.assignedTo, due_at=data.dueAt.isoformat() if data.dueAt else None, idempotency_key=data.idempotencyKey, actor="human-ui")
 
+    @app.get("/api/tickets/{ticket_number}/evidence")
+    async def evidence(ticket_number: str):
+        require_capability("knowledge")
+        from .evidence import ticket_evidence
+
+        return ticket_evidence(ticket_number)
+
     @app.get("/api/tickets/{ticket_number}/customer-candidates")
     async def customer_candidates(ticket_number: str):
         require_capability("knowledge")

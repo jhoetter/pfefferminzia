@@ -147,8 +147,8 @@
     {
       id: 'Drill7Auftrag', type: 'Drill', eyebrow: "Drill 7 · Eure Aufgaben · 60 Minuten", title: "Erst Quelle. Dann Entwurf. Dann du.",
       subtitle: "Start: „Ich will zu Drill 7. Frag mich, ob ich meinen Stand mitnehmen will.“ Claude lädt – im selben Ordner, ohne neue Sitzung.", study: true,
-      body: taskBoard(["Kundin, Vertrag und Tarifgeneration bestätigen.", "Entwurf mit Beleg ändern und selbst senden.", "Bauen: Ein falsches Tarifzitat wird gestoppt.", "An einem Beispielfall die Prüfung austricksen."], "Geänderte Antwort gesendet, ein falsches Tarifzitat wird mit deiner Meldung gestoppt, Stand gespeichert.", "Denkanstoß von Claude holen, dann deine eigene Kommandozentrale erweitern – z. B. einen Beleg-Kasten. Nicht vorgreifen."),
-      notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Nicht die erstbeste Tarif-PDF, sondern die zum Vertrag passende Generation. Die Mail ist eine Behauptung, der Vertrag ist der Beleg. Den Wortlaut der Fehlermeldung legt ihr selbst fest. Wer früher fertig ist: Denkanstöße und eigene Erweiterung (Vorschlag: Beleg-Kasten) – nie der nächste Drill. DOZENT: Drill-7-Mails nach dem Laden senden."
+      body: taskBoard(["Kundin, Vertrag und Tarifgeneration bestätigen.", "Entwurf mit Beleg ändern und selbst senden.", "Bauen: Ein falsches Tarifzitat wird gestoppt.", "An einem Beispielfall die Prüfung austricksen."], "Geänderte Antwort gesendet, ein falsches Tarifzitat wird mit deiner Meldung gestoppt, Stand gespeichert.", "Denkanstoß von Claude holen, dann deine eigene Kommandozentrale erweitern – z. B. eine Beleg-Ampel. Nicht vorgreifen."),
+      notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Nicht die erstbeste Tarif-PDF, sondern die zum Vertrag passende Generation. Die Mail ist eine Behauptung, der Vertrag ist der Beleg. Den Wortlaut der Fehlermeldung legt ihr selbst fest. Wer früher fertig ist: Denkanstöße und eigene Erweiterung (Vorschlag: Beleg-Ampel) – nie der nächste Drill. DOZENT: Drill-7-Mails nach dem Laden senden."
     },
     {
       id: 'Drill8Start', type: 'Kapitel', eyebrow: '13:15–14:15 · Meilenstein 3', title: 'Der Mensch gibt frei', study: true,

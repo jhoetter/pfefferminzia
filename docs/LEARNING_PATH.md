@@ -19,7 +19,7 @@ Claude an Werkzeuge und Wissen kommt.
 | Drill | Baustein im Fokus | Empfohlene Erweiterung für Schnelle (bereitet den nächsten Drill vor) |
 | --- | --- | --- |
 | 6 | Eingänge, Werkzeuge, Oberfläche | Mini-Wissensbasis (z. B. erfundene Kontakte, Antwortregeln) → Drill 7: Wissen des Versicherers |
-| 7 | Wissen, Kontrollen | Beleg-Kasten im Cockpit → Drill 8: Freigabe braucht Überblick |
+| 7 | Wissen, Kontrollen | Beleg-Ampel am Entwurf → Drill 8: Freigabe braucht einen schnellen Überblick |
 | 8 | Kontrollen, Oberfläche | Risiko-Einstufung je Fall → Drill 9: Was darf automatisch laufen? |
 | 9 | Kontrollen, Protokoll | Eigene Kennzahl → Drill 10: Was nicht gezählt wird, ist nicht belegbar |
 | 10 | Protokoll | Folie „Mein agentisches System“; Bonus-Video |
