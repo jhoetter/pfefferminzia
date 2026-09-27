@@ -72,8 +72,7 @@ ordnet Person, Police und Tarifgeneration zu und entwirft mit Beleg. Du
 
 **Bauauftrag:** Ein Entwurf, der eine **falsche Tarifgeneration** zitiert
 (z. B. „PL-2012“, wenn der Vertrag PL-2017 hat), wird beim Speichern mit
-klarer Meldung abgewiesen; ein Lebensentwurf mit Tarifzitat ohne verknüpften
-Vertrag ebenso. Ein korrekter Entwurf bleibt erlaubt.
+klarer Meldung abgewiesen. Ein korrekter Entwurf bleibt erlaubt.
 Einstieg: `save_draft` in `pfefferminzia/store.py`, Tests in `tests/test_workflow.py`.
 
 | Etappe | Frag Claude | Dann du |
