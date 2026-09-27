@@ -56,6 +56,13 @@ git push origin main reference --force-with-lease && git push origin --tags --fo
    Die Zuordnung Platz → Inbox → Schlüssel als eine Mail an dich:
    `instructor mail-roster jt.hoetter@gmail.com --yes` oder Claude bitten
    („Schick mir die Inbox-Zuordnung“).
+   Weitere Adressen, an die alle antworten dürfen (z. B. deine Gmail für die
+   Live-Demo): `INSTRUCTOR_EXTRA_ALLOWED=…` in `.instructor/.env`, dann Zettel
+   und Zuordnung neu erzeugen.
+7. **Eine Mail an alle (Live-Demo):** `instructor addresses` bzw. Claude
+   („Gib mir alle Inbox-Adressen“) liefert die 16 Adressen als eine Zeile.
+   In Gmail ins **BCC** einfügen und senden: Jede Instanz importiert die Mail
+   beim nächsten Sync als eigenes Ticket.
 5. **Einen Platz komplett durchspielen** mit einem frischen Terminal: Start-Satz
    → Einrichtung → Neustart im Ordner → `instructor send 6 --slot 1 --yes` →
    Sync → … bis Drill 10. Dabei einmal den offiziellen Checkpoint laden.

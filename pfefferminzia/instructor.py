@@ -35,7 +35,7 @@ DEFAULT_REPO_URL = "https://github.com/jhoetter/pfefferminzia"
 
 def _config(directory: Path) -> dict[str, str]:
     values = {key: value or "" for key, value in dotenv_values(directory / ".env").items()}
-    for key in ("INSTRUCTOR_AGENTMAIL_API_KEY", "INSTRUCTOR_INBOX_ID", "INSTRUCTOR_REPO_URL"):
+    for key in ("INSTRUCTOR_AGENTMAIL_API_KEY", "INSTRUCTOR_INBOX_ID", "INSTRUCTOR_REPO_URL", "INSTRUCTOR_EXTRA_ALLOWED"):
         values[key] = os.getenv(key) or values.get(key, "")
     if not values["INSTRUCTOR_AGENTMAIL_API_KEY"] or not values["INSTRUCTOR_INBOX_ID"]:
         raise ValueError(
@@ -49,6 +49,17 @@ def _client(directory: Path) -> Any:
     from agentmail import AgentMail
 
     return AgentMail(api_key=_config(directory)["INSTRUCTOR_AGENTMAIL_API_KEY"])
+
+
+def allowed_recipients(config: dict[str, str]) -> str:
+    """Participants may reply to the scenario sender plus the instructor's optional extra addresses."""
+    extras = [value.strip() for value in config.get("INSTRUCTOR_EXTRA_ALLOWED", "").split(",") if value.strip()]
+    return ",".join([config["INSTRUCTOR_INBOX_ID"], *extras])
+
+
+def participant_addresses(directory: Path = INSTRUCTOR_DIR) -> str:
+    """All participant inbox addresses, comma-separated, e.g. for the BCC field of one demo mail."""
+    return ", ".join(row["email"] for row in read_roster(directory) if row["email"])
 
 
 def _write_private(path: Path, content: str) -> None:
@@ -114,7 +125,7 @@ def provision(count: int, prefix: str, domain: str | None = None, *, execute: bo
 def handouts(directory: Path = INSTRUCTOR_DIR) -> dict[str, Any]:
     config = _config(directory)
     repo = config.get("INSTRUCTOR_REPO_URL") or DEFAULT_REPO_URL
-    sender = config["INSTRUCTOR_INBOX_ID"]
+    allowed = allowed_recipients(config)
     rows = [row for row in read_roster(directory) if row["api_key"]]
     if not rows:
         raise ValueError("Roster ist leer: zuerst `instructor provision` ausführen")
@@ -126,7 +137,7 @@ def handouts(directory: Path = INSTRUCTOR_DIR) -> dict[str, Any]:
             "Nur für dich und nur für diesen Workshop. Nicht in Gruppenchats, nicht in Git.\n\n"
             f"AGENTMAIL_INBOX_ID={row['inbox_id']}\n"
             f"AGENTMAIL_API_KEY={row['api_key']}\n"
-            f"WORKSHOP_ALLOWED_RECIPIENTS={sender}\n\n"
+            f"WORKSHOP_ALLOWED_RECIPIENTS={allowed}\n\n"
             "Start: Claude-App öffnen → Code → neue Sitzung mit deinem Benutzerordner, dann schreiben:\n"
             f"  Klone {repo} nach ~/pfefferminzia, richte alles nach der README ein\n"
             "  und starte die Kommandozentrale. Ich bin in Drill 6.\n\n"
@@ -157,8 +168,9 @@ def roster_email(to: str, *, execute: bool = False, directory: Path = INSTRUCTOR
         lines += [f"Platz {row['slot']}{' · ' + row['name'] if row['name'] else ''}",
                   f"  AGENTMAIL_INBOX_ID={row['inbox_id']}",
                   f"  AGENTMAIL_API_KEY={row['api_key']}",
-                  f"  WORKSHOP_ALLOWED_RECIPIENTS={sender}", ""]
-    lines.append("Die Schlüssel gelten nur für die jeweilige Inbox. Nach dem Workshop in AgentMail löschen.")
+                  f"  WORKSHOP_ALLOWED_RECIPIENTS={allowed_recipients(config)}", ""]
+    lines += ["Alle Inbox-Adressen (für BCC, um eine Mail an alle zu schicken):", participant_addresses(directory), "",
+              "Die Schlüssel gelten nur für die jeweilige Inbox. Nach dem Workshop in AgentMail löschen."]
     client = client or _client(directory)
     response = _mapping(client.inboxes.messages.send(
         sender, to=[to], subject=f"Pfefferminzia: Inbox-Zuordnung für {len(rows)} Plätze", text="\n".join(lines),

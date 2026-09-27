@@ -519,6 +519,11 @@ def _register_instructor_tools(server: MCPServer) -> None:
         Keys are written to the Git-ignored roster and never returned."""
         return run(lambda: instructor.provision(count, prefix, execute=create, directory=instructor.INSTRUCTOR_DIR))
 
+    @server.tool(annotations=ReadOnly)
+    def instructor_participant_addresses() -> str:
+        """Instructor: all participant inbox addresses, comma-separated, to paste into BCC for one mail to everyone."""
+        return run(lambda: instructor.participant_addresses(instructor.INSTRUCTOR_DIR))
+
     @server.tool(annotations=ToolAnnotations(destructiveHint=False, openWorldHint=True))
     def instructor_mail_roster(to: Annotated[str, Field(max_length=200)], send: bool = False) -> dict[str, Any]:
         """Instructor: mail the slot → inbox → key assignment in one message to the given address (e.g. the instructor).

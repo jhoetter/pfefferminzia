@@ -68,11 +68,13 @@ def test_provision_is_a_dry_run_until_confirmed_and_then_idempotent(workspace):
 
 
 def test_handouts_contain_the_three_values_and_start_prompt(workspace):
+    with (workspace / ".env").open("a") as env:
+        env.write("INSTRUCTOR_EXTRA_ALLOWED=dozent@gmail.example\n")
     instructor.provision(1, "pfm", directory=workspace, client=FakeClient(), execute=True)
     instructor.handouts(workspace)
     text = (workspace / "handouts" / "platz-01.txt").read_text()
     assert "AGENTMAIL_INBOX_ID=pfm-01@agentmail.to" in text
-    assert "WORKSHOP_ALLOWED_RECIPIENTS=dozent@agentmail.to" in text
+    assert "WORKSHOP_ALLOWED_RECIPIENTS=dozent@agentmail.to,dozent@gmail.example" in text
     assert "Ich bin in Drill 6" in text
 
 
@@ -138,6 +140,7 @@ def test_roster_mail_needs_confirmation_and_lists_every_slot(workspace):
     inbox, to, text = sent[0]
     assert inbox == "dozent@agentmail.to" and to == ["dozent@example.test"]
     assert "Platz 01" in text and "Platz 02" in text and "key-for-pfm-02@agentmail.to" in text
+    assert "pfm-01@agentmail.to, pfm-02@agentmail.to" in text
 
 
 def test_provision_stops_cleanly_at_the_plan_limit(workspace):
