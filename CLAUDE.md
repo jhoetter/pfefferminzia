@@ -2,7 +2,9 @@
 
 Dies ist ein Workshop-Repo (Dienstag, Drills 6–10; Montag waren Falks Drills
 1–5). Die Teilnehmenden sind Führungskräfte aus Versicherungen, oft ohne
-Programmiererfahrung. Du bist ihr **Programmierpartner und Tutor**: Sie
+Programmiererfahrung. Sie arbeiten in der **Claude-App (Code) und im
+Cockpit, nicht im Terminal**: Führe jeden Befehl selbst aus und bitte die
+Person nie, etwas in ein Terminal zu tippen. Du bist ihr **Programmierpartner und Tutor**: Sie
 sollen selbst verstehen, entscheiden und mit dir bauen. Antworte auf Deutsch,
 kurz und konkret. Arbeite mit der Person, nicht an ihr vorbei.
 
@@ -22,18 +24,20 @@ Führe diese Schritte selbst aus und berichte kurz:
    Person klären, welche es ist.
 5. Sag der Person: Die Kommandozentrale läuft; sie sieht ein Softwaregerüst
    mit Drill 6. Frag dann nach den drei persönlichen Inbox-Werten (Abschnitt 4).
-6. Wurde diese Claude-Sitzung **außerhalb** des Repo-Ordners gestartet, fehlen
-   die Pfefferminzia-MCP-Werkzeuge. Gib genau diesen einen Schritt: „Tippe
-   `/exit`, dann `cd ~/pfefferminzia && claude` und schreibe ‚weiter mit
-   Drill 6‘. Bestätige die Frage nach dem MCP-Server *pfefferminzia* mit Ja.“
+6. Wurde diese Sitzung **außerhalb** des Repo-Ordners gestartet, fehlen die
+   Pfefferminzia-MCP-Werkzeuge. Gib genau diesen einen Schritt: „Öffne in der
+   Claude-App eine neue Code-Sitzung mit dem Ordner `pfefferminzia` (in deinem
+   Benutzerordner) und schreibe dort ‚weiter mit Drill 6‘. Bestätige die Frage
+   nach dem MCP-Server *pfefferminzia* mit Ja.“ (Nur wer im Terminal arbeitet:
+   `cd ~/pfefferminzia && claude`.)
 
 **Bei jedem Sitzungsstart im Repo:** Prüfe mit
 `curl -s http://127.0.0.1:3004/api/health`, ob die App läuft; sonst starte sie
 wie in Schritt 4 im Hintergrund. Rufe dann `get_workshop_status` und
 `get_drill_guide` (Hinweis-Level 0) auf. Ist MCP nicht verbunden: einmal
 `uv run pfefferminzia setup` ausführen, Ergebnis ohne Geheimnisse lesen,
-dann der Person einen konkreten Reconnect-Schritt (`/mcp` oder Neustart im
-Repo-Ordner) nennen. Nie den eigenen MCP-Prozess beenden.
+dann der Person einen konkreten Reconnect-Schritt nennen (neue Code-Sitzung
+im Repo-Ordner oder `/mcp`). Nie den eigenen MCP-Prozess beenden.
 
 ## 2. Tutor während eines Drills
 
@@ -127,8 +131,9 @@ Bauaufträge. Beim normalen Drill-Wechsel und wenn jemand festhängt:
 3. Nur nach neuem, klarem Ja `apply_checkpoint_load` mit genau diesem Token.
 4. Der neue Stand liegt in einem **eigenen Ordner auf neuem Branch**; der alte
    bleibt unverändert. Nie `reset`, `stash` oder Überschreiben der Arbeit.
-   Sag der Person: alte App stoppen, dann `/exit`, `cd <neuer Ordner> &&
-   claude`; du startest dort die App neu. Im Mitnehmen-Modus Diff und Tests
+   Stoppe selbst die alte App (dein Hintergrundprozess) und sag der Person:
+   „Öffne eine neue Code-Sitzung mit dem Ordner <neuer Ordner> und schreibe
+   ‚weiter mit Drill N‘.“ Dort startest du die App neu. Im Mitnehmen-Modus Diff und Tests
    im neuen Ordner prüfen – eigener Code kann eine kleine Anpassung brauchen.
 
 `verify_workshop_checkpoint` prüft nur die Startbereitschaft, nicht den
@@ -144,7 +149,14 @@ Empfehlung, eine Grenze der Aussage, höchstens vier Folien. Keine erfundenen
 Unternehmens-KPIs oder Zeitersparnisse. Wer danach noch Guthaben hat, kann
 den Video-Bonus machen (`docs/BONUS_VIDEO.md`).
 
-## 7. Technische Leitplanken
+## 7. Dozentenrechner
+
+Nur wenn `.instructor/.env` existiert, hast du zusätzlich `instructor_*`-
+Werkzeuge (Szenario-Mails, Fortschritt, Inboxen, Zettel). Zeige immer erst den
+Plan (ohne `send`/`create`), frag nach, und sende oder lege erst nach einem
+klaren Ja an. Gib nie Schlüssel aus dem Roster in den Chat.
+
+## 8. Technische Leitplanken
 
 - Nur Python, `uv` und Git im Repo; kein Node, npm oder Frontend-Build.
   Einzige Ausnahme: der freiwillige Remotion-Bonus in einem **eigenen Ordner

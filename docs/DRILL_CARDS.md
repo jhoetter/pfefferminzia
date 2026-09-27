@@ -12,7 +12,8 @@ Beim nächsten Drill gibt es immer einen Checkpoint mit Lösung.
 
 ## Start (einmal, zu Beginn von Drill 6)
 
-Terminal öffnen, `claude` starten und schreiben:
+Du brauchst **kein Terminal**. Öffne die Claude-App → **Code** → neue
+Sitzung mit deinem Benutzerordner und schreibe:
 
 > Klone https://github.com/jhoetter/pfefferminzia nach ~/pfefferminzia,
 > richte alles nach der README ein und starte die Kommandozentrale.
@@ -23,9 +24,10 @@ füge die drei Zeilen von deinem Zettel ein (Inbox-ID, Schlüssel,
 Szenario-Absender). Das ist **nur** in diesem synthetischen Workshop in
 Ordnung; echte Zugangsdaten und Kundendaten gehören nie in einen Chat, den
 Schlüssel nie in Git, Gruppenchats oder Screenshots. Danach bittet Claude
-dich einmal, im Ordner `~/pfefferminzia` neu zu starten: `/exit`, dann
-`cd ~/pfefferminzia && claude`, und die Frage nach dem MCP-Server
-*pfefferminzia* mit Ja beantworten.
+dich einmal, eine **neue Code-Sitzung mit dem Ordner `pfefferminzia`** zu
+öffnen, dort „weiter mit Drill 6“ zu schreiben und die Frage nach dem
+MCP-Server *pfefferminzia* mit Ja zu beantworten. Alles Weitere (Befehle,
+Tests, Commits) erledigt Claude für dich; du prüfst im Cockpit und im Chat.
 
 **Wichtig:** An deine Workshop-Adresse kann jede externe Adresse schreiben
 (auch Gmail). `WORKSHOP_ALLOWED_RECIPIENTS` sperrt nur **ausgehende**
@@ -177,16 +179,10 @@ will.“ Du wählst:
 
 Claude zeigt dir den Plan und fragt vor dem Laden noch einmal. Beide Modi
 legen einen **neuen Ordner auf neuem Branch** an; dein bisheriger Ordner
-bleibt unverändert. Danach: `/exit`, `cd <neuer Ordner> && claude`, Claude
-startet dort die App. Im offiziellen Modus können alte Mails beim Sync noch
+bleibt unverändert. Danach öffnest du in der Claude-App eine **neue
+Code-Sitzung mit dem neuen Ordner** (Claude nennt ihn dir) und schreibst
+„weiter mit Drill N“; Claude startet dort die App. Im offiziellen Modus können alte Mails beim Sync noch
 einmal auftauchen: bearbeite nur die neu angekündigten Fälle.
-
-Ohne Claude geht es auch im Terminal:
-
-```bash
-uv run pfefferminzia checkpoint plan drill-07-start          # oder --mode continue
-uv run pfefferminzia checkpoint apply TOKEN --confirm-checkpoint-load
-```
 
 ## Ohne Claude-Tokens
 

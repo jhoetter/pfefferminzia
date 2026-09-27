@@ -118,10 +118,11 @@ def handouts(directory: Path = INSTRUCTOR_DIR) -> dict[str, Any]:
             f"AGENTMAIL_INBOX_ID={row['inbox_id']}\n"
             f"AGENTMAIL_API_KEY={row['api_key']}\n"
             f"WORKSHOP_ALLOWED_RECIPIENTS={sender}\n\n"
-            "Start: Terminal öffnen, `claude` starten und schreiben:\n"
+            "Start: Claude-App öffnen → Code → neue Sitzung mit deinem Benutzerordner, dann schreiben:\n"
             f"  Klone {repo} nach ~/pfefferminzia, richte alles nach der README ein\n"
             "  und starte die Kommandozentrale. Ich bin in Drill 6.\n\n"
             "Wenn Claude nach deinen Inbox-Werten fragt, füge die drei Zeilen oben ein.\n"
+            "Kein Terminal nötig: Claude führt alle Befehle aus.\n"
             f"Deine Workshop-Mailadresse (für Testmails): {row['email']}\n"
         )
         _write_private(directory / "handouts" / f"platz-{row['slot']}.txt", text)

@@ -59,7 +59,19 @@ git push origin main reference --force-with-lease && git push origin --tags --fo
    Sync → … bis Drill 10. Dabei einmal den offiziellen Checkpoint laden.
 6. **Claude-Zugänge** und zwei bis drei Reserve-Sitze klären.
 
-## Tagesablauf mit Befehlen
+## Tagesablauf
+
+Alles Dozentenseitige geht auch per Claude: Auf deinem Rechner (mit
+`.instructor/.env`) hat Claude die Werkzeuge `instructor_send_scenarios`,
+`instructor_progress`, `instructor_list_scenarios`,
+`instructor_provision_inboxes` und `instructor_write_handouts`. Sag z. B.
+„Zeig mir den Plan für die Drill-7-Mails“ → „Ja, senden“ oder „Wer hängt?“.
+Claude zeigt immer erst den Plan. Die Terminal-Befehle unten sind der
+Fallback.
+
+Die Teilnehmenden arbeiten **nur** in der Claude-App (Code) und im Cockpit;
+Claude führt alle Befehle für sie aus. Ordnerwechsel beim Checkpoint = neue
+Code-Sitzung mit dem neuen Ordner.
 
 | Zeit | Du sagst | Du tust |
 | --- | --- | --- |

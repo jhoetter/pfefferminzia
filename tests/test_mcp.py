@@ -66,3 +66,23 @@ async def test_checkpoint_capabilities_are_not_exposed(monkeypatch, checkpoint, 
             assert not template_uris
         if checkpoint == "drill-07-start":
             assert not any("claims" in uri for uri in template_uris)
+
+
+@pytest.mark.asyncio
+async def test_instructor_tools_exist_only_on_the_instructor_machine(monkeypatch, tmp_path):
+    from pfefferminzia import instructor
+
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-06-start")
+    monkeypatch.setattr(instructor, "INSTRUCTOR_DIR", tmp_path)
+    async with Client(create_mcp_server()) as client:
+        assert not any(tool.name.startswith("instructor_") for tool in (await client.list_tools()).tools)
+
+    (tmp_path / ".env").write_text("INSTRUCTOR_AGENTMAIL_API_KEY=org\nINSTRUCTOR_INBOX_ID=dozent@agentmail.to\n")
+    (tmp_path / "roster.csv").write_text("slot,name,email,inbox_id,api_key\n01,A,pfm-01@agentmail.to,pfm-01@agentmail.to,k\n")
+    async with Client(create_mcp_server()) as client:
+        names = {tool.name for tool in (await client.list_tools()).tools}
+        assert {"instructor_send_scenarios", "instructor_progress", "instructor_list_scenarios",
+                "instructor_provision_inboxes", "instructor_write_handouts"} <= names
+        plan = await client.call_tool("instructor_send_scenarios", {"drill": "9"})
+        assert "Nichts gesendet" in plan.content[0].text
+        assert "pfm-01@agentmail.to" in plan.content[0].text

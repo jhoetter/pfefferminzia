@@ -13,8 +13,10 @@ darf: **Pflichtfreigabe** bei Leben, **Eingriffsfenster** bei Haftpflicht.
 
 ## Start für Teilnehmende
 
-Du brauchst Claude Code, Python 3.12+, `uv` und Git (auf den Kursrechnern
-vorhanden). Öffne ein Terminal, starte `claude` und schreibe:
+Du brauchst nur die Claude-App (auf den Kursrechnern sind Python, `uv` und
+Git schon installiert). **Kein Terminal nötig.** Öffne in der Claude-App den
+Bereich **Code**, starte eine neue Sitzung mit deinem Benutzerordner und
+schreibe:
 
 > Klone https://github.com/jhoetter/pfefferminzia nach ~/pfefferminzia,
 > richte alles nach der README ein und starte die Kommandozentrale.
@@ -22,16 +24,17 @@ vorhanden). Öffne ein Terminal, starte `claude` und schreibe:
 
 Claude richtet alles ein, öffnet die Kommandozentrale im Browser
 (<http://127.0.0.1:3004>) und fragt nach deinen drei persönlichen
-Inbox-Werten vom Zettel. Danach bittet es dich einmal, Claude im Ordner
-`~/pfefferminzia` neu zu starten, damit es direkt mit der Software sprechen
-kann (MCP).
+Inbox-Werten vom Zettel. Danach bittet es dich einmal, eine **neue
+Code-Sitzung mit dem Ordner `pfefferminzia`** zu öffnen, damit es direkt mit
+der Software sprechen kann (MCP).
 
 > **Für Claude Code – Einrichtung:** Lies `CLAUDE.md` in diesem Repo und
 > folge Abschnitt 1 „Erststart“. Kurz: Branch `workshop/mein-tag` anlegen,
 > `uv sync --frozen`, `uv run pfefferminzia setup`, `.env` aus `.env.example`
 > anlegen (Rechte 600), `uv run pfefferminzia serve --open` im Hintergrund
-> starten, nach den drei Inbox-Werten fragen und die Person dann bitten, dich
-> im Repo-Ordner neu zu starten, damit der MCP-Server verbunden ist.
+> starten, nach den drei Inbox-Werten fragen und die Person dann bitten, eine
+> neue Code-Sitzung mit dem Repo-Ordner zu öffnen (MCP). Die Person bedient
+> kein Terminal: Alle Befehle führst du aus.
 
 **Wenn du nicht weiterweißt, frag Claude.** Es ist hier dein Tutor: Es kennt
 den aktuellen Drill, gibt Hinweise in kleinen Schritten und kann dir zu jedem
@@ -60,7 +63,10 @@ vorausbauend) stehen im [Lernpfad](docs/LEARNING_PATH.md).
 - Ablauf, Vorbereitung und Go/No-Go: [docs/WORKSHOP_RUNBOOK.md](docs/WORKSHOP_RUNBOOK.md)
 - Agenda über drei Tage: [docs/WORKSHOP_AGENDA.md](docs/WORKSHOP_AGENDA.md)
 - Folien: `/slides/decks.html` bei laufender App ([Übersicht](docs/TUESDAY_SLIDES.md))
-- Inboxen, Zettel, Szenario-Mails und Fortschritt mit einem Befehl:
+- Inboxen, Zettel, Szenario-Mails und Fortschritt: Auf dem Dozentenrechner
+  (mit `.instructor/.env`) bekommt Claude eigene MCP-Werkzeuge dafür. Sag
+  einfach „Schick die Drill-7-Mails an alle“ oder „Wer hat schon
+  geantwortet?“. Dasselbe im Terminal:
 
 ```bash
 uv run pfefferminzia instructor provision --count 19 --prefix pfm26 --yes

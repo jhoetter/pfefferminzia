@@ -10,7 +10,9 @@ from pydantic import Field
 
 from .agentmail_service import sync_agentmail
 from .checkpoints import available_checkpoints, checkpoint_profile, drill_guide, verify_checkpoint
+from . import instructor
 from .checkpoint_loader import apply_checkpoint_load, plan_checkpoint_load
+from .scenarios import SCENARIOS, scenarios_for
 from .claims import create_claim_from_ticket, create_claim_task, get_claim, list_claims, propose_claim_action, review_claim_action
 from .constants import CLAIM_STATUSES
 from .management_report import read_report_snapshot
@@ -467,7 +469,60 @@ def create_mcp_server() -> MCPServer:
     if "claims" not in enabled:
         templates.pop("pfefferminzia://claims/{claimId}", None)
 
+    if (instructor.INSTRUCTOR_DIR / ".env").is_file():
+        _register_instructor_tools(server)
     return server
+
+
+def _register_instructor_tools(server: MCPServer) -> None:
+    """Instructor-only tools; they exist only where `.instructor/.env` is present."""
+
+    def run(action: Any) -> Any:
+        try:
+            return action()
+        except ValueError as error:
+            raise ToolError(str(error)) from error
+
+    @server.tool(annotations=ReadOnly)
+    def instructor_list_scenarios(drill: Literal["6", "7", "8", "9", "challenge"] | None = None) -> list[dict[str, Any]]:
+        """Instructor: show the synthetic scenario mails (subject, text, expected handling) for one drill or all."""
+        return list(scenarios_for(drill) if drill else SCENARIOS)
+
+    @server.tool(annotations=ToolAnnotations(destructiveHint=False, openWorldHint=True))
+    def instructor_send_scenarios(
+        drill: Literal["6", "7", "8", "9", "challenge"],
+        slots: list[Annotated[str, Field(pattern=r"^\d{1,2}$")]] | None = None,
+        send: bool = False,
+    ) -> dict[str, Any]:
+        """Instructor: send one drill's scenario mails from the instructor inbox to all (or selected) participant slots.
+        Call first without `send` to show the plan; set send=true only after the instructor explicitly confirmed.
+        Never sends a scenario twice to the same participant."""
+        selected = [f"{int(slot):02d}" for slot in slots] if slots else None
+        return run(lambda: instructor.send_scenarios(
+            drill, slots=selected, execute=send, pause_seconds=0.5, directory=instructor.INSTRUCTOR_DIR,
+        ))
+
+    @server.tool(annotations=ToolAnnotations(readOnlyHint=True, openWorldHint=True))
+    def instructor_progress() -> dict[str, Any]:
+        """Instructor: which participant received and answered which scenario (reads the instructor inbox)."""
+        result = run(lambda: instructor.progress(instructor.INSTRUCTOR_DIR))
+        return {**result, "table": instructor.format_progress(result)}
+
+    @server.tool(annotations=ToolAnnotations(destructiveHint=False, openWorldHint=True))
+    def instructor_provision_inboxes(
+        count: Annotated[int, Field(ge=1, le=60)],
+        prefix: Annotated[str, Field(pattern=r"^[a-z0-9][a-z0-9-]{1,30}$")] = "pfefferminzia",
+        create: bool = False,
+    ) -> dict[str, Any]:
+        """Instructor: create one inbox and one inbox-scoped key per participant slot (idempotent).
+        Call first without `create` to show the plan; set create=true only after explicit confirmation.
+        Keys are written to the Git-ignored roster and never returned."""
+        return run(lambda: instructor.provision(count, prefix, execute=create, directory=instructor.INSTRUCTOR_DIR))
+
+    @server.tool()
+    def instructor_write_handouts() -> dict[str, Any]:
+        """Instructor: write one printable value sheet per participant into .instructor/handouts (keys stay in files, not in chat)."""
+        return run(lambda: instructor.handouts(instructor.INSTRUCTOR_DIR))
 
 
 # Aliases prevent decorated tool function names from shadowing domain functions.

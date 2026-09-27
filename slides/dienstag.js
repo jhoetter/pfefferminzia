@@ -116,12 +116,12 @@
     },
     {
       id: 'Drill6Los', type: 'Drill', eyebrow: 'Drill 6 · So startet ihr', title: 'Ein Satz an Claude. Dann seht ihr eure Kommandozentrale.',
-      subtitle: 'Claude klont, richtet ein und öffnet die Software im Browser – ihr seht ein Softwaregerüst, das ihr heute ausbaut.', study: true,
+      subtitle: 'Kein Terminal: Claude klont, richtet ein und öffnet die Software im Browser – ein Softwaregerüst, das ihr heute ausbaut.', study: true,
       body: grid([
-        card('1 · claude starten und sagen', `${prompt('Klone https://github.com/jhoetter/pfefferminzia nach ~/pfefferminzia, richte alles nach der README ein und starte die Kommandozentrale. Ich bin in Drill 6.')}<p class="day-small">Auf Nachfrage die drei Werte vom Zettel einfügen.</p>`, 'mint-card'),
+        card('1 · Claude-App → Code → schreiben', `${prompt('Klone https://github.com/jhoetter/pfefferminzia nach ~/pfefferminzia, richte alles nach der README ein und starte die Kommandozentrale. Ich bin in Drill 6.')}<p class="day-small">Auf Nachfrage die drei Werte vom Zettel einfügen.</p>`, 'mint-card'),
         card('2 · Wenn ihr nicht weiterwisst', `<p class="day-emphasis">Fragt Claude. Es ist hier euer Tutor.</p><p>Es kennt den Drill, gibt Hinweise in kleinen Schritten und lädt euch beim nächsten Drill den offiziellen Stand, falls etwas klemmt.</p>`)
       ]),
-      notes: 'ZEIT: 10 Minuten inkl. Einrichtung. SAGEN: Sagt Claude den Satz, dann öffnet sich die Kommandozentrale. Die erste Aufgabe: Schickt eine Mail an eure Workshop-Adresse und verfolgt sie bis zum Ticket – im Cockpit und über Claude. Danach baut ihr mit Claude, dass jedes neue Ticket automatisch ein Prüfen-Todo bekommt. Keine Sorge: Beim nächsten Drill gibt es einen Checkpoint. PARALLEL: `uv run pfefferminzia instructor send 6 --yes`.'
+      notes: 'ZEIT: 10 Minuten inkl. Einrichtung. SAGEN: Claude-App öffnen, Bereich Code, neue Sitzung mit eurem Benutzerordner. Sagt Claude den Satz; danach bittet es euch einmal um eine neue Sitzung im Ordner pfefferminzia, dann öffnet sich die Kommandozentrale. Die erste Aufgabe: Schickt eine Mail an eure Workshop-Adresse und verfolgt sie bis zum Ticket – im Cockpit und über Claude. Danach baut ihr mit Claude, dass jedes neue Ticket automatisch ein Prüfen-Todo bekommt. Keine Sorge: Beim nächsten Drill gibt es einen Checkpoint. PARALLEL: Claude bitten „Schick die Drill-6-Begrüßung an alle“.'
     },
     {
       id: 'Drill6Cockpit', type: 'Screenshot', eyebrow: 'Drill 6 · Das Cockpit', title: 'Die erste Nachricht wird zum bearbeitbaren Fall.',
@@ -144,7 +144,7 @@
     {
       id: 'Drill7Start', type: 'Kapitel', eyebrow: '11:15–12:15 · Meilenstein 2', title: 'Der Mensch bearbeitet', study: true,
       body: stage('7', 'Der Agent bereitet vor; der Mensch versendet.', 'Leben-Fall zu Kunde, Vertrag und Tarifgeneration auflösen, Antwortentwurf redigieren und bewusst selbst senden.', ['Start: drill-07-start', 'Ziel: menschlicher Versand']),
-      notes: 'ZEIT: 1 Minute. SAGEN: Wir gewinnen operative Geschwindigkeit, aber die Entscheidung und der Versand bleiben in der Hand des Menschen. DOZENT: Szenario-Mails jetzt senden – uv run pfefferminzia instructor send 7 --yes; Fortschritt mit instructor status.'
+      notes: 'ZEIT: 1 Minute. SAGEN: Wir gewinnen operative Geschwindigkeit, aber die Entscheidung und der Versand bleiben in der Hand des Menschen. DOZENT: Claude bitten „Schick die Drill-7-Mails an alle“ (oder instructor send 7 --yes); Fortschritt: „Wer hat geantwortet?“.'
     },
     {
       id: 'Drill7Kontext', type: 'Screenshot', eyebrow: 'Drill 7 · App-Komponenten', title: 'Ein guter Entwurf beginnt bei der richtigen Tarifgeneration.',
@@ -167,7 +167,7 @@
     {
       id: 'Drill8Start', type: 'Kapitel', eyebrow: '13:15–14:15 · Meilenstein 3', title: 'Der Mensch gibt frei', study: true,
       body: stage('8', 'Der Agent bearbeitet; der Mensch kontrolliert.', 'Entscheidungsvorlage und Antwort stehen fertig bereit. Freigabe, Ablehnung oder neuer Kontext starten den nächsten Schritt.', ['Start: drill-08-start', 'Ziel: explizite Freigabe']),
-      notes: 'ZEIT: 1 Minute. SAGEN: Der Mensch schreibt nicht mehr jeden Satz. Er verantwortet die Stopplinie vor jeder externen Wirkung. Eine Ablehnung ist ein vollwertiger Erfolgspfad. DOZENT: Szenario-Mails jetzt senden – uv run pfefferminzia instructor send 8 --yes; Fortschritt mit instructor status.'
+      notes: 'ZEIT: 1 Minute. SAGEN: Der Mensch schreibt nicht mehr jeden Satz. Er verantwortet die Stopplinie vor jeder externen Wirkung. Eine Ablehnung ist ein vollwertiger Erfolgspfad. DOZENT: Claude bitten „Schick die Drill-8-Mails an alle“ (oder instructor send 8 --yes); Fortschritt: „Wer hat geantwortet?“.'
     },
     {
       id: 'Drill8Review', type: 'Screenshot', eyebrow: 'Drill 8 · Review-Komponente', title: 'Ohne aktuelle Freigabe bleibt der Lebensfall intern.',
@@ -188,7 +188,7 @@
     {
       id: 'Drill9Start', type: 'Kapitel', eyebrow: '14:30–15:30 · Meilenstein 4', title: 'Das Eingriffsfenster', study: true,
       body: stage('9', 'Automatisch, solange niemand widerspricht.', 'Der Router erkennt Haftpflicht. Antworten stehen sichtbar in einer Queue und gehen nach der Frist automatisch raus.', ['Start: drill-09-start', 'Ziel: Timer + Eingriff']),
-      notes: 'ZEIT: 1 Minute. SAGEN: Jetzt ändert sich die Voreinstellung. Ohne Eingriff findet eine externe Wirkung statt. Darum müssen Queue und Frist für Menschen sichtbar und beeinflussbar sein. DOZENT: Szenario-Mails jetzt senden – uv run pfefferminzia instructor send 9 --yes; Fortschritt mit instructor status.'
+      notes: 'ZEIT: 1 Minute. SAGEN: Jetzt ändert sich die Voreinstellung. Ohne Eingriff findet eine externe Wirkung statt. Darum müssen Queue und Frist für Menschen sichtbar und beeinflussbar sein. DOZENT: Claude bitten „Schick die Drill-9-Mails an alle“ (oder instructor send 9 --yes); Fortschritt: „Wer hat geantwortet?“.'
     },
     {
       id: 'Drill9Queue', type: 'Screenshot', eyebrow: 'Drill 9 · Queue-Komponente', title: 'Die Queue zeigt nicht nur Zeit, sondern Eingriffsmacht.',

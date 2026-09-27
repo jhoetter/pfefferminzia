@@ -1,7 +1,8 @@
 # Szenario-Mails für Dienstag
 
 Die Texte stehen an einer einzigen Stelle: `pfefferminzia/scenarios.py`.
-Anzeigen und versenden:
+Am einfachsten per Claude auf dem Dozentenrechner („Zeig mir den Plan für
+die Drill-7-Mails“, „Ja, senden“, „Wer hat geantwortet?“). Im Terminal:
 
 ```bash
 uv run pfefferminzia instructor scenarios        # alle Texte mit Erwartung
