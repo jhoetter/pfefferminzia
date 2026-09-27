@@ -155,10 +155,12 @@ def sync_agentmail(db: sqlite3.Connection | None = None) -> dict[str, Any]:
             inbox_email = str(_value(inbox, "email", default=active_inbox))
             result["inboxes"].append(inbox_email)
             inbox_address = _address_part(inbox_email)
-            # Inspect the newest messages first, so a recent workshop test is
-            # never hidden behind an older 100-message history.
+            # Fetch the newest messages, so a recent workshop test is never
+            # hidden behind an older 100-message history, but import them
+            # oldest first: a reply from an earlier run then lands in the
+            # same sync as the mail it answers.
             response = client.inboxes.messages.list(active_inbox, limit=100, ascending=False)
-            for item_value in _value(_mapping(response), "messages", default=[]):
+            for item_value in reversed(_value(_mapping(response), "messages", default=[])):
                 item = _mapping(item_value)
                 message_id = str(_value(item, "message_id", "messageId"))
                 if db.execute("SELECT id FROM messages WHERE external_message_id = ?", (message_id,)).fetchone():
@@ -222,6 +224,13 @@ def sync_agentmail(db: sqlite3.Connection | None = None) -> dict[str, Any]:
                     (stamp, message_stamp, direction, ticket_id),
                 )
                 result["importedMessages"] += 1
+                if direction == "outbound":
+                    # Answered from this inbox before this local copy existed
+                    # (earlier run or a fresh checkpoint folder). Show it as
+                    # answered; it is no evidence for the current drill.
+                    db.execute("UPDATE tickets SET status = 'sent' WHERE id = ? AND status NOT IN ('sent', 'closed')", (ticket_id,))
+                    complete_ticket_todos(ticket_number, "reply", db)
+                    add_event(ticket_id, "earlier_reply_imported", "agentmail-sync", {"messageId": message_id}, db)
                 for attachment_value in _value(message, "attachments", default=[]) or []:
                     attachment = _mapping(attachment_value)
                     attachment_id = str(_value(attachment, "attachment_id", "attachmentId"))

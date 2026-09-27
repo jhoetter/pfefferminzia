@@ -158,3 +158,41 @@ def test_agentmail_fails_closed_without_inbox_or_allowlist(monkeypatch, full_db)
     save_draft("PF-ALLOWLIST", "Antwort", "Test", db=full_db)
     with pytest.raises(ValueError, match="WORKSHOP_ALLOWED_RECIPIENTS"):
         send_ticket_draft("PF-ALLOWLIST", db=full_db)
+
+
+class AnsweredThreadMessages(FakeMessages):
+    """An inbox that still holds a reply from an earlier workshop run (newest first)."""
+
+    def list(self, inbox_id: str, **_: object):
+        return {"messages": [{"message_id": "old-reply"}, {"message_id": "welcome-in"}]}
+
+    def get(self, inbox_id: str, message_id: str):
+        common = {"thread_id": "thread-welcome", "subject": "Willkommen", "attachments": [], "to": []}
+        if message_id == "old-reply":
+            return {**common, "message_id": message_id, "from": "participant@agentmail.to",
+                    "timestamp": "2026-09-27T09:05:00Z", "text": "Antwort aus dem letzten Durchlauf"}
+        return {**common, "message_id": message_id, "from": "Johannes <teacher@example.test>",
+                "timestamp": "2026-09-27T09:00:00Z", "text": "Was möchten Sie heute lernen?"}
+
+
+def test_reply_from_an_earlier_run_shows_the_case_as_answered(monkeypatch, full_db):
+    from pfefferminzia.checkpoints import case_evidence
+
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-06-start")
+    fake = FakeAgentMail()
+    fake.inboxes.messages = AnsweredThreadMessages([])
+    monkeypatch.setattr(agentmail_service, "_client", lambda: fake)
+    monkeypatch.setenv("AGENTMAIL_API_KEY", "test-key")
+    monkeypatch.setenv("AGENTMAIL_INBOX_ID", "inbox-participant")
+    monkeypatch.setenv("WORKSHOP_ALLOWED_RECIPIENTS", "teacher@example.test")
+
+    imported = sync_agentmail(full_db)
+    assert imported == {**imported, "importedTickets": 1, "importedMessages": 2}
+    ticket = imported_tickets(full_db)[0]
+    # One sync, consistent state: the old reply is visible and the case is answered.
+    assert [message["direction"] for message in ticket["messages"]] == ["inbound", "outbound"]
+    assert ticket["status"] == "sent"
+    assert all(todo["status"] == "completed" for todo in list_todos(db=full_db) if todo["ticketNumber"] == ticket["ticketNumber"])
+    # A reply from an earlier run is no evidence for today's drill.
+    assert case_evidence(6, full_db)["complete"] is False
+    assert sync_agentmail(full_db)["importedMessages"] == 0

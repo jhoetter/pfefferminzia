@@ -261,7 +261,8 @@ legen einen **neuen Ordner auf neuem Branch** an; dein bisheriger Ordner
 bleibt unverändert. Danach öffnest du in der Claude-App eine **neue
 Code-Sitzung mit dem neuen Ordner** (Claude nennt ihn dir) und schreibst
 „weiter mit Drill N“; Claude startet dort die App. Im offiziellen Modus können alte Mails beim Sync noch
-einmal auftauchen: bearbeite nur die neu angekündigten Fälle.
+einmal auftauchen – schon beantwortete stehen dann als „gesendet“ da. Bearbeite
+nur die neu angekündigten Fälle.
 
 ## Ohne Claude-Tokens
 

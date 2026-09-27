@@ -200,6 +200,11 @@ lernen müssen sie nicht – den Code schreibst du.
   „0 neue Nachrichten“ heißt nur: in diesem Moment noch nichts da –
   Zustellverzögerung erklären, kurz warten, erneut synchronisieren; nicht
   ohne Beleg behaupten, die Mail sei an die falsche Adresse gegangen.
+- Steht ein Fall nach dem Sync schon als „gesendet“ da (Ereignis
+  `earlier_reply_imported`), wurde er aus diesem Postfach in einem früheren
+  Durchlauf oder Ordner beantwortet. Das kurz so erklären; er zählt nicht als
+  Fallnachweis. Für einen frischen Fall bittet die Person die Lehrperson, die
+  Mail neu zu schicken.
 - Eine echte private Testmail ist nur ein Verbindungstest, kein
   Versicherungsfall; ihren Inhalt nicht für spätere Drills verwenden.
 - Jede neue Mail bringt automatisch die Aufgabe „Antworten: …“ mit. In

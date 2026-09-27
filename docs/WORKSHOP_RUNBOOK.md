@@ -112,8 +112,15 @@ Prompt-Injection-Challenge gezielt an Schnelle.
 
 Beim Checkpoint-Wechsel entsteht ein neuer Ordner. Die App aus dem alten
 Ordner muss aus sein (Claude beenden reicht meist); Claude startet sie im
-neuen Ordner. Im offiziellen Modus können alte Mails neu importiert werden:
-„Bearbeitet nur die neu angekündigten Fälle.“
+neuen Ordner. Im offiziellen Modus werden alte Mails neu importiert; schon
+beantwortete erscheinen als „gesendet“ mit der alten Antwort im Verlauf und
+erledigter Aufgabe. „Bearbeitet nur die neu angekündigten Fälle.“
+
+**Probe mit derselben Inbox:** Eine frische Kopie übernimmt beim Abgleich
+auch die Antworten aus dem letzten Durchlauf; die alte Begrüßung steht dann
+als beantwortet da und zählt nicht als Fallnachweis. Für einen frischen
+Drill-6-Fall die Begrüßung neu schicken:
+`instructor send 6 --slot <Platz> --resend --yes`.
 
 ## Was nur der Mensch kann
 
