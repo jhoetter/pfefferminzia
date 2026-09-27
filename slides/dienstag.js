@@ -26,7 +26,7 @@
       subtitle: 'Der Unterschied ist nicht die Qualität des Textes, sondern die Wirkung ausserhalb des Chats.',
       body: grid([
         card('Montag · verstehen', `<p class="day-emphasis">Claude untersucht Daten und macht Vorschläge.</p><p>Kundensicht, Schadenfall, Underwriting und Frühwarnliste bleiben zunächst im Arbeitsraum.</p>${pill('Augmentation', 'blue')}`),
-        card('Dienstag · handeln', `<p class="day-emphasis">Claude nutzt Fachfunktionen und bewegt Fälle weiter.</p><p>Ein Postfach empfängt, ein Entwurf wird versendet, eine Queue löst später aus.</p>${pill('Automation', 'red')}`)
+        card('Dienstag · handeln', `<p class="day-emphasis">Claude nutzt Fachfunktionen und bewegt Fälle weiter.</p><p>Ein Postfach empfängt, ein Entwurf wird versendet, eine Warteschlange löst später aus.</p>${pill('Automation', 'red')}`)
       ]),
       notes: 'ZEIT: 3 Minuten. SAGEN: Gestern, in Falks Drills 1–5, hat Claude analysiert und vorgeschlagen. Heute, in Drill 6–10, bekommt es kontrollierte operative Fähigkeiten – und der Kontrollpunkt ist neu zu verhandeln. FRAGE: Welche Aktion würde bei Ihnen erstmals jemand anderem auffallen?'
     },
@@ -38,7 +38,7 @@
         <div class="day-timeline-row"><strong>10:00–11:00</strong><em>Drill 6</em><span>Kommandozentrale: erste Mail mit Claude beantworten</span></div>
         <div class="day-timeline-row"><strong>11:15–12:15</strong><em>Drill 7</em><span>Leben: belegter Entwurf, Mensch sendet</span></div>
         <div class="day-timeline-row"><strong>13:15–14:15</strong><em>Drill 8</em><span>Leben: Freigabe oder Ablehnung</span></div>
-        <div class="day-timeline-row"><strong>14:30–15:30</strong><em>Drill 9</em><span>Haftpflicht: Queue mit Eingriffsfenster</span></div>
+        <div class="day-timeline-row"><strong>14:30–15:30</strong><em>Drill 9</em><span>Haftpflicht: automatischer Versand mit Eingriffsfenster</span></div>
         <div class="day-timeline-row"><strong>15:45–16:30</strong><em>Drill 10</em><span>Management-Report mit reveal.js und D3</span></div>
         <div class="day-timeline-row"><strong>16:45–18:00</strong><em>Whiteboard</em><span>Event/Cron oder Prompt? Automation Contract</span></div>
       </div>`,
@@ -59,7 +59,7 @@
       body: `<div class="day-flow">
         <div class="day-flow-step"><b>Mensch</b><span>prüft und steuert<br>im Cockpit</span></div><div class="day-arrow">↔</div>
         <div class="day-flow-step"><b>Claude Code</b><span>plant und nutzt<br>MCP-Werkzeuge</span></div><div class="day-arrow">↔</div>
-        <div class="day-flow-step"><b>Python-App</b><span>Fachlogik, Rechte,<br>Audit und Queue</span></div><div class="day-arrow">↔</div>
+        <div class="day-flow-step"><b>Python-App</b><span>Fachlogik, Rechte,<br>Protokoll und Warteschlange</span></div><div class="day-arrow">↔</div>
         <div class="day-flow-step"><b>AgentMail</b><span>persönliche Inbox<br>und Versand</span></div>
       </div>`,
       notes: 'ZEIT: 5 Minuten. SAGEN: Die Oberfläche ist nicht die eigentliche Schnittstelle. Claude Code spricht über MCP mit demselben Python-System. AgentMail ist die externe Grenze. Pro Person gibt es eine isolierte Inbox. VORFÜHRUNG: Eine Nachricht erscheint im Cockpit und kann über MCP gelesen werden.'
@@ -78,7 +78,7 @@
       subtitle: 'Die fachliche Risikoeinschätzung bestimmt, wann der Mensch handeln muss.',
       body: grid([
         card('Leben · Opt-in', `<p class="day-emphasis">Ohne ausdrückliche Freigabe verlässt nichts den Fall.</p><p>Agent entscheidet und formuliert; Mensch genehmigt, lehnt ab oder ergänzt Kontext.</p>${pill('Freigabe ist Pflicht', 'red')}`, 'red-card'),
-        card('Haftpflicht · Opt-out', `<p class="day-emphasis">Nach sichtbarer Frist geht die Antwort standardmässig raus.</p><p>Im Eingriffsfenster kann der Mensch editieren, stoppen oder aus der Queue nehmen.</p>${pill('Eingriff ist möglich', 'mint')}`, 'mint-card')
+        card('Haftpflicht · Opt-out', `<p class="day-emphasis">Nach sichtbarer Frist geht die Antwort standardmässig raus.</p><p>Im Eingriffsfenster kann der Mensch editieren, stoppen oder den Versand stoppen.</p>${pill('Eingriff ist möglich', 'mint')}`, 'mint-card')
       ]),
       notes: 'ZEIT: 6 Minuten. SAGEN: Das ist keine pauschale Aussage über Versicherungsprodukte. Im Workshop simulieren wir zwei Kontrollmuster an synthetischen Fällen. Die Gruppe soll den Unterschied erleben. FRAGE: Welche Fehlerklasse wird durch jedes Muster abgefangen?'
     },
@@ -127,7 +127,7 @@
         card('1–2 · Antworten', `${dialogueStep(1, 'Ankommen', 'Was ist meine erste Aufgabe?', 'Mail lesen, Kernaussage der Antwort nennen.')}${dialogueStep(2, 'Entwurf', 'Entwirf aus meiner Kernaussage eine kurze Antwort. Noch nicht senden.', 'Im Cockpit ändern und speichern.')}`, 'mint-card'),
         card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Welche Szenarien müssen stimmen, bevor ich sende?', 'Regel und Szenarien festlegen, dann mit Claude bauen.')}${dialogueStep(4, 'Senden', 'Läuft meine Änderung? Dann sende ich.', 'Selbst senden: Aufgabe erledigt, Gegenfall offen.')}`)
       ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: Die vier Prompts sind Gesprächsetappen. Persönliche Inbox, kein geteilter Schlüssel. Temporären inboxgebundenen Workshop-Key nur im individuellen Chat/lokal, nie echte Geheimnisse. Outbound-Allowlist ist kein Eingangsfilter. Grüner Preflight ist nur Startbereitschaft. Nach eigenem Test Diff prüfen und committen. 15 Minuten Start, 10 Minuten antworten, 20 Minuten bauen, 10 Minuten nachweisen, 5 Minuten reflektieren.'
+      notes: 'ZEIT: 2 Minuten. SAGEN: Die vier Prompts sind Gesprächsetappen. Persönliche Inbox, kein geteilter Schlüssel. Temporären inboxgebundenen Workshop-Key nur im individuellen Chat/lokal, nie echte Geheimnisse. Outbound-Allowlist ist kein Eingangsfilter. Grüner Preflight ist nur Startbereitschaft. Nach bestandenen Szenarien die Änderung prüfen und den Stand speichern. 15 Minuten Start, 10 Minuten antworten, 20 Minuten bauen, 10 Minuten nachweisen, 5 Minuten reflektieren.'
     },
     {
       id: 'Drill7Start', type: 'Kapitel', eyebrow: '11:15–12:15 · Meilenstein 2', title: 'Der Mensch bearbeitet', study: true,
@@ -147,10 +147,10 @@
       id: 'Drill7Auftrag', type: 'Drill', eyebrow: 'Drill 7 · Dialog statt Zauberprompt', title: 'Erst Quelle. Dann Entwurf. Dann du.',
       subtitle: 'Der Mensch prüft Person und Tarif, redigiert und löst den Versand bewusst selbst aus.', study: true,
       body: grid([
-        card('1–2 · Leben-Fall', `${dialogueStep(1, 'Quelle', 'Welche Person, Police und Tarifgeneration passen?', 'Zuordnung und Fundstelle selbst bestätigen.')}${dialogueStep(2, 'Entwurf', 'Formuliere mit Beleg. Nicht versenden.', 'Im Cockpit editieren, prüfen und selbst senden.')}`, 'mint-card'),
-        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Wo fällt eine falsche Tarifgeneration auf?', 'Szenarien festlegen, dann kleine Schutzregel.')}${dialogueStep(4, 'Belegen', 'Zeig mir Quelle, Edit, Versand und Szenarien.', 'Audit und Szenarien selbst kontrollieren.')}`)
+        card('1–2 · Leben-Fall', `${dialogueStep(1, 'Quelle', 'Welche Person, Police und Tarifgeneration passen?', 'Behauptung und Beleg trennen; Zuordnung selbst bestätigen.')}${dialogueStep(2, 'Entwurf', 'Formuliere mit Beleg. Nicht versenden.', 'Den Satz ändern, den du nicht unterschreibst; selbst senden.')}`, 'mint-card'),
+        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Wann ist ein Tarifzitat falsch?', 'Szenarien und Wortlaut der Meldung festlegen.')}${dialogueStep(4, 'Belegen', 'Zeig mir Quelle, meine Änderung, Versand und Szenarien.', 'Die Prüfung im Cockpit selbst austricksen.')}`)
       ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: Nicht alle Fragen zugleich eingeben. Die Person bestätigt erst Quelle und Identität. Schnelle können einen Kantenfall vertiefen oder nach eigenem Wunsch den Review-Pfad für Drill 8 im Branch vorbauen; der aktuelle Checkpoint schaltet ihn noch nicht live frei.'
+      notes: 'ZEIT: 2 Minuten. SAGEN: Nicht alle Fragen zugleich eingeben. Die Person bestätigt erst Quelle und Identität. Schnelle bekommen Denkanstöße und erweitern ihre eigene Kommandozentrale (Vorschlag: Beleg-Kasten) – nie den nächsten Drill.'
     },
     {
       id: 'Drill8Start', type: 'Kapitel', eyebrow: '13:15–14:15 · Meilenstein 3', title: 'Der Mensch gibt frei', study: true,
@@ -158,64 +158,64 @@
       notes: 'ZEIT: 1 Minute. SAGEN: Der Mensch schreibt nicht mehr jeden Satz. Er verantwortet die Stopplinie vor jeder externen Wirkung. Eine Ablehnung ist ein vollwertiger Erfolgspfad. DOZENT: Claude bitten „Schick die Drill-8-Mails an alle“ (oder instructor send 8 --yes); Fortschritt: „Wer hat geantwortet?“.'
     },
     {
-      id: 'Drill8Review', type: 'Screenshot', eyebrow: 'Drill 8 · Review-Komponente', title: 'Ohne aktuelle Freigabe bleibt der Lebensfall intern.',
-      subtitle: 'Foliendemo: Klicken Sie auf Freigeben oder Ablehnen – es wird nichts an AgentMail gesendet.', study: true,
+      id: 'Drill8Review', type: 'Screenshot', eyebrow: 'Drill 8 · Die Freigabe', title: 'Ohne aktuelle Freigabe bleibt der Lebensfall intern.',
+      subtitle: 'Foliendemo: Klicken Sie auf Freigeben oder Ablehnen – es wird nichts gesendet.', study: true,
       body: `<div class="day-review"><div class="day-card mint-card"><h3>Entscheidungsvorlage</h3><p><strong>Fall:</strong> fiktive Lebensanfrage · Mara Keller</p><p><strong>Vorschlag:</strong> Antwort vorbereiten und Tarifbeleg zitieren.</p><p><strong>Prüfpunkt:</strong> Ist der Schluss durch die Quelle gedeckt?</p><div class="day-review-status" id="review-status" aria-live="polite">Wartet auf menschliche Freigabe</div></div>
         <div class="day-card"><h3>Ihre Kontrolloptionen</h3><p>Der Mensch kann genehmigen, mit Begründung ablehnen oder neuen Kontext ergänzen.</p><button type="button" class="day-app-button" data-review="approve">Freigeben</button><button type="button" class="day-app-button danger" data-review="reject">Ablehnen</button><button type="button" class="day-app-button secondary" data-review="edit">Text ändern</button><p class="day-small" style="margin-top:15px">Eine Änderung macht eine frühere Freigabe ungültig.</p><span class="day-sim-banner">Foliendemo · keine echte Aktion</span></div></div>`,
-      notes: 'ZEIT: 4 Minuten. SAGEN: Die Foliendemo simuliert die Zustandslogik. Freigabe ist explizit; Ablehnung führt zurück in den Agenten-Loop; Bearbeitung widerruft die frühere Freigabe. In der echten App sind alle drei Wege im Audit sichtbar.'
+      notes: 'ZEIT: 4 Minuten. SAGEN: Die Foliendemo simuliert die Zustandslogik. Freigabe ist explizit; Ablehnung führt zurück in den Agenten-Loop; Bearbeitung widerruft die frühere Freigabe. In der echten App sind alle drei Wege im Protokoll sichtbar.'
     },
     {
       id: 'Drill8Auftrag', type: 'Drill', eyebrow: 'Drill 8 · Dialog statt Zauberprompt', title: 'Claude bereitet vor. Du entscheidest.',
       subtitle: 'Eine aktuelle menschliche Freigabe ist die Stopplinie vor jeder externen Wirkung.', study: true,
       body: grid([
-        card('1–2 · Review', `${dialogueStep(1, 'Vorlage', 'Bereite zwei Fälle nur bis zur Review vor.', 'Belege prüfen; Claude kann nicht freigeben.')}${dialogueStep(2, 'Entscheidung', 'Zeig mir die Optionen, führe noch nichts aus.', 'Im Cockpit: einen freigeben, einen ablehnen.')}`, 'mint-card'),
-        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Wie zeigen wir Ablehnung oder Freigabeverlust klarer?', 'Szenarien festlegen, kleine UI-Änderung umsetzen.')}${dialogueStep(4, 'Belegen', 'Was zeigt das Audit nach Edit und Ablehnung?', 'Alte Freigabe muss ungültig sein.')}`)
+        card('1–2 · Freigabe', `${dialogueStep(1, 'Vorlage', 'Bereite zwei Fälle bis zur Freigabe vor.', 'Erst eigene Prüfpunkte nennen, dann die Vorlagen daran messen.')}${dialogueStep(2, 'Entscheidung', 'Welche Folgen haben Freigabe und Ablehnung?', 'Im Cockpit: einen freigeben, einen begründet ablehnen.')}`, 'mint-card'),
+        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Was muss ein Hinweis zu Ablehnung und erloschener Freigabe sagen?', 'Inhalt und Szenarien festlegen, mit Claude bauen.')}${dialogueStep(4, 'Belegen', 'Was passiert, wenn ich einen freigegebenen Text ändere?', 'Die alte Freigabe muss erlöschen.')}`)
       ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: Das sind vier Gesprächsetappen mit menschlichem Stopp dazwischen, kein einmaliger Auftrag. Nicht nur den Happy Path testen. Die Ablehnung muss dokumentiert sein und einen neuen Agenten-Loop auslösen. Versand bleibt eine eigene Bestätigung. Challenge: Freigabe durch Änderung invalidieren.'
+      notes: 'ZEIT: 2 Minuten. SAGEN: Das sind vier Gesprächsetappen mit menschlichem Stopp dazwischen, kein einmaliger Auftrag. Nicht nur den Normalfall prüfen. Die Ablehnung muss dokumentiert sein und einen neuen Agenten-Loop auslösen. Versand bleibt eine eigene Bestätigung. Challenge: Freigabe durch Änderung invalidieren.'
     },
     {
       id: 'Drill9Start', type: 'Kapitel', eyebrow: '14:30–15:30 · Meilenstein 4', title: 'Das Eingriffsfenster', study: true,
-      body: stage('9', 'Automatisch, solange niemand widerspricht.', 'Der Router erkennt Haftpflicht. Antworten stehen sichtbar in einer Queue und gehen nach der Frist automatisch raus.', ['Start: drill-09-start', 'Ziel: Timer + Eingriff']),
-      notes: 'ZEIT: 1 Minute. SAGEN: Jetzt ändert sich die Voreinstellung. Ohne Eingriff findet eine externe Wirkung statt. Darum müssen Queue und Frist für Menschen sichtbar und beeinflussbar sein. DOZENT: Claude bitten „Schick die Drill-9-Mails an alle“ (oder instructor send 9 --yes); Fortschritt: „Wer hat geantwortet?“.'
+      body: stage('9', 'Automatisch, solange niemand widerspricht.', 'Haftpflichtfälle werden erkannt. Antworten warten sichtbar im Eingriffsfenster und gehen nach der Frist automatisch raus.', ['Start: drill-09-start', 'Ziel: Timer + Eingriff']),
+      notes: 'ZEIT: 1 Minute. SAGEN: Jetzt ändert sich die Voreinstellung. Ohne Eingriff findet eine externe Wirkung statt. Darum müssen Warteschlange und Frist für Menschen sichtbar und beeinflussbar sein. DOZENT: Claude bitten „Schick die Drill-9-Mails an alle“ (oder instructor send 9 --yes); Fortschritt: „Wer hat geantwortet?“.'
     },
     {
-      id: 'Drill9Queue', type: 'Screenshot', eyebrow: 'Drill 9 · Queue-Komponente', title: 'Die Queue zeigt nicht nur Zeit, sondern Eingriffsmacht.',
-      subtitle: 'Foliendemo: Bearbeiten, Entfernen und Uhr +24 h verändern nur diese Folie.', study: true,
-      body: `<div class="day-queue"><div class="day-queue-head"><span>Versand-Queue · Haftpflicht</span><button type="button" class="day-app-button secondary" data-queue="advance">Workshop-Uhr +24 h</button></div>
-        <div class="day-queue-row" data-item="1" data-state="queued"><span>01</span><span><strong>Rückfrage zum Schaden</strong><small>Fall HP-2301 · fiktiv</small></span><span class="day-queue-state">Geplant</span><span class="day-queue-time">23:59 h</span><span class="day-queue-actions"><button type="button" class="day-app-button secondary" data-queue="edit">Bearbeiten</button><button type="button" class="day-app-button danger" data-queue="remove">Entfernen</button></span></div>
-        <div class="day-queue-row" data-item="2" data-state="queued"><span>02</span><span><strong>Deckungsfrage</strong><small>Fall HP-2302 · fiktiv</small></span><span class="day-queue-state">Geplant</span><span class="day-queue-time">23:59 h</span><span class="day-queue-actions"><button type="button" class="day-app-button secondary" data-queue="edit">Bearbeiten</button><button type="button" class="day-app-button danger" data-queue="remove">Entfernen</button></span></div>
-        <div class="day-queue-row" data-item="3" data-state="queued"><span>03</span><span><strong>Nachfrage zur Police</strong><small>Fall HP-2303 · fiktiv</small></span><span class="day-queue-state">Geplant</span><span class="day-queue-time">23:59 h</span><span class="day-queue-actions"><button type="button" class="day-app-button secondary" data-queue="edit">Bearbeiten</button><button type="button" class="day-app-button danger" data-queue="remove">Entfernen</button></span></div>
+      id: 'Drill9Queue', type: 'Screenshot', eyebrow: 'Drill 9 · Das Eingriffsfenster', title: 'Das Fenster zeigt nicht nur Zeit, sondern Eingriffsmacht.',
+      subtitle: 'Foliendemo: Bearbeiten, Stoppen und Uhr +24 h verändern nur diese Folie.', study: true,
+      body: `<div class="day-queue"><div class="day-queue-head"><span>Eingriffsfenster · Haftpflicht</span><button type="button" class="day-app-button secondary" data-queue="advance">Workshop-Uhr +24 h</button></div>
+        <div class="day-queue-row" data-item="1" data-state="queued"><span>01</span><span><strong>Rückfrage zum Schaden</strong><small>Fall HP-2301 · fiktiv</small></span><span class="day-queue-state">Geplant</span><span class="day-queue-time">23:59 h</span><span class="day-queue-actions"><button type="button" class="day-app-button secondary" data-queue="edit">Bearbeiten</button><button type="button" class="day-app-button danger" data-queue="remove">Stoppen</button></span></div>
+        <div class="day-queue-row" data-item="2" data-state="queued"><span>02</span><span><strong>Deckungsfrage</strong><small>Fall HP-2302 · fiktiv</small></span><span class="day-queue-state">Geplant</span><span class="day-queue-time">23:59 h</span><span class="day-queue-actions"><button type="button" class="day-app-button secondary" data-queue="edit">Bearbeiten</button><button type="button" class="day-app-button danger" data-queue="remove">Stoppen</button></span></div>
+        <div class="day-queue-row" data-item="3" data-state="queued"><span>03</span><span><strong>Nachfrage zur Police</strong><small>Fall HP-2303 · fiktiv</small></span><span class="day-queue-state">Geplant</span><span class="day-queue-time">23:59 h</span><span class="day-queue-actions"><button type="button" class="day-app-button secondary" data-queue="edit">Bearbeiten</button><button type="button" class="day-app-button danger" data-queue="remove">Stoppen</button></span></div>
         <p style="font-size:15px;margin:9px 0 0;color:#6B5B3A">Nur Demonstration – die echten Aktionen finden ausschliesslich im lokalen Cockpit statt.</p></div>`,
-      notes: 'ZEIT: 4 Minuten. SAGEN: Erst die drei Eingriffe vorführen: eine Nachricht laufen lassen, eine bearbeiten, eine entfernen. Danach Uhr vorspulen. Der Knopf auf der Folie sendet nicht; im Workshop muss die echte App mit freigegebenen synthetischen Empfängern getestet werden.'
+      notes: 'ZEIT: 4 Minuten. SAGEN: Erst die drei Eingriffe vorführen: eine Nachricht laufen lassen, eine bearbeiten, eine stoppen. Danach Uhr vorspulen. Der Knopf auf der Folie sendet nicht; im Workshop muss die echte App mit freigegebenen synthetischen Empfängern getestet werden.'
     },
     {
-      id: 'Drill9Auftrag', type: 'Drill', eyebrow: 'Drill 9 · Dialog statt Zauberprompt', title: 'Die Queue ist sichtbar. Die Wirkung kommt später.',
+      id: 'Drill9Auftrag', type: 'Drill', eyebrow: 'Drill 9 · Dialog statt Zauberprompt', title: 'Das Fenster ist sichtbar. Die Wirkung kommt später.',
       subtitle: 'Du siehst den Countdown, greifst ein und bestätigst erst dann den Zeitsprung.', study: true,
       body: grid([
-        card('1–2 · Eingriffsfenster', `${dialogueStep(1, 'Routing', 'Welche Fälle sind Haftpflicht? Noch nichts planen.', 'Sparte, Quellen und Empfänger prüfen.')}${dialogueStep(2, 'Queue', 'Zeig die +24h-Queue; Uhr nicht vorspulen.', 'Einen editieren, einen stoppen, einen belassen.')}`, 'mint-card'),
-        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Wie machen wir Stopp oder Duplikatschutz klarer?', 'Szenarien festlegen, dann kleine Änderung.')}${dialogueStep(4, 'Wirkung', 'Was geht nach dem Zeitsprung wirklich raus?', 'Uhr im Cockpit vorspulen; Audit prüfen.')}`)
+        card('1–2 · Eingriffsfenster', `${dialogueStep(1, 'Zuordnen', 'Welche Fälle sind Haftpflicht? Noch nichts planen.', 'Den Fall nennen, der dir für Automatik zu heikel ist.')}${dialogueStep(2, 'Warteschlange', 'Plane die Antworten ins 24-Stunden-Fenster ein.', 'Vorhersagen, was rausgeht; einen ändern, einen stoppen, einen lassen.')}`, 'mint-card'),
+        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Was wäre schlimmer: doppelt oder gestoppt doch versendet?', 'Die zwei wichtigsten Szenarien festlegen, mit Claude bauen.')}${dialogueStep(4, 'Wirkung', 'Was geht nach dem Zeitsprung wirklich raus?', 'Uhr im Cockpit vorspulen; mit der Vorhersage vergleichen.')}`)
       ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: Jede Frage stoppt vor einer menschlichen Prüfung. Der offizielle Drill-9-Checkpoint aktiviert Auto-Send im neuen Worktree; niemand editiert dafür manuell .env. Auto-Send nur an freigegebene Workshop-Adressen. Den 24-Stunden-Sprung erst nach sichtbarer Queue und expliziter Bestätigung ausführen. Challenge: idempotentes Handling oder Timer-Reset nach Edit.'
+      notes: 'ZEIT: 2 Minuten. SAGEN: Jede Frage stoppt vor einer menschlichen Prüfung. Der offizielle Drill-9-Checkpoint aktiviert Auto-Send im neuen Worktree; niemand editiert dafür manuell .env. Auto-Send nur an freigegebene Workshop-Adressen. Den 24-Stunden-Sprung erst nach sichtbarem Eingriffsfenster und expliziter Bestätigung ausführen. Challenge: idempotentes Handling oder Timer-Reset nach Edit.'
     },
     {
       id: 'Drill10Start', type: 'Kapitel', eyebrow: '15:45–16:30 · Meilenstein 5', title: 'Der Management-Report', study: true,
-      body: stage('10', 'Aus Erlebnissen wird eine Entscheidung.', 'Mit reveal.js und D3 zeigen wir nur, was der lokale Workshop-Schnappschuss tatsächlich belegt.', ['Start: drill-10-start', 'Ziel: max. 4 Folien']),
+      body: stage('10', 'Aus Erlebnissen wird eine Entscheidung.', 'Wir zeigen nur, was die gezählten Ereignisse aus eurem Workshop tatsächlich belegen.', ['Start: drill-10-start', 'Ziel: max. 4 Folien']),
       notes: 'ZEIT: 1 Minute. SAGEN: Der Report ist selbst gebaut, aber kein Konzern-Dashboard. Beim Checkpoint-Wechsel werden nur aggregierte Zählwerte kopiert, keine Mailtexte oder Namen. Auto-Versand ist wieder aus.'
     },
     {
-      id: 'Drill10Daten', type: 'Inhalt', eyebrow: 'Drill 10 · Datenweg', title: 'Aus Audit-Ereignissen wird ein belegter Befund.',
+      id: 'Drill10Daten', type: 'Inhalt', eyebrow: 'Drill 10 · Datenweg', title: 'Aus dem Protokoll wird ein belegter Befund.',
       subtitle: 'Eine lokale Simulation – kein Beweis für Zeitersparnis oder Produktivqualität.', study: true,
-      body: `<div class="day-flow"><div class="day-flow-step"><b>Drill 9</b><span>eigene Fälle<br>und Audit</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Snapshot</b><span>nur gruppierte<br>Zählwerte</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>D3</b><span>lesbare Grafik<br>mit Nullfällen</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Report</b><span>Beleg · Grenze<br>Empfehlung</span></div></div>`,
+      body: `<div class="day-flow"><div class="day-flow-step"><b>Drill 9</b><span>eigene Fälle<br>und Protokoll</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Zählung</b><span>nur gruppierte<br>Zählwerte</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Grafik</b><span>beschriftet,<br>auch bei null</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Report</b><span>Beleg · Grenze<br>Empfehlung</span></div></div>`,
       notes: 'ZEIT: 2 Minuten. SAGEN: Claude kann Code und Formulierung helfen; die Management-Aussage wählt und verantwortet der Mensch. Im Snapshot gibt es nur Sparte/Status/Herkunft und ausgewählte Kontrollereignisse als Zählwerte.'
     },
     {
       id: 'Drill10Auftrag', type: 'Drill', eyebrow: 'Drill 10 · Dialog statt Zauberprompt', title: 'Ein Chart. Eine Empfehlung. Eine Grenze.',
-      subtitle: 'Die Report-Basis steht; die Aussage und eine D3-Verbesserung baut ihr selbst.', study: true,
+      subtitle: 'Die Report-Basis steht; die Aussage und eine zweite Grafik baut ihr selbst.', study: true,
       body: grid([
-        card('1–2 · Beobachten', `${dialogueStep(1, 'Befund', 'Welche Zahl ist wirklich belegt?', 'Demo- und Inbox-Fälle trennen.')}${dialogueStep(2, 'D3', 'Erst Skizze, dann Grafik-Code.', 'Beschriftung, Zählwerte und Nullfälle prüfen.')}`, 'mint-card'),
-        card('3–4 · Entscheiden', `${dialogueStep(3, 'Empfehlung', 'Verdichte Beleg, Kontrolle und Unsicherheit.', 'Eigene Aussage formulieren; maximal vier Folien.')}${dialogueStep(4, 'Vorführen', 'Prüfe Snapshot, Datenschutz und Diff.', 'Zwei Minuten zeigen, testen, committen.')}`)
+        card('1–2 · Beobachten', `${dialogueStep(1, 'Befund', 'Welche Zahl ist wirklich belegt?', 'Eine Frage für den Vorstand und ihre Grenze wählen.')}${dialogueStep(2, 'Grafik', 'Welche Zahlen braucht die Grafik, und wie soll sie aussehen?', 'Skizze in Worten vorgeben; Beschriftung und Nullfälle prüfen.')}`, 'mint-card'),
+        card('3–4 · Entscheiden', `${dialogueStep(3, 'Empfehlung', 'Hier ist meine Empfehlung – kürze sie und frag kritisch nach.', 'Eigene Aussage formulieren; maximal vier Folien.')}${dialogueStep(4, 'Vorführen', 'Prüfe Zahlen, Datenschutz und was sich geändert hat.', 'Zwei Minuten zeigen, Stand speichern.')}`)
       ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: In der eigenen Kopie slides/management.js bearbeiten. Wer danach noch Guthaben hat: Bonus-Video mit Remotion (docs/BONUS_VIDEO.md) als vierte Folie. Der Report läuft über den lokalen Python-Server; reveal.js und D3 sind bereits eingebettet, kein Node und kein CDN. Der Basis-Chart ist das Sicherheitsnetz, nicht das Endprodukt.'
+      notes: 'ZEIT: 2 Minuten. SAGEN: In der eigenen Kopie slides/management.js bearbeiten. Wer danach noch Guthaben hat: Bonus-Video mit Remotion (docs/BONUS_VIDEO.md) als Zusatzfolie. Der Report läuft über den lokalen Python-Server; reveal.js und D3 sind bereits eingebettet, kein Node und kein CDN. Der Basis-Chart ist das Sicherheitsnetz, nicht das Endprodukt.'
     },
     {
       id: 'Checkpoints', type: 'Code', eyebrow: 'Sicheres Aufholen', title: 'Ein Checkpoint rettet den Tag, nicht auf Kosten Ihrer Arbeit.',

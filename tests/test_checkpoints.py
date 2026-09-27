@@ -1,6 +1,6 @@
 import re
 
-from pfefferminzia.checkpoints import DRILL_BRIEFS, activate_checkpoint, adopt_checkpoint, checkpoint_profile, drill_guide, verify_checkpoint
+from pfefferminzia.checkpoints import DRILL_BRIEFS, HINTS, activate_checkpoint, adopt_checkpoint, checkpoint_profile, drill_guide, verify_checkpoint
 from pfefferminzia.workshop import ensure_workshop_fixtures
 
 
@@ -84,7 +84,7 @@ def test_each_drill_guides_separate_claude_questions_and_human_stops(monkeypatch
                  *guide["learningGoals"], *guide["thinkingPrompts"], *guide["checkpoint"]["successCriteria"],
                  *(step[field] for step in steps for field in ("askClaude", "decision", "yourMove")),
                  extension["title"], extension["designQuestion"], extension["prepares"], extension["decision"],
-                 *extension["inspiration"]]
+                 *extension["inspiration"], *HINTS[drill][:2]]
         jargon = re.compile(r"`|_|\.py\b|\.js\b|\b(Review|Audit|Queue|Commit|committ\w*|Diff|D3|reveal|Snapshot|MCP|Router|Branch|Sync|Code\w*)\b", re.I)
         assert not [text for text in heard if jargon.search(text)]
         assert extension["block"] in {*guide["buildingBlocks"], "alle"}

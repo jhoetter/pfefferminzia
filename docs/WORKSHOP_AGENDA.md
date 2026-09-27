@@ -86,8 +86,8 @@ Vier operative Drills dauern je 60 Minuten; der Report-Mini-Drill dauert
 Verifier prüft nur die Startbereitschaft; abgeschlossen ist ein Drill erst
 mit Fallnachweis, getesteter Änderung und eigenem Commit. Geführte
 Teilnehmende verändern eine klar abgegrenzte Stelle; Bauende implementieren
-mehrere kleine Schritte; Schnelle dürfen nach dem Kernnachweis auf eigenen
-Wunsch bereits den nächsten Bauauftrag beginnen. Der nächste offizielle
+mehrere kleine Schritte; Schnelle bekommen Denkanstöße und erweitern nach dem
+Fallnachweis ihre eigene Kommandozentrale – nie den nächsten Drill. Der nächste offizielle
 Checkpoint enthält die Lösung des vorigen Bauauftrags und ist der sichere
 Rückweg für alle, die hängen. Details:
 [Lernpfad](LEARNING_PATH.md).

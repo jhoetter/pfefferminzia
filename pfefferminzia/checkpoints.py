@@ -454,28 +454,28 @@ def available_checkpoints() -> list[dict[str, Any]]:
 
 HINTS = {
     6: [
-        "Ist die Mail noch nicht da, kurz warten und erneut synchronisieren – Zustellung dauert manchmal einige Sekunden.",
-        "Claude speichert den Entwurf mit draft_ticket_reply; im Cockpit steht er unter der Mail. Senden kann nur der Mensch dort.",
+        "Ist die Mail noch nicht da, kurz warten und das Postfach noch einmal abrufen – die Zustellung dauert manchmal einige Sekunden.",
+        "Claude legt den Entwurf beim Fall ab; im Cockpit steht er unter der Mail. Senden kann nur der Mensch dort.",
         "Für den Code: send_ticket_draft ruft am Ende schon complete_ticket_todos für 'review' und 'queue_intervention' auf. Es fehlt die Aufgabenart 'reply'.",
     ],
     7: [
         "Trenne Nachrichtentext (Behauptung) von vertrauenswürdigen Tarifquellen (Beleg).",
-        "Suche den Kunden, verknüpfe den Vertrag und lies die exakt passende Tarifgeneration vor dem Entwurf (list_contract_documents).",
+        "Erst die Kundin finden, dann den Vertrag zuordnen und die genau passende Tarifgeneration lesen – und erst danach entwerfen.",
         "Für den Code: In save_draft sind Ticket und linkedContracts bekannt. Suche im Text nach den Generationen aus der Tabelle documents und vergleiche sie mit tariffGenerationId des Vertrags.",
     ],
     8: [
         "Beobachte, an welcher Stelle eine externe Wirkung technisch blockiert bleibt: Claude hat kein Freigabe- und kein Sende-Werkzeug.",
-        "Claude legt mit submit_ticket_reply zur Prüfung vor; du entscheidest im Cockpit unter „Freigaben“. Nach einer Ablehnung überarbeitet Claude den Entwurf.",
+        "Claude legt den Entwurf zur Freigabe vor; du entscheidest im Cockpit unter „Freigaben“. Nach einer Ablehnung überarbeitet Claude den Entwurf.",
         "Für den Code: Die Ereignisse draft_rejected und review_invalidated stehen schon in ticket['events']; controlNotice ist das jüngste davon, solange kein neueres Kontrollereignis folgt.",
     ],
     9: [
-        "Route zuerst nach Sparte; die Kontrollregel folgt aus der Sparte.",
-        "Claude plant mit submit_ticket_reply ein; Eingriffe (bearbeiten, aus Queue nehmen) und den Zeitsprung machst du im Cockpit.",
+        "Ordne zuerst die Sparte zu; die Kontrollregel folgt aus der Sparte.",
+        "Claude plant die Antworten ein; Eingriffe (Text ändern, Versand stoppen) und den Zeitsprung machst du im Cockpit.",
         "Für den Code: schedule_cancelled und queue_removed sind schon Ereignisse. Für den Duplikattest dispatch_due_replies zweimal aufrufen und die gesendeten Fake-Mails zählen.",
     ],
     10: [
-        "Der Snapshot zählt nur lokale Workshop-Fälle; lies /api/management-report und unterscheide demo=true von echten Inbox-Tickets.",
-        "Nutze die vorhandene reveal.js-/D3-Basis unter /slides/index.html?deck=management; ändere nur slides/management.js.",
+        "Die Zahlen zählen nur die Fälle aus deinem Workshop; unterscheide die mitgelieferten Beispielfälle von den Mails aus deinem Postfach.",
+        "Es gibt schon eine erste Grafik und Folien als Grundlage; baue darauf auf, statt neu anzufangen.",
         "Zeige Beobachtung, Kontrollgrenze, Empfehlung und Unsicherheit; ein schöner Chart ohne Beschriftung ist kein Management-Befund.",
     ],
 }
@@ -519,7 +519,7 @@ def drill_guide(
         "instruction": (
             "Sprich wie mit einer Führungskraft ohne IT-Hintergrund (CLAUDE.md, Abschnitt 0): keine Datei- oder "
             "Funktionsnamen, kein Code, keine englischen Technikwörter; arbeite still und melde nur Ergebnisse. "
-            "'buildTask', 'extension.task' und die Code-Hinweise sind nur deine Richtung – übersetzen, nie vorlesen. "
+            "'buildTask', 'extension.task' und Hinweis-Level 3 sind nur deine Richtung – übersetzen, nie vorlesen. "
             "Die vier Dialogetappen sind eine Landkarte, kein Copy-paste-Auftrag. Frage nach der gewünschten Hilfstiefe, "
             "beginne mit der aktuellen Etappe und stelle dort zuerst die Frage aus 'decision' – bevor du etwas entwirfst, "
             "baust oder vorschlägst. Frag offen („Was meinst du, wie sollten wir … aufbauen?“), greif die Idee der Person auf, "

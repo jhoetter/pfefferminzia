@@ -142,9 +142,25 @@ Whiteboard-Punkt.
 - Drill 9: Der Zeitsprung versendet genau die eine unveränderte Antwort.
 - Drill 10: Das Report-Deck zeigt die Zählwerte; Auto-Versand ist aus.
 - Reserve-Plätze getestet, nicht nur angelegt.
+- **Probe wie die Teilnehmenden:** Claude-App, Sonnet 5 auf „Mittel“ (kommt aus
+  `.claude/settings.json`; im Modellwähler kontrollieren), frische Kopie,
+  frische Mail (`instructor send 6 --slot <Platz> --resend --yes`).
+- **Bewusst passiv spielen:** in jedem Drill mindestens einmal „weiß nicht“,
+  „mach einfach“ und „ja“ schreiben. Claude muss offen nachfragen, darf nicht
+  losbauen und keinen Gegenfall selbst wählen.
+- **Sprachcheck:** Keine Datei- oder Funktionsnamen, kein Code, kein „Test“,
+  „Commit“, „rot/grün“ in Claudes Nachrichten – auch nicht, während es im
+  Programm sucht. Keine Zwischenberichte beim Suchen.
+- **Kein Antwortvorschlag** im Eingabefeld (graues „ja, …“).
+- **Früher fertig:** In mindestens einem Drill „Ich bin fertig, was jetzt?“
+  fragen: erst ein Denkanstoß, dann „Was hättest du gern?“ – nie der nächste
+  Drill. Die Erweiterung bleibt gesperrt, bis der Fall im Protokoll steht.
+- **Zeit:** Pro Drill notieren, wann Fall, Bauauftrag und Abschluss erreicht
+  waren. Drill 6 bis 9 in 60, Drill 10 in 45 Minuten?
 
 Frühere Probe: [REHEARSAL_2026-09-23.md](REHEARSAL_2026-09-23.md) (noch mit
-alter Nummerierung 8–12).
+alter Nummerierung 8–12 und vor dem Umbau auf Entscheidungsfragen,
+Szenarien und Erweiterungen am 2026-09-27).
 
 ## Schnelle Teilnehmende
 

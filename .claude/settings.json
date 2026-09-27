@@ -1,4 +1,6 @@
 {
+  "model": "sonnet",
+  "effortLevel": "medium",
   "promptSuggestionEnabled": false,
   "env": {
     "CLAUDE_CODE_ENABLE_PROMPT_SUGGESTION": "false"
