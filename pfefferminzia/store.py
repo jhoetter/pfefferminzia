@@ -108,6 +108,24 @@ def samples_visible() -> bool:
     return not (os.getenv("AGENTMAIL_API_KEY") and os.getenv("AGENTMAIL_INBOX_ID"))
 
 
+# Events that change who may act next. Only some of them need an explanation.
+CONTROL_EVENTS = ("draft_rejected", "review_invalidated", "human_review_required", "draft_approved", "reply_sent", "reply_scheduled")
+
+
+def control_notice(events: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """Explain the latest control event when it sent the draft back to work (events are newest first)."""
+    latest = next((event for event in events if event["type"] in CONTROL_EVENTS), None)
+    if not latest:
+        return None
+    if latest["type"] == "draft_rejected":
+        text = f"Abgelehnt: {latest['details'].get('note', '')}"
+    elif latest["type"] == "review_invalidated":
+        text = "Freigabe erloschen: Die Entscheidung wurde nach der Freigabe geändert. Bitte die neue Fassung freigeben."
+    else:
+        return None
+    return {"kind": latest["type"], "text": text, "actor": latest["actor"], "at": latest["createdAt"]}
+
+
 def get_ticket(identifier: str | int, db: sqlite3.Connection | None = None) -> dict[str, Any] | None:
     db = db or get_database()
     field = "t.id" if isinstance(identifier, int) else "t.ticket_number"
@@ -170,6 +188,7 @@ def get_ticket(identifier: str | int, db: sqlite3.Connection | None = None) -> d
             "SELECT * FROM ticket_events WHERE ticket_id = ? ORDER BY created_at DESC, id DESC", (ticket_id,)
         )
     ]
+    ticket["controlNotice"] = control_notice(ticket["events"])
     has_upstream = db.execute("SELECT 1 FROM source_datasets LIMIT 1").fetchone() is not None
     if has_upstream:
         ticket["parties"] = [

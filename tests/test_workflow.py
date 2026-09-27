@@ -58,3 +58,27 @@ def test_draft_must_cite_the_linked_contracts_tariff_generation(monkeypatch, ful
         save_draft("PF-10002", "Nach Tarif PL-2012 benötigen wir ein Formular.", "Beleg", "mcp-agent", full_db)
     assert save_draft("PF-10002", "Nach Tarif PL-2017 benötigen wir ein Formular.", "PL-2017, Abschnitt 3", "mcp-agent", full_db)["draft"]
     assert save_draft("PF-10002", "Wir melden uns mit den Unterlagen.", None, "human", full_db)["draft"]
+
+
+def test_control_notice_explains_rejection_and_lost_approval(monkeypatch, full_db):
+    from pfefferminzia.decisions import propose_decision
+    from pfefferminzia.store import approve_draft, reject_draft
+    from pfefferminzia.workshop import ensure_workshop_fixtures
+
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-08-start")
+    ensure_workshop_fixtures(full_db)
+    propose_decision("PF-10004", "anerkannt", "PZ-2025, Abschnitt 5", "Unterlagen belegen den Leistungsfall.", db=full_db)
+    assert get_ticket("PF-10004", full_db)["controlNotice"] is None
+    rejected = reject_draft("PF-10004", "Beleg fehlt", "human-ui", full_db)
+    assert rejected["controlNotice"]["kind"] == "draft_rejected"
+    assert "Beleg fehlt" in rejected["controlNotice"]["text"]
+    # Editing the letter changes nothing; a new version of the decision clears the notice.
+    assert save_draft("PF-10004", "Überarbeitet", "PZ-2025", "mcp-agent", full_db)["controlNotice"]["kind"] == "draft_rejected"
+    propose_decision("PF-10004", "anerkannt", "PZ-2025, Abschnitt 5", "Mit Arztbericht belegt.", db=full_db)
+    assert get_ticket("PF-10004", full_db)["controlNotice"] is None
+    approve_draft("PF-10004", "human-ui", full_db)
+    changed = propose_decision("PF-10004", "abgelehnt", "PZ-2025, Abschnitt 6", "Nach Freigabe geändert.", db=full_db)
+    ticket = get_ticket("PF-10004", full_db)
+    assert changed["approvedAt"] is None and ticket["humanApprovedAt"] is None
+    assert ticket["controlNotice"]["kind"] == "review_invalidated"
+    assert "Entscheidung" in ticket["controlNotice"]["text"]
