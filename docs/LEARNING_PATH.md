@@ -40,7 +40,7 @@ darf verschieden sein; der **Fallnachweis** ist für alle gleich.
 
 | Weg | Wenn du … | Claude hilft so | Dein Beitrag |
 | --- | --- | --- | --- |
-| Geführt | Claude Code noch kennenlernst oder festhängst | Nächster Schritt, Dateistelle, kleiner Test; Checkpoint als Rettungsnetz | Eine Änderung verstehen, auswählen, testen, committen |
+| Geführt | Claude Code noch kennenlernst oder festhängst | Nächster Schritt, Dateistelle, ein Prüfszenario; Checkpoint als Rettungsnetz | Eine Änderung verstehen, auswählen, testen, committen |
 | Bauend | mit der Struktur zurechtkommst | Akzeptanzkriterien nennen, Implementierung mit dir iterieren | Den Bauauftrag in mehreren kleinen Schritten bauen und belegen |
 | Ausbauend | Fall und Bauauftrag früh belegt hast | Empfohlene Erweiterung oder Anregungen vorstellen, Steckbrief mit dir klären, Risiko und Alternative nennen | Selbst festlegen, was deine Kommandozentrale zusätzlich können soll – dann mit Claude bauen |
 
@@ -55,20 +55,23 @@ Antwort-Liste bleibt unangetastet. Nur erfundene Daten.
 
 ## Der Vibe-Coding-Rhythmus
 
-Ein guter Auftrag hat **beobachtbares Verhalten**, eine **Grenze** und einen
-**Test** – und die Entscheidungen darin triffst du, nicht Claude. In jeder
+Ein guter Auftrag hat **beobachtbares Verhalten**, eine **Grenze** und
+**Szenarien**, an denen man ihn prüft – auch eines, das nie passieren darf.
+Je mehr sinnvolle Szenarien bestanden sind, desto mehr kannst du dem System
+vertrauen. Die Entscheidungen darin triffst du, nicht Claude. In jeder
 Etappe fragt Claude zuerst nach deiner Entscheidung; auf „mach einfach“ bietet
 es zwei, drei Optionen an. Beispiel: „Wenn dieselbe Mail zweimal synchronisiert wird, soll
-genau ein verknüpftes Prüfen-Todo entstehen. Zeig zuerst den fehlenden Test.“
+genau ein verknüpftes Prüfen-Todo entstehen – und nie zwei. Welche Szenarien prüfen wir?“
 
-`Hypothese → kleiner Test → Änderung mit Claude → Diff lesen → Fall im
-Cockpit prüfen → Test ausführen → committen → erklären`
+`Regel in deinen Worten → Szenarien (auch: was nie passieren darf) →
+Änderung mit Claude → Diff lesen → Szenarien prüfen lassen → Fall im Cockpit
+prüfen → committen → erklären`
 
 - Claude macht zu viel auf einmal? „Stopp. Nur den nächsten Schritt; sag mir,
   welche Zeile ich prüfen soll.“
 - Du bist schneller? „Ich bin fertig. Ich möchte meine Kommandozentrale
   erweitern – hilf mir mit dem Steckbrief.“
-- Du hängst? „Zeig mir die Dateistelle und einen minimalen Test.“ Oder: „Zeig
+- Du hängst? „Zeig mir die Stelle im Code und ein einfaches Szenario.“ Oder: „Zeig
   mir die Referenzlösung für diesen Schritt und erklär sie mir.“
 
 Eine grüne App allein ist kein Lernnachweis; ein Prompt allein ist kein

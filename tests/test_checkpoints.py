@@ -1,3 +1,5 @@
+import re
+
 from pfefferminzia.checkpoints import DRILL_BRIEFS, activate_checkpoint, adopt_checkpoint, checkpoint_profile, drill_guide, verify_checkpoint
 from pfefferminzia.workshop import ensure_workshop_fixtures
 
@@ -72,6 +74,10 @@ def test_each_drill_guides_separate_claude_questions_and_human_stops(monkeypatch
         assert extension["designQuestion"].endswith("?")
         assert len(guide["thinkingPrompts"]) == 3 and all(t.endswith("?") for t in guide["thinkingPrompts"])
         assert "thinkingPrompts" in guide["instruction"]
+        # Participants think in scenarios; red/green test jargon stays with Claude.
+        spoken = " ".join(step[field] for step in steps for field in ("askClaude", "decision", "yourMove"))
+        assert not re.search(r"\bTest|rot oder grün|fehlschlagend", spoken)
+        assert "Szenarien" in guide["instruction"]
         assert extension["block"] in {*guide["buildingBlocks"], "alle"}
         assert "vier Dialogetappen" in guide["instruction"]
         assert sum(guide["timeboxMinutes"].values()) == (45 if drill == 10 else 60)

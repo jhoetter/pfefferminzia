@@ -48,7 +48,7 @@ Claude hat dafür kein Werkzeug – das ist die Lektion des Tages.
 
 - Claude einen Auftrag mit Absicht, Grenze und Prüfung geben – statt „mach mal“.
 - Erklären, warum Claude entwerfen, aber nicht senden kann: Die Kontrolle steckt im fehlenden Werkzeug, nicht in einer Bitte.
-- Eine Änderung an einem Beispiel und einem Gegenbeispiel abnehmen, statt dem Ergebnis zu glauben.
+- Verstehen, warum man ein System an mehreren Szenarien prüft – auch an dem, was nie passieren darf –, bevor man ihm vertraut.
 
 **Baustein im Fokus:** Eingänge, Werkzeuge, Oberfläche. Heute baust du an einer echten kleinen Kommandozentrale: Mails kommen herein, Claude bereitet vor, du entscheidest. Achte darauf, was Claude tun kann – und was nicht.
 
@@ -59,7 +59,7 @@ entwerfen und ändere den Entwurf im Cockpit. **Noch nicht senden.**
 **Bauauftrag:** Nach dem Senden bliebe die Aufgabe offen. Baue mit Claude,
 dass sie sich beim Senden von selbst erledigt – nur die Antwort-Aufgabe
 dieses Falls; eine zweite Aufgabe (z. B. „Rückruf planen“) bleibt offen.
-Test zuerst. Danach sendest du selbst im Cockpit – das ist der Beweis. Einstieg: `send_ticket_draft` in
+Vorher legst du fest, welche Szenarien stimmen müssen. Danach sendest du selbst im Cockpit – das ist der Beweis. Einstieg: `send_ticket_draft` in
 `pfefferminzia/agentmail_service.py`, `complete_ticket_todos` in
 `pfefferminzia/todos.py`.
 
@@ -67,11 +67,11 @@ Test zuerst. Danach sendest du selbst im Cockpit – das ist der Beweis. Einstie
 | --- | --- | --- | --- |
 | 1 · Ankommen | „Was liegt in meinem Posteingang, und was ist meine erste Aufgabe?“ | Was will die Absenderin von dir – und was möchtest du ihr in einem Satz antworten? | Die Mail im Cockpit öffnen, lesen und Claude die eigene Kernaussage für die Antwort nennen. |
 | 2 · Entwerfen | „Entwirf aus meiner Kernaussage eine kurze, freundliche Antwort. Noch nicht senden.“ | Was änderst du am Entwurf, und warum? Und warum könnte Claude hier gar nicht senden, selbst wenn es wollte? | Entwurf im Cockpit lesen, etwas Eigenes ändern und speichern – noch nicht senden. |
-| 3 · Selbst bauen | „Bevor ich sende: Bleibt die Aufgabe „Antworten“ nach dem Senden offen? Zeig es mir mit einem Test, dann bauen wir es.“ | Wie sollte das System wissen, welche Aufgabe mit dem Senden erledigt ist – und welche zweite Aufgabe legen wir als Gegenfall an, die offen bleiben muss? | Mit Claude eine zweite Aufgabe zum Fall anlegen (z. B. „Rückruf planen“), vorhersagen, ob der Test rot oder grün ist, dann die kleine Änderung bauen. |
-| 4 · Senden und belegen | „Läuft die App mit meiner Änderung? Dann sende ich jetzt. Danach zeig mir: gesendete Antwort, Aufgaben, grüner Test – und hilf mir beim Commit.“ | Woran siehst du selbst, dass es funktioniert – ohne Claude zu glauben? | Im Cockpit auf „Senden“ klicken; unter „Aufgaben“ prüfen: „Antworten“ erledigt, die zweite Aufgabe offen; Commit freigeben. |
+| 3 · Selbst bauen | „Bevor ich sende: Welche Szenarien müssen stimmen, damit ich mich darauf verlassen kann, dass sich die Aufgabe beim Senden erledigt? Hilf mir, sie aufzuschreiben, dann bauen wir es.“ | Wie sollte das System wissen, welche Aufgabe mit dem Senden erledigt ist – und welche zweite Aufgabe legen wir als Gegenfall an, die offen bleiben muss? | Mit Claude eine zweite Aufgabe zum Fall anlegen (z. B. „Rückruf planen“), die Szenarien in eigenen Worten festlegen – was soll passieren, was darf nie passieren –, dann Claude die kleine Änderung bauen lassen. |
+| 4 · Senden und belegen | „Läuft die App mit meiner Änderung? Dann sende ich jetzt. Danach zeig mir: gesendete Antwort, Aufgaben, bestandene Szenarien – und hilf mir beim Commit.“ | Woran siehst du selbst, dass es funktioniert – ohne Claude zu glauben? | Im Cockpit auf „Senden“ klicken; unter „Aufgaben“ prüfen: „Antworten“ erledigt, die zweite Aufgabe offen; Commit freigeben. |
 
 **Fertig, wenn:** deine geprüfte Antwort gesendet ist, sich die Aufgabe beim
-Senden von selbst erledigt und deine Änderung mit grünem Test committet ist.
+Senden von selbst erledigt und deine Änderung mit bestandenen Szenarien committet ist.
 
 **Zum Schluss:** Was hast du heute entschieden, und was hat Claude gemacht? Wo war eine Grenze eingebaut, statt nur erbeten?
 
@@ -106,8 +106,8 @@ Einstieg: `save_draft` in `pfefferminzia/store.py`, Tests in `tests/test_workflo
 | --- | --- | --- | --- |
 | 1 · Quelle | „Welche Person, Police und Tarifgeneration passen? Zeig mir die Belege, noch kein Entwurf.“ | Welche Aussage in der Mail ist nur Behauptung der Kundin, welche ist durch Vertrag und Tarif belegt? Stimmt die Zuordnung – woran machst du das fest? | Zuordnung selbst bestätigen. |
 | 2 · Entwurf | „Erstelle einen begründeten Entwurf mit Fundstelle. Senden mache ich im Cockpit.“ | Welchen Satz im Entwurf würdest du so nicht unterschreiben, und wie lautet er besser? | Im Cockpit ändern, speichern, bewusst senden. |
-| 3 · Bauen | „Hilf mir mit einem fehlschlagenden Test für eine falsch zitierte Tarifgeneration.“ | Wann ist ein Tarifzitat für dich falsch – auch wenn gar keiner oder zwei genannt sind? Und wie soll die Meldung wörtlich lauten, damit die Sachbearbeitung sofort weiß, was zu tun ist? | Schutzregel mit Claude bauen, Gegenfall testen. |
-| 4 · Beleg | „Zeig mir Quelle, meine Änderung, Versand und Test. Dann Commit.“ | Versuch die Prüfung auszutricksen: Welchen Entwurf schreibst du im Cockpit, damit sie greifen müsste? | Activity Log prüfen, committen. |
+| 3 · Bauen | „Welche Szenarien muss eine Tarif-Prüfung bestehen, damit ich ihr vertraue?“ | Wann ist ein Tarifzitat für dich falsch – auch wenn gar keiner oder zwei genannt sind? Und wie soll die Meldung wörtlich lauten, damit die Sachbearbeitung sofort weiß, was zu tun ist? | Schutzregel mit Claude bauen, Gegenfall testen. |
+| 4 · Beleg | „Zeig mir Quelle, meine Änderung, Versand und geprüfte Szenarien. Dann Commit.“ | Versuch die Prüfung auszutricksen: Welchen Entwurf schreibst du im Cockpit, damit sie greifen müsste? | Activity Log prüfen, committen. |
 
 **Fertig, wenn:** ein belegter Entwurf von dir geändert und gesendet wurde
 und die Tarif-Belegprüfung getestet und committet ist.
@@ -146,7 +146,7 @@ Einstieg: `get_ticket` in `pfefferminzia/store.py`, Test in `tests/test_workflow
 | --- | --- | --- | --- |
 | 1 · Vorlage | „Bereite beide Fälle bis zur Review-Vorlage vor. Freigeben kann nur ich.“ | Bevor du die Vorlagen ansiehst: Nach welchen zwei, drei Punkten prüfst du eine Antwort, bevor du sie freigibst? | Vorlagen und Fundstellen prüfen. |
 | 2 · Entscheidung | „Welche Folgen haben Freigabe und Ablehnung hier?“ | Welchen Fall lehnst du ab – sind beide gut, den, der einen deiner Prüfpunkte am schwächsten erfüllt – und welcher eine Satz Begründung sagt Claude genau, was zu ändern ist? | Im Cockpit freigeben + senden bzw. begründet ablehnen. |
-| 3 · Bauen | „Wie zeigen wir Ablehnung und Freigabeverlust klarer? Zuerst ein Test.“ | Jemand öffnet den Fall morgen: Was muss im Hinweis stehen (wer, wann, warum), und wann soll er wieder verschwinden? | Verbesserung bauen, im Browser prüfen. |
+| 3 · Bauen | „Wie zeigen wir Ablehnung und Freigabeverlust klarer? Welche Szenarien prüfen wir?“ | Jemand öffnet den Fall morgen: Was muss im Hinweis stehen (wer, wann, warum), und wann soll er wieder verschwinden? | Verbesserung bauen, im Browser prüfen. |
 | 4 · Beleg | „Was zeigt das Audit nach Ablehnung und nach einem Edit? Dann Commit.“ | Soll schon ein geändertes Komma eine Freigabe aufheben – was spricht dafür (Sicherheit), was dagegen (Aufwand)? | Freigabeverlust sehen, committen. |
 
 **Fertig, wenn:** eine Freigabe und eine Ablehnung im Audit stehen, ein Edit
@@ -190,7 +190,7 @@ Einstieg: `pfefferminzia/store.py`, `pfefferminzia/agentmail_service.py`,
 | --- | --- | --- | --- |
 | 1 · Routing | „Welche Fälle sind Haftpflicht, und ist der Empfänger erlaubt? Noch nichts einplanen.“ | Welcher Fall wäre dir für einen automatischen Versand zu heikel – und woran erkennst du das? | Sparte und Quellen prüfen. |
 | 2 · Queue | „Bereite belegte Antworten vor und plane sie ein.“ | Welchen lässt du laufen, welchen änderst du, welchen stoppst du – je ein Satz Begründung. Und: Wie viele Mails gehen nach +24 h raus, und welche? | Im Cockpit: einen ändern, einen stoppen, einen lassen. |
-| 3 · Bauen | „Wie machen wir Stopp und Duplikatschutz überprüfbar? Zuerst ein Test.“ | Was wäre schlimmer: eine Antwort doppelt oder eine gestoppte Antwort doch versendet? Welche zwei Fälle muss der Test deshalb unbedingt enthalten? | Verbesserung mit Claude bauen. |
+| 3 · Bauen | „Wie machen wir Stopp und Duplikatschutz überprüfbar? Welche Szenarien prüfen wir?“ | Was wäre schlimmer: eine Antwort doppelt oder eine gestoppte Antwort doch versendet? Welche zwei Szenarien müssen wir deshalb unbedingt prüfen? | Verbesserung mit Claude bauen. |
 | 4 · Wirkung | „Was würde nach dem Zeitsprung rausgehen? Danach prüfen und Commit.“ | Stimmt das Ergebnis mit deiner Vorhersage überein? Würdest du das Fenster in echt kürzer oder länger machen – wovon hängt es ab? | Zeitsprung im Cockpit, Audit prüfen, committen. |
 
 **Fertig, wenn:** ein Auto-Versand, ein Edit (`schedule_cancelled`) und ein

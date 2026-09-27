@@ -49,7 +49,7 @@
       subtitle: 'Heute Abend: ein Gefühl dafür, welche Aufgaben autonom laufen, welche Planung brauchen und wo Kontrolle oder Freigabe nötig ist.',
       body: grid([
         card('Live-Demo', `<p>Drei eigene Anwendungen, direkt im Browser gezeigt – als Möglichkeitshorizont, nicht als Pfefferminzia-Musterlösung.</p>`, 'mint-card'),
-        card('Danach ihr', `<p>Eigene Kopie. Eigener Code. Claude Code als Programmierpartner und Tutor.</p><p>Aus einem Prompt wird erst mit Test, Diff und sichtbarer Wirkung Software.</p>`)
+        card('Danach ihr', `<p>Eigene Kopie. Eigener Code. Claude Code als Programmierpartner und Tutor.</p><p>Aus einem Prompt wird erst mit geprüften Szenarien, Diff und sichtbarer Wirkung Software.</p>`)
       ]),
       notes: 'ZEIT: 5 Minuten plus Live-Demo. Die eigenen Seiten live im Browser öffnen; Folie behauptet absichtlich nichts über ihren Inhalt. Überleitung: nicht die Beispiele kopieren, sondern denselben Entwicklungsmodus an Pfefferminzia lernen. Welche Aufgabe lief autonom, welche brauchte Planung, wo saß die Freigabe?'
     },
@@ -95,8 +95,8 @@
       id: 'Arbeitsrhythmus', type: 'Inhalt', eyebrow: 'So arbeiten wir', title: 'Nicht vier Prompts: vier echte Entwicklungszyklen.',
       subtitle: 'Gleicher Fallnachweis für alle. Unterschiedlich viel eigener Code ist erlaubt.',
       body: grid([
-        card('Deine Version', `<p>Branch → mit Claude bauen → Test und Diff prüfen → Fall im Cockpit erleben → Commit.</p><p>Jeder Drill endet mit einem sichtbaren eigenen Beitrag.</p>`),
-        card('Dein Tempo', `<p><strong>Geführt:</strong> nächster Schritt und Dateistelle.<br><strong>Bauend:</strong> Akzeptanztest und eigene Iteration.<br><strong>Ausbauend:</strong> nach dem Fallnachweis die eigene Kommandozentrale erweitern – erst Steckbrief, dann bauen.</p>`, 'mint-card')
+        card('Deine Version', `<p>Branch → Szenarien festlegen → mit Claude bauen → Diff prüfen → Fall im Cockpit erleben → Commit.</p><p>Jeder Drill endet mit einem sichtbaren eigenen Beitrag.</p>`),
+        card('Dein Tempo', `<p><strong>Geführt:</strong> nächster Schritt und Dateistelle.<br><strong>Bauend:</strong> Szenarien festlegen und gemeinsam iterieren.<br><strong>Ausbauend:</strong> nach dem Fallnachweis die eigene Kommandozentrale erweitern – erst Steckbrief, dann bauen.</p>`, 'mint-card')
       ]),
       notes: 'ZEIT: 3 Minuten. SAGEN: Claude passt den Hilfsgrad an, ohne die Person zu etikettieren. Persönliche Kopie und Inbox. In jeder Etappe fragt Claude zuerst nach eurer Entscheidung – ein „mach einfach“ reicht nicht. Schnelle erweitern ihr eigenes System; andere laden nach Rückfrage den offiziellen Checkpoint. Fallnachweis und Sicherheitsgrenzen bleiben für alle gleich.'
     },
@@ -125,7 +125,7 @@
       subtitle: 'Claude fragt zuerst nach deiner Entscheidung – dann bereitet es vor. Dein Senden ist der Beweis.', study: true,
       body: grid([
         card('1–2 · Antworten', `${dialogueStep(1, 'Ankommen', 'Was ist meine erste Aufgabe?', 'Mail lesen, Kernaussage der Antwort nennen.')}${dialogueStep(2, 'Entwurf', 'Entwirf aus meiner Kernaussage eine kurze Antwort. Noch nicht senden.', 'Im Cockpit ändern und speichern.')}`, 'mint-card'),
-        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Bleibt die Aufgabe nach dem Senden offen? Erst Test.', 'Regel und Gegenfall festlegen, dann mit Claude bauen.')}${dialogueStep(4, 'Senden', 'Läuft meine Änderung? Dann sende ich.', 'Selbst senden: Aufgabe erledigt, Gegenfall offen.')}`)
+        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Welche Szenarien müssen stimmen, bevor ich sende?', 'Regel und Szenarien festlegen, dann mit Claude bauen.')}${dialogueStep(4, 'Senden', 'Läuft meine Änderung? Dann sende ich.', 'Selbst senden: Aufgabe erledigt, Gegenfall offen.')}`)
       ]),
       notes: 'ZEIT: 2 Minuten. SAGEN: Die vier Prompts sind Gesprächsetappen. Persönliche Inbox, kein geteilter Schlüssel. Temporären inboxgebundenen Workshop-Key nur im individuellen Chat/lokal, nie echte Geheimnisse. Outbound-Allowlist ist kein Eingangsfilter. Grüner Preflight ist nur Startbereitschaft. Nach eigenem Test Diff prüfen und committen. 15 Minuten Start, 10 Minuten antworten, 20 Minuten bauen, 10 Minuten nachweisen, 5 Minuten reflektieren.'
     },
@@ -148,7 +148,7 @@
       subtitle: 'Der Mensch prüft Person und Tarif, redigiert und löst den Versand bewusst selbst aus.', study: true,
       body: grid([
         card('1–2 · Leben-Fall', `${dialogueStep(1, 'Quelle', 'Welche Person, Police und Tarifgeneration passen?', 'Zuordnung und Fundstelle selbst bestätigen.')}${dialogueStep(2, 'Entwurf', 'Formuliere mit Beleg. Nicht versenden.', 'Im Cockpit editieren, prüfen und selbst senden.')}`, 'mint-card'),
-        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Wo fällt eine falsche Tarifgeneration auf?', 'Erst Test, dann kleine Schutzregel ergänzen.')}${dialogueStep(4, 'Belegen', 'Zeig mir Quelle, Edit, Versand und Test.', 'Audit und grünen Test selbst kontrollieren.')}`)
+        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Wo fällt eine falsche Tarifgeneration auf?', 'Szenarien festlegen, dann kleine Schutzregel.')}${dialogueStep(4, 'Belegen', 'Zeig mir Quelle, Edit, Versand und Szenarien.', 'Audit und Szenarien selbst kontrollieren.')}`)
       ]),
       notes: 'ZEIT: 2 Minuten. SAGEN: Nicht alle Fragen zugleich eingeben. Die Person bestätigt erst Quelle und Identität. Schnelle können einen Kantenfall vertiefen oder nach eigenem Wunsch den Review-Pfad für Drill 8 im Branch vorbauen; der aktuelle Checkpoint schaltet ihn noch nicht live frei.'
     },
@@ -169,7 +169,7 @@
       subtitle: 'Eine aktuelle menschliche Freigabe ist die Stopplinie vor jeder externen Wirkung.', study: true,
       body: grid([
         card('1–2 · Review', `${dialogueStep(1, 'Vorlage', 'Bereite zwei Fälle nur bis zur Review vor.', 'Belege prüfen; Claude kann nicht freigeben.')}${dialogueStep(2, 'Entscheidung', 'Zeig mir die Optionen, führe noch nichts aus.', 'Im Cockpit: einen freigeben, einen ablehnen.')}`, 'mint-card'),
-        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Wie zeigen wir Ablehnung oder Freigabeverlust klarer?', 'Kleine UI- oder Teständerung selbst umsetzen.')}${dialogueStep(4, 'Belegen', 'Was zeigt das Audit nach Edit und Ablehnung?', 'Alte Freigabe muss ungültig sein.')}`)
+        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Wie zeigen wir Ablehnung oder Freigabeverlust klarer?', 'Szenarien festlegen, kleine UI-Änderung umsetzen.')}${dialogueStep(4, 'Belegen', 'Was zeigt das Audit nach Edit und Ablehnung?', 'Alte Freigabe muss ungültig sein.')}`)
       ]),
       notes: 'ZEIT: 2 Minuten. SAGEN: Das sind vier Gesprächsetappen mit menschlichem Stopp dazwischen, kein einmaliger Auftrag. Nicht nur den Happy Path testen. Die Ablehnung muss dokumentiert sein und einen neuen Agenten-Loop auslösen. Versand bleibt eine eigene Bestätigung. Challenge: Freigabe durch Änderung invalidieren.'
     },
@@ -193,7 +193,7 @@
       subtitle: 'Du siehst den Countdown, greifst ein und bestätigst erst dann den Zeitsprung.', study: true,
       body: grid([
         card('1–2 · Eingriffsfenster', `${dialogueStep(1, 'Routing', 'Welche Fälle sind Haftpflicht? Noch nichts planen.', 'Sparte, Quellen und Empfänger prüfen.')}${dialogueStep(2, 'Queue', 'Zeig die +24h-Queue; Uhr nicht vorspulen.', 'Einen editieren, einen stoppen, einen belassen.')}`, 'mint-card'),
-        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Wie machen wir Stopp oder Duplikatschutz klarer?', 'Erst Test, dann kleine Änderung selbst coden.')}${dialogueStep(4, 'Wirkung', 'Was geht nach dem Zeitsprung wirklich raus?', 'Uhr im Cockpit vorspulen; Audit prüfen.')}`)
+        card('3–4 · Eigenes Werk', `${dialogueStep(3, 'Bauen', 'Wie machen wir Stopp oder Duplikatschutz klarer?', 'Szenarien festlegen, dann kleine Änderung.')}${dialogueStep(4, 'Wirkung', 'Was geht nach dem Zeitsprung wirklich raus?', 'Uhr im Cockpit vorspulen; Audit prüfen.')}`)
       ]),
       notes: 'ZEIT: 2 Minuten. SAGEN: Jede Frage stoppt vor einer menschlichen Prüfung. Der offizielle Drill-9-Checkpoint aktiviert Auto-Send im neuen Worktree; niemand editiert dafür manuell .env. Auto-Send nur an freigegebene Workshop-Adressen. Den 24-Stunden-Sprung erst nach sichtbarer Queue und expliziter Bestätigung ausführen. Challenge: idempotentes Handling oder Timer-Reset nach Edit.'
     },

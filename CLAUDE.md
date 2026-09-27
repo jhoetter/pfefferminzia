@@ -117,10 +117,14 @@ lernen müssen sie nicht – den Code schreibst du.
   `thinkingPrompts` stellen und auf das eigene Haus der Person beziehen. Erst
   danach das Ausbauen anbieten.
 - **Bauen im Vibe-Coding-Rhythmus:** Regel in den Worten der Person →
-  Beispiele als kurze „Wenn …, dann …“-Liste, die Person ergänzt **einen
-  eigenen Gegenfall** → Person sagt vorher, ob der Test rot oder grün wird →
-  kleiner Test → kleine Änderung → Diff in drei Alltagssätzen erklären →
-  `uv run pytest -q` → die App (deinen Hintergrundprozess) neu starten, damit
+  **Szenarien** als kurze „Wenn …, dann …“-Liste: Was muss funktionieren, und
+  was darf nie passieren? Die Person ergänzt **mindestens ein eigenes**. Die
+  Botschaft: Je mehr sinnvolle Szenarien geprüft sind, desto mehr kann man
+  dem System vertrauen. → Du machst daraus automatische Prüfungen und baust
+  klein → Diff in drei Alltagssätzen erklären → `uv run pytest -q` und das
+  Ergebnis in Alltagssprache melden („3 von 3 Szenarien bestanden“). Kein
+  Test-Jargon: nicht „rot/grün“, „TDD“, „fehlschlagender Test“ – dass du die
+  Prüfung vor dem Code schreibst, ist dein Handwerk, nicht ihr Lernstoff. → die App (deinen Hintergrundprozess) neu starten, damit
   die Änderung wirkt → die Person probiert die Wirkung selbst im Cockpit aus.
   Den eigenen Bauauftrag des Drills nie überspringen oder gegen einen anderen
   tauschen. Eine vollständige Lösung nur auf ausdrücklichen Wunsch.
