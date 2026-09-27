@@ -156,6 +156,54 @@ def test_sending_a_reply_completes_its_reply_task(monkeypatch, full_db):
     assert todos[manual["id"]]["status"] == "open"
 
 
+def _liability_ticket(db, number):
+    stamp = "2026-09-29T08:00:00Z"
+    cursor = db.execute(
+        """INSERT INTO tickets
+        (ticket_number, source, source_inbox_id, source_thread_id, customer_email, subject, status, product_line,
+         category, priority, is_demo, created_at, updated_at, last_message_at)
+        VALUES (?, 'agentmail', 'inbox-participant', ?, 'participant@example.test', ?, 'in_progress', 'liability',
+        'claim', 'normal', 0, ?, ?, ?)""",
+        (number, f"thread-{number}", number, stamp, stamp, stamp),
+    )
+    db.execute(
+        """INSERT INTO messages
+        (ticket_id, external_message_id, direction, sender, recipients_json, subject, text_body, sent_at, created_at)
+        VALUES (?, ?, 'inbound', 'participant@example.test', '[]', ?, 'Schaden', ?, ?)""",
+        (cursor.lastrowid, f"{number}-in", number, stamp, stamp),
+    )
+    save_draft(number, f"Antwort {number}", "Tarif", "mcp-agent", db)
+    submit_draft(number, "mcp-agent", 24, db)
+
+
+def test_queue_explains_stops_and_never_sends_twice(monkeypatch, full_db):
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-09-start")
+    fake = FakeAgentMail()
+    monkeypatch.setattr(agentmail_service, "_client", lambda: fake)
+    monkeypatch.setenv("AGENTMAIL_API_KEY", "test-key")
+    monkeypatch.setenv("AGENTMAIL_INBOX_ID", "inbox-participant")
+    monkeypatch.setenv("WORKSHOP_ALLOWED_RECIPIENTS", "participant@example.test")
+    monkeypatch.setenv("AUTO_SEND_ENABLED", "true")
+    for number in ("PF-RUN", "PF-EDIT", "PF-STOP"):
+        _liability_ticket(full_db, number)
+
+    edited = save_draft("PF-EDIT", "Im Fenster geändert", "Tarif", "human-ui", full_db)
+    assert edited["controlNotice"]["kind"] == "schedule_cancelled"
+    stopped = remove_from_send_queue("PF-STOP", "Beschwerde braucht Prüfung", "human-ui", full_db)
+    assert stopped["controlNotice"]["text"].endswith("Beschwerde braucht Prüfung")
+
+    advance_workshop_clock(24, "human-ui", full_db)
+    assert dispatch_due_replies(full_db)["sent"] == 1
+    assert dispatch_due_replies(full_db)["sent"] == 0
+    assert [ticket_status(full_db, n) for n in ("PF-RUN", "PF-EDIT", "PF-STOP")] == ["sent", "in_progress", "in_progress"]
+    assert len(fake.inboxes.messages.replies) == 1
+    assert get_ticket("PF-RUN", full_db)["controlNotice"] is None
+
+
+def ticket_status(db, number):
+    return get_ticket(number, db)["status"]
+
+
 def imported_tickets(db):
     rows = db.execute("SELECT ticket_number FROM tickets WHERE source = 'agentmail' ORDER BY id").fetchall()
     return [get_ticket(row["ticket_number"], db) for row in rows]

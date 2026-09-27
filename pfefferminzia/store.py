@@ -109,7 +109,10 @@ def samples_visible() -> bool:
 
 
 # Events that change who may act next. Only some of them need an explanation.
-CONTROL_EVENTS = ("draft_rejected", "review_invalidated", "human_review_required", "draft_approved", "reply_sent", "reply_scheduled")
+CONTROL_EVENTS = (
+    "draft_rejected", "review_invalidated", "schedule_cancelled", "queue_removed",
+    "human_review_required", "draft_approved", "reply_sent", "reply_scheduled",
+)
 
 
 def control_notice(events: list[dict[str, Any]]) -> dict[str, Any] | None:
@@ -121,6 +124,10 @@ def control_notice(events: list[dict[str, Any]]) -> dict[str, Any] | None:
         text = f"Abgelehnt: {latest['details'].get('note', '')}"
     elif latest["type"] == "review_invalidated":
         text = "Freigabe erloschen: Die Entscheidung wurde nach der Freigabe geändert. Bitte die neue Fassung freigeben."
+    elif latest["type"] == "schedule_cancelled":
+        text = "Termin abgebrochen: Der Text wurde im Eingriffsfenster geändert. Bitte neu einplanen."
+    elif latest["type"] == "queue_removed":
+        text = f"Versand gestoppt: {latest['details'].get('reason', '')}"
     else:
         return None
     return {"kind": latest["type"], "text": text, "actor": latest["actor"], "at": latest["createdAt"]}
