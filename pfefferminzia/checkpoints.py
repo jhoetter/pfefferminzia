@@ -578,6 +578,11 @@ def drill_guide(
     reference = REFERENCE_TAGS[drill]
     previous = f"checkpoint/{profile['name']}" if profile["name"] != "drill-10-complete" else "checkpoint/drill-10-start"
     return {
+        "youAreHere": (
+            f"Dieser Ordner ist schon auf Drill {drill}. „weiter mit Drill {drill}“ heißt: Drill {drill} beginnen – "
+            "nichts laden, keinen Wechsel anbieten, sondern mit der Orientierung starten. Einen Checkpoint nur "
+            f"planen, wenn die Person ausdrücklich zu einem späteren Drill als {drill} will."
+        ),
         "checkpoint": profile,
         **{key: value for key, value in brief.items() if key != "extension"},
         "buildingBlocks": BUILDING_BLOCKS,

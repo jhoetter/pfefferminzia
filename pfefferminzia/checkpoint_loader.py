@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import secrets
 import shutil
 import sqlite3
@@ -12,7 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Literal
 
-from .checkpoints import normalize_checkpoint
+from .checkpoints import CHECKPOINTS, current_checkpoint, normalize_checkpoint
 from .constants import ROOT, STATE_ROOT
 from .management_report import capture_report_snapshot
 
@@ -23,6 +24,23 @@ LoadMode = Literal["official", "continue"]
 
 def _recovery_base_name() -> str:
     return STATE_ROOT.name.split("-drill-", 1)[0]
+
+
+def _target_folder(checkpoint: str) -> Path:
+    """A name participants can read: pfefferminzia-drill-07, then -2, -3 if it exists."""
+    drill = CHECKPOINTS[checkpoint]["drill"]
+    stem = f"{_recovery_base_name()}-drill-{drill:02d}" + ("-loesung" if checkpoint == "drill-10-complete" else "")
+    candidate, number = STATE_ROOT.parent / stem, 2
+    while candidate.exists():
+        candidate, number = STATE_ROOT.parent / f"{stem}-{number}", number + 1
+    return candidate
+
+
+def _current_checkpoint() -> str | None:
+    try:
+        return current_checkpoint()
+    except Exception:  # noqa: BLE001 - no readable state means no guard to apply
+        return None
 
 
 def _git_output(*args: str, cwd: Path = ROOT) -> str:
@@ -112,10 +130,18 @@ def _copy_database(source: Path, target: Path) -> None:
             source_db.backup(target_db)
 
 
-def plan_checkpoint_load(target_checkpoint: str, mode: LoadMode = "official") -> dict[str, Any]:
+def plan_checkpoint_load(
+    target_checkpoint: str, mode: LoadMode = "official", *, allow_same_drill: bool = False
+) -> dict[str, Any]:
     if mode not in ("official", "continue"):
         raise ValueError("Mode must be 'official' or 'continue'")
     checkpoint = normalize_checkpoint(target_checkpoint)
+    if checkpoint == _current_checkpoint() and not allow_same_drill:
+        drill = CHECKPOINTS[checkpoint]["drill"]
+        raise ValueError(
+            f"Dieser Ordner ist schon auf Drill {drill}. Nichts laden – einfach mit Drill {drill} weitermachen. "
+            "Nur wenn die Person ausdrücklich neu anfangen will: allowSameDrill."
+        )
     automatic_dispatch = checkpoint == "drill-09-start"
     report_snapshot = checkpoint in ("drill-10-start", "drill-10-complete")
     configured_database = os.getenv("PFEFFERMINZIA_DB_PATH")
@@ -130,7 +156,7 @@ def plan_checkpoint_load(target_checkpoint: str, mode: LoadMode = "official") ->
         raise ValueError("Für 'continue' muss die bisherige Workshop-Datenbank vorhanden sein")
     token = secrets.token_urlsafe(24)
     suffix = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
-    target = STATE_ROOT.parent / f"{_recovery_base_name()}-{checkpoint}-{suffix}-{token[:6]}"
+    target = _target_folder(checkpoint)
     branch = f"workshop/{checkpoint}-{suffix}-{token[:6]}"
     plan = {
         "token": token,
@@ -217,8 +243,9 @@ def apply_checkpoint_load(confirmation_token: str) -> dict[str, Any]:
 
     target = Path(plan["targetPath"]).resolve()
     expected_parent = STATE_ROOT.parent.resolve()
-    expected_prefix = f"{_recovery_base_name()}-{plan['checkpoint']}-"
-    if target.parent != expected_parent or not target.name.startswith(expected_prefix):
+    drill = CHECKPOINTS[plan["checkpoint"]]["drill"]
+    expected_name = rf"{re.escape(_recovery_base_name())}-drill-{drill:02d}(-loesung)?(-\d+)?"
+    if target.parent != expected_parent or not re.fullmatch(expected_name, target.name) or target.exists():
         raise ValueError("Checkpoint target path failed the safety check")
     if target.exists():
         raise ValueError(f"Checkpoint target already exists: {target}")

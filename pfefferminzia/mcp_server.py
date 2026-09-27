@@ -135,9 +135,10 @@ def create_mcp_server() -> MCPServer:
     def plan_checkpoint_load(
         targetCheckpoint: Literal["drill-06-start", "drill-07-start", "drill-08-start", "drill-09-start", "drill-10-start", "drill-10-complete"],
         mode: Literal["official", "continue"] = "official",
+        allowSameDrill: bool = False,
     ) -> dict[str, Any]:
-        """Plan a separate worktree. 'official' starts fresh; 'continue' carries own code and cases. Ask which mode, show the plan, then request confirmation before apply."""
-        return plan_checkpoint_load_impl(targetCheckpoint, mode=mode)
+        """Plan a separate folder for the NEXT drill. 'official' starts fresh; 'continue' carries own code and cases. Refuses the drill this folder is already on unless the participant explicitly wants to start it over. Ask which mode, show the plan, then request confirmation before apply."""
+        return plan_checkpoint_load_impl(targetCheckpoint, mode=mode, allow_same_drill=allowSameDrill)
 
     @server.tool(annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False, openWorldHint=False))
     def apply_checkpoint_load(

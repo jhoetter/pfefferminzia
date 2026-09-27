@@ -201,7 +201,7 @@ def test_checkpoint_loader_rejects_changed_source(monkeypatch, tmp_path):
     dirty = [[]]
     monkeypatch.setattr(loader, "_dirty_paths", lambda: dirty[-1])
     monkeypatch.setattr(loader, "_git_output", lambda *args, **kwargs: "abc123")
-    plan = loader.plan_checkpoint_load("drill-6")
+    plan = loader.plan_checkpoint_load("drill-6", allow_same_drill=True)
     dirty.append(["changed.py"])
     with pytest.raises(ValueError, match="changed after the plan"):
         loader.apply_checkpoint_load(plan["confirmationToken"])
@@ -218,8 +218,26 @@ def test_recovery_worktree_names_do_not_grow_across_drills(monkeypatch, tmp_path
     monkeypatch.setattr(loader, "_official_ref", lambda checkpoint: (f"refs/tags/checkpoint/{checkpoint}", "target123", True))
     monkeypatch.setattr(loader, "_dirty_paths", lambda: [])
     plan = loader.plan_checkpoint_load("drill-08-start")
-    assert Path(plan["targetPath"]).name.startswith("pfefferminzia-drill-08-start-")
-    assert "drill-07-start" not in Path(plan["targetPath"]).name
+    # Participants read this name in the Claude app: short and without dates or tokens.
+    assert Path(plan["targetPath"]).name == "pfefferminzia-drill-08"
+    (tmp_path / "pfefferminzia-drill-08").mkdir()
+    assert Path(loader.plan_checkpoint_load("drill-08-start")["targetPath"]).name == "pfefferminzia-drill-08-2"
+
+
+def test_a_folder_never_reloads_the_drill_it_is_already_on(monkeypatch, tmp_path):
+    source = tmp_path / "pfefferminzia-drill-07"
+    source.mkdir()
+    monkeypatch.setattr(loader, "ROOT", source)
+    monkeypatch.setattr(loader, "STATE_ROOT", source)
+    monkeypatch.setattr(loader, "_plans_dir", lambda: source / ".data" / "checkpoint-plans")
+    monkeypatch.setattr(loader, "_official_ref", lambda checkpoint: (f"refs/tags/checkpoint/{checkpoint}", "target123", True))
+    monkeypatch.setattr(loader, "_dirty_paths", lambda: [])
+    monkeypatch.setattr(loader, "_current_checkpoint", lambda: "drill-07-start")
+    # "weiter mit Drill 7" in the Drill-7 folder must not loop back into a switch.
+    with pytest.raises(ValueError, match="schon auf Drill 7"):
+        loader.plan_checkpoint_load("drill-07-start")
+    assert loader.plan_checkpoint_load("drill-07-start", allow_same_drill=True)["checkpoint"] == "drill-07-start"
+    assert loader.plan_checkpoint_load("drill-08-start")["checkpoint"] == "drill-08-start"
 
 
 def test_checkpoint_loader_requires_official_tag(monkeypatch):

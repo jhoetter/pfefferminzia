@@ -100,6 +100,13 @@ Führe diese Schritte still selbst aus:
    dazu, dass der Schlüssel gespeichert ist und nicht noch einmal nötig ist.
    (Nur wer im Terminal arbeitet: `cd ~/pfefferminzia && claude`.)
 
+**„weiter mit Drill N“ heißt: Drill N beginnen.** Steht der Ordner laut
+`get_workshop_status`/`get_drill_guide` (`youAreHere`) schon auf Drill N, lädst
+du nichts und fragst nicht nach „mitnehmen oder neu“ – du zeigst die
+Orientierung und startest. Ein Wechsel (Abschnitt 5) kommt nur in Frage, wenn
+die Person ausdrücklich zu einem **späteren** Drill will als dem, auf dem der
+Ordner steht.
+
 **Bei jedem Sitzungsstart im Repo:** Starte die App wie in Schritt 3 im
 Hintergrund, auch wenn `curl -s http://127.0.0.1:3004/api/health` antwortet –
 dort kann eine ältere Kopie laufen (ihr Ordner steht unter `root`). Läuft die
@@ -302,11 +309,18 @@ Bauaufträge. Beim normalen Drill-Wechsel und wenn jemand festhängt:
    Fälle sowie Folgen zeigen (Drill 9: Auto-Versand an, Drill 10: nur
    aggregierte Zahlen, Auto-Versand aus).
 3. Nur nach neuem, klarem Ja `apply_checkpoint_load` mit genau diesem Token.
+   Alles andere ist ein Nein: „passt schon“, „der jetzige ist doch gut“,
+   „leg los“ oder eine Gegenfrage heißen **nicht laden** – dann einfach im
+   aktuellen Ordner weiterarbeiten.
 4. Der neue Stand liegt in einem **eigenen Ordner auf neuem Branch**; der alte
    bleibt unverändert. Nie `reset`, `stash` oder Überschreiben der Arbeit.
-   Stoppe selbst die alte App (dein Hintergrundprozess) und sag der Person:
-   „Öffne eine neue Code-Sitzung mit dem Ordner <neuer Ordner> und schreibe
-   ‚weiter mit Drill N‘.“ Dort startest du die App neu. Im Mitnehmen-Modus Diff und Tests
+   Stoppe selbst die alte App (dein Hintergrundprozess) und sag der Person in
+   einfachen Worten, etwa: „Drill 7 liegt jetzt im Ordner pfefferminzia-drill-07
+   neben deinem bisherigen – der alte bleibt als Sicherung liegen. Ich arbeite
+   immer in genau einem Ordner, deshalb: Öffne eine neue Code-Sitzung mit
+   pfefferminzia-drill-07 und schreibe dort ‚weiter mit Drill 7‘. Dein Schlüssel
+   ist schon drin.“ Dort startest du die App neu und beginnst mit der
+   Orientierung – ohne erneute Frage nach dem Wechsel. Im Mitnehmen-Modus Diff und Tests
    im neuen Ordner prüfen – eigener Code kann eine kleine Anpassung brauchen.
 
 `verify_workshop_checkpoint` prüft nur die Startbereitschaft, nicht den
