@@ -54,6 +54,9 @@ git push origin main reference --force-with-lease && git push origin --tags --fo
    Platz `.instructor/handouts/platz-NN.txt` und `alle-zum-ausdrucken.txt`
    (Seitenumbruch pro Person): drei Werte plus der Start-Satz für Claude.
    Ausdrucken und einzeln verteilen, nicht per Gruppenchat.
+   Die Zuordnung Platz → Inbox → Schlüssel als eine Mail an dich:
+   `instructor mail-roster jt.hoetter@gmail.com --yes` oder Claude bitten
+   („Schick mir die Inbox-Zuordnung“).
 5. **Einen Platz komplett durchspielen** mit einem frischen Terminal: Start-Satz
    → Einrichtung → Neustart im Ordner → `instructor send 6 --slot 1 --yes` →
    Sync → … bis Drill 10. Dabei einmal den offiziellen Checkpoint laden.

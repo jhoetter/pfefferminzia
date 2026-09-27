@@ -131,6 +131,32 @@ def handouts(directory: Path = INSTRUCTOR_DIR) -> dict[str, Any]:
     return {"handouts": len(texts), "folder": str(directory / "handouts")}
 
 
+def roster_email(to: str, *, execute: bool = False, directory: Path = INSTRUCTOR_DIR, client: Any = None) -> dict[str, Any]:
+    """Mail the slot → inbox → key assignment to the instructor (one message, from the instructor inbox)."""
+    if not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", to):
+        raise ValueError("Ungültige Empfängeradresse")
+    rows = [row for row in read_roster(directory) if row["api_key"]]
+    if not rows:
+        raise ValueError("Roster ist leer: zuerst Inboxen anlegen")
+    if not execute:
+        return {"execute": False, "to": to, "participants": len(rows),
+                "note": "Eine Mail mit Platz, Name, Inbox und Schlüssel je Person. Mit Bestätigung senden."}
+    config = _config(directory)
+    sender = config["INSTRUCTOR_INBOX_ID"]
+    lines = ["Pfefferminzia – Zuordnung der Workshop-Inboxen (vertraulich, nur für die Verteilung)", ""]
+    for row in rows:
+        lines += [f"Platz {row['slot']}{' · ' + row['name'] if row['name'] else ''}",
+                  f"  AGENTMAIL_INBOX_ID={row['inbox_id']}",
+                  f"  AGENTMAIL_API_KEY={row['api_key']}",
+                  f"  WORKSHOP_ALLOWED_RECIPIENTS={sender}", ""]
+    lines.append("Die Schlüssel gelten nur für die jeweilige Inbox. Nach dem Workshop in AgentMail löschen.")
+    client = client or _client(directory)
+    response = _mapping(client.inboxes.messages.send(
+        sender, to=[to], subject=f"Pfefferminzia: Inbox-Zuordnung für {len(rows)} Plätze", text="\n".join(lines),
+    ))
+    return {"execute": True, "to": to, "participants": len(rows), "messageId": str(_value(response, "message_id", "messageId"))}
+
+
 def _sent_log(directory: Path) -> list[dict[str, Any]]:
     path = directory / "sent.jsonl"
     if not path.is_file():

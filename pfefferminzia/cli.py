@@ -83,6 +83,9 @@ def main() -> None:
     send.add_argument("--yes", action="store_true", help="Really send; without it only the plan is shown")
     send.add_argument("--resend", action="store_true", help="Send again even if the log says it was sent")
     send.add_argument("--pause", type=float, default=2.0, help="Seconds between mails")
+    mail_roster = instructor_commands.add_parser("mail-roster", help="Mail the slot/inbox/key assignment to one address")
+    mail_roster.add_argument("to")
+    mail_roster.add_argument("--yes", action="store_true")
     retag = instructor_commands.add_parser("retag", help="Point checkpoint tags at base and reference commits")
     retag.add_argument("--base", default="main")
     retag.add_argument("--reference", default="reference")
@@ -214,6 +217,8 @@ def main() -> None:
             elif args.instructor_command == "send":
                 slots = [f"{int(slot):02d}" for slot in args.slot] if args.slot else None
                 _json(tools.send_scenarios(args.drill, slots=slots, execute=args.yes, resend=args.resend, pause_seconds=args.pause))
+            elif args.instructor_command == "mail-roster":
+                _json(tools.roster_email(args.to, execute=args.yes))
             elif args.instructor_command == "retag":
                 _json(tools.retag(args.base, args.reference, execute=args.yes))
             elif args.instructor_command == "status":

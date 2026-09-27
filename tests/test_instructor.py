@@ -125,3 +125,16 @@ def test_retag_maps_reference_commits_to_checkpoint_tags(tmp_path):
     instructor.retag(root=tmp_path, execute=True)
     assert git("rev-parse", "checkpoint/drill-06-start^{commit}") == git("rev-parse", "main")
     assert git("rev-parse", "checkpoint/drill-10-complete^{commit}") == git("rev-parse", "reference")
+
+
+def test_roster_mail_needs_confirmation_and_lists_every_slot(workspace):
+    client = FakeClient()
+    instructor.provision(2, "pfm", directory=workspace, client=client, execute=True)
+    assert instructor.roster_email("dozent@example.test", directory=workspace, client=client)["execute"] is False
+    assert not client.inboxes.messages.sent
+    sent = []
+    client.inboxes.messages.send = lambda inbox, *, to, subject, text: sent.append((inbox, to, text)) or {"message_id": "x"}
+    instructor.roster_email("dozent@example.test", directory=workspace, client=client, execute=True)
+    inbox, to, text = sent[0]
+    assert inbox == "dozent@agentmail.to" and to == ["dozent@example.test"]
+    assert "Platz 01" in text and "Platz 02" in text and "key-for-pfm-02@agentmail.to" in text
