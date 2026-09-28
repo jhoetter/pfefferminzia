@@ -1,6 +1,7 @@
 # Szenario-Mails für Dienstag
 
 Die Texte stehen an einer einzigen Stelle: `pfefferminzia/scenarios.py`.
+Zum Kopieren und Selbst-Versenden (z. B. aus Gmail): [MAILS_ZUM_VERSENDEN.md](MAILS_ZUM_VERSENDEN.md).
 Am einfachsten per Claude auf dem Dozentenrechner („Zeig mir den Plan für
 die Drill-7-Mails“, „Ja, senden“, „Wer hat geantwortet?“). Im Terminal:
 

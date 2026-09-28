@@ -104,6 +104,9 @@ einmal eine neue Code-Sitzung im Ordner `pfefferminzia`.
 | 15:45 | Drill 10: „Ich will zu Drill 10“ – übernimmt die Zählwerte aus Drill 9 | – |
 | 16:45 | Whiteboard, Laptops zu | – |
 
+Die Mails pro Drill zum Kopieren und Selbst-Versenden (Gmail, alle Plätze ins
+BCC): [MAILS_ZUM_VERSENDEN.md](MAILS_ZUM_VERSENDEN.md).
+
 Zwischendurch: `uv run pfefferminzia instructor status` zeigt pro Platz, welche
 Szenarien angekommen und welche beantwortet sind (Antworten landen in deiner
 Inbox). So siehst du, wer hängt. `send` versendet nichts doppelt; einzelne
