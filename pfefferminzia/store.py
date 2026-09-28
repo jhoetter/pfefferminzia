@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+
 import json
 import sqlite3
 from datetime import timedelta
@@ -60,12 +62,15 @@ def list_tickets(
     category: str | None = None,
     query: str | None = None,
     limit: int = 200,
+    include_samples: bool | None = None,
     db: sqlite3.Connection | None = None,
 ) -> list[dict[str, Any]]:
     db = db or get_database()
     where: list[str] = []
     params: dict[str, Any] = {"workshop_stage": checkpoint_profile(db)["order"]}
     where.append("(t.is_demo = 0 OR t.workshop_min_stage <= :workshop_stage)")
+    if not (samples_visible() if include_samples is None else include_samples):
+        where.append("t.is_demo = 0")
     if statuses:
         if any(status not in TICKET_STATUSES for status in statuses):
             raise ValueError("Invalid status")
@@ -93,6 +98,13 @@ def list_tickets(
         ORDER BY CASE t.priority WHEN 'urgent' THEN 0 WHEN 'high' THEN 1 WHEN 'normal' THEN 2 ELSE 3 END,
           t.last_message_at DESC LIMIT :limit"""
     return [_map_ticket(row) for row in db.execute(statement, params).fetchall()]
+
+
+def samples_visible() -> bool:
+    """Sample cases copy the instructor's scenario mails. Once the participant's
+    own inbox is connected they would only duplicate the real mails, so they
+    remain a fallback for working without an inbox."""
+    return not (os.getenv("AGENTMAIL_API_KEY") and os.getenv("AGENTMAIL_INBOX_ID"))
 
 
 def get_ticket(identifier: str | int, db: sqlite3.Connection | None = None) -> dict[str, Any] | None:

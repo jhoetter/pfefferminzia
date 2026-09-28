@@ -32,12 +32,18 @@ CLAIM_STATUS = {
     "approved_for_payment": "zur Zahlung freigegeben", "settled": "abgeschlossen", "denied": "abgelehnt", "closed": "geschlossen",
 }
 ACTIONS = {"PAY": "zahlen", "DENY": "ablehnen", "ESCALATE_COMPLEX": "an die Teamleitung", "REFER_SIU": "an die Ermittlung"}
+LINKED_BY = {
+    "exact_email": "automatisch beim Abrufen – die Absender-Adresse steht so im Bestand",
+    "mcp_confirmed": "von Claude nachgeschlagen und zugeordnet",
+    "manual": "von Hand zugeordnet",
+    "workshop_fixture": "Beispielfall – schon zugeordnet",
+}
 RECOMMENDATION_STATUS = {
     "pending_review": "wartet auf Prüfung", "approved": "freigegeben", "rejected": "abgelehnt", "blocked": "gestoppt",
 }
 
 
-def _customer(partner_id: str, db: sqlite3.Connection) -> dict[str, Any] | None:
+def _customer(partner_id: str, db: sqlite3.Connection, method: str | None = None) -> dict[str, Any] | None:
     record = get_customer(partner_id, db)
     if not record:
         return None
@@ -50,6 +56,7 @@ def _customer(partner_id: str, db: sqlite3.Connection) -> dict[str, Any] | None:
         "residence": f"{address['postalCode']} {address['city']}" if address else record.get("city"),
         "email": contact.get("EMAIL"),
         "phone": contact.get("TELEFON"),
+        "linkedBy": LINKED_BY.get(method or "", method),
     }
 
 
@@ -73,12 +80,13 @@ def _claim(item: dict[str, Any], db: sqlite3.Connection) -> dict[str, Any]:
     }
 
 
-def _contract(contract_id: str, db: sqlite3.Connection, with_claims: bool) -> dict[str, Any] | None:
+def _contract(contract_id: str, db: sqlite3.Connection, with_claims: bool, method: str | None = None) -> dict[str, Any] | None:
     record = get_contract(contract_id, db)
     if not record:
         return None
     return {
         "contractId": record["contractId"],
+        "linkedBy": LINKED_BY.get(method or "", method),
         "product": record["productName"],
         "tariffGenerationId": record["tariffGenerationId"],
         "tariffName": record["tariffName"],
@@ -110,8 +118,10 @@ def ticket_evidence(ticket_number: str, db: sqlite3.Connection | None = None) ->
     if not ticket:
         raise ValueError(f"Ticket not found: {ticket_number}")
     with_claims = capability_enabled("claims", db)
-    customers = [_customer(party["partnerId"], db) for party in ticket.get("parties", [])[:2]]
-    contracts = [_contract(item["contractId"], db, with_claims) for item in ticket.get("linkedContracts", [])]
+    customers = [_customer(party["partnerId"], db, party.get("matchMethod")) for party in ticket.get("parties", [])[:2]]
+    contracts = [
+        _contract(item["contractId"], db, with_claims, item.get("matchMethod")) for item in ticket.get("linkedContracts", [])
+    ]
     return {
         "ticketNumber": ticket_number,
         "isSample": bool(ticket.get("isDemo")),
@@ -119,3 +129,29 @@ def ticket_evidence(ticket_number: str, db: sqlite3.Connection | None = None) ->
         "contracts": [item for item in contracts if item],
         "claimsVisible": with_claims,
     }
+
+
+def customer_card(partner_id: str, db: sqlite3.Connection | None = None) -> dict[str, Any] | None:
+    """A customer as the Bestand view shows her: master data and her contracts at a glance."""
+    db = db or get_database()
+    card = _customer(partner_id, db)
+    if not card:
+        return None
+    record = get_customer(partner_id, db) or {}
+    card.pop("linkedBy", None)
+    card["contracts"] = [
+        {
+            "contractId": item["contractId"], "product": item["productName"], "tariffGenerationId": item["tariffGenerationId"],
+            "status": CONTRACT_STATUS.get(item["status"], item["status"]),
+        }
+        for item in record.get("contracts", [])
+    ]
+    return card
+
+
+def contract_card(contract_id: str, db: sqlite3.Connection | None = None) -> dict[str, Any] | None:
+    db = db or get_database()
+    card = _contract(contract_id, db, capability_enabled("claims", db))
+    if card:
+        card.pop("linkedBy", None)
+    return card

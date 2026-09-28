@@ -2,6 +2,7 @@
 const app = document.querySelector('#app');
 const state = {
   dashboard: null, todos: [], ticket: null, evidence: null, view: 'inbox', selected: null,
+  bestand: { overview: null, tab: 'customers', query: '', customers: [], tariffs: [], claims: [], customer: null, contracts: {} },
   dialog: null, toast: null, busy: false, fetchedAt: Date.now(),
 };
 
@@ -47,6 +48,7 @@ const ICON = {
   queue: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/>',
   slides: '<rect x="3.5" y="5" width="17" height="11" rx="1.5"/><path d="M12 16v4M8 20h8"/>',
   report: '<path d="M5 19V9M12 19V5M19 19v-7"/>',
+  bestand: '<ellipse cx="12" cy="6" rx="7" ry="2.5"/><path d="M5 6v12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5V6M5 12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5"/>',
   sync: '<path d="M20 11a8 8 0 0 0-14.3-4.9L4 8M4 13a8 8 0 0 0 14.3 4.9L20 16M4 4v4h4M20 20v-4h-4"/>',
   plus: '<path d="M12 5v14M5 12h14"/>', back: '<path d="m15 18-6-6 6-6"/>',
 };
@@ -106,6 +108,7 @@ function sidebar() {
     <nav aria-label="Bereiche">
       ${navItem('inbox', 'Posteingang', 'inbox', open)}
       ${navItem('tasks', 'Aufgaben', 'tasks', openTodos().length)}
+      ${has('knowledge') ? navItem('bestand', 'Bestand', 'bestand') : ''}
       ${has('life_review') ? navItem('reviews', 'Freigaben', 'review', ticketsFor('reviews').length) : ''}
       ${has('intervention_queue') ? navItem('queue', 'Eingriffsfenster', 'queue', ticketsFor('queue').length) : ''}
     </nav>
@@ -115,7 +118,6 @@ function sidebar() {
         <button type="button" class="icon-button" data-action="sync" ${mail.ready ? '' : 'disabled'} aria-label="Posteingang abgleichen" title="Abgleichen">${icon('sync', 14)}</button>
       </div>
       ${has('management_report') ? `<a class="nav-item small" href="/slides/index.html?deck=management" target="_blank" rel="noopener">${icon('report', 14)}<span>Report</span></a>` : ''}
-      <a class="nav-item small" href="/slides/decks.html" target="_blank" rel="noopener">${icon('slides', 14)}<span>Folien</span></a>
       <span class="drill-tag">Drill ${drill()}</span>
     </div>
   </aside>`;
@@ -124,7 +126,7 @@ function sidebar() {
 /* ---------- lists ---------- */
 function ticketRow(ticket) {
   const active = ticket.ticketNumber === state.selected;
-  const line = LINE[ticket.productLine];
+  const line = has('life_review') ? LINE[ticket.productLine] : '';
   const due = ticket.status === 'scheduled' ? `<span class="countdown" data-scheduled="${html(ticket.scheduledFor)}"></span>` : '';
   return `<button type="button" class="row ${active ? 'active' : ''} ${ticket.status === 'new' ? 'unread' : ''}" data-ticket="${html(ticket.ticketNumber)}">
     ${statusIcon(ticket.status)}<span class="row-id">${html(ticket.ticketNumber)}</span>
@@ -211,7 +213,7 @@ const property = (label, value) => `<div class="prop"><span>${label}</span><div>
 
 function properties(ticket) {
   const todos = state.todos.filter(todo => todo.ticketNumber === ticket.ticketNumber);
-  const editable = has('draft') && !['sent', 'closed'].includes(ticket.status);
+  const editable = has('life_review') && !['sent', 'closed'].includes(ticket.status);
   const lineValue = editable
     ? `<select data-classify aria-label="Sparte"><option value="" ${ticket.productLine === 'unknown' ? 'selected' : ''}>Offen</option>${['life', 'liability'].map(v => `<option value="${v}" ${ticket.productLine === v ? 'selected' : ''}>${LINE[v]}</option>`).join('')}</select>`
     : html(LINE[ticket.productLine] || 'Offen');
@@ -219,7 +221,7 @@ function properties(ticket) {
   const contracts = ticket.linkedContracts || [];
   return `<aside class="props">
     ${property('Status', `${statusIcon(ticket.status)} ${html(STATUS[ticket.status]?.[0] || ticket.status)}`)}
-    ${property('Sparte', lineValue)}
+    ${has('life_review') ? property('Sparte', lineValue) : ''}
     ${property('Von', html(ticket.customerEmail || '—'))}
     ${has('knowledge') ? property('Kunde', party ? html(party.displayName) : '<span class="muted">Nicht zugeordnet</span>') : ''}
     ${has('knowledge') ? property('Vertrag', contracts.length ? contracts.map(c => `${html(c.contractId)} <span class="muted">${html(c.tariffGenerationId)}</span>`).join('<br>') : '<span class="muted">—</span>') : ''}
@@ -235,14 +237,21 @@ const fact = (label, value) => value ? `<div class="fact"><span>${label}</span><
 function evidence(ticket) {
   const data = state.evidence;
   if (!has('knowledge') || !data || data.ticketNumber !== ticket.ticketNumber) return '';
-  const sample = data.isSample ? '<p class="muted small">Beispielfall aus dem Bestand – zum Üben; von hier wird nichts gesendet.</p>' : '';
+  const sample = data.isSample ? '<p class="muted small">Beispielfall – zum Üben; von hier wird nichts gesendet.</p>' : '';
+  const intro = '<p class="muted small">Nachgeschlagen im Bestand – das steht nicht in der Mail, sondern in den Daten des Versicherers.</p>';
   if (!data.customers.length && !data.contracts.length) {
-    return `<section class="evidence"><div class="group-label">Unterlagen zum Fall</div>${sample}<p class="muted">Noch keine Kundin und kein Vertrag zugeordnet. Bitte Claude, den Fall zuzuordnen – danach stehen hier die Belege.</p></section>`;
+    return `<section class="evidence"><div class="group-label">Aus dem Bestand</div>${sample}<p class="muted">Noch keine Kundin und kein Vertrag zugeordnet. Bitte Claude, im Bestand nachzuschlagen und den Fall zuzuordnen.</p></section>`;
   }
-  const customers = data.customers.map(c => `<details class="source" open><summary><strong>Kunde</strong> ${html(c.name)}</summary>
-    ${fact('Geboren', html(c.birthDate))}${fact('Wohnort', html(c.residence))}${fact('E-Mail', html(c.email))}${fact('Telefon', html(c.phone))}</details>`).join('');
-  const contracts = data.contracts.map(c => `<details class="source" open><summary><strong>Vertrag</strong> ${html(c.contractId)} · ${html(c.product)}</summary>
-    ${fact('Tarifgeneration', `<strong>${html(c.tariffGenerationId)}</strong> <span class="muted">${html(c.tariffName)}</span>`)}
+  const customers = data.customers.map(c => `<details class="source" open><summary><strong>Kunde</strong> ${html(c.name)}
+    <button type="button" class="link" data-open-customer="${html(c.partnerId)}">im Bestand ansehen</button></summary>
+    ${fact('Zugeordnet', html(c.linkedBy))}${fact('Geboren', html(c.birthDate))}${fact('Wohnort', html(c.residence))}${fact('E-Mail', html(c.email))}${fact('Telefon', html(c.phone))}</details>`).join('');
+  const contracts = data.contracts.map(c => contractCard(c)).join('');
+  return `<section class="evidence"><div class="group-label">Aus dem Bestand</div>${sample}${intro}${customers}${contracts}</section>`;
+}
+
+function contractCard(c) {
+  return `<details class="source" open><summary><strong>Vertrag</strong> ${html(c.contractId)} · ${html(c.product)}</summary>
+    ${fact('Zugeordnet', html(c.linkedBy))}${fact('Tarifgeneration', `<strong>${html(c.tariffGenerationId)}</strong> <span class="muted">${html(c.tariffName)}</span>`)}
     ${fact('Status', html(c.status))}${fact('Laufzeit', `${html(c.start)} – ${html(c.end || 'offen')}`)}
     ${fact('Summe', money(c.insuredSum, c.currency))}${fact('Jahresprämie', money(c.annualPremium, c.currency))}
     ${fact('Begünstigte', c.beneficiaries.map(b => `${html(b.name)}${b.share != null ? ` (${b.share} %)` : ''}`).join('<br>'))}
@@ -252,8 +261,73 @@ function evidence(ticket) {
       <p>${html(k.summary)}</p>
       <p class="muted small">Gemeldet ${money(k.reported, k.currency)} · Reserve ${money(k.reserve, k.currency)} · Bezahlt ${money(k.paid, k.currency)}</p>
       ${k.recommendation ? `<p class="small">Empfehlung: <strong>${html(k.recommendation.action)}</strong> (${html(k.recommendation.status)}) – ${html(k.recommendation.rationale)}</p>` : ''}</div>`).join('')}
-    </details>`).join('');
-  return `<section class="evidence"><div class="group-label">Unterlagen zum Fall</div>${sample}${customers}${contracts}</section>`;
+    </details>`;
+}
+
+/* ---------- Bestand (from Drill 7): the insurer's data from Monday ---------- */
+async function loadBestand() {
+  const b = state.bestand;
+  const q = encodeURIComponent(b.query || '');
+  const [overview, customers, tariffs, claims] = await Promise.all([
+    request('/api/bestand'), request(`/api/customers?limit=60&q=${q}`), request('/api/tariffs'),
+    has('claims') ? request('/api/claims') : Promise.resolve([]),
+  ]);
+  Object.assign(b, { overview, customers, tariffs, claims });
+}
+
+async function openCustomer(partnerId) {
+  state.view = 'bestand';
+  state.bestand.tab = 'customers';
+  state.selected = null;
+  try {
+    if (!state.bestand.overview) await loadBestand();
+    state.bestand.customer = await request(`/api/bestand/customers/${url(partnerId)}`);
+  } catch (error) { toast(error.message, 'error'); }
+  render();
+}
+
+async function openContract(contractId) {
+  try { state.bestand.contracts[contractId] = await request(`/api/bestand/contracts/${url(contractId)}`); }
+  catch (error) { toast(error.message, 'error'); }
+  render();
+}
+
+function bestandList() {
+  const b = state.bestand;
+  const tabs = [['customers', 'Kunden'], ['tariffs', 'Tarife'], ...(has('claims') ? [['claims', 'Schäden']] : [])];
+  const tabBar = `<div class="tabs">${tabs.map(([key, label]) => `<button type="button" class="tab ${b.tab === key ? 'active' : ''}" data-bestand-tab="${key}">${label}</button>`).join('')}</div>`;
+  if (b.tab === 'tariffs') {
+    return tabBar + b.tariffs.map(t => `<a class="row" href="/api/tariffs/${url(t.id)}/download?inline=1" target="_blank" rel="noopener">
+      <span class="row-id">${html(t.tariffGenerationId || '')}</span><span class="row-title"><span class="row-subject">${html(t.title)}</span>
+      <span class="row-from">${html(t.summary || '')}</span></span></a>`).join('');
+  }
+  if (b.tab === 'claims') {
+    return tabBar + b.claims.map(k => `<div class="row"><span class="row-id">${html(k.claimId)}</span><span class="row-title">
+      <span class="row-subject">${html(k.title)}</span><span class="row-from">${html(k.customerName)} · ${html(k.contractId)}</span></span>
+      <span class="row-date">${money(k.reportedAmount, k.currency)}</span></div>`).join('');
+  }
+  return tabBar + `<form class="new-task" data-form="bestand-search"><input name="q" value="${html(b.query)}" placeholder="Name, Ort oder Vertragsnummer suchen …" aria-label="Im Bestand suchen"></form>`
+    + (b.customers.length ? b.customers.map(c => `<button type="button" class="row ${b.customer?.partnerId === c.partnerId ? 'active' : ''}" data-open-customer="${html(c.partnerId)}">
+      <span class="row-id">${html(c.partnerId)}</span><span class="row-title"><span class="row-subject">${html(c.displayName)}</span>
+      <span class="row-from">${html(c.city || '')}</span></span><span class="row-date">${c.contractCount} Vertr.</span></button>`).join('')
+      : '<p class="empty">Keine Treffer.</p>');
+}
+
+function bestandDetail() {
+  const b = state.bestand;
+  const source = b.overview ? `<div class="bestand-source"><strong>Woher kommen die Daten?</strong> ${html(b.overview.source)}.
+    Eingelesen: ${b.overview.customers.toLocaleString('de-CH')} Kundinnen und Kunden, ${b.overview.contracts.toLocaleString('de-CH')} Verträge,
+    ${b.overview.tariffSheets} Tarifblätter${b.overview.claims != null ? `, ${b.overview.claims} Schadenfälle` : ''}. Claude liest hier nach – ändern kann es nichts.</div>` : '';
+  const c = b.customer;
+  if (!c || b.tab !== 'customers') return `<div class="detail"><div class="thread">${source}<p class="muted">Links eine Kundin wählen oder oben suchen.</p></div></div>`;
+  return `<div class="detail"><div class="thread">${source}<h1>${html(c.name)}</h1>
+    <section class="evidence"><details class="source" open><summary><strong>Stammdaten</strong></summary>
+      ${fact('Kundennummer', html(c.partnerId))}${fact('Geboren', html(c.birthDate))}${fact('Wohnort', html(c.residence))}${fact('E-Mail', html(c.email))}${fact('Telefon', html(c.phone))}</details>
+    <div class="group-label">Verträge</div>
+    ${c.contracts.map(k => b.contracts[k.contractId] ? contractCard(b.contracts[k.contractId])
+      : `<button type="button" class="row" data-open-contract="${html(k.contractId)}"><span class="row-id">${html(k.contractId)}</span>
+        <span class="row-title"><span class="row-subject">${html(k.product)} · ${html(k.tariffGenerationId)}</span><span class="row-from">${html(k.status)}</span></span></button>`).join('')}
+    </section></div></div>`;
 }
 
 function activity(ticket) {
@@ -306,16 +380,17 @@ function toast(text, kind = 'ok') {
 /* ---------- render ---------- */
 function render() {
   if (!state.dashboard) { app.innerHTML = '<main class="loading">Pfefferminzia lädt …</main>'; return; }
-  const titles = { inbox: 'Posteingang', tasks: 'Aufgaben', reviews: 'Freigaben', queue: 'Eingriffsfenster' };
-  const count = state.view === 'tasks' ? openTodos().length : ticketsFor(state.view).length;
+  const titles = { inbox: 'Posteingang', tasks: 'Aufgaben', reviews: 'Freigaben', queue: 'Eingriffsfenster', bestand: 'Bestand' };
+  const bestand = state.view === 'bestand';
+  const count = state.view === 'tasks' ? openTodos().length : bestand ? '' : ticketsFor(state.view).length;
   const headAction = state.view === 'queue'
     ? `<button type="button" data-action="clock" ${state.dashboard.autoSendEnabled ? '' : 'disabled'}>${icon('queue', 14)} Zeit +24 h</button>` : '';
   const tasks = state.view === 'tasks';
-  app.innerHTML = `<div class="shell ${!tasks && state.selected ? 'with-detail' : ''}">${sidebar()}
+  app.innerHTML = `<div class="shell ${!tasks && (state.selected || (bestand && state.bestand.customer)) ? 'with-detail' : ''}">${sidebar()}
     <main class="main"><header class="main-head"><h2>${titles[state.view]}</h2><span class="muted">${count}</span><div class="spacer"></div>${headAction}</header>
       <div class="split ${tasks ? 'single' : ''}">
-        <section class="list" aria-label="${titles[state.view]}">${tasks ? taskList() : ticketList()}</section>
-        ${tasks ? '' : detail()}
+        <section class="list" aria-label="${titles[state.view]}">${tasks ? taskList() : bestand ? bestandList() : ticketList()}</section>
+        ${tasks ? '' : bestand ? bestandDetail() : detail()}
       </div></main></div>
     ${dialogMarkup()}${state.toast ? `<div class="toast ${state.toast.kind}" role="status">${html(state.toast.text)}</div>` : ''}`;
   updateCountdowns();
@@ -368,7 +443,17 @@ const closeDetail = () => { state.selected = null; state.ticket = null; render()
 app.addEventListener('click', async event => {
   if (event.target.matches('[data-backdrop]')) { state.dialog = null; render(); return; }
   const view = event.target.closest('[data-view]');
-  if (view) { state.view = view.dataset.view; state.selected = null; state.ticket = null; await refresh(); return; }
+  if (view) {
+    state.view = view.dataset.view; state.selected = null; state.ticket = null;
+    if (state.view === 'bestand') await loadBestand().catch(error => toast(error.message, 'error'));
+    await refresh(); return;
+  }
+  const tab = event.target.closest('[data-bestand-tab]');
+  if (tab) { state.bestand.tab = tab.dataset.bestandTab; render(); return; }
+  const customer = event.target.closest('[data-open-customer]');
+  if (customer) { event.preventDefault(); await openCustomer(customer.dataset.openCustomer); return; }
+  const contract = event.target.closest('[data-open-contract]');
+  if (contract) { await openContract(contract.dataset.openContract); return; }
   const row = event.target.closest('[data-ticket]');
   if (row) { await openTicket(row.dataset.ticket); return; }
   const chip = event.target.closest('[data-open-ticket]');
@@ -407,6 +492,11 @@ app.addEventListener('submit', event => {
   event.preventDefault();
   const values = new FormData(form);
   const ticket = state.ticket?.ticketNumber;
+  if (form.dataset.form === 'bestand-search') {
+    state.bestand.query = String(values.get('q') || '');
+    state.bestand.customer = null;
+    return loadBestand().then(render).catch(error => toast(error.message, 'error'));
+  }
   if (form.dataset.form === 'todo') return mutate(() => request('/api/todos', { method: 'POST',
     body: JSON.stringify({ title: values.get('title'), ticketNumber: values.get('ticketNumber') || null }) }), 'Aufgabe angelegt');
   if (form.dataset.form === 'draft') return mutate(() => request(`/api/tickets/${url(ticket)}/draft`, { method: 'PUT',
@@ -435,9 +525,15 @@ document.addEventListener('keydown', event => {
   if (event.key === 'k' || event.key === 'ArrowUp') { event.preventDefault(); moveSelection(-1); }
 });
 
-// Claude links straight to a case: /?ticket=PF-1008 opens it without a click.
-const linked = new URLSearchParams(window.location.search).get('ticket');
+// Claude links straight to a case (/?ticket=PF-1008) or to the Bestand (/?view=bestand&customer=PTR-…).
+const params = new URLSearchParams(window.location.search);
+const linked = params.get('ticket');
 if (linked && /^PF-\d+$/.test(linked)) state.selected = linked;
-refresh();
+refresh().then(async () => {
+  if (params.get('view') !== 'bestand' || !has('knowledge')) return;
+  state.view = 'bestand';
+  await loadBestand().catch(error => toast(error.message, 'error'));
+  if (params.get('customer')) await openCustomer(params.get('customer')); else render();
+});
 window.setInterval(() => refresh({ quiet: true }), 8000);
 window.setInterval(updateCountdowns, 1000);

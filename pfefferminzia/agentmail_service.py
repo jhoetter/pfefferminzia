@@ -14,6 +14,7 @@ from typing import Any
 
 from agentmail import AgentMail
 
+from .checkpoints import capability_enabled
 from .constants import STATE_ROOT
 from .crm import auto_link_exact_customer
 from .database import get_database
@@ -282,7 +283,7 @@ def send_ticket_draft(
         raise ValueError("Ticket has no AgentMail inbox binding")
     if ticket["sourceInboxId"] != _configured_inbox_id():
         raise ValueError("Ticket belongs to a different AgentMail inbox")
-    if ticket["productLine"] == "life" and not ticket["humanApprovedAt"]:
+    if ticket["productLine"] == "life" and capability_enabled("life_review", db) and not ticket["humanApprovedAt"]:
         raise ValueError("Life insurance replies require explicit human approval")
     if ticket["draft"]["status"] == "sent":
         raise ValueError("This draft has already been sent")

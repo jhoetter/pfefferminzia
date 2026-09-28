@@ -274,6 +274,29 @@ def create_app() -> FastAPI:
         require_capability("claims")
         return create_claim_task(claim_id=claim_id, task_type=data.type, description=data.description, assigned_to=data.assignedTo, due_at=data.dueAt.isoformat() if data.dueAt else None, idempotency_key=data.idempotencyKey, actor="human-ui")
 
+    @app.get("/api/bestand")
+    async def bestand():
+        require_capability("knowledge")
+        from .bestand import bestand_overview
+
+        return bestand_overview()
+
+    @app.get("/api/bestand/customers/{partner_id}")
+    async def bestand_customer(partner_id: str):
+        require_capability("knowledge")
+        from .evidence import customer_card
+
+        card = customer_card(partner_id)
+        return card if card else JSONResponse(status_code=404, content={"error": "Kunde nicht im Bestand"})
+
+    @app.get("/api/bestand/contracts/{contract_id}")
+    async def bestand_contract(contract_id: str):
+        require_capability("knowledge")
+        from .evidence import contract_card
+
+        card = contract_card(contract_id)
+        return card if card else JSONResponse(status_code=404, content={"error": "Vertrag nicht im Bestand"})
+
     @app.get("/api/tickets/{ticket_number}/evidence")
     async def evidence(ticket_number: str):
         require_capability("knowledge")

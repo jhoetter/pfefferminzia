@@ -106,35 +106,39 @@ selbst im Cockpit – das ist der Beweis.
 
 **Baustein im Fokus:** Wissen, Kontrollen. In Drill 6 kannte Claude nur die Mail. Jetzt bekommt es die Wissensbasis des Versicherers: Kunden, Verträge, Tarife – über Werkzeuge, die nur lesen dürfen.
 
-**Was du heute im Cockpit siehst** – neu: Claude kennt jetzt die Unterlagen des Versicherers: Kunden, Verträge und Tarife – nur zum Lesen.
+**Was du heute im Cockpit siehst** – neu: Der Bestand des Versicherers kommt dazu: die Kunden, Verträge und Tarife aus den CSV-Dateien von Montag. Claude darf darin nachschlagen, ändern kann es nichts.
 
-- Im Fall neu: „Unterlagen zum Fall“ zwischen Mail und Entwurf – Kundin, Vertrag mit Tarifgeneration, Begünstigte und das Tarifblatt zum Anklicken. Dort prüfst du selbst, was Claude behauptet.
-- Neben deinem Fall aus dem Postfach gibt es Beispielfälle aus dem Bestand (Markierung „Beispielfall“). Von dort wird nichts gesendet; an einem davon probierst du am Ende deine Prüfung aus.
+- Links neu „Bestand“: oben steht, woher die Daten kommen; darunter Kunden (mit Suche) und Tarife. Ein Klick auf eine Kundin zeigt Stammdaten und Verträge, ein Klick auf einen Vertrag Begünstigte und Tarifblatt.
+- Im Fall neu: „Aus dem Bestand“ zwischen Mail und Entwurf – was zur Mail im Bestand nachgeschlagen wurde, und wer es wie zugeordnet hat. Das steht nicht in der Mail.
 - Posteingang, Aufgaben, Entwurf, Senden und Aktivität kennst du aus Drill 6.
-- Claude kann: Kunden und Verträge suchen, den Fall zuordnen, die passende Tarifgeneration lesen und mit Fundstelle entwerfen. Claude kann nicht: Senden und an Verträgen oder Tarifen etwas ändern.
+- Claude kann: Den Bestand laden und darin suchen, den Fall einer Kundin und einem Vertrag zuordnen, die passende Tarifgeneration lesen und mit Fundstelle entwerfen. Claude kann nicht: Senden und im Bestand etwas ändern.
 
 **So läuft die Stunde:**
 
-1. Welche Kundin, welcher Vertrag, welche Tarifgeneration? Du bestätigst.
-2. Claude entwirft mit Beleg; du änderst den Text und sendest selbst.
+1. Claude lädt den Bestand; du schaust ihn dir an und bestätigst Kundin, Vertrag und Tarifgeneration zu deiner Lebensanfrage selbst.
+2. Claude entwirft mit Beleg, du änderst den Text – noch nicht senden.
 3. Gemeinsam bauen: Ein Entwurf mit falscher Tarifgeneration wird beim Speichern gestoppt.
-4. Du versuchst an einem Beispielfall, die Prüfung auszutricksen.
+4. Du versuchst, die Prüfung auszutricksen – dann korrigierst du und sendest selbst.
 
-**Aufgabe:** Die Lehrperson schickt eine fiktive Lebensanfrage. Claude
-ordnet Person, Police und Tarifgeneration zu und entwirft mit Beleg. Du
-änderst den Text im Cockpit und sendest dort selbst.
+**Aufgabe:** Claude lädt zuerst den Bestand von gestern – die Kunden,
+Verträge und Tarife aus den CSV-Dateien von Montag; du musst nichts tun. Du
+siehst ihn links unter **Bestand**. Dann kommt die Lebensanfrage der
+Lehrperson: Du bestätigst Kundin, Vertrag und Tarifgeneration selbst im
+Bestand, Claude entwirft mit Beleg, du änderst den Text – gesendet wird erst
+am Ende.
 
 **Bauauftrag:** Ein Entwurf, der eine **falsche Tarifgeneration** zitiert
 (z. B. „PL-2012“, wenn der Vertrag PL-2017 hat), wird beim Speichern mit
 klarer Meldung abgewiesen. Ein korrekter Entwurf bleibt erlaubt. Den
-Wortlaut der Meldung legst du fest.
+Wortlaut der Meldung legst du fest. Danach versuchst du, die Prüfung an
+deinem eigenen Fall auszutricksen – und sendest erst dann.
 
 | Etappe | Frag Claude | Du entscheidest | Dann du |
 | --- | --- | --- | --- |
-| 1 · Quelle finden | „Welche Person, Police und Tarifgeneration passen zu der neuen Lebensanfrage? Zeig mir die Belege; noch keinen Entwurf.“ | Welche Aussage in der Mail ist nur Behauptung der Kundin, welche ist durch Vertrag und Tarif belegt? Stimmt die Zuordnung – woran machst du das fest? | Im Cockpit unter „Unterlagen zum Fall“ selbst nachsehen und die Zuordnung und exakte Tarifgeneration bestätigen oder widersprechen. |
-| 2 · Entwurf prüfen | „Erstelle jetzt einen begründeten Antwortentwurf mit Fundstelle. Nicht versenden – das mache ich im Cockpit.“ | Welchen Satz im Entwurf würdest du so nicht unterschreiben, und wie lautet er besser? | Text und Empfänger im Cockpit prüfen, den Satz selbst ändern, speichern und bewusst senden. |
-| 3 · Selbst bauen | „Wir bauen eine Prüfung gegen falsch zitierte Tarifgenerationen. Frag mich zuerst nach der Regel und den Szenarien, die sie bestehen muss, dann bauen wir.“ | Wann ist ein Tarifzitat für dich falsch – auch wenn gar keiner oder zwei genannt sind? Und wie soll die Meldung wörtlich lauten, damit die Sachbearbeitung sofort weiß, was zu tun ist? | Beispieltabelle mit einem eigenen Gegenfall ergänzen, Meldungstext selbst formulieren, dann mit Claude bauen. |
-| 4 · Beleg zeigen | „Zeig mir Quelle, menschliche Textänderung, Versandereignis und geprüfte Szenarien. Was fehlt noch? Dann hilf mir, meinen Stand zu speichern.“ | Versuch die Prüfung auszutricksen: Welchen Entwurf schreibst du im Cockpit, damit sie greifen müsste? | An einem Beispielfall aus dem Leben-Bestand (etwa PF-10002 mit PL-2017) im Cockpit einen falsch zitierenden Entwurf speichern und die eigene Meldung sehen; Protokoll prüfen; keinen zweiten Versand auslösen; Stand speichern. |
+| 1 · Bestand und Quelle | „Lade den Bestand von gestern und zeig mir, wo ich ihn sehe. Welche Kundin und welcher Vertrag passen zur neuen Lebensanfrage? Noch keinen Entwurf.“ | Welche Aussage in der Mail ist nur Behauptung der Kundin – und was findest du dazu selbst im Bestand? | Links „Bestand“ öffnen, die Kundin selbst suchen und im Fall unter „Aus dem Bestand“ die Zuordnung und Tarifgeneration bestätigen oder widersprechen. |
+| 2 · Entwurf prüfen | „Erstelle jetzt einen begründeten Antwortentwurf mit Fundstelle. Noch nicht senden – erst bauen wir die Prüfung.“ | Welchen Satz im Entwurf würdest du so nicht unterschreiben, und wie lautet er besser? | Text im Cockpit prüfen, den Satz selbst ändern und speichern – noch nicht senden. |
+| 3 · Selbst bauen | „Wir bauen eine Prüfung gegen falsch zitierte Tarifgenerationen. Frag mich zuerst nach der Regel und den Szenarien, die sie bestehen muss, dann bauen wir.“ | Wann ist ein Tarifzitat für dich falsch – auch wenn gar keiner oder zwei genannt sind? Und wie soll die Meldung wörtlich lauten, damit die Sachbearbeitung sofort weiß, was zu tun ist? | Szenarien mit einem eigenen Gegenfall festlegen, Meldungstext selbst formulieren, dann mit Claude bauen. |
+| 4 · Austricksen und senden | „Ich schreibe jetzt absichtlich eine falsche Tarifgeneration in meinen Entwurf. Wird er gestoppt? Danach korrigiere ich und sende – und du hilfst mir, meinen Stand zu speichern.“ | Mit welchem falschen Satz versuchst du, die Prüfung auszutricksen – und hält sie? | Im eigenen Fall eine falsche Tarifgeneration eintragen und speichern, die eigene Meldung sehen; dann korrigieren, speichern und selbst senden; Stand speichern. |
 
 **Fertig, wenn:** Ein belegter Lebensentwurf wurde vom Menschen im Cockpit verändert und gesendet; die Tarif-Belegprüfung ist geprüft und gespeichert.
 
@@ -161,10 +165,11 @@ Wortlaut der Meldung legst du fest.
 **Was du heute im Cockpit siehst** – neu: Claude darf Lebensfälle jetzt komplett vorbereiten – aber nichts verlässt das Haus ohne deine aktuelle Freigabe.
 
 - Links neu „Freigaben“: Dort liegen die Lebensantworten, die Claude dir vorgelegt hat.
+- Im Fall neu: „Sparte“. Nur Lebensantworten brauchen deine Freigabe – deshalb ordnet Claude jeden Fall einer Sparte zu, und du kannst sie ändern.
 - Im Fall: „Freigeben“ oder „Ablehnen“ mit Begründung. Erst nach deiner Freigabe kannst du senden.
 - Änderst du einen freigegebenen Text, erlischt die Freigabe – das steht dann in der Aktivität.
-- Unter „Unterlagen zum Fall“ siehst du wie in Drill 7 Kundin, Vertrag und Tarifblatt – daran misst du die Vorlage.
-- Claude kann: Fälle zuordnen, Antworten mit Beleg entwerfen, zur Freigabe vorlegen und nach einer Ablehnung überarbeiten. Claude kann nicht: Freigeben, ablehnen oder senden.
+- Unter „Aus dem Bestand“ siehst du wie in Drill 7 Kundin, Vertrag und Tarifblatt – daran misst du die Vorlage.
+- Claude kann: Fälle zuordnen, die Sparte setzen, Antworten mit Beleg entwerfen, zur Freigabe vorlegen und nach einer Ablehnung überarbeiten. Claude kann nicht: Freigeben, ablehnen oder senden.
 
 **So läuft die Stunde:**
 
@@ -216,7 +221,7 @@ Antwortfeld. Was im Hinweis steht, legst du fest.
 - Links neu „Eingriffsfenster“: Haftpflichtantworten, die nach 24 Stunden automatisch rausgehen, mit Countdown.
 - Im Fall: Text ändern (dann wird der Termin gestoppt) oder „Versand stoppen“ mit Begründung.
 - Im Eingriffsfenster: „Zeit +24 h“ spult die Workshop-Uhr vor – das kannst nur du.
-- Unter „Unterlagen zum Fall“ stehen jetzt auch die Bausteine des Vertrags und der Schadenfall mit Beträgen und der letzten Empfehlung.
+- Im Bestand neu: „Schäden“. Und unter „Aus dem Bestand“ stehen die Bausteine des Vertrags und der Schadenfall mit Beträgen und der letzten Empfehlung.
 - Claude kann: Sparte zuordnen, Antworten mit Beleg entwerfen, ins 24-Stunden-Fenster einplanen und einen Versand stoppen. Claude kann nicht: Die Uhr vorspulen, freigeben oder sofort senden.
 
 **So läuft die Stunde:**
