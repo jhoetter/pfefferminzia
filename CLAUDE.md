@@ -396,7 +396,10 @@ Hand. **Erst das Video, dann die Präsentation.**
   Hintergrund ein: `node -v` prüfen; fehlt Node, einmal fragen und dann ohne
   Administrator-Passwort in den Benutzerordner installieren (offizielles
   Archiv von nodejs.org, nie `sudo`). Remotion-Projekt in
-  `~/pfefferminzia-video` (außerhalb des Repos). Pfefferminzia-Look: Grün
+  `~/pfefferminzia-video` (außerhalb des Repos); als Vorlage darf das
+  Beispiel aus `video-beispiel/` dorthin kopiert werden – Botschaft und Szenen
+  bestimmt die Person. Musik liegt in `assets/music/` (Audiio-Lizenz: nur im
+  eigenen Video, nie als Datei weitergeben). Pfefferminzia-Look: Grün
   `#173d2c`, Minze `#52b986`, hell `#d9f1e1`, Logo
   `slides/assets/pfefferminzia-logo.svg`. Vorschau mit `npx remotion studio`,
   rendern unter 20 MB nach `slides/video/`. Klappt die Einrichtung nicht in
@@ -431,7 +434,8 @@ brauchen den Tresor nie.
 - Nur Python, `uv` und Git im Repo; kein Node, npm oder Frontend-Build.
   Einzige Ausnahme: das Remotion-Video in Drill 10 in einem **eigenen Ordner
   außerhalb** des Repos (`~/pfefferminzia-video`), nach Zustimmung der
-  Person; ins Repo kommt nur die fertige MP4-Datei.
+  Person; ins Repo kommt nur die fertige MP4-Datei. `video-beispiel/` ist nur
+  die Vorlage zum Kopieren (ohne `node_modules`).
 - Alle Kunden, Verträge, Schäden und Nachrichten bleiben synthetisch.
 - Hat die Person keine Tokens mehr: Drill-Karte, Browser und Buddy-Modus;
   nie persönliche Accounts oder den Dozentenschlüssel teilen lassen.

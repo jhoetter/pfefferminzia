@@ -11,6 +11,34 @@ darf: **Pflichtfreigabe** bei Leben, **Eingriffsfenster** bei Haftpflicht.
 > Alle Personen, Verträge, Schäden und Nachrichten sind synthetisch.
 > Nie echte Kundendaten verwenden.
 
+## Wohin der Tag führt: Pfefferminzia 2.0 in 60 Sekunden
+
+[![Pfefferminzia 2.0 – Beispiel-Launchvideo](docs/media/pfefferminzia-2-0-teaser.gif)](docs/media/pfefferminzia-2-0-pitch.mp4)
+
+**[▶ Ganzes Video ansehen (MP4, 60 s, mit Ton)](docs/media/pfefferminzia-2-0-pitch.mp4)**
+
+So kann es am Ende aussehen: In Drill 10 macht jede Person ein eigenes
+Marketing-Video über ihr Pfefferminzia 2.0 und zeigt es in ihrer
+Präsentation für den Vorstand. Dieses Video ist ein **Beispiel**. Es ist
+komplett aus React-Komponenten gebaut, mit [Remotion](https://www.remotion.dev).
+Die Bausteine der Kommandozentrale (Posteingang, Bestand,
+Leistungsentscheidung, Eingriffsfenster, Protokoll) sind als Komponenten
+nachgebaut und werden im Takt der Musik hervorgehoben:
+
+- **Musik:** „Bounce Back“ (Bigsby, Audiio), 112,5 BPM – ein Schlag sind genau
+  16 Bilder bei 30 fps. Ausschnitt 0:51–1:50, sodass der Drop auf Sekunde 24
+  liegt.
+- **Story:** 24 s Chaos im Posteingang („Montag, 8:02 Uhr … Wer
+  entscheidet?“) → auf den Drop die Enthüllung → fünf Bausteine, je zwei
+  Takte → „Der Agent bereitet vor. Der Mensch entscheidet.“ → Abspann.
+- **Code:** [`video-beispiel/`](video-beispiel/) (`src/components/ui.tsx`
+  sind die Cockpit-Komponenten, `src/components/motion.tsx` die Bewegung im
+  Takt, `src/scenes.tsx` die Szenen, `src/Pitch.tsx` die Zeitleiste).
+  Vorschau: `cd video-beispiel && npm install && npm run studio`.
+
+Alle Fälle im Video sind erfunden; es verspricht keine Zeitersparnis oder
+Wirksamkeit.
+
 ## Start für Teilnehmende
 
 Du brauchst nur die Claude-App (auf den Kursrechnern sind Python, `uv` und

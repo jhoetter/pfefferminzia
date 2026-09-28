@@ -1,0 +1,20 @@
+{
+  "name": "pfefferminzia-2-0-pitch",
+  "private": true,
+  "description": "Beispiel-Launchvideo für Pfefferminzia 2.0 mit Remotion (Drill 10).",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render Pitch out/pfefferminzia-2-0-pitch.mp4 --crf 26"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.529",
+    "@remotion/google-fonts": "4.0.529",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "remotion": "4.0.529"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "typescript": "5.9.3"
+  }
+}

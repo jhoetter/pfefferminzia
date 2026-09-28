@@ -9,6 +9,14 @@ Node.js. Das Pfefferminzia-Repo selbst bleibt Node-frei: Das Videoprojekt
 liegt in einem **eigenen Ordner neben dem Repo** (`~/pfefferminzia-video`),
 ins Repo kommt nur die fertige MP4-Datei (`slides/video/`).
 
+## Das Beispiel
+
+Ein fertiges Beispiel liegt im Repo: [das Video](media/pfefferminzia-2-0-pitch.mp4)
+und sein Code in [`video-beispiel/`](../video-beispiel/). Claude darf es als
+Vorlage kopieren (nach `~/pfefferminzia-video`) – eure Botschaft, Szenen und
+Texte bestimmt ihr. Tempo-Trick aus dem Beispiel: Bei 112,5 BPM ist ein Schlag
+genau 16 Bilder; so landen Schnitte und Einblendungen auf der Musik.
+
 ## So bittest du Claude
 
 > „Wir machen das Marketing-Video für Pfefferminzia 2.0. Richte im
@@ -29,15 +37,18 @@ ins Repo kommt nur die fertige MP4-Datei (`slides/video/`).
 3. **Bilder (optional):** Screenshots deiner Kommandozentrale (Mac: `⌘⇧4`)
    in `~/pfefferminzia-video/public/`. Keine Schlüssel, keine privaten Mails.
    Es geht auch ohne: Logo, Farben, Text und Bewegung reichen.
-4. **Pfefferminzia-Look:** Tiefes Grün `#173d2c`, Minze `#52b986`, helles
+4. **Musik (optional):** Vier lizenzierte Instrumentals liegen in
+   `assets/music/` (Audiio). Claude misst auf Wunsch das Tempo und sucht den
+   Drop; nur im eigenen Video verwenden, nicht als Datei weitergeben.
+5. **Pfefferminzia-Look:** Tiefes Grün `#173d2c`, Minze `#52b986`, helles
    Minzgrün `#d9f1e1`; das Logo liegt in `slides/assets/pfefferminzia-logo.svg`.
    1920×1080, 30 fps, 20–60 Sekunden.
-5. **Vorschau:** `npx remotion studio` öffnet eine Vorschau im Browser.
+6. **Vorschau:** `npx remotion studio` öffnet eine Vorschau im Browser.
    Iteriere mit Claude an Tempo, Übergängen und Texten.
-6. **Rendern:** `npx remotion render <Komposition> out/pfefferminzia-2-0.mp4 --crf 28`
+7. **Rendern:** `npx remotion render <Komposition> out/pfefferminzia-2-0.mp4 --crf 28`
    (unter 20 MB). Claude kopiert die Datei nach `slides/video/` im
    Pfefferminzia-Ordner.
-7. **Weiter zur Präsentation:** In `slides/vorstand.js` oben
+8. **Weiter zur Präsentation:** In `slides/vorstand.js` oben
    `const VIDEO = 'video/pfefferminzia-2-0.mp4';` – dann läuft das Video auf
    Folie 2 von <http://127.0.0.1:3004/slides/vorstand.html>.
 
