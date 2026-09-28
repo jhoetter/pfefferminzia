@@ -34,8 +34,8 @@ Formulierungen, Handlungen und Nachweise stehen in den
 | [Drill 7](../slides/index.html?deck=drill-07) | 11:15 · Leben: Mensch bearbeitet | 4 |
 | [Drill 8](../slides/index.html?deck=drill-08) | 13:15 · Leben: Mensch gibt frei | 4 |
 | [Drill 9](../slides/index.html?deck=drill-09) | 14:30 · Haftpflicht: Eingriffsfenster | 4 |
-| [Drill 10](../slides/index.html?deck=drill-10) | 15:45 · Management-Report-Auftrag | 3 |
-| [Eigener Report](../slides/index.html?deck=management) | 15:45 · bearbeitbare reveal.js-/D3-Folien (+ optionale Video-Folie) | 3–4 |
+| [Drill 10](../slides/index.html?deck=drill-10) | 15:45 · Pfefferminzia 2.0: Video und Vorstand | 3 |
+| [Vorstandspräsentation](../slides/vorstand.html) | 15:45 · eigene Präsentation im Pfefferminzia-Look mit Video-Folie | frei |
 | [Abschluss](../slides/index.html?deck=abschluss) | 16:45 · Whiteboard, danach Beamer aus | 2 |
 
 Nach `uv run pfefferminzia serve` den Launcher unter
@@ -53,12 +53,12 @@ wirklichen Aktionen finden im Pfefferminzia-Cockpit statt. Der Johannes-Avatar
 stammt als SVG aus Falks vorhandener Workshop-Vorlage; er steht auf Titeln
 und Kapitelstarts, damit Arbeitsfolien luftig bleiben.
 
-Der **eigene Management-Report** ist die Ausnahme: Er liest im
-Drill-10-Checkpoint den lokalen aggregierten Snapshot über
-`/api/management-report`. Für ihn muss die Python-App laufen; ohne
-Checkpoint-Daten erscheint ein klarer Fehlerzustand. Die Unterrichtsdecks
-bleiben offline nutzbar. reveal.js und D3 sind bereits in `slides/index.html`
-eingebettet; keine Installation, kein CDN und kein Node-Build.
+Die **eigene Vorstandspräsentation** (`slides/vorstand.html`) ist die
+Ausnahme: Sie hat bewusst den Pfefferminzia-Look statt unseres Kursdesigns,
+liest im Drill-10-Stand die gezählten Werte über `/api/management-report` und
+zeigt das Remotion-Video der Person (`slides/video/`). D3 liegt lokal in
+`slides/assets/`; kein CDN. Node braucht nur das Videoprojekt, außerhalb des
+Repos.
 
 Die Präsentationen verwenden Falk Uebernickels
 [AI-Studio-Vorlagen-Foliensatz](https://github.com/falkue/ai-studio-foliensatz)

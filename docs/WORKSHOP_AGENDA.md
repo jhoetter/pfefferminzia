@@ -16,7 +16,7 @@ Offizielle Modulseite:
 | Tag | Thema | Leitung | Leitfrage | Ergebnis für die Teilnehmenden |
 | --- | --- | --- | --- | --- |
 | Montag | Von der Tabelle zum Agenten: AI Augmentation | Falk Uebernickel | Wie kann KI Menschen dabei unterstützen, fragmentierte Versicherungsdaten zu verstehen und zu bearbeiten? | Die Teilnehmenden untersuchen den Datensatz aus fachlichen Rollen heraus, bauen Kundensichten zusammen, analysieren Bestände und treffen assistierte Entscheidungen. |
-| Dienstag | Vom eigenen Code zum Agentensystem: Vibe Coding, MCP, Automation | Johannes Hötter | Wie baue ich mit Claude Code einen prüfbaren Prozess, und wo darf er selbst handeln? | Jede Person forkt, baut, testet und pusht ihre Pfefferminzia-Version; alle erleben Pflichtfreigabe und Eingriffsfenster und verdichten den Befund in einem Management-Report. |
+| Dienstag | Vom eigenen Code zum Agentensystem: Vibe Coding, MCP, Automation | Johannes Hötter | Wie baue ich mit Claude Code einen prüfbaren Prozess, und wo darf er selbst handeln? | Jede Person forkt, baut, testet und pusht ihre Pfefferminzia-Version; alle erleben Pflichtfreigabe und Eingriffsfenster und erzählen ihr System zum Schluss als Marketing-Video und vor dem Vorstand. |
 | Mittwoch | Vom System in die eigene Firma: Bring Your Own Case | Falk Uebernickel | Wo lassen sich die Muster verantwortbar in der eigenen Organisation einsetzen? | Die Teilnehmenden übertragen die Muster auf eigene Fälle und formulieren einen konkreten Umsetzungspfad. |
 
 Ulrike Baumöl begleitet den Workshop als Programmmanagerin. Der Arbeitsstand
@@ -56,7 +56,7 @@ Die letzte Frage bildet bewusst die Brücke von Augmentation zu Automation.
 | 12:15–13:15 | **Mittagspause** | Abstand vor den Automationsmustern. |
 | 13:15–14:15 | **Drill 8 – Leben: Der Agent bearbeitet, der Mensch gibt frei** | Claude bereitet zwei Fälle vor; im Cockpit einen freigeben, einen ablehnen (Claude hat kein Freigabe-Werkzeug). Review-Zustand selbst verbessern und belegen, dass ein Edit die Freigabe entwertet. |
 | 14:30–15:30 | **Drill 9 – Haftpflicht: Automatisch, solange niemand widerspricht** | Haftpflichtfälle routen; einen laufen lassen, einen ändern, einen stoppen. Workshop-Uhr im Cockpit vorspulen und die Wirkung im Audit prüfen. Doppelversand per Test ausschließen. |
-| 15:45–16:30 | **Drill 10 – Management-Report (45 Min.)** | Aus einem aggregierten Schnappschuss der eigenen Drill-9-Instanz mit reveal.js und D3 maximal vier Folien bauen: Beobachtung, Grafik, Kontrollentscheidung und Grenze der Aussage. Bonus: Video der eigenen Lösung mit Remotion. |
+| 15:45–16:30 | **Drill 10 – Pfefferminzia 2.0: Video und Vorstand (45 Min.)** | Freie Hand: zuerst ein kurzes Marketing-Video über das eigene System mit Remotion (Node wird bei Bedarf eingerichtet), dann die Präsentation für den Vorstand im Pfefferminzia-Look mit dem Video, gezählten Fällen aus Drill 9, Empfehlung und Grenze der Aussage. Letzter Drill vor der Whiteboard-Runde. |
 | 16:45–18:00 | **Whiteboard-Abschluss – Wo darf der Agent handeln?** | Ohne Rechner: Pflichtfreigabe und Eingriffsfenster vergleichen, Automation Contract formulieren (Moderationsnotizen im Runbook). |
 
 ### Die zwei Kontrollmuster
@@ -98,7 +98,7 @@ Rückweg für alle, die hängen. Details:
 | 7 · Belegter Entwurf | 30 Min. | 20 Min. | 10 Min. |
 | 8 · Pflichtfreigabe | 30 Min. | 20 Min. | 10 Min. |
 | 9 · Eingriffsfenster | 30 Min. | 15 Min. | 15 Min. |
-| 10 · Management-Report | 5 Min. | 20 Min. | 20 Min. |
+| 10 · Video und Vorstand | 5 Min. | 20 Min. (Video) | 20 Min. (Präsentation) |
 
 Die genauen Teilziele, Dateieinstiege und Zeitboxen stehen in den
 [Drill-Karten](DRILL_CARDS.md) und im MCP-Werkzeug `get_drill_guide` schon bei

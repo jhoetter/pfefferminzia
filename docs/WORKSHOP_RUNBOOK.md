@@ -13,8 +13,8 @@ Dienstag ist Drill 6–10.
 | `drill-07-start` | + Kunden/Tarife | Drill 6: Antwort-Aufgabe erledigt sich beim Senden |
 | `drill-08-start` | + Pflichtfreigabe Leben, Claims | + Drill 7: Tarif-Belegprüfung |
 | `drill-09-start` | + Router, Eingriffsfenster, Workshop-Uhr, Auto-Versand an | + Drill 8: `controlNotice` im Review |
-| `drill-10-start` | + Management-Report, Auto-Versand aus | + Drill 9: Queue-Hinweise, Duplikattest |
-| `drill-10-complete` | wie oben | + Drill 10: zweite D3-Grafik, Beispiel-Empfehlung |
+| `drill-10-start` | + Vorstandspräsentation, Auto-Versand aus | + Drill 9: Queue-Hinweise, Duplikattest |
+| `drill-10-complete` | wie oben | + Drill 10: Beispiel-Vorstandspräsentation (Grafik, Empfehlung, Video-Platz) |
 
 Die Teilnehmenden klonen `main` und starten bei Drill 6. Die Lösungen liegen
 als lineare Commits auf dem Branch `reference` über `main`; die Tags zeigen
@@ -147,7 +147,10 @@ Whiteboard-Punkt.
   offiziellem Checkpoint und echtem Mail-Roundtrip an die Dozenten-Inbox.
 - `instructor status` zeigt die Antworten dieses Durchlaufs.
 - Drill 9: Der Zeitsprung versendet genau die eine unveränderte Antwort.
-- Drill 10: Das Report-Deck zeigt die Zählwerte; Auto-Versand ist aus.
+- Drill 10: Die Vorstandspräsentation zeigt die Zählwerte; Auto-Versand ist aus.
+- Drill 10 auf einem **Mac ohne Node**: Claude installiert Node ohne
+  Administrator-Passwort, legt das Remotion-Projekt an und rendert ein
+  kurzes Video – in unter zehn Minuten? Das Video läuft in der Präsentation.
 - Reserve-Plätze getestet, nicht nur angelegt.
 - **Probe wie die Teilnehmenden:** Claude-App, Sonnet 5 auf „Mittel“ (kommt aus
   `.claude/settings.json`; im Modellwähler kontrollieren), frische Kopie,
@@ -186,7 +189,7 @@ Ordner. Oder Buddy werden: Fragen stellen, nicht Tastatur oder Freigabe
 - Drill 7: ähnliche Namen, fehlende Vertragsnummer, `send challenge` (Anweisung im Mailtext).
 - Drill 8: Nutzerwunsch, der dem zitierten Tarif widerspricht.
 - Drill 9: Timer-Reset nach Edit, transparente Router-Schwelle.
-- Drill 10: Bonus-Video mit Remotion ([BONUS_VIDEO.md](BONUS_VIDEO.md)).
+- Drill 10: zweite, kürzere Videofassung oder Folie „Mein agentisches System“ ([VIDEO_REMOTION.md](VIDEO_REMOTION.md)).
 
 ## Wenn Tokens ausgehen
 

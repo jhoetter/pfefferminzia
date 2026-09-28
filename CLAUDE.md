@@ -309,7 +309,7 @@ lernen müssen sie nicht – den Code schreibst du.
 - **Was es wann gibt:** Bestand ab Drill 7; Sparte und Freigaben ab Drill 8
   (vorher weder zeigen noch setzen); Leistungs- und Schadenakten ab Drill 8;
   Eingriffsfenster ab Drill 9;
-  Report ab Drill 10. Nimm nichts aus späteren Drills vorweg.
+  Vorstandspräsentation und Video ab Drill 10. Nimm nichts aus späteren Drills vorweg.
 - **Links ins Cockpit:** Fall `http://127.0.0.1:3004/?ticket=PF-…`, Bestand
   `http://127.0.0.1:3004/?view=bestand`, Kundin
   `http://127.0.0.1:3004/?view=bestand&customer=PTR-…`. Keine anderen Pfade
@@ -386,14 +386,30 @@ Bauaufträge. Beim normalen Drill-Wechsel und wenn jemand festhängt:
 Abschluss eines Drills; der steht im Guide unter `doneWhen` und in
 `docs/DRILL_CARDS.md`.
 
-## 6. Drill 10: Management-Report
+## 6. Drill 10: Pfefferminzia 2.0 – Video und Vorstand
 
-Beim Wechsel zu Drill 10 werden aus den Fällen von Drill 9 nur gruppierte
-Zählwerte übernommen. Lies sie mit `get_management_report_data`. Baue mit der
-Person in `slides/management.js`: eine beschriftete D3-Grafik, eine belegte
-Empfehlung, eine Grenze der Aussage, höchstens vier Folien. Keine erfundenen
-Unternehmens-KPIs oder Zeitersparnisse. Wer danach noch Guthaben hat, kann
-den Video-Bonus machen (`docs/BONUS_VIDEO.md`).
+Der letzte Drill vor der Whiteboard-Runde; die Person hat weitgehend freie
+Hand. **Erst das Video, dann die Präsentation.**
+
+- **Video (`docs/VIDEO_REMOTION.md`):** Frag zuerst nach Publikum, Botschaft
+  in einem Satz und zwei, drei Szenen – und richte währenddessen im
+  Hintergrund ein: `node -v` prüfen; fehlt Node, einmal fragen und dann ohne
+  Administrator-Passwort in den Benutzerordner installieren (offizielles
+  Archiv von nodejs.org, nie `sudo`). Remotion-Projekt in
+  `~/pfefferminzia-video` (außerhalb des Repos). Pfefferminzia-Look: Grün
+  `#173d2c`, Minze `#52b986`, hell `#d9f1e1`, Logo
+  `slides/assets/pfefferminzia-logo.svg`. Vorschau mit `npx remotion studio`,
+  rendern unter 20 MB nach `slides/video/`. Klappt die Einrichtung nicht in
+  fünf Minuten: Video auslassen, Präsentation bauen.
+- **Präsentation:** `slides/vorstand.html` (Cockpit unten links „Vorstand“),
+  Inhalt in `slides/vorstand.js`, Aussehen in `slides/vorstand.css` – im
+  Pfefferminzia-Branding, nicht im Look unserer Kursfolien. Oben `VIDEO`
+  setzen; Folien frei umbauen. Frag zuerst, was der Vorstand entscheiden
+  soll. Zahlen nur aus `get_management_report_data` (gezählte Werte aus
+  Drill 9).
+- **Grenze bleibt:** Marketing darf begeistern, aber keine erfundenen
+  Kennzahlen, Zeitersparnisse oder Kundenzahlen, keine Namen oder Mailtexte.
+  Die Präsentation nennt die Grenze der Aussage.
 
 ## 7. Dozentenrechner
 
@@ -413,8 +429,9 @@ brauchen den Tresor nie.
 ## 8. Technische Leitplanken
 
 - Nur Python, `uv` und Git im Repo; kein Node, npm oder Frontend-Build.
-  Einzige Ausnahme: der freiwillige Remotion-Bonus in einem **eigenen Ordner
-  außerhalb** des Repos, nach Zustimmung der Person.
+  Einzige Ausnahme: das Remotion-Video in Drill 10 in einem **eigenen Ordner
+  außerhalb** des Repos (`~/pfefferminzia-video`), nach Zustimmung der
+  Person; ins Repo kommt nur die fertige MP4-Datei.
 - Alle Kunden, Verträge, Schäden und Nachrichten bleiben synthetisch.
 - Hat die Person keine Tokens mehr: Drill-Karte, Browser und Buddy-Modus;
   nie persönliche Accounts oder den Dozentenschlüssel teilen lassen.

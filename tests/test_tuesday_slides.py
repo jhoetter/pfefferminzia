@@ -17,18 +17,21 @@ def test_tuesday_deck_is_served_without_a_build_step() -> None:
     html = client.get("/slides/index.html")
     script = client.get("/slides/dienstag.js")
     agentic_script = client.get("/slides/agentisch.js")
-    management_script = client.get("/slides/management.js")
+    board = client.get("/slides/vorstand.html")
+    board_script = client.get("/slides/vorstand.js")
+    board_d3 = client.get("/slides/assets/d3.v7.min.js")
     styles = client.get("/slides/dienstag.css")
     launcher = client.get("/slides/decks.html")
     personas = client.get("/slides/assets/agentisch/personas.webp")
 
-    assert html.status_code == script.status_code == agentic_script.status_code == management_script.status_code == styles.status_code == launcher.status_code == personas.status_code == 200
+    assert html.status_code == script.status_code == agentic_script.status_code == board.status_code == board_script.status_code == board_d3.status_code == styles.status_code == launcher.status_code == personas.status_code == 200
     assert "AI Studio — Dienstag: Vom Agenten zum System" in html.text
     assert 'src="./agentisch.js"' in html.text
-    assert 'src="./management.js"' in html.text
     assert "https://d3js.org v7.9.0" in html.text
-    assert "fetch('/api/management-report'" in management_script.text
-    assert "d3.scaleLinear" in management_script.text
+    assert "fetch('/api/management-report'" in board_script.text
+    assert "d3.scaleLinear" in board_script.text and "const VIDEO" in board_script.text
+    assert 'src="./vorstand.js"' in board.text and "pfefferminzia-logo.svg" in board_script.text
+    assert "vorstand.html" in launcher.text
     assert 'src="./dienstag.js"' in html.text
     assert "deck=agentisch" in launcher.text
     assert "application/javascript" in script.headers["content-type"] or "text/javascript" in script.headers["content-type"]
@@ -52,7 +55,7 @@ def test_tuesday_deck_covers_all_five_milestones() -> None:
     assert "keine echte Aktion" in script
     assert "Ich bin in Drill 6" in script
     assert "kein Werkzeug" in script
-    for deck in ("gesamt", "input", "drill-06", "drill-07", "drill-08", "drill-09", "drill-10", "management", "abschluss", "agentisch"):
+    for deck in ("gesamt", "input", "drill-06", "drill-07", "drill-08", "drill-09", "drill-10", "abschluss", "agentisch"):
         assert f"{deck}:" in script or f"'{deck}':" in script
     assert 'svg[aria-label^="Comicfigur Johannes"]' in script
 

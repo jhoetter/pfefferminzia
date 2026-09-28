@@ -43,7 +43,7 @@
         <div class="day-timeline-row"><strong>11:15–12:15</strong><em>Drill 7</em><span>Leben: belegter Entwurf, Mensch sendet</span></div>
         <div class="day-timeline-row"><strong>13:15–14:15</strong><em>Drill 8</em><span>Leben: Freigabe oder Ablehnung</span></div>
         <div class="day-timeline-row"><strong>14:30–15:30</strong><em>Drill 9</em><span>Haftpflicht: automatischer Versand mit Eingriffsfenster</span></div>
-        <div class="day-timeline-row"><strong>15:45–16:30</strong><em>Drill 10</em><span>Management-Report mit reveal.js und D3</span></div>
+        <div class="day-timeline-row"><strong>15:45–16:30</strong><em>Drill 10</em><span>Pfefferminzia 2.0: Video und Vorstand</span></div>
         <div class="day-timeline-row"><strong>16:45–18:00</strong><em>Whiteboard</em><span>Event/Cron oder Prompt? Automation Contract</span></div>
       </div>`,
       notes: 'ZEIT: 2 Minuten. SAGEN: Vier 60-Minuten-Drills plus 45-Minuten-Report-Drill, dazwischen Puffer und Mittagspause 12:15–13:15. Jede Person arbeitet in ihrer eigenen Kopie, baut und committet Code. Nach den operativen Kontrollmustern wird ein kurzer Report daraus; die 75 Minuten Whiteboard bleiben erhalten.'
@@ -91,7 +91,7 @@
       subtitle: 'Jeder Startzustand zeigt nur die Fähigkeiten des aktuellen Drills.',
       body: grid([
         card('Sechs Bausteine', `<p><strong>Eingänge</strong> · <strong>Wissen</strong> · <strong>Werkzeuge</strong> · <strong>Kontrollen</strong> · <strong>Oberfläche</strong> · <strong>Protokoll</strong></p><p>Aus diesen Teilen besteht jedes agentische System. Die Kontrollregel liegt <strong>zwischen Vorschlag und externer Wirkung</strong>.</p>`),
-        card('Fünf Etappen', `<p><strong>6</strong> Eingänge &amp; Werkzeuge: Mensch sendet<br><strong>7</strong> Wissen &amp; Prüfregel: Leben<br><strong>8</strong> Kontrolle: Mensch gibt frei<br><strong>9</strong> Kontrolle: Eingriffsfenster<br><strong>10</strong> Protokoll: Management-Report</p>`, 'mint-card')
+        card('Fünf Etappen', `<p><strong>6</strong> Eingänge &amp; Werkzeuge: Mensch sendet<br><strong>7</strong> Wissen &amp; Prüfregel: Leben<br><strong>8</strong> Kontrolle: Mensch gibt frei<br><strong>9</strong> Kontrolle: Eingriffsfenster<br><strong>10</strong> Pfefferminzia 2.0: Video und Vorstand</p>`, 'mint-card')
       ]),
       notes: 'ZEIT: 4 Minuten. SAGEN: Heute geht es darum, wie man ein agentisches System aufbaut. Jeder Drill rückt einen Baustein in den Fokus; wer früher fertig ist, baut den nächsten Baustein in der eigenen Kommandozentrale schon im Kleinen. Jeder Startzustand zeigt nur die Fähigkeiten des aktuellen Drills. Der nächste Checkpoint enthält die Lösung des vorigen Bauauftrags – wer hängt, lädt ihn und macht mit der Gruppe weiter. Die Teilnehmenden bauen im eigenen Branch weiter; eine Recovery liegt getrennt, ohne ihre Arbeit zu überschreiben.'
     },
@@ -187,24 +187,24 @@
       id: 'Drill9Auftrag', type: 'Drill', eyebrow: "Drill 9 · Eure Aufgaben · 60 Minuten", title: "Das Fenster ist sichtbar. Die Wirkung kommt später.",
       subtitle: "Start: „Ich will zu Drill 9. Frag mich, ob ich meinen Stand mitnehmen will.“ Claude lädt – im selben Ordner, ohne neue Sitzung.", study: true,
       body: taskBoard(["Entscheiden: nach Stichwörtern oder mit KI sortieren?", "Bauen: die Vorsortierung – dann Postfach abrufen.", "Vorhersagen, dann ändern, stoppen, laufen lassen.", "„Zeit +24 h“ drücken, mit Vorhersage vergleichen."], "Mails werden nach deinen Regeln vorsortiert; eine Antwort ging automatisch raus, eine geändert, eine gestoppt; Stand gespeichert.", "Denkanstoß von Claude holen, dann die heutigen Teile weiter ausbauen – was würdest du gern noch sehen? Z. B. „geht als Nächstes raus“ sortiert. Nicht vorgreifen."),
-      notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Jetzt kippt die Voreinstellung: Ohne Eingriff passiert etwas. Erst vorhersagen, dann vorspulen. Der Drill-9-Stand schaltet den automatischen Versand selbst ein; niemand stellt etwas von Hand um. Früher fertig: Denkanstöße und eigene Erweiterung (Vorschlag: eigene Kennzahl für Drill 10). DOZENT: Drill-9-Mails nach dem Laden senden."
+      notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Jetzt kippt die Voreinstellung: Ohne Eingriff passiert etwas. Erst vorhersagen, dann vorspulen. Der Drill-9-Stand schaltet den automatischen Versand selbst ein; niemand stellt etwas von Hand um. Früher fertig: Denkanstöße und eigene Erweiterung (Vorschlag: eigene Kennzahl für die Vorstandspräsentation). DOZENT: Drill-9-Mails nach dem Laden senden."
     },
     {
-      id: 'Drill10Start', type: 'Kapitel', eyebrow: '15:45–16:30 · Meilenstein 5', title: 'Der Management-Report', study: true,
-      body: stage('10', 'Aus Erlebnissen wird eine Entscheidung.', 'Wir zeigen nur, was die gezählten Ereignisse aus eurem Workshop tatsächlich belegen.', ['Start: drill-10-start', 'Ziel: max. 4 Folien']),
-      notes: 'ZEIT: 1 Minute. SAGEN: Der Report ist selbst gebaut, aber kein Konzern-Dashboard. Beim Checkpoint-Wechsel werden nur aggregierte Zählwerte kopiert, keine Mailtexte oder Namen. Auto-Versand ist wieder aus.'
+      id: 'Drill10Start', type: 'Kapitel', eyebrow: '15:45–16:30 · Meilenstein 5', title: 'Pfefferminzia 2.0', study: true,
+      body: stage('10', 'Erst begeistern, dann belegen.', 'Ein Marketing-Video über euer System – und damit die Präsentation für den Vorstand.', ['Start: drill-10-start', 'Freie Hand']),
+      notes: 'ZEIT: 1 Minute. SAGEN: Letzter Drill vor dem Whiteboard. Ihr erzählt euer System nach außen – erst als Video mit Remotion, dann dem Vorstand. Botschaft, Szenen und Folien bestimmt ihr. Beim Checkpoint-Wechsel werden nur gezählte Werte kopiert, keine Mailtexte oder Namen. Auto-Versand ist wieder aus.'
     },
     {
-      id: 'Drill10Daten', type: 'Inhalt', eyebrow: 'Drill 10 · Datenweg', title: 'Aus dem Protokoll wird ein belegter Befund.',
-      subtitle: 'Eine lokale Simulation – kein Beweis für Zeitersparnis oder Produktivqualität.', study: true,
-      body: `<div class="day-flow"><div class="day-flow-step"><b>Drill 9</b><span>eigene Fälle<br>und Protokoll</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Zählung</b><span>nur gruppierte<br>Zählwerte</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Grafik</b><span>beschriftet,<br>auch bei null</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Report</b><span>Beleg · Grenze<br>Empfehlung</span></div></div>`,
-      notes: 'ZEIT: 2 Minuten. SAGEN: Claude kann Code und Formulierung helfen; die Management-Aussage wählt und verantwortet der Mensch. Im Snapshot gibt es nur Sparte/Status/Herkunft und ausgewählte Kontrollereignisse als Zählwerte.'
+      id: 'Drill10Daten', type: 'Inhalt', eyebrow: 'Drill 10 · Der Weg', title: 'Botschaft → Video → Vorstand.',
+      subtitle: 'Marketing darf begeistern. Der Vorstand braucht Beleg und Grenze.', study: true,
+      body: `<div class="day-flow"><div class="day-flow-step"><b>Botschaft</b><span>für wen?<br>ein Satz</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Video</b><span>Remotion,<br>Pfefferminzia-Look</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Präsentation</b><span>Video, Zahlen<br>aus Drill 9</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Vorstand</b><span>Empfehlung<br>und Grenze</span></div></div>`,
+      notes: 'ZEIT: 2 Minuten. SAGEN: Claude richtet Node und Remotion im Hintergrund ein, während ihr die Botschaft überlegt – außerhalb der Kommandozentrale, in einem eigenen Ordner. Klappt das nicht in fünf Minuten: Video weglassen, Präsentation bauen. Keine erfundenen Zahlen, auch nicht im Marketing.'
     },
     {
-      id: 'Drill10Auftrag', type: 'Drill', eyebrow: "Drill 10 · Eure Aufgaben · 45 Minuten", title: "Eine Grafik. Eine Empfehlung. Eine Grenze.",
+      id: 'Drill10Auftrag', type: 'Drill', eyebrow: "Drill 10 · Eure Aufgaben · 45 Minuten", title: "Ein Video. Eine Präsentation. Eure Botschaft.",
       subtitle: "Start: „Ich will zu Drill 10. Frag mich, ob ich meinen Stand mitnehmen will.“ Claude lädt – im selben Ordner.", study: true,
-      body: taskBoard(["Welche Frage soll dein Vorstand beantworten können?", "Grafik in Worten skizzieren, mit Claude bauen.", "Empfehlung mit Grenze formulieren.", "Zwei Minuten vorführen."], "Höchstens vier Folien mit Grafik, Empfehlung und Grenze; zwei Minuten vorgeführt; Stand gespeichert.", "Denkanstoß von Claude holen, dann die heutigen Teile weiter ausbauen – was würdest du gern noch sehen? Z. B. eine umschaltbare Grafik. Nicht vorgreifen."),
-      notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Nur zeigen, was die gezählten Ereignisse belegen – keine erfundenen Unternehmenszahlen. Die Empfehlung schreibt ihr selbst; Claude kürzt und fragt kritisch nach. Bonus-Video mit Remotion (docs/BONUS_VIDEO.md) nur mit restlichem Guthaben."
+      body: taskBoard(["Für wen, welche Botschaft? Claude richtet derweil ein.", "Video bauen, in der Vorschau verbessern, rendern.", "Präsentation für den Vorstand mit Video, Empfehlung, Grenze.", "Drei Minuten vorführen."], "Video über Pfefferminzia 2.0 und Präsentation im Pfefferminzia-Look; keine erfundenen Zahlen; Stand gespeichert.", "Eine zweite, kürzere Videofassung – oder eine Folie „Mein agentisches System“."),
+      notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Freie Hand – Ton, Szenen, Folien entscheidet ihr. Präsentation: unten links „Vorstand“ im Cockpit. Anleitung: docs/VIDEO_REMOTION.md. Wer ohne Guthaben ist: Buddy-Modus."
     },
     {
       id: 'Checkpoints', type: 'Code', eyebrow: 'Sicheres Aufholen', title: 'Ein Checkpoint rettet den Tag, nicht auf Kosten Ihrer Arbeit.',
@@ -242,7 +242,6 @@
   ];
 
   const agentisch = window.PFEFFERMINZIA_AGENTISCH_SLIDES || [];
-  const management = window.PFEFFERMINZIA_MANAGEMENT_SLIDES || [];
 
   const deckIds = {
     gesamt: ['Titel', 'Bruecke', 'LiveBeispiele', 'Agenda', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus', 'Tempo', 'Whiteboard', 'Contract'],
@@ -253,10 +252,9 @@
     'drill-09': ['Drill9Start', 'Drill9Queue', 'Drill9Auftrag', 'Checkpoints'],
     'drill-10': ['Drill10Start', 'Drill10Daten', 'Drill10Auftrag'],
     abschluss: ['Whiteboard', 'Contract'],
-    agentisch: agentisch.map(slide => slide.id),
-    management: management.map(slide => slide.id)
+    agentisch: agentisch.map(slide => slide.id)
   };
-  const allSlides = [...slides, ...agentisch, ...management];
+  const allSlides = [...slides, ...agentisch];
   const selectedIds = deckIds[deckName] || deckIds.gesamt;
   const selectedSlides = selectedIds.map(id => allSlides.find(slide => slide.id === id));
   document.title = `Pfefferminzia · ${deckName === 'agentisch' ? 'Agentisch arbeiten' : deckName === 'gesamt' ? 'Gesamtkontext' : deckName}`;

@@ -50,7 +50,7 @@ Die Drill-Karten zum Nachlesen: [docs/DRILL_CARDS.md](docs/DRILL_CARDS.md).
 | 11:15–12:15 | Drill 7 · Leben, Mensch sendet | Belegter Entwurf; Tarif-Belegprüfung bauen |
 | 13:15–14:15 | Drill 8 · Leben, Mensch gibt frei | Freigabe/Ablehnung im Cockpit; Review-Zustand bauen |
 | 14:30–15:30 | Drill 9 · Haftpflicht, Eingriffsfenster | Auto-Versand, Edit, Stopp; Queue absichern |
-| 15:45–16:30 | Drill 10 · Management-Report | reveal.js + D3 aus eigenen Zahlen; Bonus: Video |
+| 15:45–16:30 | Drill 10 · Pfefferminzia 2.0 | Marketing-Video mit Remotion, dann Vorstandspräsentation im Pfefferminzia-Look |
 | 16:45–18:00 | Whiteboard | Ohne Rechner: Wo darf der Agent handeln? |
 
 Jeder Drill hat einen Fall, den alle erleben, und einen kleinen Bauauftrag,
@@ -80,7 +80,7 @@ uv run pfefferminzia instructor status
 
 - `pfefferminzia/` – FastAPI-App, SQLite, MCP-Server, AgentMail-Adapter, CLI
 - `web/` – das Cockpit: statisches HTML/JS/CSS, direkt von Python ausgeliefert
-- `slides/` – reveal.js-/D3-Folien, lokal eingebettet; `management.js` ist der Report
+- `slides/` – reveal.js-/D3-Folien, lokal eingebettet; `vorstand.html` ist die Vorstandspräsentation aus Drill 10
 - `tests/` – pytest für Fachregeln, MCP, Checkpoints und den Workshop-Ablauf
 - `vendor/falk-pfefferminzia/` – Falk Uebernickels synthetischer Datensatz (Submodul, gepinnt)
 

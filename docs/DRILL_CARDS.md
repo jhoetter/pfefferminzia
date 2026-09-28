@@ -269,57 +269,59 @@ und ein unklarer Fall.
 
 **Früher fertig?** Nicht den nächsten Drill vorwegnehmen – bau die heutigen Teile weiter aus: Was würdest du gern noch sehen oder tun können? Anregungen: Eingriffsfenster: sortiert nach „geht als Nächstes raus“, mit Grund und Betrag; Eingriffsfenster: Beschwerden laufen nie automatisch, sie brauchen immer eine Freigabe; Eingriffsfenster: die Fensterlänge hängt vom Fall ab, z. B. länger bei hohen Beträgen. Oder der Vorschlag **Eine Kennzahl für deinen Report**: Welche Frage würde dein Vorstand zum Eingriffsfenster stellen – und was müssten wir dafür mitzählen? Claude fragt dich nach deiner Idee, hilft beim Steckbrief ([MEINE_ERWEITERUNGEN.md](../MEINE_ERWEITERUNGEN.md)) und baut dann mit dir.
 
-## Drill 10 – Management-Report (45 Min.)
+## Drill 10 – Pfefferminzia 2.0: Video und Vorstand (45 Min.)
+
+Der letzte Drill vor der Whiteboard-Runde. Du hast weitgehend freie Hand.
 
 **Du kannst danach:**
 
-- Beobachtung, Deutung und Empfehlung trennen und die Grenze einer Aussage aus einer kleinen Simulation benennen.
-- Das eigene agentische System aus seinen sechs Bausteinen erklären: was es darf, wo der Mensch entscheidet.
-- Eine Grafik so anlegen, dass sie genau eine Frage beantwortet.
+- Eine Botschaft in einem Satz festlegen und für ein Publikum zuspitzen.
+- Mit Claude in kurzer Zeit etwas ganz Neues bauen, das nicht im Cockpit steckt – ein Video, nur aus Anweisungen.
+- Begeisterung und Beleg trennen: Was darf Marketing sagen, was muss der Vorstand wissen, wo endet die Aussage?
 
-**Baustein im Fokus:** Protokoll. Alles, was heute passiert ist, steht im Protokoll. Jetzt machst du daraus eine belegte Aussage für dein Management – und zeigst dein System.
+**Baustein im Fokus:** Protokoll und Oberfläche. Alles, was heute passiert ist, steht im Protokoll und in deiner Kommandozentrale. Jetzt erzählst du es: erst begeisternd im Video, dann belegt vor dem Vorstand.
 
-**Was du heute im Cockpit siehst** – neu: Aus dem Protokoll wird ein Bericht für dein Management.
+**Was du heute im Cockpit siehst** – neu: Zum Schluss erzählst du dein System nach außen: erst als Video, dann dem Vorstand.
 
-- Unten links neu „Report“: deine Management-Folien mit einer ersten Grafik.
-- Die Zahlen sind die gezählten Ereignisse aus deinem Drill 9 – ohne Namen und Mailtexte.
+- Unten links neu „Vorstand“: deine Präsentation im Pfefferminzia-Look – ein Gerüst, das du frei umbaust.
+- Folie 2 wartet auf dein Video; eine Folie zeigt schon die gezählten Fälle aus deinem Drill 9 – ohne Namen und Mailtexte.
+- Das Video entsteht außerhalb der Kommandozentrale, mit Remotion in einem eigenen Ordner. Claude richtet es ein.
 - Der automatische Versand ist wieder ausgeschaltet.
-- Claude kann: Die Zahlen lesen, Folien und Grafik mit dir bauen und kritisch nachfragen. Claude kann nicht: Namen oder Mailtexte sehen – und Zahlen erfinden darf es auch nicht.
+- Claude kann: Das Videoprojekt einrichten, Szenen und Folien mit dir bauen, die Zahlen lesen und kritisch nachfragen. Claude kann nicht: Zahlen erfinden oder Namen und Mailtexte sehen – und deine Botschaft festlegen.
 
 **So läuft die Stunde:**
 
-1. Welche Frage soll dein Vorstand nach zwei Minuten beantworten können?
-2. Du skizzierst die Grafik in Worten, Claude baut sie mit dir.
-3. Du formulierst deine Empfehlung mit Grenze.
-4. Du führst zwei Minuten vor.
+1. Für wen ist das Video, was soll hängen bleiben? Claude richtet derweil alles ein.
+2. Video bauen, in der Vorschau verbessern, rendern.
+3. Präsentation für den Vorstand mit Video, Empfehlung und Grenze.
+4. Drei Minuten vorführen.
 
 **Start:** „Ich will zu Drill 10. Frag mich, ob ich meinen Stand mitnehmen
 will.“ Claude übernimmt aus deinen Drill-9-Fällen nur gezählte Ereignisse
 (keine Namen, Mailtexte, Schlüssel).
 
-**Bauauftrag:** Eine zweite beschriftete Grafik (z. B. Freigaben,
-Ablehnungen, Stopps, automatische Versände) und deine eigene Empfehlung mit
-Grenze. Ansicht: <http://127.0.0.1:3004/slides/index.html?deck=management>.
+**Bauauftrag:** Zuerst ein kurzes Marketing-Video über Pfefferminzia 2.0 mit
+Remotion ([VIDEO_REMOTION.md](VIDEO_REMOTION.md)), dann die Präsentation für
+den Vorstand im Pfefferminzia-Look mit dem Video darin:
+<http://127.0.0.1:3004/slides/vorstand.html>. Klappt die Einrichtung des
+Videos nicht in fünf Minuten: weglassen und direkt die Präsentation bauen.
 
 | Etappe | Frag Claude | Du entscheidest | Dann du |
 | --- | --- | --- | --- |
-| 1 · Befund wählen | „Welche Beobachtungen aus unserem Drill-9-Schnappschuss sind wirklich belegt? Bitte keine Management-Aussage erfinden.“ | Welche eine Frage soll dein Vorstand nach zwei Minuten beantworten können? Welche Zahl stützt die Antwort, und was würde sie widerlegen? | Frage, Aussage und Grenze selbst wählen; Demo- und Inbox-Fälle unterscheiden. |
-| 2 · Visualisieren | „Zeig mir für diese Aussage erst, welche Zahlen die Grafik braucht und wie sie aussehen soll – dann bauen wir sie.“ | Was soll man in fünf Sekunden sehen – was kommt auf die Achsen, was wird hervorgehoben, und was steht da, wenn ein Wert null ist? | Skizze in Worten vorgeben, Grafik mit Claude bauen; Achsen, Beschriftung und Nullfälle im Browser prüfen. |
-| 3 · Entscheidung formulieren | „Hier ist meine Empfehlung in eigenen Worten. Kürze sie und stell mir eine kritische Rückfrage – schreib sie nicht neu.“ | Wie lautet deine Empfehlung in zwei Sätzen: was, auf welchem Beleg, mit welcher Kontrollregel – und was beweist sie ausdrücklich nicht? | Empfehlung und Einschränkung selbst schreiben; höchstens vier Folien. |
-| 4 · Vorführen | „Prüfe, ob die Folien lokal laufen, die Zahlen zu Drill 9 passen und keine persönlichen Daten enthalten. Dann hilf mir, meinen Stand zu speichern.“ | Welche Rückfrage aus dem Vorstand fürchtest du am meisten, und was antwortest du? | Report zwei Minuten zeigen, Rückfrage beantworten, Prüfungen laufen lassen, Stand speichern. |
+| 1 · Botschaft finden | „Wir machen ein Marketing-Video über Pfefferminzia 2.0. Richte im Hintergrund alles ein und frag mich währenddessen nach meiner Botschaft.“ | Für wen ist das Video, und was soll danach in einem Satz im Kopf bleiben? Welche zwei, drei Szenen gehören dazu? | Publikum, Botschaft und Szenen selbst festlegen. |
+| 2 · Video bauen | „Bau die erste Fassung nach meinen Szenen und öffne die Vorschau.“ | Was fühlt sich noch nicht nach Pfefferminzia an – Tempo, Worte, Bilder? Und steht irgendwo eine Behauptung, die unser Probelauf nicht zeigt? | In der Vorschau zwei, drei Änderungen verlangen, dann rendern lassen. |
+| 3 · Präsentation bauen | „Jetzt die Präsentation für den Vorstand mit meinem Video. Frag mich zuerst, was der Vorstand am Ende entscheiden soll.“ | Was soll der Vorstand nach drei Minuten entscheiden – und welche Zahl aus unserem Probelauf stützt das, welche Grenze nennst du dazu? | Folien, Reihenfolge und Empfehlung selbst bestimmen; Claude baut und fragt kritisch nach. |
+| 4 · Vorführen | „Prüf, ob Präsentation und Video laufen und nichts Erfundenes oder Persönliches drinsteht. Dann hilf mir, meinen Stand zu speichern.“ | Welche Rückfrage aus dem Vorstand fürchtest du am meisten, und was antwortest du? | Präsentation mit Video vorführen, Rückfrage beantworten, Stand speichern. |
 
-**Zum Schluss:** Was nimmst du aus dem Tag als Regel mit: Welche Arbeit darf ein Agent bei euch allein, mit Fenster oder nur mit Freigabe tun?
+**Zum Schluss:** Was nimmst du aus dem Tag als Regel mit: Welche Arbeit darf ein Agent bei euch allein, mit Fenster oder nur mit Freigabe tun – und wie würdest du das eurem Vorstand erzählen?
 
 **Zum Nachdenken** – für Wartezeiten und wenn du früher fertig bist:
 
+- Wo hat dein Video mehr versprochen, als der Probelauf zeigt – und wäre das in echt ein Problem?
 - Welche Zahl aus dem Workshop würde dein Vorstand am ehesten falsch verstehen – und wie verhinderst du das?
-- Wenn du morgen einen Baustein bei euch einführen dürftest: Welcher bringt am meisten, welcher birgt das größte Risiko?
-- Was müsste im Protokoll stehen, damit du einem Prüfer in einem Jahr erklären kannst, warum eine Antwort rausging?
+- Du hast heute in einer Stunde ein Video gebaut, ohne Schnittprogramm. Welche Arbeit in deinem Haus sieht ähnlich „unmöglich“ aus?
 
-**Früher fertig?** Nicht den nächsten Drill vorwegnehmen – bau die heutigen Teile weiter aus: Was würdest du gern noch sehen oder tun können? Anregungen: Report: die Grafik lässt sich zwischen Leben und Haftpflicht umschalten; Report: eine Folie „Was wir nicht messen konnten“; Bonus mit restlichem Guthaben: ein 30–60-Sekunden-Video deiner Lösung mit Remotion als letzte Folie. Oder der Vorschlag **Folie: Mein agentisches System**: Wie würdest du einer Kollegin in einem Bild erklären, was dein System darf und wo du entscheidest? Claude fragt dich nach deiner Idee, hilft beim Steckbrief ([MEINE_ERWEITERUNGEN.md](../MEINE_ERWEITERUNGEN.md)) und baut dann mit dir.
-
-**Bonus mit restlichem Guthaben:** ein 30–60-Sekunden-Video deiner Lösung
-mit Remotion als letzte Folie – siehe [BONUS_VIDEO.md](BONUS_VIDEO.md).
+**Früher fertig?** Bau die heutigen Teile weiter aus: Was würdest du gern noch sehen? Anregungen: Video: eine zweite, kürzere Fassung (15 Sekunden) für die Belegschaft.; Video: Untertitel oder eine Sprecherstimme.; Präsentation: die Grafik zeigt zusätzlich Freigaben, Ablehnungen, Stopps und Auto-Versände.; Präsentation: eine Folie „Was wir nicht messen konnten“.. Oder der Vorschlag **Folie: Mein agentisches System**: Wie würdest du einer Kollegin in einem Bild erklären, was dein System darf und wo du entscheidest?
 
 ## Drill-Wechsel und Rettung – ohne Verlust des eigenen Stands
 

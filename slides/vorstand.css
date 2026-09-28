@@ -1,0 +1,51 @@
+/* Pfefferminzia-Markenauftritt: tiefes Grün, Minze, viel Weißraum. Frei veränderbar. */
+:root {
+  --forest: #173d2c;
+  --mint: #52b986;
+  --mint-soft: #d9f1e1;
+  --paper: #fbfbfa;
+  --ink: #1c1d1f;
+  --muted: #5d6660;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #0f261c; color: var(--ink); overflow: hidden; }
+.stage { position: fixed; inset: 0; display: grid; place-items: center; }
+.deck { position: relative; width: 1280px; height: 720px; transform-origin: center; }
+.slide {
+  position: absolute; inset: 0; display: none; flex-direction: column;
+  padding: 64px 80px 56px; background: var(--paper); overflow: hidden;
+}
+.slide.active { display: flex; animation: fade .35s ease-out; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .slide.active { animation: none; } }
+.slide .logo { position: absolute; top: 36px; right: 48px; height: 34px; }
+.slide footer {
+  position: absolute; left: 80px; right: 48px; bottom: 22px; display: flex; justify-content: space-between;
+  color: var(--muted); font-size: 13px;
+}
+.eyebrow { color: var(--mint); font-weight: 750; letter-spacing: .08em; text-transform: uppercase; font-size: 15px; }
+h1 { margin: 12px 0 18px; font-size: 56px; line-height: 1.04; letter-spacing: -.03em; color: var(--forest); max-width: 980px; }
+h2 { margin: 0 0 10px; font-size: 24px; color: var(--forest); }
+p, li { font-size: 22px; line-height: 1.45; }
+.lead { font-size: 26px; color: var(--muted); max-width: 900px; }
+.columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 12px; }
+.card { background: #fff; border-radius: 18px; padding: 26px 28px; box-shadow: 0 1px 2px rgba(0,0,0,.05), 0 10px 30px rgba(23,61,44,.08); }
+.card.mint { background: var(--mint-soft); }
+.placeholder { color: var(--muted); font-style: italic; }
+.slide.title { background: var(--forest); color: #fff; justify-content: center; }
+.slide.title h1 { color: #fff; font-size: 84px; }
+.slide.title .lead { color: var(--mint-soft); }
+.slide.title .logo { filter: brightness(0) invert(1); opacity: .9; }
+.slide.title footer { color: rgba(255,255,255,.6); }
+.video-frame { flex: 1; display: grid; place-items: center; border-radius: 18px; background: #0f261c; overflow: hidden; }
+.video-frame video { width: 100%; height: 100%; object-fit: contain; background: #000; }
+.video-frame .empty { color: var(--mint-soft); font-size: 24px; text-align: center; padding: 40px; }
+svg text { font-family: inherit; }
+.controls {
+  position: fixed; right: 16px; bottom: 12px; display: flex; gap: 6px; align-items: center;
+  color: rgba(255,255,255,.7); font-size: 13px; opacity: .25; transition: opacity .2s;
+}
+.controls:hover { opacity: 1; }
+.controls button { border: 0; border-radius: 8px; padding: 6px 10px; background: rgba(255,255,255,.12); color: #fff; font: inherit; cursor: pointer; }
