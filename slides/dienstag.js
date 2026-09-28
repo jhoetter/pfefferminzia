@@ -273,7 +273,7 @@
     {
       id: 'Whiteboard', type: 'Schluss', eyebrow: '16:45 · Laptops zu', title: 'Wo darf der Agent handeln?',
       body: `<div class="day-flow"><div class="day-flow-step"><b>Auslöser</b><span>Mail · Zeitplan</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Agent</b><span>Werkzeuge + Belege</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Kontrolle</b><span>Freigabe oder<br>Fenster</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Wirkung</b><span>Versand + Protokoll</span></div></div>`,
-      notes: 'ZEIT: 2 Minuten, dann Beamer aus. SAGEN: Wir haben Claude heute im Chat angestoßen; wie sähe derselbe Prozess als Mail-Event oder periodischer Lauf aus? Wer betreibt ihn, mit welchen Rechten, Retry- und Stoppregeln? Kein Produktiv-Cronjob im Workshop.'
+      notes: 'ZEIT: 2 Minuten, dann Beamer aus. ERINNERUNG: Verifier’s Law (Jason Wei) als roter Faden – was sich leicht prüfen lässt, lässt sich delegieren; Details im Deck „Anhang“. SAGEN: Wir haben Claude heute im Chat angestoßen; wie sähe derselbe Prozess als Mail-Event oder periodischer Lauf aus? Wer betreibt ihn, mit welchen Rechten, Retry- und Stoppregeln? Kein Produktiv-Cronjob im Workshop.'
     },
     {
       id: 'Contract', type: 'Schluss', eyebrow: 'Übergabe an Mittwoch', title: 'Ein Automation Contract macht die Grenze explizit.',
@@ -300,19 +300,19 @@
     {
       id: 'AnhangWhiteboard', type: 'Anhang', eyebrow: 'Anhang · Whiteboard-Themen', title: 'Backlog für die Whiteboard-Session.',
       body: `<div class="day-backlog">${[
-        ['Landkarte der Autonomie', 'Eigene Prozesse nach Risiko × Prüfbarkeit: wo Freigabe, wo Fenster, wo autonom?'],
+        ['Landkarte der Autonomie', 'Eigene Prozesse nach Risiko × Prüfbarkeit (Verifier’s Law): wo Freigabe, wo Fenster, wo autonom?'],
         ['Wer haftet?', 'Das Fenster lief ab, niemand griff ein: Agent, Mensch oder wer das Fenster festlegte?'],
         ['Freigabe-Müdigkeit', 'Zehn Freigaben am Tag werden zum Durchwinken. Stichprobe, Checkliste, Rotation?'],
         ['Vom Chat zum Betrieb', 'Niemand stößt mehr an: Auslöser, Wiederholung, Duplikate, Not-Aus.'],
         ['Rollen', 'Wem gehört ein Agent? Wie arbeiten viele Menschen mit vielen Agenten?'],
         ['Prüfer und Aufsicht', 'Was muss im Protokoll stehen, um es in einem Jahr zu erklären?']
       ].map(([title, text]) => `<div class="day-card"><h3>${title}</h3><p>${text}</p></div>`).join('')}</div>`,
-      notes: 'Nur für dich. Ablauf-Vorschlag auf der nächsten Folie. Thema 1 knüpft an Verifier’s Law aus dem Input an, Thema 2 an Drill 9, Thema 3 an Drill 8, Thema 5 an die offene Frage aus dem Vortrag.'
+      notes: 'Nur für dich. Ablauf-Vorschlag auf der nächsten Folie. Thema 1 = Verifier’s Law, Thema 2 knüpft an Drill 9 an, Thema 3 an Drill 8, Thema 5 an die offene Frage aus deinem Vortrag. VERIFIER’S LAW (Jason Wei, „Asymmetry of Verification and Verifier’s Law“, 2025; Folie in deinem Vortrag „Jede Aufgabe zuerst agentisch“): Aufgaben, deren Ergebnis sich leicht prüfen lässt, werden leicht delegierbar – Sudoku ja, „die beste Diät“ nein. Wer vorab einen Antwortschlüssel oder Testfälle schreibt („privilegierte Information“), macht eine schwer prüfbare Aufgabe billig prüfbar. Übertragung: Eine Antwort mit Vertrag, Tarifgeneration und Fundstelle ist leicht prüfbar; eine Kulanzentscheidung nicht. Genau das haben wir heute gebaut: Szenarien vorab, Belege aus dem Bestand, versiegelte Entscheidung.'
     },
     {
       id: 'AnhangAblauf', type: 'Anhang', eyebrow: 'Anhang · Whiteboard-Ablauf', title: '75 Minuten, vier Teile.',
       body: `<div class="day-flow"><div class="day-flow-step"><b>20 Min.</b><span>Landkarte<br>im Plenum</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>25 Min.</b><span>Automation Contract<br>pro Tisch</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>20 Min.</b><span>Galerierundgang</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>10 Min.</b><span>Abschluss,<br>Brücke zu Mittwoch</span></div></div>`,
-      notes: 'Landkarte: zwei Achsen an die Wand (Risiko, Prüfbarkeit), jede Person klebt zwei eigene Prozesse. Contract: sechs Felder (Auslöser, Aktionen, Kontrollregel, Belege, Ausnahme, verantwortlicher Mensch) für einen Prozess pro Tisch. Galerie: Tische wandern, je eine Frage an jeden Contract. Abschluss: Was nehmt ihr als Regel mit? Welche externe Wirkung wäre bei euch heute schon verantwortbar?'
+      notes: 'Landkarte: zwei Achsen an die Wand (Risiko, Prüfbarkeit), jede Person klebt zwei eigene Prozesse. Die Prüfbarkeits-Achse ist Jason Weis Verifier’s Law: leicht prüfbar → leicht delegierbar; Frage an den Raum: Was bräuchtet ihr (Antwortschlüssel, Testfälle, Belege), damit ein Prozess auf der Achse nach rechts wandert? Contract: sechs Felder (Auslöser, Aktionen, Kontrollregel, Belege, Ausnahme, verantwortlicher Mensch) für einen Prozess pro Tisch. Galerie: Tische wandern, je eine Frage an jeden Contract. Abschluss: Was nehmt ihr als Regel mit? Welche externe Wirkung wäre bei euch heute schon verantwortbar?'
     },
   ];
 
