@@ -28,7 +28,7 @@ export const A = {
   reply: {x: DETAIL_X + 555, y: 960},
   ring: {x: DETAIL_X + 300, y: 470},
   queue: {x: DETAIL_X + 555, y: 470},
-  stopButton: {x: DETAIL_X + 975, y: 330},
+  stopButton: {x: DETAIL_X + 950, y: 502},
   log: {x: DETAIL_X + 555, y: 420},
 };
 
@@ -86,7 +86,8 @@ export const T = {
   stamp: S + 4 * BAR + 3 * BEAT, // Stempel landet
   attach: S + 5 * BAR + BEAT, // PDF hängt an der Antwort
   queue: S + 6 * BAR, // Ansicht Eingriffsfenster
-  stop: S + 7 * BAR, // „Versand stoppen“
+  autoSend: S + 6 * BAR + 2 * BEAT, // eine Antwort geht bei null von selbst raus
+  stop: S + 7 * BAR, // „Versand anhalten“ bei einer anderen
   log: S + 8 * BAR, // Ansicht Aktivität
 };
 
@@ -333,11 +334,12 @@ const Composer: React.FC<{f: number; modern: boolean}> = ({f, modern}) => {
   const ready = modern && f >= T.stamp;
   return (
     <Card top={870} height={185}>
-      <Label>Antwort</Label>
-      <div style={{fontSize: 18, lineHeight: 1.5, color: modern ? C.ink : C.faint, width: 700}}>
+      <Label>{modern ? 'Antwort · Entwurf von Claude' : 'Antwort · von Hand geschrieben'}</Label>
+      <div style={{fontSize: 18, lineHeight: 1.5, color: C.ink, width: 700}}>
         {modern
           ? 'Sehr geehrte Frau Nazari, wir haben Ihren Einwand geprüft: Die Leistung aus VTR-00000602 (PZ-2025) wird anerkannt …'
-          : 'Sehr geehrte Frau Nazari, …'}
+          : 'Sehr geehrte Frau Nazari, leider bleibt es bei der Ablehnung: Der Todesfall lag innerhalb der Dreijahresfrist.'}
+        {!modern ? <span style={{display: 'inline-block', width: 2, height: 20, marginLeft: 2, background: C.ink, verticalAlign: 'middle', opacity: Math.floor(f / 8) % 2}} /> : null}
       </div>
       {modern ? (
         <div style={{position: 'absolute', left: 28, bottom: 20, opacity: attach, transform: `translateY(${(1 - attach) * -60}px)`}}>
@@ -357,59 +359,75 @@ const Composer: React.FC<{f: number; modern: boolean}> = ({f, modern}) => {
 };
 
 // ------------------------------------------------------------------ Eingriffsfenster
+// Erst sieht man, wie eine Antwort bei null von selbst rausgeht; dann hält der Mensch eine andere an.
 const QUEUE = [
-  {id: 'PF-1039', subject: 'Wasserschaden und Teilzahlung', left: 23.9},
-  {id: 'PF-1041', subject: 'E-Bike des Nachbarn beschädigt', left: 21.4},
-  {id: 'PF-1036', subject: 'Leitungswasser im 3. OG', left: 18.2},
+  {id: 'PF-1036', subject: 'Leitungswasser im 3. OG', seconds: 4},
+  {id: 'PF-1039', subject: 'Wasserschaden und Teilzahlung', seconds: 21 * 3600 + 14 * 60 + 9},
+  {id: 'PF-1041', subject: 'E-Bike des Nachbarn beschädigt', seconds: 23 * 3600 + 2 * 60 + 41},
 ];
 
+const hms = (total: number) => {
+  const s = Math.max(0, Math.ceil(total));
+  return `${String(Math.floor(s / 3600)).padStart(2, '0')}:${String(Math.floor((s % 3600) / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+};
+
 const QueueView: React.FC<{f: number}> = ({f}) => {
-  const running = Math.min(f, T.stop) - T.queue;
+  const elapsed = (f - T.queue) / 8; // eine Sekunde pro Achtel – der Countdown tickt im Takt
+  const sent = f >= T.autoSend;
+  const sentT = ramp(f, T.autoSend, T.autoSend + 10);
   const stopped = f >= T.stop + 2;
   const press = f >= T.stop ? Math.exp(-(f - T.stop) / 4) : 0;
-  const hours = Math.max(0, 23.99 - running * 0.11);
   const r = 170;
   const circ = 2 * Math.PI * r;
-  const fmt = (h: number) => {
-    const s = Math.floor(h * 3600);
-    return `${String(Math.floor(s / 3600)).padStart(2, '0')}:${String(Math.floor((s % 3600) / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
-  };
+  const first = QUEUE[0];
+  const left = Math.max(0, first.seconds - elapsed);
   return (
     <>
       <div style={{position: 'absolute', left: 48, top: 30, fontSize: 30, fontWeight: 800, color: C.ink}}>Eingriffsfenster</div>
       <svg width={420} height={420} style={{position: 'absolute', left: 90, top: 260}}>
         <circle cx={210} cy={210} r={r} fill="none" stroke={C.line} strokeWidth={22} />
         <circle
-          cx={210} cy={210} r={r} fill="none" stroke={stopped ? C.red : C.mint} strokeWidth={22} strokeLinecap="round"
-          strokeDasharray={circ} strokeDashoffset={circ * (1 - hours / 24)} transform="rotate(-90 210 210)"
+          cx={210} cy={210} r={r} fill="none" stroke={sent ? C.forest : C.mint} strokeWidth={22} strokeLinecap="round"
+          strokeDasharray={circ} strokeDashoffset={sent ? circ * (1 - sentT) : circ * (1 - left / 30)} transform="rotate(-90 210 210)"
         />
-        <text x={210} y={165} textAnchor="middle" fontFamily={text} fontSize={20} fill={C.muted}>{stopped ? 'Versand' : 'Automatischer Versand in'}</text>
-        <text x={210} y={228} textAnchor="middle" fontFamily={display} fontWeight={800} fontSize={58} fill={stopped ? C.red : C.ink}>
-          {stopped ? 'angehalten' : fmt(hours)}
+        <text x={210} y={165} textAnchor="middle" fontFamily={text} fontSize={20} fill={C.muted}>
+          {sent ? 'Claudes Antwort' : 'Automatischer Versand in'}
         </text>
-        <text x={210} y={272} textAnchor="middle" fontFamily={text} fontSize={20} fill={C.muted}>{stopped ? 'Du prüfst selbst · PF-1039' : 'Antwort PF-1039'}</text>
+        <text x={210} y={228} textAnchor="middle" fontFamily={display} fontWeight={800} fontSize={sent ? 50 : 58} fill={sent ? C.forest : C.ink}>
+          {sent ? '✓ gesendet' : hms(left)}
+        </text>
+        <text x={210} y={272} textAnchor="middle" fontFamily={text} fontSize={20} fill={C.muted}>
+          {sent ? 'automatisch, ohne Eingriff' : `Antwort ${first.id}`}
+        </text>
       </svg>
       {QUEUE.map((q, i) => {
-        const isFirst = i === 0;
+        const isAuto = i === 0;
+        const isStop = i === 1;
+        const out = isAuto ? ramp(f, T.autoSend + 12, T.autoSend + 22) : 0;
+        const halted = isStop && stopped;
+        const chip = isAuto && sent
+          ? {label: '✓ Automatisch gesendet', bg: C.mintSoft, fg: C.forest}
+          : halted
+            ? {label: 'Angehalten – du prüfst selbst', bg: C.redSoft, fg: C.red}
+            : {label: `Geht automatisch raus in ${hms(q.seconds - elapsed)}`, bg: C.amberSoft, fg: C.amber};
         return (
           <div
             key={q.id}
             style={{
               position: 'absolute', left: 560, right: 48, top: 170 + i * 200, height: 176, borderRadius: 18, padding: '22px 26px',
-              border: `${isFirst && stopped ? 2 : 1}px solid ${isFirst && stopped ? C.red : C.line}`, background: '#fff',
+              border: `${halted ? 2 : 1}px solid ${halted ? C.red : isAuto && sent ? C.mint : C.line}`, background: '#fff',
+              opacity: 1 - out * 0.55,
             }}
           >
-            <div style={{fontSize: 15, color: C.muted, marginBottom: 6}}>{q.id} · Haftpflicht</div>
+            <div style={{fontSize: 15, color: C.muted, marginBottom: 6}}>{q.id} · Haftpflicht · Antwort von Claude</div>
             <div style={{fontSize: 21, fontWeight: 800, color: C.ink, marginBottom: 12}}>{q.subject}</div>
-            <Chip
-              label={isFirst && stopped ? 'Versand angehalten – du prüfst' : `Geht automatisch raus in ${fmt(isFirst ? hours : q.left - running * 0.11)}`}
-              bg={isFirst && stopped ? C.redSoft : C.amberSoft} fg={isFirst && stopped ? C.red : C.amber}
-            />
-            {isFirst ? (
+            <Chip label={chip.label} bg={chip.bg} fg={chip.fg} />
+            {!isAuto ? (
               <div
                 style={{
                   position: 'absolute', right: 24, bottom: 22, padding: '11px 22px', borderRadius: 12, fontSize: 18, fontWeight: 800,
-                  color: '#fff', background: stopped ? C.faint : C.red, transform: `scale(${1 - press * 0.07})`,
+                  color: halted ? C.muted : C.red, background: halted ? '#efefec' : C.redSoft, border: `2px solid ${halted ? C.line : C.red}`,
+                  transform: `scale(${1 - (isStop ? press : 0) * 0.07})`,
                 }}
               >
                 Versand anhalten
@@ -430,6 +448,7 @@ const LOG: [string, string, string, boolean?][] = [
   ['08:03', 'Claude', 'Leistungsentscheidung vorgelegt · Fassung 1'],
   ['08:11', 'Mensch', 'Entscheidung freigegeben · Beleg versiegelt', true],
   ['08:12', 'Mensch', 'Antwort mit Beleg gesendet', true],
+  ['09:12', 'Automatik', 'Antwort nach 24 h automatisch gesendet · PF-1036'],
   ['09:40', 'Mensch', 'Automatischen Versand angehalten · PF-1039', true],
 ];
 

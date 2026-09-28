@@ -87,8 +87,8 @@ const ACT1: Shot[] = [
   {f: 382, x: A.body.x + 60, y: A.body.y, s: 2.45},
   {f: 384, x: A.sheets.x, y: A.sheets.y, s: 2.0, cut: true},
   {f: 446, x: A.sheets.x + 40, y: A.sheets.y, s: 2.1},
-  {f: 448, x: A.sendOld.x - 80, y: A.sendOld.y - 40, s: 2.6, cut: true},
-  {f: 510, x: A.sendOld.x - 70, y: A.sendOld.y - 40, s: 2.8},
+  {f: 448, x: A.reply.x, y: 760, s: 1.7, cut: true},
+  {f: 510, x: A.reply.x + 30, y: 760, s: 1.78},
   {f: 512, x: 960, y: 540, s: 1.12, cut: true},
   {f: 576, x: 960, y: 540, s: 1.0},
   {f: 704, x: 960, y: 560, s: 0.6, rx: 30, rz: -5},
@@ -122,8 +122,8 @@ export const Before: React.FC = () => {
       </AbsoluteFill>
       <AbsoluteFill style={{background: 'radial-gradient(ellipse at center, transparent 45%, rgba(7,20,14,.55) 100%)'}} />
       <Caption f={f} from={256} to={376}>Jeden Morgen. Jede Mail von Hand.</Caption>
-      <Caption f={f} from={384} to={504}>Welcher Vertrag? Welcher Tarif?</Caption>
-      <Caption f={f} from={512} to={640}>Und wer entscheidet?</Caption>
+      <Caption f={f} from={384} to={442}>Welcher Vertrag? Welcher Tarif?</Caption>
+      <Caption f={f} from={452} to={640} top sub="Die Ablehnung ist schnell geschrieben – aber stimmt sie?">Und wer entscheidet?</Caption>
     </AbsoluteFill>
   );
 };
@@ -168,10 +168,10 @@ const TOUR: Shot[] = [
   {f: T.attach - 16, x: A.decision.x, y: A.decision.y + 10, s: 1.76},
   {f: T.attach, x: A.reply.x, y: 900, s: 1.55},
   {f: T.queue - 1, x: A.reply.x, y: 905, s: 1.6},
-  {f: T.queue, x: A.queue.x, y: 480, s: 1.22, cut: true},
-  {f: T.stop - 26, x: A.queue.x, y: 470, s: 1.3},
-  {f: T.stop, x: DETAIL_X + 720, y: 360, s: 1.62},
-  {f: T.log - 1, x: DETAIL_X + 720, y: 365, s: 1.66},
+  {f: T.queue, x: A.queue.x - 60, y: 440, s: 1.35, cut: true},
+  {f: T.autoSend + 20, x: A.queue.x - 40, y: 450, s: 1.4},
+  {f: T.stop - 6, x: DETAIL_X + 800, y: 470, s: 1.6},
+  {f: T.log - 1, x: DETAIL_X + 800, y: 475, s: 1.66},
   {f: T.log, x: A.log.x, y: 380, s: 1.24, cut: true},
   {f: T.log + 2 * BAR - 1, x: A.log.x, y: 450, s: 1.36},
 ];
@@ -184,7 +184,7 @@ const TOUR_CURSOR: CursorKey[][] = [
     {f: T.click + 30, x: A.approveButton.x + 60, y: A.approveButton.y + 70},
   ],
   [
-    {f: T.queue + 18, x: DETAIL_X + 640, y: 560},
+    {f: T.autoSend + 14, x: DETAIL_X + 700, y: 760},
     {f: T.stop - 4, x: A.stopButton.x, y: A.stopButton.y},
     {f: T.stop, x: A.stopButton.x, y: A.stopButton.y, click: true},
     {f: T.stop + 30, x: A.stopButton.x + 40, y: A.stopButton.y + 70},
@@ -203,8 +203,9 @@ export const Tour: React.FC = () => {
       <Caption f={f} from={S + BEAT} to={S + 2 * BAR - 12} sub="Jede neue Mail landet automatisch bei Leben oder Haftpflicht.">Sortiert sich selbst.</Caption>
       <Caption f={f} from={S + 2 * BAR + 8} to={S + 4 * BAR - 12} sub="Vertrag, Tarif und Leistungsakte – aus dem Bestand, nicht aus der Mail.">Claude sucht die Belege.</Caption>
       <Caption f={f} from={T.click - 24} to={T.queue - 10} top sub="Ohne deine Freigabe geht keine Leistungsentscheidung raus.">Claude schlägt vor. Du gibst frei.</Caption>
-      <Caption f={f} from={T.queue + 8} to={T.log - 10} top sub="Claudes Antwort geht nach 24 Stunden von selbst raus. Bis dahin kannst du sie anhalten.">Einfache Fälle: automatisch.</Caption>
-      <Caption f={f} from={T.log + 8} to={T.log + 2 * BAR - 6} sub="Wer hat was getan – Claude oder ein Mensch.">Alles im Protokoll.</Caption>
+      <Caption f={f} from={T.queue + 6} to={T.stop - 10} top sub="Nach 24 Stunden geht Claudes Antwort von selbst raus – wenn niemand eingreift.">Einfache Fälle: automatisch.</Caption>
+      <Caption f={f} from={T.stop - 4} to={T.log - 10} top sub="Ein Klick, und die Antwort bleibt liegen, bis du sie geprüft hast.">Außer du hältst sie an.</Caption>
+      <Caption f={f} from={T.log + 8} to={T.log + 2 * BAR - 6} top sub="Wer hat was getan – Claude oder ein Mensch.">Alles im Protokoll.</Caption>
     </AbsoluteFill>
   );
 };
