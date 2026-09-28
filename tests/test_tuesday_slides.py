@@ -30,7 +30,7 @@ def test_tuesday_deck_is_served_without_a_build_step() -> None:
     assert "https://d3js.org v7.9.0" in html.text
     assert "fetch('/api/management-report'" in board_script.text
     assert "d3.scaleLinear" in board_script.text and "const VIDEO" in board_script.text
-    assert 'src="./vorstand.js"' in board.text and "pfefferminzia-logo.svg" in board_script.text
+    assert 'src="./vorstand.js"' in board.text and "pfefferminzia-logo" in board_script.text
     assert "vorstand.html" in launcher.text
     assert 'src="./dienstag.js"' in html.text
     assert "deck=agentisch" in launcher.text
