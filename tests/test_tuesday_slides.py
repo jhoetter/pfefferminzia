@@ -42,20 +42,25 @@ def test_tuesday_deck_covers_all_five_milestones() -> None:
     script = (ROOT / "slides" / "dienstag.js").read_text(encoding="utf-8")
     ids = re.findall(r"\bid: '([^']+)'", script)
 
-    assert len(ids) == 29
+    assert len(ids) == 30
     assert len(ids) == len(set(ids))
     for milestone in ("Drill6Start", "Drill7Start", "Drill8Start", "Drill9Start", "Drill10Start"):
         assert milestone in ids
     # One task board per drill stays on the projector: four steps, done, early finish.
     assert script.count("taskBoard([") == 5
     assert script.count("Eure Aufgaben") == 5 and "Früher fertig?" in script
+    # Every drill deck says where we are in the day; later drills open with a short recap.
+    for drill in ("06", "07", "08", "09", "10"):
+        assert f"zeitplan('drill-{drill}')" in script and f"'Zeitplan-drill-{drill}'" in script
+    for drill in (6, 7, 8, 9):
+        assert f"recap({drill}," in script and f"'Rueckblick{drill}'" in script
+    assert "'Teilnehmende'" in script and "/api/instructor/roster" in script
+    assert "Uebernickel" not in script and "Fragt Claude – oder mich." in script
     assert "LiveBeispiele" in ids
-    assert "Ausbauend" in script
     assert "Cron" in script
-    assert "keine echte Aktion" in script
     assert "Ich bin in Drill 6" in script
     assert "kein Werkzeug" in script
-    for deck in ("gesamt", "input", "drill-06", "drill-07", "drill-08", "drill-09", "drill-10", "abschluss", "agentisch"):
+    for deck in ("gesamt", "input", "drill-06", "drill-07", "drill-08", "drill-09", "drill-10", "abschluss", "teilnehmende", "agentisch"):
         assert f"{deck}:" in script or f"'{deck}':" in script
     assert 'svg[aria-label^="Comicfigur Johannes"]' in script
 
@@ -64,11 +69,20 @@ def test_agentic_talk_retains_benchmarks_and_original_visuals() -> None:
     script = (ROOT / "slides" / "agentisch.js").read_text(encoding="utf-8")
     statements = re.findall(r"\bid: 'Agentisch[^']+'", script)
     pictures = re.findall(r"\bpicture\('Agentisch[^']+'", script)
-    assert len(statements) + len(pictures) == 35
+    assert len(statements) + len(pictures) == 34
     assert len(pictures) == 14
+    assert "Wie gut ist KI heute?" not in script
     assert "Humanity’s Last Exam" in script
     assert "METR" in script
     assert "89" in script
     assert "personas" in script and "council" in script
-    for image in re.findall(r"picture\('[^']+', \d+, '[^']+',\s*'[^']+', '([^']+)'", script):
+    images = re.findall(r"picture\('[^']+', '[^']+', '[^']+',\s*'[^']+', '([^']+)'", script)
+    assert len(images) == 14
+    for image in images:
         assert (ROOT / "slides" / "assets" / "agentisch" / f"{image}.webp").is_file()
+
+
+def test_slide_screenshots_exist() -> None:
+    script = (ROOT / "slides" / "dienstag.js").read_text(encoding="utf-8")
+    for image in re.findall(r"\['([\w-]+\.webp)'", script):
+        assert (ROOT / "slides" / "assets" / image).is_file(), image

@@ -1,8 +1,8 @@
 /* Faithful, visual-first remake of Johannes' 35-page June 2026 talk. No build step. */
 (() => {
-  const picture = (id, page, title, subtitle, file, caption, focus = 'top') => ({
-    id, type: 'Praxisbild', title, subtitle, visual: true,
-    body: `<a class="day-evidence ${focus}" href="./assets/agentisch/${file}.webp" target="_blank" rel="noopener" aria-label="Originalbild ${caption} in voller Größe öffnen"><img src="./assets/agentisch/${file}.webp" alt="${caption}"><span>Originalbild öffnen ↗</span></a>`,
+  const picture = (id, eyebrow, title, subtitle, file, caption) => ({
+    id, type: 'Praxisbild', eyebrow, title, subtitle, visual: true,
+    body: `<a class="day-evidence" href="./assets/agentisch/${file}.webp" target="_blank" rel="noopener" aria-label="${caption} in voller Größe öffnen"><img src="./assets/agentisch/${file}.webp" alt="${caption}"></a>`,
     notes: `${caption}. Aus Johannes’ PDF (Juni 2026); für Details das Originalbild öffnen.`
   });
 
@@ -19,7 +19,7 @@
     {
       id: 'AgentischTitel', type: 'Titel', eyebrow: 'Johannes Hötter · Impuls', cover: true,
       body: `<div class="day-cover-title">JEDE AUFGABE<br>ZUERST AGENTISCH</div><div class="day-cover-sub">Arbeiten in agentischen Teams.</div><div class="day-cover-ribbon">EIN MENSCH · VIELE AGENTEN</div>`,
-      notes: 'Überführung des Originalvortrags „Arbeiten in Agentischen Teams“, Juni 2026. Der Inhalt bleibt ein persönlicher Praxisbericht; die Gestaltung ist die Falk-Workshop-Vorlage.'
+      notes: 'Überführung des Originalvortrags „Arbeiten in Agentischen Teams“, Juni 2026. Der Inhalt bleibt ein persönlicher Praxisbericht.'
     },
     {
       id: 'AgentischProfil', type: 'Statement', eyebrow: 'Kurz zu mir · Stand Juni 2026',
@@ -27,12 +27,6 @@
       subtitle: 'Gründungen sind mein Labor für neue Formen der Arbeit.',
       body: `<div class="day-hero-line">Johannes Hötter<br>Gründer &amp; Builder</div>`,
       notes: 'Originalfolie 2: Kern AI 2020 gegründet, 2025 verkauft. Angekündigte spätere Rollen bewusst nicht als gegenwärtige Fakten behaupten.'
-    },
-    {
-      id: 'AgentischStatus', type: 'Kapitel', eyebrow: '00 · Kurzer Status quo',
-      title: 'Wie gut ist KI heute?', subtitle: 'Zwei Benchmarks, zwei sehr verschiedene Messfragen.',
-      body: `<div class="day-hero-line">Fähigkeit ist nicht Verlässlichkeit.</div>`,
-      notes: 'Originalfolie 3. HLE misst geschlossene Expertenfragen. METR misst die menschliche Dauer von Aufgaben, die ein Agent mit bestimmter Erfolgswahrscheinlichkeit löst. Nicht verwechseln.'
     },
     {
       id: 'AgentischHLE', type: 'Diagramm', eyebrow: 'Humanity’s Last Exam · Originalgrafik',
@@ -63,9 +57,9 @@
       body: `<div class="day-hero-line">Ich führe Arbeit,<br>nicht nur Prompts.</div>`,
       notes: 'Originalfolie 7. Persönliche Erfahrung; die Zahl 15 bezeichnet Johannes’ früheres Team. Kein universeller Produktivitätsvergleich.'
     },
-    picture('AgentischTokens', 8, 'Wie viele Token dabei durchlaufen',
+    picture('AgentischTokens', 'Aus der Praxis', 'Wie viele Token dabei durchlaufen',
       'Das Original-Dashboard macht die Größenordnung sichtbar.', 'token-usage', 'Token-Dashboard mit Nutzungsdiagrammen'),
-    picture('AgentischVolvo', 9, 'Zwei Jahre KI-Kosten: ungefähr ein gebrauchter Volvo.',
+    picture('AgentischVolvo', 'Aus der Praxis', 'Zwei Jahre KI-Kosten: ungefähr ein gebrauchter Volvo.',
       'Ein persönlicher Investmentmaßstab. Kein Budgetrezept.', 'volvo', 'Foto eines gebrauchten Volvo XC40'),
     {
       id: 'AgentischIterieren', type: 'Statement', eyebrow: 'Recommendation',
@@ -81,17 +75,17 @@
       body: `<div class="day-hero-line">Nicht erzählen.<br>Zeigen.</div>`,
       notes: 'Originalfolie 11. Die nächsten sechs Slides zeigen wieder die tatsächlichen Screenshots aus dem PDF statt sie in einen abstrakten Satz aufzulösen.'
     },
-    picture('AgentischArchitektur', 12, 'Vom Prompt zum 3D-Werkzeug',
+    picture('AgentischArchitektur', 'Aus der Praxis', 'Vom Prompt zum 3D-Werkzeug',
       'Ein visuelles Produkt als konkretes Ergebnis.', 'architecture', '3D-Hausansicht in einem Architekturwerkzeug'),
-    picture('AgentischRisiko', 13, 'Auch Tabellen werden Arbeitsflächen.',
+    picture('AgentischRisiko', 'Aus der Praxis', 'Auch Tabellen werden Arbeitsflächen.',
       'Risikoszenarien als bearbeitbares Artefakt.', 'risk-scenarios', 'Risikotabelle in einer Tabellenanwendung'),
-    picture('AgentischThese', 14, 'Research und Storytelling gehören dazu.',
+    picture('AgentischThese', 'Aus der Praxis', 'Research und Storytelling gehören dazu.',
       'Die eigene Masterarbeit als Beispiel.', 'thesis', 'Präsentationsentwurf zur Masterarbeit'),
-    picture('AgentischExpenses', 15, 'Operative Software: Ausgaben im Blick.',
+    picture('AgentischExpenses', 'Aus der Praxis', 'Operative Software: Ausgaben im Blick.',
       'Daten, Kategorien und Visualisierung in einer Oberfläche.', 'expenses', 'Ausgaben-Dashboard mit Tabelle und Diagrammen'),
-    picture('AgentischMail', 16, 'E-Mail ist nicht bloß Textausgabe.',
+    picture('AgentischMail', 'Aus der Praxis', 'E-Mail ist nicht bloß Textausgabe.',
       'Eine echte, bedienbare Arbeitsumgebung.', 'mail', 'E-Mail-Oberfläche mit Postfach und geöffnetem Thread'),
-    picture('AgentischDrive', 17, 'Dokumente gehören in denselben Workflow.',
+    picture('AgentischDrive', 'Aus der Praxis', 'Dokumente gehören in denselben Workflow.',
       'Dateien, Kontext und Weitergabe.', 'drive', 'Dateiablage mit Dokumentliste'),
     {
       id: 'AgentischPrinzip', type: 'Kapitel', eyebrow: '02 · Das Prinzip',
@@ -117,17 +111,17 @@
       </div>`,
       notes: 'Konkrete, laufende Beispiele statt nur die Prinzip-Aussage. Zahlen sind persönliche Erfahrung, keine Fallstudie oder Werbeaussage für Dritte.'
     },
-    picture('AgentischExposure', 20, 'Welche Arbeit verändert sich?',
-      'Die Originalfolie nutzt eine Job-Exposure-Treemap als Diskussionsanstoß.', 'exposure', 'Treemap zu Job-Exposure', 'center'),
-    picture('AgentischCode', 21, 'Der Agent arbeitet an echtem Code.',
+    picture('AgentischExposure', 'Das Prinzip', 'Welche Arbeit verändert sich?',
+      'Die Originalfolie nutzt eine Job-Exposure-Treemap als Diskussionsanstoß.', 'exposure', 'Treemap zu Job-Exposure'),
+    picture('AgentischCode', 'Das Prinzip', 'Der Agent arbeitet an echtem Code.',
       'Diffs und Tests machen den Eingriff überprüfbar.', 'code-review', 'Agenten-Session mit Code-Diff'),
-    picture('AgentischTracker', 22, 'Arbeit braucht Status und Eigentümer.',
+    picture('AgentischTracker', 'Das Prinzip', 'Arbeit braucht Status und Eigentümer.',
       'Ein Tracker macht Agenten- und Menschenarbeit gemeinsam sichtbar.', 'tracker', 'Sonaloop-Aufgaben-Tracker'),
     {
       id: 'AgentischVerifier', type: 'Diagramm', eyebrow: 'Verifier’s Law', visual: true,
       title: 'Leicht überprüfbare Aufgaben werden leichter delegierbar.',
       subtitle: 'Vorab geschriebene Testfälle oder ein Antwortschlüssel machen eine schwer prüfbare Aufgabe günstig prüfbar.',
-      body: `<a class="day-evidence top" href="./assets/agentisch/verifiers-law.png" target="_blank" rel="noopener" aria-label="Streudiagramm zur Asymmetrie von Erzeugung und Prüfung in voller Größe öffnen"><img src="./assets/agentisch/verifiers-law.png" alt="Streudiagramm: Aufgaben nach Erzeugungs- und Prüfaufwand, mit und ohne privilegierte Information"><span>Originalbild öffnen ↗</span></a>`,
+      body: `<a class="day-evidence" href="./assets/agentisch/verifiers-law.png" target="_blank" rel="noopener" aria-label="Streudiagramm zur Asymmetrie von Erzeugung und Prüfung in voller Größe öffnen"><img src="./assets/agentisch/verifiers-law.png" alt="Streudiagramm: Aufgaben nach Erzeugungs- und Prüfaufwand, mit und ohne privilegierte Information"></a>`,
       source: '<a href="https://www.jasonwei.net/blog/asymmetry-of-verification-and-verifiers-law" target="_blank" rel="noopener">Jason Wei, Asymmetry of Verification and Verifier’s Law (2025)</a>',
       notes: 'Wei: leicht erzeugbare, aber schwer prüfbare Aufgaben (Best diet) sind für RL kaum trainierbar; leicht prüfbare (Sudoku, Wettbewerbsmathe mit Antwortschlüssel) sehr wohl. Vorab Testfälle oder einen Answer Key schreiben verschiebt eine Aufgabe von schwer nach leicht prüfbar – „privilegierte Information“. Übertragung: eine gute Quellenangabe leistet für eine Kundenantwort dasselbe.'
     },
@@ -143,7 +137,7 @@
       body: `<div class="day-flow"><div class="day-flow-step"><b>Design-System</b><span>eine Sprache</span></div><div class="day-arrow">+</div><div class="day-flow-step"><b>Aufgaben-Tracker</b><span>sichtbare Zustände</span></div><div class="day-arrow">+</div><div class="day-flow-step"><b>Über Code hinaus</b><span>gemeinsame Arbeit</span></div></div>`,
       notes: 'Originalfolie 26. Drei Komponenten und ihre Rolle. Die nächste Folie zeigt das Design-System tatsächlich.'
     },
-    picture('AgentischDesignSystem', 27, 'Eine Sprache für Mensch und Agent.',
+    picture('AgentischDesignSystem', 'Größer gedacht', 'Eine Sprache für Mensch und Agent.',
       'Das Sonaloop-Design-System als konkrete Quelle der Wahrheit.', 'design-system', 'Sonaloop-Design-System mit Komponenten und Farben'),
     {
       id: 'AgentischNeuBauen', type: 'Inhalt', eyebrow: 'Warum so viel möglich ist',
@@ -165,9 +159,9 @@
       body: `<div class="day-flow"><div class="day-flow-step"><b>Erzeugen</b><span>wird ×100<br>schneller</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Prüfen</b><span>bleibt menschlich<br>begrenzt</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Vertrauen</b><span>entsteht über Belege,<br>nicht über Tempo</span></div></div>`,
       notes: 'Originalfolie 30. Den 100-fachen Durchsatz als rhetorisches Szenario kennzeichnen. Frage: Welche Kontrollen skalieren, welche bleiben bewusst menschlich?'
     },
-    picture('AgentischPersonas', 31, 'Personas machen Unterschiede sichtbar.',
+    picture('AgentischPersonas', 'Größer gedacht', 'Personas machen Unterschiede sichtbar.',
       'Nicht „der Nutzer“, sondern Menschen mit gegensätzlichen Lebenslagen.', 'personas', 'Persona-Karten verschiedener Berufe und Alltagssituationen'),
-    picture('AgentischCouncil', 32, 'Personas können Ideen widersprechen.',
+    picture('AgentischCouncil', 'Größer gedacht', 'Personas können Ideen widersprechen.',
       'Die Council-Ansicht zeigt Stimmen, Einwände und Belege.', 'council', 'Projektansicht mit Persona-Stimmen und Skepsis'),
     {
       id: 'AgentischSprache', type: 'Inhalt', eyebrow: 'Interface-Shift',

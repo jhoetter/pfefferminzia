@@ -199,6 +199,15 @@ def create_app() -> FastAPI:
     async def runtime_error(_: Request, error: RuntimeError) -> JSONResponse:
         return JSONResponse(status_code=400, content={"error": str(error)})
 
+    @app.get("/api/instructor/roster")
+    async def instructor_roster() -> Any:
+        # Only on the instructor machine: .instructor/ is never in Git.
+        from .instructor import INSTRUCTOR_DIR, roster_preview
+
+        if not (INSTRUCTOR_DIR / "roster.csv").is_file():
+            return JSONResponse(status_code=404, content={"error": "Kein Dozentenrechner"})
+        return roster_preview()
+
     @app.get("/api/health")
     async def health() -> dict[str, Any]:
         # Folder and process let `serve` recognise and replace an older copy.

@@ -1,23 +1,56 @@
-/* Tuesday deck content. Falk's HTML remains the visual and reveal.js base. */
+/* Tuesday deck content on the reveal.js base of the workshop template. Slides stay lean; the script lives in the notes (press S). */
 (() => {
   const sourceSlides = document.querySelector('.slides');
   const logo = sourceSlides.querySelector('img[src^="data:image/png"]')?.getAttribute('src') || '';
   const johannesAvatar = sourceSlides.querySelector('svg[aria-label^="Comicfigur Johannes"]')?.outerHTML || '';
   const deckName = new URLSearchParams(window.location.search).get('deck') || 'gesamt';
-  const source = deckName === 'agentisch'
-    ? ''
-    : 'Gestaltung: Falk Uebernickel · Fiktive Pfefferminzia-Workshopfälle';
   const pill = (text, tone = '') => `<span class="day-pill ${tone}">${text}</span>`;
   const card = (title, content, extra = '') => `<div class="day-card ${extra}"><h3>${title}</h3>${content}</div>`;
-  const grid = (items, columns = 'two') => `<div class="day-grid ${columns}">${items.join('')}</div>`;
+  // Most cards hold one short line; `short` keeps them compact instead of stretching to the bottom.
+  const grid = (items, columns = 'two', size = 'short') => `<div class="day-grid ${columns} ${size}">${items.join('')}</div>`;
   const prompt = text => `<div class="day-prompt">${text}</div>`;
-  // One slide per drill stays on the projector while people work: start, four steps, done, early finish.
+  // One slide per drill stays on the projector while people work: four steps, done, early finish.
   const taskBoard = (steps, done, early) => grid([
     card('Eure vier Schritte', `<ol class="day-tasks">${steps.map(step => `<li>${step}</li>`).join('')}</ol>`, 'mint-card'),
-    card('Fertig, wenn …', `<p>${done}</p><h3 class="day-task-early">Früher fertig?</h3><p>${early}</p><p class="day-small">Hängst du? Frag Claude: „Was ist mein nächster Schritt?“ – oder winke mir.</p>`)
-  ]);
-  const code = text => `<div class="day-command">${text}</div>`;
-  const stage = (number, headline, summary, tags) => `<div class="day-big-num">${number}</div><div class="day-stage-title">DRILL ${number}</div><div class="day-stage-summary"><strong>${headline}</strong><br>${summary}</div><div class="day-stage-bottom">${tags.map(x => pill(x, 'mint')).join('')}</div>`;
+    card('Fertig, wenn …', `<p>${done}</p><h3 class="day-task-early">Früher fertig?</h3><p>${early}</p><p class="day-small">Hängst du? Frag Claude – oder mich.</p>`)
+  ], 'two', 'full');
+  const stage = (number, headline, tags) => `<div class="day-big-num">${number}</div><div class="day-stage-title">DRILL ${number}</div><div class="day-stage-summary"><strong>${headline}</strong></div><div class="day-stage-bottom">${tags.map(x => pill(x, 'mint')).join('')}</div>`;
+  // Real cockpit screenshots, cropped to the part that matters, always inside the slide.
+  const shot = (...images) => `<div class="day-shot ${images.length > 1 ? 'pair' : ''}">${images.map(([file, alt]) => `<img src="assets/${file}" alt="${alt}">`).join('')}</div>`;
+
+  // The day in one table; every deck shows where we are.
+  const DAY = [
+    ['08:30–09:45', 'Input', 'Live-Beispiele · Vibe Coding · Kontrolle', 'input'],
+    ['10:00–11:00', 'Drill 6', 'Die Kommandozentrale', 'drill-06'],
+    ['11:15–12:15', 'Drill 7', 'Leben: der Mensch sendet', 'drill-07'],
+    ['12:15–13:15', 'Mittag', '', 'mittag'],
+    ['13:15–14:15', 'Drill 8', 'Leben: der Mensch gibt frei', 'drill-08'],
+    ['14:30–15:30', 'Drill 9', 'Haftpflicht: das Eingriffsfenster', 'drill-09'],
+    ['15:45–16:30', 'Drill 10', 'Pfefferminzia 2.0: Video und Vorstand', 'drill-10'],
+    ['16:45–18:00', 'Whiteboard', 'Wo darf der Agent handeln?', 'abschluss'],
+  ];
+  const PLAN = {
+    'drill-06': [['10:00', 'Einrichten, Posteingang ansehen'], ['10:15', 'Antwort entwerfen'], ['10:25', 'Bauen: Aufgabe erledigt sich'], ['10:45', 'Senden und nachweisen'], ['10:55', 'Rückblick']],
+    'drill-07': [['11:15', 'Bestand ansehen, Fall zuordnen'], ['11:30', 'Entwurf mit Beleg ändern'], ['11:45', 'Bauen: falsches Tarifzitat stoppen'], ['12:05', 'Austricksen, dann senden'], ['12:10', 'Rückblick']],
+    'drill-08': [['13:15', 'Prüfpunkte, Entscheidungen vorbereiten'], ['13:30', 'Freigeben und ablehnen'], ['13:45', 'Bauen: Ablehnungsgrund sichtbar'], ['14:05', 'Freigabe erlischt – nachweisen'], ['14:10', 'Rückblick']],
+    'drill-09': [['14:30', 'Vorsortierung festlegen'], ['14:45', 'Bauen und Postfach abrufen'], ['15:00', 'Vorhersagen, eingreifen'], ['15:15', 'Zeit +24 h, Protokoll prüfen'], ['15:25', 'Rückblick']],
+    'drill-10': [['15:45', 'Botschaft – Claude richtet ein'], ['15:50', 'Video bauen und rendern'], ['16:10', 'Präsentation für den Vorstand'], ['16:25', 'Vorführen']],
+  };
+  const timetable = (active, compact = false) => {
+    const index = DAY.findIndex(row => row[3] === active);
+    return `<div class="day-timeline ${compact ? 'compact' : ''}">${DAY.map(([time, what, detail, key], i) =>
+      `<div class="day-timeline-row ${key === active ? 'now' : index >= 0 && i < index ? 'past' : ''} ${key === 'mittag' ? 'pause' : ''}"><strong>${time}</strong><em>${what}</em><span>${detail}</span></div>`).join('')}</div>`;
+  };
+  const zeitplan = key => ({
+    id: `Zeitplan-${key}`, type: 'Zeitplan', eyebrow: 'Wo wir stehen', title: 'Der Tag – und diese Stunde.',
+    body: `<div class="day-schedule">${timetable(key, true)}${PLAN[key] ? card('Diese Stunde', `<ol class="day-plan">${PLAN[key].map(([time, step]) => `<li><strong>${time}</strong>${step}</li>`).join('')}</ol>`, 'mint-card') : ''}</div>`,
+    notes: 'ZEIT: 30 Sekunden. Zeigen, wo wir im Tag stehen und wie die Stunde läuft. Die Minuten sind ein Rahmen, kein Taktstock – wer hängt, lädt beim nächsten Drill den offiziellen Stand.'
+  });
+  const recap = (drill, built, learned, question) => ({
+    id: `Rueckblick${drill}`, type: 'Rückblick', eyebrow: `Rückblick · Drill ${drill}`, title: 'Was wir gerade gebaut haben.',
+    body: grid([card('Gebaut', `<p class="day-emphasis">${built}</p>`, 'mint-card'), card('Gelernt', `<p class="day-emphasis">${learned}</p>`), card('Eure Runde', `<p class="day-emphasis">${question}</p>`, 'red-card')], 'three'),
+    notes: `ZEIT: 3 Minuten. Zwei, drei Stimmen einholen, dann weiter. Nicht den nächsten Drill erklären – das macht die nächste Folie.`
+  });
 
   const slides = [
     {
@@ -26,234 +59,213 @@
       notes: 'ZEIT: 1 Minute. SAGEN: Gestern haben wir mit Daten und Urteilen gearbeitet. Heute geben wir dem Agenten kontrollierte operative Fähigkeiten. ÜBERLEITUNG: Wo genau kippt Assistenz in Wirkung? NICHT: Die vollständige Lösung vorwegnehmen.'
     },
     {
-      id: 'Bruecke', type: 'Statement', eyebrow: 'Von Montag zu Dienstag', title: 'Aus einer guten Antwort wird heute eine echte Handlung.',
-      subtitle: 'Der Unterschied ist nicht die Qualität des Textes, sondern die Wirkung ausserhalb des Chats.',
+      id: 'Bruecke', type: 'Statement', eyebrow: 'Von Montag zu Dienstag', title: 'Aus einer guten Antwort wird eine Handlung.',
       body: grid([
-        card('Montag · verstehen', `<p class="day-emphasis">Claude untersucht Daten und macht Vorschläge.</p><p>Kundensicht, Schadenfall, Underwriting und Frühwarnliste bleiben zunächst im Arbeitsraum.</p>${pill('Augmentation', 'blue')}`),
-        card('Dienstag · handeln', `<p class="day-emphasis">Claude nutzt Fachfunktionen und bewegt Fälle weiter.</p><p>Ein Postfach empfängt, ein Entwurf wird versendet, eine Warteschlange löst später aus.</p>${pill('Automation', 'red')}`)
+        card('Montag · verstehen', `<p class="day-emphasis">Claude analysiert und schlägt vor.</p>${pill('Augmentation', 'blue')}`),
+        card('Dienstag · handeln', `<p class="day-emphasis">Claude bewegt Fälle weiter – mit Kontrolle.</p>${pill('Automation', 'red')}`, 'mint-card')
       ]),
-      notes: 'ZEIT: 3 Minuten. SAGEN: Gestern, in Falks Drills 1–5, hat Claude analysiert und vorgeschlagen. Heute, in Drill 6–10, bekommt es kontrollierte operative Fähigkeiten – und der Kontrollpunkt ist neu zu verhandeln. FRAGE: Welche Aktion würde bei Ihnen erstmals jemand anderem auffallen?'
+      notes: 'ZEIT: 3 Minuten. SAGEN: Gestern, in Falks Drills 1–5, hat Claude analysiert und vorgeschlagen – Kundensicht, Schadenfall, Underwriting blieben im Arbeitsraum. Heute, in Drill 6–10, bekommt es kontrollierte operative Fähigkeiten: Ein Postfach empfängt, ein Entwurf wird versendet, eine Warteschlange löst später aus. Der Unterschied ist nicht die Qualität des Textes, sondern die Wirkung außerhalb des Chats. FRAGE: Welche Aktion würde bei Ihnen erstmals jemand anderem auffallen?'
     },
     {
-      id: 'Agenda', type: 'Agenda · Tag', eyebrow: 'Der Dienstag in einem Blick', title: 'Fünf kurze Builds. Ein gemeinsamer Befund.',
-      subtitle: 'Jeder Drill: ein Fall für alle, ein eigener Bauauftrag – und ein Checkpoint mit Lösung, falls es klemmt.',
-      body: `<div class="day-timeline">
-        <div class="day-timeline-row"><strong>08:30–09:45</strong><em>Input</em><span>Live-Apps; Vibe Coding, MCP, Kontrolle</span></div>
-        <div class="day-timeline-row"><strong>10:00–11:00</strong><em>Drill 6</em><span>Kommandozentrale: erste Mail mit Claude beantworten</span></div>
-        <div class="day-timeline-row"><strong>11:15–12:15</strong><em>Drill 7</em><span>Leben: belegter Entwurf, Mensch sendet</span></div>
-        <div class="day-timeline-row"><strong>13:15–14:15</strong><em>Drill 8</em><span>Leben: Freigabe oder Ablehnung</span></div>
-        <div class="day-timeline-row"><strong>14:30–15:30</strong><em>Drill 9</em><span>Haftpflicht: automatischer Versand mit Eingriffsfenster</span></div>
-        <div class="day-timeline-row"><strong>15:45–16:30</strong><em>Drill 10</em><span>Pfefferminzia 2.0: Video und Vorstand</span></div>
-        <div class="day-timeline-row"><strong>16:45–18:00</strong><em>Whiteboard</em><span>Event/Cron oder Prompt? Automation Contract</span></div>
-      </div>`,
-      notes: 'ZEIT: 2 Minuten. SAGEN: Vier 60-Minuten-Drills plus 45-Minuten-Report-Drill, dazwischen Puffer und Mittagspause 12:15–13:15. Jede Person arbeitet in ihrer eigenen Kopie, baut und committet Code. Nach den operativen Kontrollmustern wird ein kurzer Report daraus; die 75 Minuten Whiteboard bleiben erhalten.'
+      id: 'Agenda', type: 'Zeitplan', eyebrow: 'Der Dienstag in einem Blick', title: 'Fünf Drills. Ein System.',
+      body: timetable(''),
+      notes: 'ZEIT: 2 Minuten. SAGEN: Vier 60-Minuten-Drills plus ein 45-Minuten-Drill, dazwischen 15 Minuten Puffer und die Mittagspause. Jeder Drill: ein Fall für alle, ein eigener Bauauftrag – und ein Checkpoint mit Lösung, falls es klemmt. Jede Person arbeitet in ihrer eigenen Kopie. Zum Schluss 75 Minuten Whiteboard.'
     },
     {
-      id: 'LiveBeispiele', type: 'Input', eyebrow: 'Morgens · Blick nach vorn', title: 'Ich zeige, wie ich arbeite. Dann baut ihr selbst.',
-      subtitle: 'Heute Abend: ein Gefühl dafür, welche Aufgaben autonom laufen, welche Planung brauchen und wo Kontrolle oder Freigabe nötig ist.',
+      id: 'LiveBeispiele', type: 'Input', eyebrow: 'Morgens · Blick nach vorn', title: 'Ich zeige, wie ich arbeite. Dann baut ihr.',
       body: grid([
-        card('Live-Demo', `<p>Drei eigene Anwendungen, direkt im Browser gezeigt – als Möglichkeitshorizont, nicht als Pfefferminzia-Musterlösung.</p>`, 'mint-card'),
-        card('Danach ihr', `<p>Eigene Kopie. Eigener Code. Claude Code als Programmierpartner und Tutor.</p><p>Aus einem Prompt wird erst mit geprüften Szenarien, Diff und sichtbarer Wirkung Software.</p>`)
+        card('Live-Demo', `<p class="day-emphasis">Drei eigene Anwendungen, im Browser.</p>`, 'mint-card'),
+        card('Danach ihr', `<p class="day-emphasis">Eigene Kopie. Claude als Partner und Tutor.</p>`)
       ]),
-      notes: 'ZEIT: 5 Minuten plus Live-Demo. Die eigenen Seiten live im Browser öffnen; Folie behauptet absichtlich nichts über ihren Inhalt. Überleitung: nicht die Beispiele kopieren, sondern denselben Entwicklungsmodus an Pfefferminzia lernen. Welche Aufgabe lief autonom, welche brauchte Planung, wo saß die Freigabe?'
+      notes: 'ZEIT: 5 Minuten plus Live-Demo. Die eigenen Seiten live im Browser öffnen – als Möglichkeitshorizont, nicht als Pfefferminzia-Musterlösung. Überleitung: nicht die Beispiele kopieren, sondern denselben Entwicklungsmodus an Pfefferminzia lernen. Aus einem Prompt wird erst mit geprüften Szenarien und sichtbarer Wirkung Software. Heute Abend: ein Gefühl dafür, welche Aufgaben autonom laufen, welche Planung brauchen und wo Kontrolle nötig ist.'
     },
     {
-      id: 'Architektur', type: 'Inhalt', eyebrow: 'MCP-first-Betriebsmodell', title: 'Mensch und Agent benutzen dieselben Fachfunktionen.',
-      subtitle: 'Claude Code ist der Arbeitspartner; Python stellt kontrollierte Aktionen und prüfbare Zustände bereit.',
+      id: 'Architektur', type: 'Inhalt', eyebrow: 'Wie das System gebaut ist', title: 'Mensch und Agent nutzen dieselben Funktionen.',
       body: `<div class="day-flow">
-        <div class="day-flow-step"><b>Mensch</b><span>prüft und steuert<br>im Cockpit</span></div><div class="day-arrow">↔</div>
-        <div class="day-flow-step"><b>Claude Code</b><span>plant und nutzt<br>MCP-Werkzeuge</span></div><div class="day-arrow">↔</div>
-        <div class="day-flow-step"><b>Python-App</b><span>Fachlogik, Rechte,<br>Protokoll und Warteschlange</span></div><div class="day-arrow">↔</div>
-        <div class="day-flow-step"><b>AgentMail</b><span>persönliche Inbox<br>und Versand</span></div>
+        <div class="day-flow-step"><b>Mensch</b><span>prüft und<br>entscheidet</span></div><div class="day-arrow">↔</div>
+        <div class="day-flow-step"><b>Claude</b><span>plant und nutzt<br>Werkzeuge</span></div><div class="day-arrow">↔</div>
+        <div class="day-flow-step"><b>Pfefferminzia</b><span>Regeln, Rechte,<br>Protokoll</span></div><div class="day-arrow">↔</div>
+        <div class="day-flow-step"><b>Postfach</b><span>eigene Inbox<br>und Versand</span></div>
       </div>`,
-      notes: 'ZEIT: 5 Minuten. SAGEN: Die Oberfläche ist nicht die eigentliche Schnittstelle. Claude Code spricht über MCP mit demselben Python-System. AgentMail ist die externe Grenze. Pro Person gibt es eine isolierte Inbox. VORFÜHRUNG: Eine Nachricht erscheint im Cockpit und kann über MCP gelesen werden.'
+      notes: 'ZEIT: 5 Minuten. SAGEN: Die Oberfläche ist nicht die eigentliche Schnittstelle. Claude Code spricht über MCP mit demselben Python-System, das auch das Cockpit nutzt. AgentMail ist die externe Grenze; pro Person gibt es eine isolierte Inbox. VORFÜHRUNG: Eine Nachricht erscheint im Cockpit und kann über MCP gelesen werden.'
     },
     {
-      id: 'Belege', type: 'Inhalt', eyebrow: 'Verifizierbarkeit', title: 'Jede wichtige Aktion braucht einen sichtbaren Beleg.',
-      subtitle: 'Wir vertrauen keinem „erledigt“ im Chat, sondern prüfen den Zustand im System.',
+      id: 'Belege', type: 'Inhalt', eyebrow: 'Verifizierbarkeit', title: 'Jede Aktion braucht einen sichtbaren Beleg.',
       body: grid([
-        card('Vor der Wirkung', `<p>Welche Kundin? Welcher Vertrag? Welche Tarifgeneration? Welche Fundstelle?</p><p>Welche Aktion ist vorgeschlagen – und wer darf sie auslösen?</p>`),
-        card('Nach der Wirkung', `<p>Welcher Status hat sich geändert? Wer hat freigegeben, editiert oder gestoppt?</p><p>Was ging wann an welche erlaubte Adresse raus?</p>`, 'mint-card')
+        card('Vorher', `<p class="day-emphasis">Welche Kundin? Welcher Vertrag? Welcher Tarif?</p>`),
+        card('Nachher', `<p class="day-emphasis">Wer hat freigegeben, geändert, gestoppt – und wann?</p>`, 'mint-card')
       ]),
-      notes: 'ZEIT: 4 Minuten. SAGEN: Verifiability ist ein Arbeitsmuster: Hypothese, Werkzeugaufruf, Zustandsänderung, Nachweis. Demonstrieren am Activity Log; keine geheimen Rohdaten auf Folien.'
+      notes: 'ZEIT: 4 Minuten. SAGEN: Wir vertrauen keinem „erledigt“ im Chat, sondern prüfen den Zustand im System. Vor der Wirkung: Kundin, Vertrag, Tarifgeneration, Fundstelle – und wer die Aktion auslösen darf. Nach der Wirkung: welcher Status sich geändert hat, wer freigegeben, editiert oder gestoppt hat, was wann an welche erlaubte Adresse ging. Demonstrieren am Protokoll.'
     },
     {
-      id: 'Kontrollmuster', type: 'Inhalt', eyebrow: 'Zwei Kontrollmuster', title: 'Dasselbe System kennt zwei unterschiedliche Stopplinien.',
-      subtitle: 'Die fachliche Risikoeinschätzung bestimmt, wann der Mensch handeln muss.',
+      id: 'Kontrollmuster', type: 'Inhalt', eyebrow: 'Zwei Kontrollmuster', title: 'Zwei Stopplinien in einem System.',
       body: grid([
-        card('Leben · Opt-in', `<p class="day-emphasis">Ohne ausdrückliche Freigabe verlässt nichts den Fall.</p><p>Agent entscheidet und formuliert; Mensch genehmigt, lehnt ab oder ergänzt Kontext.</p>${pill('Freigabe ist Pflicht', 'red')}`, 'red-card'),
-        card('Haftpflicht · Opt-out', `<p class="day-emphasis">Nach sichtbarer Frist geht die Antwort standardmässig raus.</p><p>Im Eingriffsfenster kann der Mensch editieren, stoppen oder den Versand stoppen.</p>${pill('Eingriff ist möglich', 'mint')}`, 'mint-card')
+        card('Leben · Freigabe', `<p class="day-emphasis">Nichts geht raus ohne deine Freigabe.</p>${pill('Pflicht', 'red')}`, 'red-card'),
+        card('Haftpflicht · Fenster', `<p class="day-emphasis">Geht nach 24 h automatisch raus – außer du hältst es an.</p>${pill('Eingriff möglich', 'mint')}`, 'mint-card')
       ]),
-      notes: 'ZEIT: 6 Minuten. SAGEN: Das ist keine pauschale Aussage über Versicherungsprodukte. Im Workshop simulieren wir zwei Kontrollmuster an synthetischen Fällen. Die Gruppe soll den Unterschied erleben. FRAGE: Welche Fehlerklasse wird durch jedes Muster abgefangen?'
+      notes: 'ZEIT: 6 Minuten. SAGEN: Das ist keine pauschale Aussage über Versicherungsprodukte. Wir simulieren zwei Kontrollmuster an synthetischen Fällen. Leben: Agent bereitet Entscheidung und Text vor, der Mensch gibt frei, lehnt ab oder ergänzt Kontext. Haftpflicht: nach sichtbarer Frist geht die Antwort standardmäßig raus; im Fenster kann der Mensch ändern oder anhalten. FRAGE: Welche Fehlerklasse fängt welches Muster ab?'
     },
     {
-      id: 'Zielbild', type: 'Inhalt', eyebrow: 'Rückwärts vom Zielbild', title: 'Am Ende können wir beide Kontrollmuster live vergleichen.',
-      subtitle: 'Jeder Startzustand zeigt nur die Fähigkeiten des aktuellen Drills.',
+      id: 'Zielbild', type: 'Inhalt', eyebrow: 'Das Zielbild', title: 'Sechs Bausteine. Fünf Etappen.',
       body: grid([
-        card('Sechs Bausteine', `<p><strong>Eingänge</strong> · <strong>Wissen</strong> · <strong>Werkzeuge</strong> · <strong>Kontrollen</strong> · <strong>Oberfläche</strong> · <strong>Protokoll</strong></p><p>Aus diesen Teilen besteht jedes agentische System. Die Kontrollregel liegt <strong>zwischen Vorschlag und externer Wirkung</strong>.</p>`),
-        card('Fünf Etappen', `<p><strong>6</strong> Eingänge &amp; Werkzeuge: Mensch sendet<br><strong>7</strong> Wissen &amp; Prüfregel: Leben<br><strong>8</strong> Kontrolle: Mensch gibt frei<br><strong>9</strong> Kontrolle: Eingriffsfenster<br><strong>10</strong> Pfefferminzia 2.0: Video und Vorstand</p>`, 'mint-card')
+        card('Jedes agentische System', `<p class="day-emphasis">Eingänge · Wissen · Werkzeuge · Kontrollen · Oberfläche · Protokoll</p>`),
+        card('Heute', `<p><strong>6</strong> Posteingang: Mensch sendet<br><strong>7</strong> Bestand: belegter Entwurf<br><strong>8</strong> Freigabe der Entscheidung<br><strong>9</strong> Eingriffsfenster<br><strong>10</strong> Video und Vorstand</p>`, 'mint-card')
       ]),
-      notes: 'ZEIT: 4 Minuten. SAGEN: Heute geht es darum, wie man ein agentisches System aufbaut. Jeder Drill rückt einen Baustein in den Fokus; wer früher fertig ist, baut den nächsten Baustein in der eigenen Kommandozentrale schon im Kleinen. Jeder Startzustand zeigt nur die Fähigkeiten des aktuellen Drills. Der nächste Checkpoint enthält die Lösung des vorigen Bauauftrags – wer hängt, lädt ihn und macht mit der Gruppe weiter. Die Teilnehmenden bauen im eigenen Branch weiter; eine Recovery liegt getrennt, ohne ihre Arbeit zu überschreiben.'
+      notes: 'ZEIT: 4 Minuten. SAGEN: Heute geht es darum, wie man ein agentisches System aufbaut. Jeder Drill rückt einen Baustein in den Fokus; die Kontrollregel liegt zwischen Vorschlag und externer Wirkung. Jeder Startzustand zeigt nur die Fähigkeiten des aktuellen Drills. Der nächste Checkpoint enthält die Lösung des vorigen Bauauftrags – wer hängt, lädt ihn und macht mit der Gruppe weiter.'
     },
     {
-      id: 'Arbeitsrhythmus', type: 'Inhalt', eyebrow: 'So arbeiten wir', title: 'Nicht vier Prompts: vier echte Entwicklungszyklen.',
-      subtitle: 'Gleicher Fallnachweis für alle. Unterschiedlich viel eigener Code ist erlaubt.',
-      body: grid([
-        card('Deine Version', `<p>Branch → Szenarien festlegen → mit Claude bauen → Diff prüfen → Fall im Cockpit erleben → Commit.</p><p>Jeder Drill endet mit einem sichtbaren eigenen Beitrag.</p>`),
-        card('Dein Tempo', `<p><strong>Geführt:</strong> nächster Schritt und Dateistelle.<br><strong>Bauend:</strong> Szenarien festlegen und gemeinsam iterieren.<br><strong>Ausbauend:</strong> nach dem Fallnachweis die eigene Kommandozentrale erweitern – erst Steckbrief, dann bauen.</p>`, 'mint-card')
-      ]),
-      notes: 'ZEIT: 3 Minuten. SAGEN: Claude passt den Hilfsgrad an, ohne die Person zu etikettieren. Persönliche Kopie und Inbox. In jeder Etappe fragt Claude zuerst nach eurer Entscheidung – ein „mach einfach“ reicht nicht. Schnelle erweitern ihr eigenes System; andere laden nach Rückfrage den offiziellen Checkpoint. Fallnachweis und Sicherheitsgrenzen bleiben für alle gleich.'
+      id: 'Arbeitsrhythmus', type: 'Inhalt', eyebrow: 'So arbeiten wir', title: 'Ihr entscheidet. Claude baut.',
+      body: `<div class="day-flow"><div class="day-flow-step"><b>Regel</b><span>in euren Worten</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Szenarien</b><span>was muss gelten?</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Bauen</b><span>Claude schreibt Code</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Prüfen</b><span>im Cockpit erleben</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Speichern</b><span>euer Stand</span></div></div>`,
+      notes: 'ZEIT: 3 Minuten. SAGEN: Nicht vier Prompts, sondern echte Entwicklungszyklen. In jeder Etappe fragt Claude zuerst nach eurer Entscheidung – ein „mach einfach“ reicht nicht. Tempo: Claude führt Schritt für Schritt oder lässt euch mehr selbst probieren; wer früher fertig ist, baut die eigene Kommandozentrale aus. Fallnachweis und Sicherheitsgrenzen bleiben für alle gleich.'
     },
     {
       id: 'Drill6Start', type: 'Kapitel', eyebrow: '10:00–11:00 · Meilenstein 1', title: 'Die Kommandozentrale', study: true,
-      body: stage('6', 'Von einem Satz an Claude zur ersten Antwort.', 'Claude richtet alles ein und öffnet die Kommandozentrale. Im Posteingang liegt meine Mail – eure erste Aufgabe: antworten, mit Claude.', ['Start: drill-06-start', 'Ziel: Antwort + eigenes Werk']),
-      notes: 'ZEIT: 1 Minute. SAGEN: Bis zum Ende dieses Drills hat jede Person meine Mail beantwortet – den Text hat Claude vorbereitet, gesendet hat der Mensch. Noch kein Kundenkontext, keine Freigabe, kein Timer.'
+      body: stage('6', 'Ein Satz an Claude – und die erste Antwort.', ['Start: drill-06-start']),
+      notes: 'ZEIT: 1 Minute. SAGEN: Claude richtet alles ein und öffnet die Kommandozentrale. Im Posteingang liegt meine Mail – eure erste Aufgabe: antworten, mit Claude. Den Text bereitet Claude vor, senden tut der Mensch. Noch kein Kundenkontext, keine Freigabe, kein Timer.'
     },
+    zeitplan('drill-06'),
     {
-      id: 'Drill6Los', type: 'Drill', eyebrow: 'Drill 6 · So startet ihr', title: 'Ein Satz an Claude. Dann seht ihr eure Kommandozentrale.',
-      subtitle: 'Kein Terminal: Claude klont, richtet ein und öffnet die Software im Browser – ein Softwaregerüst, das ihr heute ausbaut.', study: true,
+      id: 'Drill6Los', type: 'Drill', eyebrow: 'Drill 6 · So startet ihr', title: 'Ein Satz an Claude. Kein Terminal.', study: true,
       body: grid([
-        card('1 · Claude-App → Code → schreiben', `${prompt('Klone https://github.com/jhoetter/pfefferminzia nach ~/pfefferminzia, richte alles nach der README ein und starte die Kommandozentrale. Ich bin in Drill 6.')}<p class="day-small">Auf Nachfrage den Schlüssel vom Zettel einfügen – sonst nichts.</p>`, 'mint-card'),
-        card('2 · Wenn ihr nicht weiterwisst', `<p class="day-emphasis">Fragt Claude. Es ist hier euer Tutor.</p><p>Es kennt den Drill, gibt Hinweise in kleinen Schritten und lädt euch beim nächsten Drill den offiziellen Stand, falls etwas klemmt.</p>`)
+        card('Claude-App → Code', `${prompt('Klone https://github.com/jhoetter/pfefferminzia nach ~/pfefferminzia, richte alles nach der README ein und starte die Kommandozentrale. Ich bin in Drill 6.')}<p class="day-small">Dann den Schlüssel vom Zettel einfügen.</p>`, 'mint-card'),
+        card('Nicht weiter?', `<p class="day-emphasis">Fragt Claude – oder mich.</p><p>Claude kennt den Drill und gibt Hinweise in kleinen Schritten. Ich laufe rum.</p>`)
       ]),
-      notes: 'ZEIT: 10 Minuten inkl. Einrichtung. SAGEN: Claude-App öffnen, Bereich Code, neue Sitzung mit eurem Benutzerordner. Sagt Claude den Satz; danach bittet es euch einmal um eine neue Sitzung im Ordner pfefferminzia, dann öffnet sich die Kommandozentrale. Die erste Aufgabe steht schon in eurer Kommandozentrale: meine Mail beantworten – lasst Claude den Entwurf schreiben, ändert ihn und sendet selbst. Danach baut ihr mit Claude, dass sich die Aufgabe beim Senden von selbst erledigt. Keine Sorge: Beim nächsten Drill gibt es einen Checkpoint. VORHER: Claude bitten „Schick die Drill-6-Begrüßung an alle“ (oder eine eigene Mail per BCC an alle).'
+      notes: 'ZEIT: 10 Minuten inkl. Einrichtung. SAGEN: Claude-App öffnen, Bereich Code, neue Sitzung mit eurem Benutzerordner. Sagt Claude den Satz; danach bittet es euch einmal um eine neue Sitzung im Ordner pfefferminzia, dann öffnet sich die Kommandozentrale – ein Softwaregerüst, das ihr heute ausbaut. Die erste Aufgabe steht schon drin: meine Mail beantworten. Keine Sorge: Beim nächsten Drill gibt es einen Checkpoint. VORHER: Claude bitten „Schick die Drill-6-Begrüßung an alle“.'
     },
     {
-      id: 'Drill6Cockpit', type: 'Screenshot', eyebrow: 'Drill 6 · Die Kommandozentrale', title: 'Die erste Mail ist schon da – mit Aufgabe.',
-      subtitle: 'Posteingang, Aufgaben, Antwort: Claude schreibt den Entwurf, ihr sendet.', study: true,
-      body: `<img src="assets/cockpit-drill6.webp" alt="Pfefferminzia-Kommandozentrale mit geöffneter Mail und Antwortentwurf" style="display:block;width:100%;max-height:560px;object-fit:contain;border:1px solid #1712;border-radius:10px">`,
-      notes: 'ZEIT: 2 Minuten. SAGEN: Das ist eure eigene Instanz. Links die Bereiche, in der Mitte der Posteingang, rechts die Mail mit Antwortfeld. Senden kann nur der Mensch – Claude hat dafür kein Werkzeug.'
+      id: 'Teilnehmende', type: 'Setup', eyebrow: 'Drill 6 · Eure Plätze', title: 'Wer hat welchen Schlüssel?',
+      body: `<div class="day-roster" id="day-roster"><p class="day-roster-empty">Lade die Liste …</p></div>`,
+      notes: 'Nur auf dem Dozentenrechner: Die Liste kommt zur Laufzeit aus .instructor/roster.csv (nie aus Git). Gezeigt werden Vorname und der Anfang des Schlüssels – der gemeinsame Anfang plus vier Zeichen, damit jede Person ihren Zettel wiedererkennt. Folie über die Kommandozentrale öffnen (http://127.0.0.1:3004/slides/…), sonst bleibt sie leer.'
+    },
+    {
+      id: 'Drill6Cockpit', type: 'Screenshot', eyebrow: 'Drill 6 · Die Kommandozentrale', title: 'Die erste Mail ist schon da.', study: true, visual: true,
+      body: shot(['cockpit-drill6.webp', 'Kommandozentrale mit geöffneter Mail und Antwortentwurf']),
+      notes: 'ZEIT: 2 Minuten. SAGEN: Das ist eure eigene Instanz. Links die Bereiche, in der Mitte der Posteingang, rechts die Mail mit Antwortfeld und der Aufgabe „Antworten“. Claude schreibt den Entwurf, ihr ändert und sendet. Senden kann nur der Mensch – Claude hat dafür kein Werkzeug.'
     },
     {
       id: 'Drill6Auftrag', type: 'Drill', eyebrow: "Drill 6 · Eure Aufgaben · 60 Minuten", title: "Entscheiden. Bauen. Selbst senden.",
-      subtitle: "Start: Nach dem Einrichten neue Sitzung im Ordner pfefferminzia – „weiter mit Drill 6“.", study: true,
-      body: taskBoard(["Mail lesen und sagen, was du antworten willst.", "Claude entwirft, du änderst – <strong>noch nicht senden</strong>.", "Bauen: „Antworten“ erledigt sich beim Senden.", "Senden – und in den Aufgaben sehen, dass es wirkt."], "Antwort gesendet, „Antworten“ hat sich selbst erledigt, die zweite Aufgabe ist offen, Stand gespeichert.", "Denkanstoß von Claude holen, dann die heutigen Teile weiter ausbauen – was würdest du gern noch sehen? Z. B. eine Suche im Posteingang. Nicht vorgreifen."),
-      notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Das sind eure Aufgaben für die nächste Stunde. Ihr entscheidet, Claude baut. Claude zeigt euch zuerst, was die Kommandozentrale kann, und führt euch Schritt für Schritt – aber es fragt euch, und ihr entscheidet. Wichtig: in Schritt 2 noch nicht senden, euer Senden ist in Schritt 4 der Beweis. Wer früher fertig ist, bekommt Denkanstöße und erweitert die eigene Kommandozentrale – nicht vorgreifen. Ich laufe rum. ZEITPLAN: 15 Min. Start, 10 Entwurf, 20 bauen, 10 senden und belegen, 5 Rückblick."
+      subtitle: "Start: neue Sitzung im Ordner pfefferminzia – „weiter mit Drill 6“.", study: true,
+      body: taskBoard(["Mail lesen: Was willst du antworten?", "Claude entwirft, du änderst – <strong>noch nicht senden</strong>.", "Bauen: „Antworten“ erledigt sich beim Senden.", "Senden – und sehen, dass es wirkt."], "Antwort gesendet, die Aufgabe hat sich selbst erledigt, Stand gespeichert.", "Denkanstoß von Claude holen, dann die eigene Kommandozentrale ausbauen."),
+      notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Ihr entscheidet, Claude baut. Claude zeigt zuerst, was die Kommandozentrale kann, und fragt euch in jedem Schritt. Wichtig: in Schritt 2 noch nicht senden – euer Senden ist in Schritt 4 der Beweis. Wer früher fertig ist: Denkanstöße, dann eigene Erweiterung (z. B. Suche im Posteingang) – nicht vorgreifen. Ich laufe rum."
     },
     {
-      id: 'Drill7Start', type: 'Kapitel', eyebrow: '11:15–12:15 · Meilenstein 2', title: 'Der Mensch bearbeitet', study: true,
-      body: stage('7', 'Der Agent bereitet vor; der Mensch versendet.', 'Leben-Fall zu Kunde, Vertrag und Tarifgeneration auflösen, Antwortentwurf redigieren und bewusst selbst senden.', ['Start: drill-07-start', 'Ziel: menschlicher Versand']),
-      notes: 'ZEIT: 1 Minute. SAGEN: Wir gewinnen operative Geschwindigkeit, aber die Entscheidung und der Versand bleiben in der Hand des Menschen. DOZENT: Claude bitten „Schick die Drill-7-Mails an alle“ (oder instructor send 7 --yes); Fortschritt: „Wer hat geantwortet?“.'
+      id: 'Drill7Start', type: 'Kapitel', eyebrow: '11:15–12:15 · Meilenstein 2', title: 'Der Mensch sendet', study: true,
+      body: stage('7', 'Claude bereitet vor – mit Belegen aus dem Bestand.', ['Start: drill-07-start']),
+      notes: 'ZEIT: 1 Minute. SAGEN: Neu ist der Bestand – die Daten von Montag. Claude löst den Leben-Fall zu Kundin, Vertrag und Tarifgeneration auf, ihr redigiert und sendet selbst. DOZENT: Claude bitten „Schick die Drill-7-Mails an alle“.'
     },
+    zeitplan('drill-07'),
+    recap(6, 'Die Aufgabe „Antworten“ erledigt sich beim Senden.', 'Claude entwirft. Senden tut der Mensch.', 'Was hat euch überrascht?'),
     {
-      id: 'Drill7Kontext', type: 'Screenshot', eyebrow: 'Drill 7 · App-Komponenten', title: 'Ein guter Entwurf beginnt bei der richtigen Tarifgeneration.',
-      subtitle: 'Die Oberfläche macht Kunde, Police, Quelle und Antwort nebeneinander prüfbar.', study: true,
-      body: `<div class="day-app"><div class="day-app-top"><span>Pfefferminzia · Leben</span><span class="day-app-badge">Entwurf · nicht versendet</span></div>
-        <div class="day-app-main"><div class="day-app-left"><div class="day-app-label">Fallkontext</div><h3>Mara Keller</h3><p>Lebensversicherung<br>Police LV-2048-17</p><div class="day-app-meta"><span>Treffer geprüft</span></div><p class="day-app-note">Ähnliche Namen? Vertragsnummer fehlt? Erst Identität klären.</p></div>
-        <div class="day-app-mid"><div class="day-app-label">Antwortentwurf</div><h3>Ihre Anfrage zur Police</h3><p>Sehr geehrte Frau Keller, wir haben Ihre Frage geprüft. Nach der für Ihren Vertrag gültigen Tarifgeneration …</p><p>Mit freundlichen Grüssen<br>Pfefferminzia</p><button class="day-app-button secondary" type="button" disabled>Entwurf bearbeiten</button><button class="day-app-button" type="button" disabled>Als Mensch senden</button></div>
-        <div class="day-app-right"><div class="day-app-label">Belege</div><h3>Tarif 2021</h3><p>Dokument und Fundstelle sind am Fall verlinkt.</p><span class="day-app-badge">Quelle geprüft</span></div></div></div>`,
-      notes: 'ZEIT: 3 Minuten. SAGEN: Die Knöpfe auf der Folie sind absichtlich deaktiviert; die Übung findet in der App statt. Betonen: Nicht die erstbeste Tarif-PDF, sondern die zum Vertrag passende Generation.'
+      id: 'Drill7Kontext', type: 'Screenshot', eyebrow: 'Drill 7 · Aus dem Bestand', title: 'Die Mail behauptet. Der Vertrag belegt.', study: true, visual: true,
+      body: shot(['cockpit-drill7.webp', 'Aus dem Bestand: Kundin, Vertrag, Tarifgeneration PL-2017, Begünstigte']),
+      notes: 'ZEIT: 3 Minuten. SAGEN: Unter „Aus dem Bestand“ steht, was Claude nachgeschlagen hat – nicht aus der Mail, sondern aus den Daten des Versicherers. Tarifgeneration PL-2017, Begünstigte, Tarifblatt. Nicht die erstbeste Tarif-PDF, sondern die zum Vertrag passende Generation. Links „Bestand“ zeigt alle Kunden und Verträge.'
     },
     {
       id: 'Drill7Auftrag', type: 'Drill', eyebrow: "Drill 7 · Eure Aufgaben · 60 Minuten", title: "Erst Quelle. Dann Entwurf. Dann du.",
-      subtitle: "Start: „Ich will zu Drill 7. Frag mich, ob ich meinen Stand mitnehmen will.“ Claude lädt – im selben Ordner, ohne neue Sitzung.", study: true,
-      body: taskBoard(["Bestand ansehen: Kundin, Vertrag und Tarif selbst bestätigen.", "Entwurf mit Beleg ändern – <strong>noch nicht senden</strong>.", "Bauen: Ein falsches Tarifzitat wird gestoppt.", "Am eigenen Fall austricksen – dann senden."], "Geänderte Antwort gesendet, ein falsches Tarifzitat wird mit deiner Meldung gestoppt, Stand gespeichert.", "Denkanstoß von Claude holen, dann die heutigen Teile weiter ausbauen – was würdest du gern noch sehen? Z. B. das Tarifblatt direkt im Cockpit. Nicht vorgreifen."),
-      notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Neu ist der Bestand – die Daten von Montag, Claude lädt sie. Erst anschauen, dann die Mail. Nicht die erstbeste Tarif-PDF, sondern die zum Vertrag passende Generation. Die Mail ist eine Behauptung, der Vertrag ist der Beleg. Den Wortlaut der Fehlermeldung legt ihr selbst fest. Wer früher fertig ist: Denkanstöße und eigene Erweiterung (Vorschlag: Beleg-Ampel) – nie der nächste Drill. DOZENT: Drill-7-Mails nach dem Laden senden."
+      subtitle: "Start: „Ich will zu Drill 7. Frag mich, ob ich meinen Stand mitnehmen will.“", study: true,
+      body: taskBoard(["Bestand ansehen: Kundin, Vertrag, Tarif bestätigen.", "Entwurf mit Beleg ändern – <strong>noch nicht senden</strong>.", "Bauen: Ein falsches Tarifzitat wird gestoppt.", "Austricksen – dann senden."], "Antwort gesendet, falsches Tarifzitat wird gestoppt, Stand gespeichert.", "Denkanstoß holen, dann ausbauen – z. B. das Tarifblatt direkt im Cockpit."),
+      notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Claude lädt beim Wechsel im selben Ordner, ohne neue Sitzung. Erst den Bestand anschauen, dann die Mail. Die Mail ist eine Behauptung, der Vertrag ist der Beleg. Den Wortlaut der Fehlermeldung legt ihr selbst fest. Früher fertig: Denkanstöße und eigene Erweiterung (Vorschlag: Beleg-Ampel). DOZENT: Drill-7-Mails nach dem Laden senden."
     },
     {
       id: 'Drill8Start', type: 'Kapitel', eyebrow: '13:15–14:15 · Meilenstein 3', title: 'Der Mensch gibt frei', study: true,
-      body: stage('8', 'Der Agent bearbeitet; der Mensch kontrolliert.', 'Entscheidungsvorlage und Antwort stehen fertig bereit. Freigabe, Ablehnung oder neuer Kontext starten den nächsten Schritt.', ['Start: drill-08-start', 'Ziel: explizite Freigabe']),
-      notes: 'ZEIT: 1 Minute. SAGEN: Der Mensch schreibt nicht mehr jeden Satz. Er verantwortet die Stopplinie vor jeder externen Wirkung. Eine Ablehnung ist ein vollwertiger Erfolgspfad. DOZENT: Claude bitten „Schick die Drill-8-Mails an alle“ (oder instructor send 8 --yes); Fortschritt: „Wer hat geantwortet?“.'
+      body: stage('8', 'Claude bereitet alles vor. Du gibst die Entscheidung frei.', ['Start: drill-08-start']),
+      notes: 'ZEIT: 1 Minute. SAGEN: Der Mensch schreibt nicht mehr jeden Satz. Er verantwortet die Entscheidung vor jeder externen Wirkung. Eine Ablehnung ist ein vollwertiger Erfolgspfad. DOZENT: Claude bitten „Schick die Drill-8-Mails an alle“.'
     },
+    zeitplan('drill-08'),
+    recap(7, 'Ein falsches Tarifzitat wird gestoppt.', 'Die Mail behauptet, der Vertrag belegt.', 'Wo zitiert euer Haus heute den falschen Tarif?'),
     {
-      id: 'Drill8Review', type: 'Screenshot', eyebrow: 'Drill 8 · Die Freigabe', title: 'Freigegeben wird die Entscheidung, nicht jedes Wort.',
-      subtitle: 'Foliendemo: Klicken Sie auf Freigeben oder Ablehnen – es wird nichts gesendet.', study: true,
-      body: `<div class="day-review"><div class="day-card mint-card"><h3>Entscheidungsvorlage</h3><p><strong>Fall:</strong> fiktive Lebensanfrage · Mara Keller</p><p><strong>Leistungsentscheidung:</strong> anerkannt · 139'000 EUR · PZ-2025, Abschnitt 5.</p><p><strong>Prüfpunkt:</strong> Ist die Entscheidung durch Vertrag und Tarif gedeckt?</p><div class="day-review-status" id="review-status" aria-live="polite">Wartet auf menschliche Freigabe</div></div>
-        <div class="day-card"><h3>Ihre Kontrolloptionen</h3><p>Der Mensch kann genehmigen, mit Begründung ablehnen oder neuen Kontext ergänzen.</p><button type="button" class="day-app-button" data-review="approve">Freigeben</button><button type="button" class="day-app-button danger" data-review="reject">Ablehnen</button><button type="button" class="day-app-button secondary" data-review="edit">Entscheidung ändern</button><p class="day-small" style="margin-top:15px">Eine geänderte Entscheidung braucht eine neue Freigabe; den Antworttext darf man frei ändern.</p><span class="day-sim-banner">Foliendemo · keine echte Aktion</span></div></div>`,
-      notes: 'ZEIT: 4 Minuten. SAGEN: Die Foliendemo simuliert die Zustandslogik. Freigabe ist explizit; Ablehnung führt zurück in den Agenten-Loop; Bearbeitung widerruft die frühere Freigabe. In der echten App sind alle drei Wege im Protokoll sichtbar.'
+      id: 'Drill8Review', type: 'Screenshot', eyebrow: 'Drill 8 · Die Freigabe', title: 'Freigegeben wird die Entscheidung.', study: true, visual: true,
+      body: shot(['cockpit-drill8.webp', 'Karte Leistungsentscheidung mit Knopf „Entscheidung freigeben“']),
+      notes: 'ZEIT: 4 Minuten. SAGEN: Claude legt eine Leistungsentscheidung vor – Ergebnis, Betrag, Rechtsgrundlage, Begründung – und schreibt den Antwortentwurf dazu. Ihr gebt die Entscheidung frei, nicht jedes Wort. Beim Freigeben entsteht ein versiegelter PDF-Beleg, der mit der Antwort mitgeht. Ändert Claude die Entscheidung, erlischt die Freigabe; den Text dürft ihr frei ändern. Darüber die Leistungsakte: Die alte Ablehnung stützte sich auf eine Frist, die nur bei Suizid gilt.'
     },
     {
       id: 'Drill8Auftrag', type: 'Drill', eyebrow: "Drill 8 · Eure Aufgaben · 60 Minuten", title: "Claude bereitet vor. Du entscheidest.",
-      subtitle: "Start: „Ich will zu Drill 8. Frag mich, ob ich meinen Stand mitnehmen will.“ Claude lädt – im selben Ordner, ohne neue Sitzung.", study: true,
-      body: taskBoard(["Erst deine Prüfpunkte, dann die Leistungsentscheidungen.", "Eine Entscheidung freigeben (Beleg entsteht), eine begründet ablehnen.", "Bauen: Der Ablehnungsgrund wird im Fall sichtbar.", "Entscheidung ändern – Freigabe erlischt; Text ändern – bleibt."], "Eine Entscheidung freigegeben und gesendet, eine abgelehnt, eine erloschene Freigabe gesehen; Stand gespeichert.", "Denkanstoß von Claude holen, dann die heutigen Teile weiter ausbauen – was würdest du gern noch sehen? Z. B. eine Prüf-Checkliste beim Freigeben. Nicht vorgreifen."),
-      notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Erst die eigenen Prüfpunkte, dann die Vorlage – sonst prüft man nur, was der Agent zeigt. Eine Ablehnung ist ein vollwertiger Erfolgspfad; die Begründung steuert Claude. Sind beide Entwürfe gut, den schwächeren ablehnen. Früher fertig: Denkanstöße und eigene Erweiterung (Vorschlag: Risiko-Einstufung). DOZENT: Drill-8-Mails nach dem Laden senden."
+      subtitle: "Start: „Ich will zu Drill 8. Frag mich, ob ich meinen Stand mitnehmen will.“", study: true,
+      body: taskBoard(["Erst deine Prüfpunkte, dann die Entscheidungen.", "Eine freigeben, eine begründet ablehnen.", "Bauen: Der Ablehnungsgrund wird sichtbar.", "Entscheidung ändern – Freigabe erlischt."], "Eine Entscheidung freigegeben und gesendet, eine abgelehnt, Stand gespeichert.", "Denkanstoß holen, dann ausbauen – z. B. eine Prüf-Checkliste beim Freigeben."),
+      notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Erst die eigenen Prüfpunkte, dann die Vorlage – sonst prüft man nur, was der Agent zeigt. Eine Ablehnung ist ein vollwertiger Erfolgspfad; die Begründung steuert Claude. Text ändern lässt die Freigabe stehen, Entscheidung ändern nicht. Früher fertig: Denkanstöße und eigene Erweiterung (Vorschlag: Risiko-Einstufung). DOZENT: Drill-8-Mails nach dem Laden senden."
     },
     {
       id: 'Drill9Start', type: 'Kapitel', eyebrow: '14:30–15:30 · Meilenstein 4', title: 'Das Eingriffsfenster', study: true,
-      body: stage('9', 'Automatisch, solange niemand widerspricht.', 'Haftpflichtfälle werden erkannt. Antworten warten sichtbar im Eingriffsfenster und gehen nach der Frist automatisch raus.', ['Start: drill-09-start', 'Ziel: Timer + Eingriff']),
-      notes: 'ZEIT: 1 Minute. SAGEN: Jetzt ändert sich die Voreinstellung. Ohne Eingriff findet eine externe Wirkung statt. Darum müssen Warteschlange und Frist für Menschen sichtbar und beeinflussbar sein. DOZENT: Claude bitten „Schick die Drill-9-Mails an alle“ (oder instructor send 9 --yes); Fortschritt: „Wer hat geantwortet?“.'
+      body: stage('9', 'Automatisch – solange niemand eingreift.', ['Start: drill-09-start']),
+      notes: 'ZEIT: 1 Minute. SAGEN: Jetzt ändert sich die Voreinstellung. Ohne Eingriff geht eine Antwort raus. Darum müssen Warteschlange und Frist sichtbar und beeinflussbar sein. Und: Neue Mails sortiert ihr heute selbst vor – nach Stichwörtern oder mit KI. DOZENT: Claude bitten „Schick die Drill-9-Mails an alle“.'
     },
+    zeitplan('drill-09'),
+    recap(8, 'Der Ablehnungsgrund steht im Fall.', 'Freigegeben wird die Entscheidung – ändert sie sich, erlischt die Freigabe.', 'Was war eure beste Ablehnungsbegründung?'),
     {
-      id: 'Drill9Queue', type: 'Screenshot', eyebrow: 'Drill 9 · Das Eingriffsfenster', title: 'Das Fenster zeigt nicht nur Zeit, sondern Eingriffsmacht.',
-      subtitle: 'Foliendemo: Bearbeiten, Stoppen und Uhr +24 h verändern nur diese Folie.', study: true,
-      body: `<div class="day-queue"><div class="day-queue-head"><span>Eingriffsfenster · Haftpflicht</span><button type="button" class="day-app-button secondary" data-queue="advance">Workshop-Uhr +24 h</button></div>
-        <div class="day-queue-row" data-item="1" data-state="queued"><span>01</span><span><strong>Rückfrage zum Schaden</strong><small>Fall HP-2301 · fiktiv</small></span><span class="day-queue-state">Geplant</span><span class="day-queue-time">23:59 h</span><span class="day-queue-actions"><button type="button" class="day-app-button secondary" data-queue="edit">Bearbeiten</button><button type="button" class="day-app-button danger" data-queue="remove">Stoppen</button></span></div>
-        <div class="day-queue-row" data-item="2" data-state="queued"><span>02</span><span><strong>Deckungsfrage</strong><small>Fall HP-2302 · fiktiv</small></span><span class="day-queue-state">Geplant</span><span class="day-queue-time">23:59 h</span><span class="day-queue-actions"><button type="button" class="day-app-button secondary" data-queue="edit">Bearbeiten</button><button type="button" class="day-app-button danger" data-queue="remove">Stoppen</button></span></div>
-        <div class="day-queue-row" data-item="3" data-state="queued"><span>03</span><span><strong>Nachfrage zur Police</strong><small>Fall HP-2303 · fiktiv</small></span><span class="day-queue-state">Geplant</span><span class="day-queue-time">23:59 h</span><span class="day-queue-actions"><button type="button" class="day-app-button secondary" data-queue="edit">Bearbeiten</button><button type="button" class="day-app-button danger" data-queue="remove">Stoppen</button></span></div>
-        <p style="font-size:15px;margin:9px 0 0;color:#6B5B3A">Nur Demonstration – die echten Aktionen finden ausschliesslich im lokalen Cockpit statt.</p></div>`,
-      notes: 'ZEIT: 4 Minuten. SAGEN: Erst die drei Eingriffe vorführen: eine Nachricht laufen lassen, eine bearbeiten, eine stoppen. Danach Uhr vorspulen. Der Knopf auf der Folie sendet nicht; im Workshop muss die echte App mit freigegebenen synthetischen Empfängern getestet werden.'
+      id: 'Drill9Queue', type: 'Screenshot', eyebrow: 'Drill 9 · Das Eingriffsfenster', title: 'Geht in 24 h raus – außer du hältst es an.', study: true, visual: true,
+      body: shot(['cockpit-drill9-list.webp', 'Eingriffsfenster mit drei eingeplanten Antworten und Countdown'], ['cockpit-drill9-fenster.webp', 'Antwort mit „Geht automatisch raus in 23 h 58 min“ und „Versand stoppen“']),
+      notes: 'ZEIT: 4 Minuten. SAGEN: Links das Eingriffsfenster mit Countdown pro Antwort. Unten im Fall: „Ändern und Versand stoppen“ oder „Versand stoppen“. Oben rechts „Zeit +24 h“ – das kann nur der Mensch. Erst vorhersagen, was nach 24 Stunden rausgeht, dann vorspulen und am Protokoll prüfen.'
     },
     {
       id: 'Drill9Auftrag', type: 'Drill', eyebrow: "Drill 9 · Eure Aufgaben · 60 Minuten", title: "Das Fenster ist sichtbar. Die Wirkung kommt später.",
-      subtitle: "Start: „Ich will zu Drill 9. Frag mich, ob ich meinen Stand mitnehmen will.“ Claude lädt – im selben Ordner, ohne neue Sitzung.", study: true,
-      body: taskBoard(["Entscheiden: nach Stichwörtern oder mit KI sortieren?", "Bauen: die Vorsortierung – dann Postfach abrufen.", "Vorhersagen, dann ändern, stoppen, laufen lassen.", "„Zeit +24 h“ drücken, mit Vorhersage vergleichen."], "Mails werden nach deinen Regeln vorsortiert; eine Antwort ging automatisch raus, eine geändert, eine gestoppt; Stand gespeichert.", "Denkanstoß von Claude holen, dann die heutigen Teile weiter ausbauen – was würdest du gern noch sehen? Z. B. „geht als Nächstes raus“ sortiert. Nicht vorgreifen."),
-      notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Jetzt kippt die Voreinstellung: Ohne Eingriff passiert etwas. Erst vorhersagen, dann vorspulen. Der Drill-9-Stand schaltet den automatischen Versand selbst ein; niemand stellt etwas von Hand um. Früher fertig: Denkanstöße und eigene Erweiterung (Vorschlag: eigene Kennzahl für die Vorstandspräsentation). DOZENT: Drill-9-Mails nach dem Laden senden."
+      subtitle: "Start: „Ich will zu Drill 9. Frag mich, ob ich meinen Stand mitnehmen will.“", study: true,
+      body: taskBoard(["Entscheiden: Stichwörter oder KI?", "Bauen: Vorsortierung – dann Postfach abrufen.", "Vorhersagen: ändern, stoppen, laufen lassen.", "„Zeit +24 h“ – mit Vorhersage vergleichen."], "Mails werden nach deinen Regeln vorsortiert; eine Antwort ging automatisch raus, eine geändert, eine gestoppt.", "Denkanstoß holen, dann ausbauen – z. B. „geht als Nächstes raus“ sortiert."),
+      notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Jetzt kippt die Voreinstellung: Ohne Eingriff passiert etwas. Die Vorsortierung ist euer Bauauftrag – ihr wählt den Weg und was bei Unklarheit passiert. Der Drill-9-Stand schaltet den automatischen Versand selbst ein. Früher fertig: Denkanstöße und eigene Erweiterung (Vorschlag: eigene Kennzahl für die Vorstandspräsentation). DOZENT: Drill-9-Mails nach dem Laden senden."
     },
     {
       id: 'Drill10Start', type: 'Kapitel', eyebrow: '15:45–16:30 · Meilenstein 5', title: 'Pfefferminzia 2.0', study: true,
-      body: stage('10', 'Erst begeistern, dann belegen.', 'Ein Marketing-Video über euer System – und damit die Präsentation für den Vorstand.', ['Start: drill-10-start', 'Freie Hand']),
-      notes: 'ZEIT: 1 Minute. SAGEN: Letzter Drill vor dem Whiteboard. Ihr erzählt euer System nach außen – erst als Video mit Remotion, dann dem Vorstand. Botschaft, Szenen und Folien bestimmt ihr. Beim Checkpoint-Wechsel werden nur gezählte Werte kopiert, keine Mailtexte oder Namen. Auto-Versand ist wieder aus.'
+      body: stage('10', 'Erst begeistern, dann belegen.', ['Start: drill-10-start', 'Freie Hand']),
+      notes: 'ZEIT: 1 Minute. SAGEN: Letzter Drill vor dem Whiteboard. Ihr erzählt euer System nach außen – erst als Marketing-Video mit Remotion, dann dem Vorstand. Botschaft, Szenen und Folien bestimmt ihr. Beim Wechsel werden nur gezählte Werte kopiert, keine Mailtexte oder Namen. Auto-Versand ist wieder aus.'
     },
+    zeitplan('drill-10'),
+    recap(9, 'Neue Mails sortieren sich selbst vor.', 'Automatisch geht – mit sichtbarem Eingriffsfenster.', 'Stimmte eure Vorhersage nach +24 h?'),
     {
-      id: 'Drill10Daten', type: 'Inhalt', eyebrow: 'Drill 10 · Der Weg', title: 'Botschaft → Video → Vorstand.',
-      subtitle: 'Marketing darf begeistern. Der Vorstand braucht Beleg und Grenze.', study: true,
-      body: `<div class="day-flow"><div class="day-flow-step"><b>Botschaft</b><span>für wen?<br>ein Satz</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Video</b><span>Remotion,<br>Pfefferminzia-Look</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Präsentation</b><span>Video, Zahlen<br>aus Drill 9</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Vorstand</b><span>Empfehlung<br>und Grenze</span></div></div>`,
-      notes: 'ZEIT: 2 Minuten. SAGEN: Claude richtet Node und Remotion im Hintergrund ein, während ihr die Botschaft überlegt – außerhalb der Kommandozentrale, in einem eigenen Ordner. Klappt das nicht in fünf Minuten: Video weglassen, Präsentation bauen. Keine erfundenen Zahlen, auch nicht im Marketing.'
+      id: 'Drill10Daten', type: 'Screenshot', eyebrow: 'Drill 10 · Ein Beispiel', title: 'Botschaft → Video → Vorstand.', study: true, visual: true,
+      body: shot(['drill10-video.webp', 'Standbild aus dem Beispielvideo Pfefferminzia 2.0']),
+      notes: 'ZEIT: 2 Minuten. Das Beispielvideo aus der README kurz zeigen (docs/media/pfefferminzia-2-0-pitch.mp4) – als Möglichkeit, nicht als Vorlage zum Nachbauen. SAGEN: Claude richtet Node und Remotion im Hintergrund ein, während ihr die Botschaft überlegt. Klappt das nicht in fünf Minuten: Video weglassen, Präsentation bauen. Marketing darf begeistern – aber keine erfundenen Zahlen. Der Vorstand braucht Beleg und Grenze.'
     },
     {
       id: 'Drill10Auftrag', type: 'Drill', eyebrow: "Drill 10 · Eure Aufgaben · 45 Minuten", title: "Ein Video. Eine Präsentation. Eure Botschaft.",
-      subtitle: "Start: „Ich will zu Drill 10. Frag mich, ob ich meinen Stand mitnehmen will.“ Claude lädt – im selben Ordner.", study: true,
-      body: taskBoard(["Für wen, welche Botschaft? Claude richtet derweil ein.", "Video bauen, in der Vorschau verbessern, rendern.", "Präsentation für den Vorstand mit Video, Empfehlung, Grenze.", "Drei Minuten vorführen."], "Video über Pfefferminzia 2.0 und Präsentation im Pfefferminzia-Look; keine erfundenen Zahlen; Stand gespeichert.", "Eine zweite, kürzere Videofassung – oder eine Folie „Mein agentisches System“."),
+      subtitle: "Start: „Ich will zu Drill 10. Frag mich, ob ich meinen Stand mitnehmen will.“", study: true,
+      body: taskBoard(["Für wen, welche Botschaft? Claude richtet ein.", "Video bauen, verbessern, rendern.", "Präsentation für den Vorstand.", "Drei Minuten vorführen."], "Video und Präsentation im Pfefferminzia-Look; keine erfundenen Zahlen; Stand gespeichert.", "Eine kürzere Videofassung – oder die Folie „Mein agentisches System“."),
       notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Freie Hand – Ton, Szenen, Folien entscheidet ihr. Präsentation: unten links „Vorstand“ im Cockpit. Anleitung: docs/VIDEO_REMOTION.md. Wer ohne Guthaben ist: Buddy-Modus."
     },
     {
-      id: 'Checkpoints', type: 'Code', eyebrow: 'Sicheres Aufholen', title: 'Ein Checkpoint rettet den Tag, nicht auf Kosten Ihrer Arbeit.',
-      subtitle: 'Du wählst, Claude zeigt den Plan und fragt noch einmal. Alles passiert im selben Ordner, in derselben Sitzung.',
+      id: 'Checkpoints', type: 'Rettung', eyebrow: 'Sicheres Aufholen', title: 'Hängst du? Der Checkpoint rettet dich.',
       body: grid([
-        card('Eigenen Stand mitnehmen', `<p>Dein Code, auch noch nicht Gespeichertes, und deine Fälle bleiben. Nur der Drill wird umgestellt.</p><p class="day-small">Wenn dein eigener Bau funktioniert und weiterwachsen soll.</p>`, 'mint-card'),
-        card('Frisch offiziell starten', `<p>Referenzcode und neue Fälle. Dein Code und deine Fälle werden vorher gesichert – nichts geht verloren.</p><p class="day-small">Wenn du einen Rettungsstand brauchst. Nach der Wahl: Plan ansehen, ausdrücklich bestätigen, prüfen.</p>`)
+        card('Eigenen Stand mitnehmen', `<p class="day-emphasis">Dein Code und deine Fälle bleiben.</p>`, 'mint-card'),
+        card('Frisch offiziell starten', `<p class="day-emphasis">Lösung laden – deine Arbeit wird gesichert.</p>`)
       ]),
-      notes: 'ZEIT: 3 Minuten. SAGEN: Claude fragt zuerst nach Mitnehmen oder frisch offiziell, zeigt den Plan und lädt erst nach einem klaren Ja. Alles passiert im selben Ordner und in derselben Sitzung – niemand öffnet etwas neu. Mitnehmen stellt nur den Drill um; offiziell sichert den eigenen Code und die Fälle und lädt den Referenzstand. Danach startet Claude die Kommandozentrale neu und zeigt, was im neuen Drill dazukommt.'
+      notes: 'ZEIT: 3 Minuten. SAGEN: Claude fragt beim Drill-Wechsel: mitnehmen oder frisch offiziell? Es zeigt den Plan und lädt erst nach einem klaren Ja. Alles passiert im selben Ordner und in derselben Sitzung. Mitnehmen stellt nur den Drill um, auch noch nicht Gespeichertes bleibt. Offiziell sichert den eigenen Code und die Fälle und lädt den Referenzstand mit allen bisherigen Lösungen.'
     },
     {
-      id: 'Tempo', type: 'Inhalt', eyebrow: 'Adaptiver Lernpfad', title: 'Wer schneller ist, gestaltet mit. Wer hängt, bekommt Halt.',
-      subtitle: 'Ausbauen ist ein Angebot nach dem Fallnachweis – kein Pflichtprogramm und kein Vorgriff auf den nächsten Drill.',
+      id: 'Tempo', type: 'Inhalt', eyebrow: 'Euer Tempo', title: 'Schneller? Ausbauen. Hängst du? Halt.',
       body: grid([
-        card('Schneller', `<p>Kernfall + Test belegen. Dann die eigene Kommandozentrale erweitern: empfohlene Erweiterung, Anregung oder eigene Idee – etwa eine Mini-Wissensbasis oder ein neues Werkzeug für Claude.</p><p>Erst Steckbrief: Wer löst aus, welche Daten, welche Kontrolle, woran erkennen wir Erfolg?</p>`, 'mint-card'),
-        card('Mehr Unterstützung', `<p>Claude zeigt nur den nächsten Schritt. Hint Card, Buddy-Fragen und vorbereiteter Checkpoint helfen beim Aufholen.</p><p>Bei Tokenlimit: Browser + Karten; Reservezugang nur organisiert, nie Passwörter teilen.</p>`, 'red-card')
+        card('Schneller', `<p class="day-emphasis">Die eigene Kommandozentrale erweitern – erst Steckbrief, dann bauen.</p>`, 'mint-card'),
+        card('Mehr Unterstützung', `<p class="day-emphasis">Claude zeigt den nächsten Schritt. Ich helfe. Der Checkpoint holt auf.</p>`, 'red-card')
       ]),
-      notes: 'ZEIT: 2 Minuten. SAGEN: Ausbauen ist Opt-in und baut den Baustein, den der nächste Drill im Großen zeigt – etwa die eigene Mini-Wissensbasis vor den Tarifen in Drill 7. Wer ein Werkzeug mit Außenwirkung baut, etwa Senden, legt vorher die Kontrolle fest. Buddys stellen Fragen, übernehmen nicht Tastatur oder Freigabe. Lehrende organisieren Token-Reserven vorher.'
+      notes: 'ZEIT: 2 Minuten. SAGEN: Ausbauen ist ein Angebot nach dem Fallnachweis – kein Pflichtprogramm und kein Vorgriff auf den nächsten Drill. Wer ein Werkzeug mit Außenwirkung baut, etwa Senden, legt vorher die Kontrolle fest. Buddys stellen Fragen, übernehmen nicht Tastatur oder Freigabe. Bei Tokenlimit: Browser und Drill-Karten; nie Passwörter teilen.'
     },
     {
       id: 'Whiteboard', type: 'Schluss', eyebrow: '16:45 · Laptops zu', title: 'Wo darf der Agent handeln?',
-      subtitle: 'Vom Terminal-Prompt zu Event oder Cron: Wer startet, stoppt und verantwortet den Lauf?',
-      body: `<div class="day-flow"><div class="day-flow-step"><b>Trigger</b><span>Prompt · Mail<br>oder Cron</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Worker</b><span>Rechte · Retry<br>Duplikate</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Agent</b><span>MCP + Belege</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Kontrolle</b><span>Freigabe oder<br>Eingriffsfenster</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Wirkung</b><span>Versand + Audit</span></div></div>`,
-      notes: 'ZEIT: 2 Minuten, dann Beamer aus. SAGEN: Wir haben Claude oft im Terminal angestossen; wie sähe derselbe Prozess als Mail-Event oder periodischer Cron-Lauf aus? Wer betreibt ihn, mit welchen Rechten, Retry- und Stoppregeln? Kein Produktiv-Cronjob im Workshop.'
+      body: `<div class="day-flow"><div class="day-flow-step"><b>Auslöser</b><span>Mail · Zeitplan</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Agent</b><span>Werkzeuge + Belege</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Kontrolle</b><span>Freigabe oder<br>Fenster</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Wirkung</b><span>Versand + Protokoll</span></div></div>`,
+      notes: 'ZEIT: 2 Minuten, dann Beamer aus. SAGEN: Wir haben Claude heute im Chat angestoßen; wie sähe derselbe Prozess als Mail-Event oder periodischer Lauf aus? Wer betreibt ihn, mit welchen Rechten, Retry- und Stoppregeln? Kein Produktiv-Cronjob im Workshop.'
     },
     {
       id: 'Contract', type: 'Schluss', eyebrow: 'Übergabe an Mittwoch', title: 'Ein Automation Contract macht die Grenze explizit.',
-      subtitle: 'Jede Gruppe überträgt die Muster auf einen eigenen, begrenzten Prozess.',
       body: grid([
-        card('Sechs Felder', `<p>Auslöser · erlaubte Aktionen · Kontrollregel · Belege · Ausnahmeweg · verantwortlicher Mensch.</p><p>Was darf automatisch laufen? Was bleibt absichtlich beim Menschen?</p>`, 'mint-card'),
-        card('Eine letzte Frage', `<p class="day-emphasis">Welche externe Wirkung wäre in Ihrem Fall heute schon verantwortbar?</p><p>Und welchen Beleg bräuchten Sie, um das morgen noch erklären zu können?</p>`, 'red-card')
+        card('Sechs Felder', `<p class="day-emphasis">Auslöser · Aktionen · Kontrollregel · Belege · Ausnahme · verantwortlicher Mensch</p>`, 'mint-card'),
+        card('Eine Frage', `<p class="day-emphasis">Welche externe Wirkung wäre bei euch heute schon verantwortbar?</p>`, 'red-card')
       ]),
-      notes: 'ZEIT: 1 Minute. SAGEN: Die Gruppe schreibt den Contract nicht auf der Folie, sondern am Whiteboard / im Handout. Am Mittwoch dient er als Startpunkt für den eigenen Fall.'
+      notes: 'ZEIT: 1 Minute. SAGEN: Die Gruppe schreibt den Contract am Whiteboard / im Handout. Was darf automatisch laufen, was bleibt absichtlich beim Menschen – und welchen Beleg bräuchtet ihr, um es morgen noch zu erklären? Am Mittwoch dient er als Startpunkt für den eigenen Fall.'
     }
   ];
 
   const agentisch = window.PFEFFERMINZIA_AGENTISCH_SLIDES || [];
 
   const deckIds = {
-    gesamt: ['Titel', 'Bruecke', 'LiveBeispiele', 'Agenda', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus', 'Tempo', 'Whiteboard', 'Contract'],
-    input: ['Titel', 'Bruecke', 'LiveBeispiele', 'Agenda', 'Architektur', 'Belege', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus'],
-    'drill-06': ['Drill6Start', 'Drill6Los', 'Drill6Cockpit', 'Drill6Auftrag', 'Checkpoints'],
-    'drill-07': ['Drill7Start', 'Drill7Kontext', 'Drill7Auftrag', 'Checkpoints'],
-    'drill-08': ['Drill8Start', 'Drill8Review', 'Drill8Auftrag', 'Checkpoints'],
-    'drill-09': ['Drill9Start', 'Drill9Queue', 'Drill9Auftrag', 'Checkpoints'],
-    'drill-10': ['Drill10Start', 'Drill10Daten', 'Drill10Auftrag'],
-    abschluss: ['Whiteboard', 'Contract'],
+    gesamt: ['Titel', 'Bruecke', 'Agenda', 'LiveBeispiele', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus', 'Tempo', 'Whiteboard', 'Contract'],
+    input: ['Titel', 'Bruecke', 'Agenda', 'LiveBeispiele', 'Architektur', 'Belege', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus'],
+    'drill-06': ['Drill6Start', 'Zeitplan-drill-06', 'Drill6Los', 'Teilnehmende', 'Drill6Cockpit', 'Drill6Auftrag', 'Checkpoints'],
+    'drill-07': ['Drill7Start', 'Zeitplan-drill-07', 'Rueckblick6', 'Drill7Kontext', 'Drill7Auftrag', 'Checkpoints'],
+    'drill-08': ['Drill8Start', 'Zeitplan-drill-08', 'Rueckblick7', 'Drill8Review', 'Drill8Auftrag', 'Checkpoints'],
+    'drill-09': ['Drill9Start', 'Zeitplan-drill-09', 'Rueckblick8', 'Drill9Queue', 'Drill9Auftrag', 'Checkpoints'],
+    'drill-10': ['Drill10Start', 'Zeitplan-drill-10', 'Rueckblick9', 'Drill10Daten', 'Drill10Auftrag'],
+    abschluss: ['Zeitplan-abschluss', 'Whiteboard', 'Contract'],
+    teilnehmende: ['Teilnehmende'],
     agentisch: agentisch.map(slide => slide.id)
   };
+  slides.push(zeitplan('abschluss'));
   const allSlides = [...slides, ...agentisch];
   const selectedIds = deckIds[deckName] || deckIds.gesamt;
   const selectedSlides = selectedIds.map(id => allSlides.find(slide => slide.id === id));
@@ -269,48 +281,20 @@
       : '';
     const frame = slide.cover
       ? `<div class="day-frame"><div class="day-head"><div class="caption">${slide.eyebrow}</div><img class="day-logo" src="${logo}" alt="Universität St.Gallen"></div>${slide.body}${avatar}<div class="day-foot"><div>${footerLabel}</div><div>${slide.type} · <strong>${String(index + 1).padStart(2, '0')} / ${selectedSlides.length}</strong></div></div></div>`
-      : `<div class="day-frame ${slide.visual ? 'visual' : ''}">${slide.study ? '<div class="day-stripe"></div>' : ''}<div class="day-head"><div class="caption ${slide.study ? 'mint' : ''}">${slide.eyebrow}</div><img class="day-logo" src="${logo}" alt="Universität St.Gallen"></div><div class="day-heading"><h2>${slide.title}</h2>${slide.subtitle ? `<p>${slide.subtitle}</p>` : ''}</div><div class="day-content">${slide.body}</div>${avatar}<div class="day-source">${slide.source || source}</div><div class="day-foot"><div>${footerLabel}</div><div>${slide.type} · <strong>${String(index + 1).padStart(2, '0')} / ${selectedSlides.length}</strong></div></div></div>`;
+      : `<div class="day-frame ${slide.visual ? 'visual' : ''}">${slide.study ? '<div class="day-stripe"></div>' : ''}<div class="day-head"><div class="caption ${slide.study ? 'mint' : ''}">${slide.eyebrow}</div><img class="day-logo" src="${logo}" alt="Universität St.Gallen"></div><div class="day-heading"><h2>${slide.title}</h2>${slide.subtitle ? `<p>${slide.subtitle}</p>` : ''}</div><div class="day-content">${slide.body}</div>${avatar}${slide.source ? `<div class="day-source">${slide.source}</div>` : ''}<div class="day-foot"><div>${footerLabel}</div><div>${slide.type} · <strong>${String(index + 1).padStart(2, '0')} / ${selectedSlides.length}</strong></div></div></div>`;
     return `<section data-id="${slide.id}">${frame}<aside class="notes"><p>${slide.notes}</p></aside></section>`;
   }
 
   sourceSlides.innerHTML = selectedSlides.map(render).join('');
 
-  document.addEventListener('click', event => {
-    const review = event.target.closest('[data-review]');
-    if (review) {
-      const status = document.getElementById('review-status');
-      const states = {
-        approve: ['Explizit freigegeben · Demo', '#9FE3C4'],
-        reject: ['Abgelehnt · zurück in Bearbeitung', '#F8D2CE'],
-        edit: ['Text geändert · Freigabe ungültig', '#F9D949']
-      };
-      const [label, color] = states[review.dataset.review];
-      status.textContent = label;
-      status.style.background = color;
-    }
-    const queue = event.target.closest('[data-queue]');
-    if (!queue) return;
-    if (queue.dataset.queue === 'advance') {
-      document.querySelectorAll('.day-queue-row').forEach(row => {
-        if (row.dataset.state !== 'queued') return;
-        row.dataset.state = 'sent';
-        row.querySelector('.day-queue-state').textContent = 'Auto-versendet · Demo';
-        row.querySelector('.day-queue-time').textContent = '00:00 h';
-        row.querySelectorAll('button').forEach(button => { button.disabled = true; });
-      });
-      return;
-    }
-    const row = queue.closest('.day-queue-row');
-    if (queue.dataset.queue === 'edit') {
-      row.dataset.state = 'edited';
-      row.querySelector('.day-queue-state').textContent = 'Bearbeitet · neu prüfen';
-      row.querySelector('.day-queue-time').textContent = 'pausiert';
-    }
-    if (queue.dataset.queue === 'remove') {
-      row.dataset.state = 'removed';
-      row.querySelector('.day-queue-state').textContent = 'Entfernt';
-      row.querySelector('.day-queue-time').textContent = '—';
-      row.querySelectorAll('button').forEach(button => { button.disabled = true; });
-    }
-  });
+  // Participants and the start of their keys – only on the instructor machine, read at runtime from .instructor/.
+  const roster = document.getElementById('day-roster');
+  if (roster) {
+    fetch('/api/instructor/roster', {cache: 'no-store'})
+      .then(response => { if (!response.ok) throw new Error(); return response.json(); })
+      .then(rows => {
+        roster.innerHTML = rows.map(row => `<div class="day-roster-card"><span>${row.slot}</span><strong>${row.firstName}</strong><code>${row.keyStart}</code></div>`).join('');
+      })
+      .catch(() => { roster.innerHTML = '<p class="day-roster-empty">Nur auf dem Dozentenrechner – über die Kommandozentrale öffnen.</p>'; });
+  }
 })();

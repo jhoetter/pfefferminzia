@@ -30,13 +30,14 @@ Formulierungen, Handlungen und Nachweise stehen in den
 | Deck | Live-Einsatz | Folien |
 | --- | --- | ---: |
 | [Input](../slides/index.html?deck=input) | 08:30 · Live-Beispiele, Vibe Coding, MCP, Kontrolle | 9 |
-| [Drill 6](../slides/index.html?deck=drill-06) | 10:00 · Start-Satz, Cockpit und Inbox | 5 |
-| [Drill 7](../slides/index.html?deck=drill-07) | 11:15 · Leben: Mensch bearbeitet | 4 |
-| [Drill 8](../slides/index.html?deck=drill-08) | 13:15 · Leben: Mensch gibt frei | 4 |
-| [Drill 9](../slides/index.html?deck=drill-09) | 14:30 · Haftpflicht: Eingriffsfenster | 4 |
-| [Drill 10](../slides/index.html?deck=drill-10) | 15:45 · Pfefferminzia 2.0: Video und Vorstand | 3 |
+| [Drill 6](../slides/index.html?deck=drill-06) | 10:00 · Zeitplan, Start-Satz, Teilnehmende mit Schlüsselanfang, Cockpit | 7 |
+| [Drill 7](../slides/index.html?deck=drill-07) | 11:15 · Zeitplan, Rückblick 6, Bestand | 6 |
+| [Drill 8](../slides/index.html?deck=drill-08) | 13:15 · Zeitplan, Rückblick 7, Leistungsentscheidung | 6 |
+| [Drill 9](../slides/index.html?deck=drill-09) | 14:30 · Zeitplan, Rückblick 8, Eingriffsfenster | 6 |
+| [Drill 10](../slides/index.html?deck=drill-10) | 15:45 · Zeitplan, Rückblick 9, Video und Vorstand | 5 |
 | [Vorstandspräsentation](../slides/vorstand.html) | 15:45 · eigene Präsentation im Pfefferminzia-Look mit Video-Folie | frei |
-| [Abschluss](../slides/index.html?deck=abschluss) | 16:45 · Whiteboard, danach Beamer aus | 2 |
+| [Abschluss](../slides/index.html?deck=abschluss) | 16:45 · Zeitplan, Whiteboard, danach Beamer aus | 3 |
+| [Teilnehmende](../slides/index.html?deck=teilnehmende) | jederzeit · Vornamen und Schlüsselanfang (nur Dozentenrechner) | 1 |
 
 Nach `uv run pfefferminzia serve` den Launcher unter
 <http://127.0.0.1:3004/slides/decks.html> öffnen. Alternativ
@@ -47,11 +48,17 @@ Referentenansicht mit Notizen, `F` Vollbild und `Esc` die Übersicht. Für den
 PDF-Export `&print-pdf` an eine Deck-URL mit `?deck=...` anhängen und mit
 Hintergrundgrafiken drucken.
 
-Cockpit, Review und Queue auf den Folien sind **Foliendemos**. Sie lesen keine
-lokalen Falldaten und lösen keine echten Freigaben oder E-Mails aus. Die
-wirklichen Aktionen finden im Pfefferminzia-Cockpit statt. Der Johannes-Avatar
-stammt als SVG aus Falks vorhandener Workshop-Vorlage; er steht auf Titeln
-und Kapitelstarts, damit Arbeitsfolien luftig bleiben.
+Die Folien sind bewusst knapp: je eine starke Zeile. Was du dazu sagst,
+steht in den **Notizen** (`S` öffnet die Referentenansicht). Jeder Drill beginnt
+mit dem Zeitplan (Tag + Minuten dieser Stunde), ab Drill 7 mit einem kurzen
+Rückblick auf den vorigen Drill. Die Bildschirmfotos sind echte Ausschnitte
+der Kommandozentrale im jeweiligen Stand.
+
+Die Folie **Teilnehmende** liest Vornamen und den Schlüsselanfang zur Laufzeit
+aus `.instructor/roster.csv` (Endpunkt `/api/instructor/roster`, nur auf dem
+Dozentenrechner). Sie funktioniert nur, wenn die Folien über die
+Kommandozentrale geöffnet sind (<http://127.0.0.1:3004/slides/…>); im Repo
+steht nichts davon. Der Johannes-Avatar steht auf Titeln und Kapitelstarts.
 
 Die **eigene Vorstandspräsentation** (`slides/vorstand.html`) ist die
 Ausnahme: Sie hat bewusst den Pfefferminzia-Look statt unseres Kursdesigns,

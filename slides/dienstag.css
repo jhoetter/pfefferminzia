@@ -1,4 +1,4 @@
-/* Tuesday slides extend Falk Uebernickel's Golden Age template without changing its skin. */
+/* Tuesday slides extend the workshop template (Golden Age look) without changing its skin. */
 .day-frame { position: relative; width: 1280px; height: 720px; overflow: hidden; background: #F6EBD0; color: #111; font-family: Barlow, 'Helvetica Neue', Arial, sans-serif; }
 .day-frame .day-head { position: absolute; left: 64px; right: 64px; top: 40px; display: flex; align-items: flex-start; justify-content: space-between; }
 .day-frame .day-logo { width: 132px; height: auto; object-fit: contain; }
@@ -100,10 +100,9 @@
 .day-frame.visual .day-heading { top: 95px; }
 .day-frame.visual .day-heading h2 { font-size: 42px; }
 .day-frame.visual .day-content { top: 188px; height: 428px; }
-.day-frame .day-evidence { position: relative; display: block; width: 100%; height: 100%; overflow: hidden; border: 4px solid #111; background: #fff; box-shadow: 7px 7px 0 #111; text-decoration: none; }
-.day-frame .day-evidence img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center center; }
-.day-frame .day-evidence.center img { object-position: center center; }
-.day-frame .day-evidence span { position: absolute; right: 14px; bottom: 12px; padding: 7px 12px; border: 2px solid #111; background: #F9D949; color: #111; font-size: 16px; font-weight: 700; }
+.day-frame .day-evidence { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; text-decoration: none; }
+.day-frame .day-evidence img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; border: 4px solid #111; box-shadow: 7px 7px 0 #111; background: #fff; }
+.day-frame.visual .day-content:has(.day-evidence) { height: 470px; }
 .day-frame .day-evidence:focus-visible { outline: 4px solid #2456C7; outline-offset: 3px; }
 .day-frame .day-benchmark-bars { display: grid; grid-template-columns: repeat(7, 1fr); align-items: end; gap: 22px; height: 310px; padding: 0 18px; border-bottom: 3px solid #111; }
 .day-frame .day-benchmark-column { display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; gap: 6px; }
@@ -125,3 +124,39 @@
 .day-frame .day-tasks li { counter-increment: task; position: relative; margin: 0 0 13px; padding-left: 54px; font-size: 24px; line-height: 1.2; }
 .day-frame .day-tasks li::before { content: counter(task); position: absolute; left: 0; top: -3px; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; border: 3px solid #171717; background: #A8E6CF; font-weight: 800; font-size: 21px; }
 .day-frame .day-card h3.day-task-early { margin-top: 22px; }
+
+/* Real cockpit screenshots: always inside the slide, framed like a card. */
+.day-frame .day-shot { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+.day-frame .day-shot img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; border: 4px solid #111; border-radius: 6px; box-shadow: 7px 7px 0 #111; background: #fff; }
+.day-frame.visual .day-content:has(.day-shot) { height: 470px; }
+
+/* Timetable: where we are in the day. */
+.day-frame .day-timeline-row.now { background: #F9D949; }
+.day-frame .day-timeline-row.past { opacity: .45; }
+.day-frame .day-timeline-row.pause { background: transparent; box-shadow: none; border-style: dashed; }
+.day-frame .day-schedule { display: grid; grid-template-columns: 1.35fr 1fr; gap: 28px; height: 100%; }
+.day-frame .day-schedule > :only-child { grid-column: 1 / -1; }
+.day-frame .day-timeline.compact { gap: 5px; align-content: start; }
+.day-frame .day-timeline.compact .day-timeline-row { grid-template-columns: 118px 92px 1fr; padding: 5px 12px; font-size: 16px; box-shadow: 3px 3px 0 #111; }
+.day-frame .day-timeline.compact .day-timeline-row strong { font-size: 17px; }
+.day-frame .day-plan { list-style: none; margin: 0; padding: 0; }
+.day-frame .day-plan li { display: grid; grid-template-columns: 70px 1fr; gap: 10px; padding: 9px 0; border-bottom: 2px dashed #C6C0AD; font-size: 21px; line-height: 1.2; }
+.day-frame .day-plan li:last-child { border-bottom: 0; }
+.day-frame .day-plan strong { color: #2456C7; }
+
+/* Participants and the start of their keys (instructor machine only). */
+.day-frame .day-roster { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; height: 100%; align-content: start; }
+.day-frame .day-roster-card { display: flex; flex-direction: column; gap: 3px; padding: 10px 12px; border: 3px solid #111; background: #FFFBEF; box-shadow: 4px 4px 0 #111; }
+.day-frame .day-roster-card span { font-size: 14px; font-weight: 700; color: #6B5B3A; }
+.day-frame .day-roster-card strong { font-size: 22px; }
+.day-frame .day-roster-card code { font: 14px 'JetBrains Mono', monospace; color: #2456C7; }
+.day-frame .day-roster-empty { grid-column: 1 / -1; font-size: 24px; color: #6B5B3A; }
+
+.day-frame .day-shot.pair { flex-direction: column; gap: 18px; }
+.day-frame .day-shot.pair img { max-height: calc(50% - 12px); }
+
+/* Lean cards: one strong line, compact, content starts at the top. */
+.day-frame .day-grid.short { height: auto; align-items: stretch; }
+.day-frame .day-grid.short .day-card { height: auto; min-height: 210px; }
+.day-frame .day-grid.short .day-card .day-emphasis { font-size: 31px; line-height: 1.16; }
+.day-frame .day-grid.three.short .day-card .day-emphasis { font-size: 26px; hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; }

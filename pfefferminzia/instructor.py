@@ -71,6 +71,27 @@ def read_roster(directory: Path = INSTRUCTOR_DIR) -> list[dict[str, str]]:
         return [{field: row.get(field) or "" for field in ROSTER_FIELDS} for row in csv.DictReader(handle)]
 
 
+TITLES = {"dr.", "prof.", "dr.-ing.", "prof.dr.", "med.", "phil."}
+
+
+def roster_preview(directory: Path = INSTRUCTOR_DIR) -> list[dict[str, str]]:
+    """First names and the start of each key for the setup slide – read locally, never committed.
+
+    All keys share a long common start, so we show it plus four characters: enough to
+    match a person to their slip, far too little to use the key.
+    """
+    rows = read_roster(directory)
+    keys = [row.get("api_key", "") for row in rows if row.get("api_key")]
+    shared = len(os.path.commonprefix(keys)) if len(keys) > 1 else 6
+    preview = []
+    for row in rows:
+        words = [word for word in row.get("name", "").split() if word.lower() not in TITLES]
+        first = words[0] if words else f"Platz {row.get('slot', '')}"
+        key = row.get("api_key", "")
+        preview.append({"slot": row.get("slot", ""), "firstName": first, "keyStart": f"{key[:shared + 4]}…" if key else "–"})
+    return preview
+
+
 def write_roster(rows: list[dict[str, str]], directory: Path = INSTRUCTOR_DIR) -> Path:
     path = directory / "roster.csv"
     buffer = io.StringIO()

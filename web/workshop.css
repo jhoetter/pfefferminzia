@@ -131,8 +131,9 @@ button.row:hover, .row.task:hover { background: var(--hover); }
 
 .composer { margin: 18px 0 8px 40px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); box-shadow: var(--shadow); }
 .composer textarea { display: block; width: 100%; padding: 12px 14px; border: 0; outline: 0; resize: vertical; background: none; }
-.composer-foot { display: flex; align-items: center; gap: 8px; padding: 8px 10px 8px 14px; border-top: 1px solid var(--line); }
-.composer-foot .hint { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.composer-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 10px 8px 14px; border-top: 1px solid var(--line); }
+.composer-foot .hint { flex: 1 1 240px; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.composer-foot .hint:not(:first-child) { flex: 0 0 auto; overflow: visible; }
 .hint { color: var(--muted); font-size: 12px; }
 .hint.ok { color: var(--accent); flex: none; }
 .notice-bar { padding: 8px 14px; border-bottom: 1px solid var(--line); border-radius: 10px 10px 0 0; background: #fff6e0; color: #7a5600; font-size: 12px; }
