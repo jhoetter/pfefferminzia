@@ -7,6 +7,7 @@ import pytest
 
 import pfefferminzia.agentmail_service as agentmail_service
 from pfefferminzia.agentmail_service import dispatch_due_replies, send_ticket_draft, sync_agentmail
+from pfefferminzia.decisions import propose_decision
 from pfefferminzia.store import (
     approve_draft,
     get_ticket,
@@ -23,6 +24,10 @@ from pfefferminzia.workshop_clock import advance_workshop_clock
 @dataclass
 class FakeMessages:
     replies: list[tuple[str, str, str]]
+    attachments: list = None
+
+    def __post_init__(self):
+        self.attachments = []
 
     def list(self, inbox_id: str, **_: object):
         assert inbox_id == "inbox-participant"
@@ -53,10 +58,11 @@ class FakeMessages:
             "text": "Mein Kind hat das E-Bike des Nachbarn beschädigt.",
         }
 
-    def reply(self, inbox_id: str, message_id: str, *, text: str, html: str):
+    def reply(self, inbox_id: str, message_id: str, *, text: str, html: str, attachments=None):
         assert inbox_id == "inbox-participant"
         assert html and text
         self.replies.append((inbox_id, message_id, text))
+        self.attachments.append(attachments or [])
         return {"message_id": f"sent-{len(self.replies)}"}
 
 
@@ -93,8 +99,10 @@ def test_agentmail_life_and_liability_control_patterns(monkeypatch, full_db):
 
     life = next(ticket for ticket in imported_tickets(full_db) if ticket["subject"].startswith("Frage"))
     update_classification(life["ticketNumber"], "life", "coverage_question", "Life request", db=full_db)
+    # A life case approves the decision, not the wording (Drill 8 on).
+    propose_decision(life["ticketNumber"], "nachfordern", "PL-2017, Abschnitt 4", "Unterlagen fehlen noch.", db=full_db)
     save_draft(life["ticketNumber"], "Vorbereitete Lebensantwort", "Tarif PL-2017", "mcp-agent", full_db)
-    reviewed = submit_draft(life["ticketNumber"], "mcp-agent", db=full_db)
+    reviewed = get_ticket(life["ticketNumber"], full_db)
     assert reviewed["status"] == "awaiting_human"
     assert any(todo["kind"] == "review" and todo["ticketNumber"] == life["ticketNumber"] for todo in list_todos(db=full_db))
     with pytest.raises(ValueError, match="explicit human approval"):
@@ -102,11 +110,14 @@ def test_agentmail_life_and_liability_control_patterns(monkeypatch, full_db):
 
     rejected = reject_draft(life["ticketNumber"], "Bitte genauer belegen.", "human", full_db)
     assert rejected["status"] == "in_progress"
-    save_draft(life["ticketNumber"], "Überarbeitete Lebensantwort", "Tarif PL-2017, Abschnitt 4", "mcp-agent", full_db)
-    submit_draft(life["ticketNumber"], "mcp-agent", db=full_db)
+    propose_decision(life["ticketNumber"], "anerkannt", "PL-2017, Abschnitt 4", "Belegt durch Vertrag und Tarif.", 5000, "CHF", db=full_db)
     approve_draft(life["ticketNumber"], "human", full_db)
+    # Editing the letter after approval keeps the approval; the sealed decision goes along.
+    save_draft(life["ticketNumber"], "Überarbeitete Lebensantwort", "Tarif PL-2017, Abschnitt 4", "human", full_db)
+    assert get_ticket(life["ticketNumber"], full_db)["humanApprovedAt"]
     sent_life = send_ticket_draft(life["ticketNumber"], "human", full_db)
     assert sent_life["status"] == "sent"
+    assert fake.inboxes.messages.attachments[-1][0]["filename"].startswith("Entscheidung-")
 
     liability = next(ticket for ticket in imported_tickets(full_db) if ticket["subject"].startswith("E-Bike"))
     update_classification(liability["ticketNumber"], "liability", "claim", "Liability request", db=full_db)

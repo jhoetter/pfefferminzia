@@ -206,6 +206,9 @@ def get_ticket(identifier: str | int, db: sqlite3.Connection | None = None) -> d
     else:
         ticket["parties"] = []
         ticket["linkedContracts"] = []
+    from .decisions import get_decision
+
+    ticket["decision"] = get_decision(ticket_id, db)
     return ticket
 
 
@@ -319,6 +322,10 @@ def save_draft(
     if not body.strip():
         raise ValueError("Draft body cannot be empty")
     stamp = utc_now()
+    from .checkpoints import capability_enabled
+
+    # From Drill 8 a life case approves the decision, not the wording: the letter stays editable.
+    decision_based = ticket["productLine"] == "life" and capability_enabled("life_review", db)
     db.execute(
         """INSERT INTO reply_drafts (ticket_id, body, rationale, status, created_at, updated_at)
         VALUES (?, ?, ?, 'draft', ?, ?)
@@ -326,15 +333,18 @@ def save_draft(
           status = 'draft', scheduled_for = NULL, updated_at = excluded.updated_at""",
         (ticket["id"], body.strip(), rationale.strip() if rationale and rationale.strip() else None, stamp, stamp),
     )
-    db.execute(
-        """UPDATE tickets SET updated_at = ?, human_approved_at = NULL,
-        status = CASE WHEN status IN ('scheduled', 'awaiting_human') THEN 'in_progress' ELSE status END WHERE id = ?""",
-        (stamp, ticket["id"]),
-    )
+    if decision_based:
+        db.execute("UPDATE tickets SET updated_at = ? WHERE id = ?", (stamp, ticket["id"]))
+    else:
+        db.execute(
+            """UPDATE tickets SET updated_at = ?, human_approved_at = NULL,
+            status = CASE WHEN status IN ('scheduled', 'awaiting_human') THEN 'in_progress' ELSE status END WHERE id = ?""",
+            (stamp, ticket["id"]),
+        )
     if ticket["status"] == "scheduled":
         add_event(ticket["id"], "schedule_cancelled", actor, {"reason": "draft_changed"}, db)
         complete_ticket_todos(ticket_number, "queue_intervention", db)
-    if ticket["status"] == "awaiting_human":
+    if ticket["status"] == "awaiting_human" and not decision_based:
         add_event(ticket["id"], "review_invalidated", actor, {"reason": "draft_changed"}, db)
         complete_ticket_todos(ticket_number, "review", db)
     add_event(ticket["id"], "draft_saved", actor, {"rationale": rationale.strip() if rationale else None}, db)
@@ -371,6 +381,10 @@ def submit_draft(
     if ticket["productLine"] == "unknown":
         raise ValueError("Classify the product line before submitting a draft")
     stamp = utc_now()
+    from .checkpoints import capability_enabled
+
+    if ticket["productLine"] == "life" and capability_enabled("life_review", db):
+        raise ValueError("Bei Lebensfällen wird die Leistungsentscheidung vorgelegt, nicht der Text: propose_decision")
     if ticket["productLine"] == "life":
         db.execute(
             "UPDATE reply_drafts SET status = 'draft', scheduled_for = NULL, updated_at = ? WHERE ticket_id = ?",
@@ -425,11 +439,17 @@ def approve_draft(
 ) -> dict[str, Any]:
     db = db or get_database()
     ticket = get_ticket(ticket_number, db)
+    from .checkpoints import capability_enabled
+
+    if ticket and ticket["productLine"] == "life" and capability_enabled("life_review", db):
+        from .decisions import approve_decision
+
+        approve_decision(ticket_number, actor, db)
+        return get_ticket(ticket["id"], db)  # type: ignore[return-value]
     if not ticket or not ticket["draft"]:
         raise ValueError(f"Ticket or draft not found: {ticket_number}")
     if ticket["status"] in ("sent", "closed") or ticket["draft"]["status"] == "sent":
         raise ValueError("Sent or closed tickets cannot be approved again")
-    from .checkpoints import capability_enabled
 
     if ticket["productLine"] == "life" and capability_enabled("life_review", db) and ticket["status"] != "awaiting_human":
         raise ValueError("Submit the life draft to mandatory human review before approval")
@@ -452,6 +472,13 @@ def reject_draft(
 ) -> dict[str, Any]:
     db = db or get_database()
     ticket = get_ticket(ticket_number, db)
+    from .checkpoints import capability_enabled
+
+    if ticket and ticket["productLine"] == "life" and capability_enabled("life_review", db):
+        from .decisions import reject_decision
+
+        reject_decision(ticket_number, note, actor, db)
+        return get_ticket(ticket["id"], db)  # type: ignore[return-value]
     if not ticket or not ticket["draft"]:
         raise ValueError(f"Ticket or draft not found: {ticket_number}")
     if ticket["status"] in ("sent", "closed"):

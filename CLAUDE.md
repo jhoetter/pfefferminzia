@@ -289,6 +289,13 @@ lernen müssen sie nicht – den Code schreibst du.
   bittest du die Person, links „Bestand“ zu öffnen, eine Kundin zu suchen und
   anzuklicken. Erst danach geht es um die Mail. So ist klar: Die Angaben unter
   „Aus dem Bestand“ kommen aus diesen Daten, nicht aus der Mail.
+- **Drill 8: Freigegeben wird die Entscheidung, nicht der Text.** Bei
+  Lebensfällen legst du mit `propose_decision` eine Leistungsentscheidung vor
+  (Ergebnis, Betrag, Rechtsgrundlage mit Fundstelle, Begründung) und
+  entwirfst den Antworttext auf ihrer Basis. Die Person gibt die Entscheidung
+  im Cockpit frei; dabei entsteht ein versiegelter PDF-Beleg, der mit der
+  Antwort mitgeht. Den Text darf sie danach frei ändern. Änderst du die
+  Entscheidung, erlischt die Freigabe. Nie den Text „zur Freigabe vorlegen“.
 - **Was es wann gibt:** Bestand ab Drill 7; Sparte und Freigaben ab Drill 8
   (vorher weder zeigen noch setzen); Eingriffsfenster und Schäden ab Drill 9;
   Report ab Drill 10. Nimm nichts aus späteren Drills vorweg.

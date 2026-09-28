@@ -158,7 +158,7 @@ deinem eigenen Fall auszutricksen – und sendest erst dann.
 
 - Eigene Prüfkriterien festlegen, bevor man die Arbeit des Agenten ansieht.
 - Eine Ablehnung so begründen, dass der Agent sie umsetzen kann – Feedback als Steuerung.
-- Begründen, warum eine Freigabe an genau einen Textstand gebunden ist, und was ein Prüfer im Moment der Entscheidung sehen muss.
+- Begründen, warum der Mensch die Entscheidung freigibt und nicht jedes Wort – und warum eine geänderte Entscheidung eine neue Freigabe braucht.
 
 **Baustein im Fokus:** Kontrollen, Oberfläche. Bisher hast du jeden Entwurf selbst geändert und gesendet. Jetzt bereitet Claude alles vor, und du entscheidest nur noch: freigeben oder ablehnen.
 
@@ -166,22 +166,25 @@ deinem eigenen Fall auszutricksen – und sendest erst dann.
 
 - Links neu „Freigaben“: Dort liegen die Lebensantworten, die Claude dir vorgelegt hat.
 - Im Fall neu: „Sparte“. Nur Lebensantworten brauchen deine Freigabe – deshalb ordnet Claude jeden Fall einer Sparte zu, und du kannst sie ändern.
-- Im Fall: „Freigeben“ oder „Ablehnen“ mit Begründung. Erst nach deiner Freigabe kannst du senden.
-- Änderst du einen freigegebenen Text, erlischt die Freigabe – das steht dann in der Aktivität.
+- Im Fall neu: die violette Karte „Leistungsentscheidung“ – Ergebnis, Betrag, Rechtsgrundlage, Begründung. Du gibst die Entscheidung frei („Entscheidung freigeben“) oder lehnst sie begründet ab. Das ist etwas anderes als Senden.
+- Beim Freigeben entsteht ein versiegelter Beleg (PDF), der mit der Antwort mitgeht. Den Antworttext kannst du danach frei ändern; ändert Claude die Entscheidung, erlischt die Freigabe.
 - Unter „Aus dem Bestand“ siehst du wie in Drill 7 Kundin, Vertrag und Tarifblatt – daran misst du die Vorlage.
-- Claude kann: Fälle zuordnen, die Sparte setzen, Antworten mit Beleg entwerfen, zur Freigabe vorlegen und nach einer Ablehnung überarbeiten. Claude kann nicht: Freigeben, ablehnen oder senden.
+- Claude kann: Fälle zuordnen, die Sparte setzen, eine Leistungsentscheidung vorlegen, auf ihrer Basis die Antwort entwerfen und nach einer Ablehnung eine neue Fassung vorlegen. Claude kann nicht: Eine Entscheidung freigeben oder ablehnen – und senden.
 
 **So läuft die Stunde:**
 
 1. Bevor du etwas ansiehst: Nach welchen Punkten prüfst du?
-2. Claude bereitet zwei Fälle vor; du gibst einen frei und lehnst einen begründet ab.
+2. Claude legt zwei Leistungsentscheidungen vor; du gibst eine frei und lehnst eine begründet ab.
 3. Gemeinsam bauen: Wer den Fall später öffnet, sieht sofort, warum abgelehnt wurde.
-4. Du änderst einen freigegebenen Text und siehst die Freigabe erlöschen.
+4. Claude ändert eine freigegebene Entscheidung – die Freigabe erlischt; eine Textänderung lässt sie stehen.
 
-**Aufgabe:** Zwei neue Lebensfälle. Claude bereitet beide bis zur
-Freigabe-Vorlage vor. Im Cockpit unter **Freigaben** gibst du einen frei und
-sendest ihn; den anderen lehnst du begründet ab, Claude überarbeitet. Ändere
-dann testweise einen freigegebenen Text: Die Freigabe verfällt.
+**Aufgabe:** Zwei neue Lebensfälle. Claude legt zu jedem eine
+**Leistungsentscheidung** vor (Ergebnis, Betrag, Rechtsgrundlage,
+Begründung) und entwirft die Antwort. Im Cockpit unter **Freigaben** gibst du
+eine Entscheidung frei – sie wird als Beleg versiegelt – und sendest die
+Antwort; die andere lehnst du begründet ab, Claude legt eine neue Fassung
+vor. Dann ändert Claude testweise eine freigegebene Entscheidung: Die
+Freigabe erlischt. Den Antworttext kannst du dagegen frei ändern.
 
 **Bauauftrag:** Wer einen Fall später öffnet, soll sofort sehen, warum er
 abgelehnt wurde oder dass eine Freigabe erloschen ist – als Hinweis über dem
@@ -189,12 +192,12 @@ Antwortfeld. Was im Hinweis steht, legst du fest.
 
 | Etappe | Frag Claude | Du entscheidest | Dann du |
 | --- | --- | --- | --- |
-| 1 · Fälle vorbereiten | „Bereite die zwei neuen Lebensfälle mit Belegen und Antwort bis zur Freigabe-Vorlage vor. Freigeben kann nur ich im Cockpit.“ | Bevor du die Vorlagen ansiehst: Nach welchen zwei, drei Punkten prüfst du eine Antwort, bevor du sie freigibst? | Die eigenen Prüfpunkte nennen, dann beide Vorlagen im Cockpit unter „Freigaben“ daran messen. |
-| 2 · Mensch entscheidet | „Welche Folgen haben Freigabe und Ablehnung bei diesen beiden Fällen?“ | Welchen Fall lehnst du ab – sind beide gut, den, der einen deiner Prüfpunkte am schwächsten erfüllt – und welcher eine Satz Begründung sagt Claude genau, was zu ändern ist? | Im Cockpit einen Fall freigeben und senden, den anderen mit eigener Begründung ablehnen; prüfen, ob Claudes Überarbeitung die Begründung trifft. |
+| 1 · Fälle vorbereiten | „Bereite die zwei neuen Lebensfälle vor: je eine Leistungsentscheidung mit Beleg und einen Antwortentwurf. Freigeben kann nur ich im Cockpit.“ | Bevor du die Vorlagen ansiehst: Nach welchen zwei, drei Punkten prüfst du eine Leistungsentscheidung, bevor du sie freigibst? | Die eigenen Prüfpunkte nennen, dann beide Entscheidungen im Cockpit unter „Freigaben“ daran messen. |
+| 2 · Mensch entscheidet | „Welche Folgen haben Freigabe und Ablehnung bei diesen beiden Entscheidungen?“ | Welche Entscheidung lehnst du ab – sind beide gut, die, die einen deiner Prüfpunkte am schwächsten erfüllt – und welcher eine Satz Begründung sagt Claude genau, was zu ändern ist? | Im Cockpit eine Entscheidung freigeben (der Beleg entsteht) und die Antwort senden; die andere mit eigener Begründung ablehnen und prüfen, ob Claudes neue Fassung die Begründung trifft. |
 | 3 · Selbst bauen | „Wie zeigen wir Ablehnungsgrund oder erloschene Freigabe im Cockpit klarer? Frag mich zuerst, was der Hinweis sagen soll und in welchen Szenarien er erscheinen muss.“ | Jemand öffnet den Fall morgen: Was muss im Hinweis stehen (wer, wann, warum), und wann soll er wieder verschwinden? | Inhalt und Verschwinden des Hinweises festlegen, die Verbesserung mit Claude bauen und im Browser prüfen. |
-| 4 · Beleg zeigen | „Prüfe im Protokoll Freigabe und Ablehnung. Was passiert, wenn ich einen freigegebenen Text ändere? Dann hilf mir, meinen Stand zu speichern.“ | Soll schon ein geändertes Komma eine Freigabe aufheben – was spricht dafür (Sicherheit), was dagegen (Aufwand)? | Einen freigegebenen Text im Cockpit ändern, den Freigabeverlust sehen; Szenarien bestanden; Stand speichern. |
+| 4 · Beleg zeigen | „Ändere testweise eine freigegebene Entscheidung. Was passiert mit der Freigabe – und was, wenn ich nur den Antworttext ändere? Dann hilf mir, meinen Stand zu speichern.“ | Warum reicht es, die Entscheidung freizugeben statt jedes Wort – und wo wäre dir das doch zu wenig? | Die erloschene Freigabe im Cockpit sehen, danach den Text ändern und sehen, dass eine Freigabe stehen bleibt; Szenarien bestanden; Stand speichern. |
 
-**Fertig, wenn:** Eine Freigabe und eine Ablehnung im Protokoll; eine Änderung entwertet die alte Freigabe; eigene Verbesserung an der Freigabe geprüft und gespeichert.
+**Fertig, wenn:** Eine Leistungsentscheidung ist freigegeben (mit Beleg) und die Antwort gesendet, eine andere begründet abgelehnt; eine geänderte Entscheidung hat ihre Freigabe verloren; eigene Verbesserung an der Freigabe geprüft und gespeichert.
 
 **Zum Schluss:** Welche Arbeit darf der Agent in deinem Haus komplett vorbereiten – und an welcher Stelle muss ein Name unter der Entscheidung stehen?
 

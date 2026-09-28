@@ -206,3 +206,19 @@ button.row:hover, .row.task:hover { background: var(--hover); }
 .tab.active { background: var(--line); color: inherit; }
 button.link { border: 0; background: none; padding: 0 0 0 8px; color: var(--muted); text-decoration: underline; font-size: 12px; cursor: pointer; }
 a.row { color: inherit; text-decoration: none; }
+
+/* Leistungsentscheidung (Drill 8): visibly a different act than sending. */
+.decision { margin: 6px 0 18px; padding: 12px 14px; border: 1px solid #6d5bd0; border-left-width: 4px; border-radius: 8px; background: color-mix(in srgb, #6d5bd0 6%, transparent); }
+.decision.empty { border-style: dashed; }
+.decision.sealed { border-color: var(--line); border-left-color: #6d5bd0; background: none; }
+.decision .source-head { display: flex; align-items: baseline; gap: 8px; padding-bottom: 6px; }
+.decision .source-head .spacer { flex: 1; }
+.decision .fact { display: grid; grid-template-columns: 130px 1fr; gap: 10px; padding: 3px 0; font-size: 13px; }
+.decision .fact > span { color: var(--muted); }
+.decision-foot { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 13px; }
+.decision-foot.actions .muted { flex: 1; }
+.decision-foot a { color: inherit; text-decoration: underline; }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 1px 8px; border-radius: 99px; font-size: 11px; background: var(--line); }
+.badge.wait { background: #6d5bd0; color: #fff; }
+.badge.ok { background: color-mix(in srgb, #6d5bd0 18%, transparent); }
+button.approve-decision { background: #6d5bd0; color: #fff; border-color: #6d5bd0; display: inline-flex; align-items: center; gap: 6px; }

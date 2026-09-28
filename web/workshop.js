@@ -50,7 +50,8 @@ const ICON = {
   report: '<path d="M5 19V9M12 19V5M19 19v-7"/>',
   bestand: '<ellipse cx="12" cy="6" rx="7" ry="2.5"/><path d="M5 6v12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5V6M5 12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5"/>',
   sync: '<path d="M20 11a8 8 0 0 0-14.3-4.9L4 8M4 13a8 8 0 0 0 14.3 4.9L20 16M4 4v4h4M20 20v-4h-4"/>',
-  plus: '<path d="M12 5v14M5 12h14"/>', back: '<path d="m15 18-6-6 6-6"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  lock: '<rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>', back: '<path d="m15 18-6-6 6-6"/>',
 };
 const icon = (name, size = 16) => `<svg class="icon" width="${size}" height="${size}" viewBox="0 0 24 24" aria-hidden="true">${ICON[name]}</svg>`;
 const statusIcon = status => `<span class="status-icon ${STATUS[status]?.[1] || 'new'}" title="${html(STATUS[status]?.[0] || status)}"></span>`;
@@ -121,6 +122,7 @@ function sidebar() {
         <button type="button" class="icon-button" data-action="sync" ${mail.ready ? '' : 'disabled'} aria-label="Posteingang abgleichen" title="Abgleichen">${icon('sync', 14)}</button>
       </div>
       ${has('management_report') ? `<a class="nav-item small" href="/slides/index.html?deck=management" target="_blank" rel="noopener">${icon('report', 14)}<span>Report</span></a>` : ''}
+      <a class="nav-item small" href="/slides/index.html?deck=drill-${String(drill()).padStart(2, '0')}" target="_blank" rel="noopener">${icon('slides', 14)}<span>Folien zu Drill ${drill()}</span></a>
       <span class="drill-tag" title="${html(state.dashboard.workshop.checkpoint.title)}">Drill ${drill()} · ${html(state.dashboard.workshop.checkpoint.title)}</span>
     </div>
   </aside>`;
@@ -187,10 +189,9 @@ function primaryAction(ticket) {
   if (ticket.status === 'scheduled') return `<span class="hint countdown" data-scheduled="${html(ticket.scheduledFor)}"></span><button type="button" data-action="remove">Versand stoppen</button>`;
   if (!ticket.draft) return '';
   if (ticket.productLine === 'life' && has('life_review')) {
-    if (ticket.status !== 'awaiting_human') return '<button type="button" class="primary" data-action="submit">Zur Freigabe vorlegen</button>';
-    return ticket.humanApprovedAt
-      ? `<span class="hint ok">Freigegeben</span><button type="button" class="primary" data-action="send" ${noSend}>Senden</button>`
-      : '<button type="button" data-action="reject">Ablehnen</button><button type="button" class="primary" data-action="approve">Freigeben</button>';
+    return ticket.decision?.approvedAt && ticket.humanApprovedAt
+      ? `<button type="button" class="primary" data-action="send" ${noSend} title="Geht mit dem Entscheidungsbeleg als Anhang raus">Senden</button>`
+      : '<button type="button" class="primary" disabled title="Erst die Leistungsentscheidung freigeben">Senden</button>';
   }
   if (ticket.productLine === 'liability' && has('intervention_queue')) return '<button type="button" class="primary" data-action="schedule">Für 24 h einplanen</button>';
   if (has('manual_send')) return `<button type="button" class="primary" data-action="send" ${noSend}>Senden</button>`;
@@ -335,6 +336,30 @@ function bestandDetail() {
     </section></div></div>`;
 }
 
+// Drill 8: the person approves the decision – outcome, amount, basis, reasoning – not the letter.
+function decisionCard(ticket) {
+  if (ticket.productLine !== 'life' || !has('life_review')) return '';
+  const d = ticket.decision;
+  if (!d) return `<section class="decision empty"><div class="group-label">Leistungsentscheidung</div>
+    <p class="muted">Noch keine Entscheidung. Claude legt sie vor – du gibst sie hier frei; erst dann kann die Antwort raus.</p></section>`;
+  const waiting = !d.approvedAt && ticket.status === 'awaiting_human';
+  const state = d.approvedAt ? `<span class="badge ok">${icon('lock', 12)} freigegeben</span>`
+    : waiting ? '<span class="badge wait">wartet auf deine Freigabe</span>' : '<span class="badge">abgelehnt</span>';
+  const foot = d.approvedAt
+    ? `<div class="decision-foot">${icon('lock', 14)} Freigegeben von ${html(actor(d.approvedBy))} am ${longDate(d.approvedAt)} ·
+        <a href="${html(d.documentUrl)}" target="_blank" rel="noopener">${html(d.documentName)}</a>
+        <span class="muted small">Prüfsumme ${html(d.documentSha256.slice(0, 12))}</span></div>`
+    : waiting
+      ? `<div class="decision-foot actions"><span class="muted small">Du gibst die Entscheidung frei, nicht den Text. Der Antworttext bleibt danach frei änderbar.</span>
+          <button type="button" data-action="reject">Ablehnen</button>
+          <button type="button" class="approve-decision" data-action="approve">${icon('review', 14)} Entscheidung freigeben</button></div>`
+      : `<div class="decision-foot"><span class="muted">Abgelehnt: ${html(d.rejectedNote || '')} – Claude legt eine neue Fassung vor.</span></div>`;
+  return `<section class="decision ${d.approvedAt ? 'sealed' : ''}"><header class="source-head">
+      <strong>Leistungsentscheidung</strong><span class="muted">Fassung ${d.version}</span><span class="spacer"></span>${state}</header>
+    ${fact('Ergebnis', `<strong>${html(d.outcomeLabel)}</strong>`)}${fact('Betrag', d.amount == null ? '–' : money(d.amount, d.currency))}
+    ${fact('Rechtsgrundlage', html(d.basis))}${fact('Begründung', lines(d.rationale))}${foot}</section>`;
+}
+
 function activity(ticket) {
   const events = (ticket.events || []).slice().reverse();
   return `<section class="activity"><div class="group-label">Aktivität</div>${events.map(event => `<div class="event">
@@ -352,7 +377,7 @@ function detail() {
     <div class="detail-grid"><div class="thread">
       <h1>${html(ticket.subject)}</h1>
       ${(ticket.messages || []).map(message).join('') || '<p class="empty">Keine Nachricht.</p>'}
-      ${evidence(ticket)}${composer(ticket)}${activity(ticket)}
+      ${evidence(ticket)}${decisionCard(ticket)}${composer(ticket)}${activity(ticket)}
     </div>${properties(ticket)}</div></div>`;
 }
 
@@ -362,7 +387,8 @@ function dialogMarkup() {
   const ticket = state.ticket;
   const [title, copy, confirm, kind] = {
     send: ['Antwort senden?', `Der Text geht jetzt an ${html(ticket?.customerEmail || '')}.`, 'Senden', 'danger'],
-    reject: ['Ablehnen', 'Warum? Claude überarbeitet den Entwurf danach.', 'Ablehnen', 'primary'],
+    reject: ['Ablehnen', 'Warum? Claude überarbeitet danach.', 'Ablehnen', 'primary'],
+    approve: ['Leistungsentscheidung freigeben?', 'Die Entscheidung wird als Beleg (PDF) versiegelt und geht mit der Antwort mit. Ändert Claude sie später, erlischt deine Freigabe.', 'Freigeben', 'approve-decision'],
     remove: ['Versand stoppen?', 'Die Antwort wird nicht automatisch gesendet. Warum?', 'Stoppen', 'primary'],
     schedule: ['Für 24 Stunden einplanen?', 'Danach geht die Antwort automatisch raus – außer jemand greift vorher ein.', 'Einplanen', 'primary'],
     clock: ['Workshop-Zeit um 24 h vorspulen?', 'Fällige Antworten werden dann wirklich gesendet.', 'Vorspulen', 'danger'],
@@ -371,6 +397,7 @@ function dialogMarkup() {
   return `<div class="backdrop" data-backdrop><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
     <form data-form="confirm"><h2 id="dialog-title">${title}</h2><p>${copy}</p>
     ${ticket && ['send', 'schedule'].includes(state.dialog) ? `<blockquote>${lines(ticket.draft?.body || '')}</blockquote>` : ''}
+    ${ticket && state.dialog === 'send' && ticket.decision?.documentName ? `<p class="small">Anhang: ${html(ticket.decision.documentName)}</p>` : ''}
     ${reason ? '<textarea name="reason" rows="3" maxlength="2000" required aria-label="Begründung"></textarea>' : ''}
     <div class="dialog-actions"><button type="button" class="ghost" data-action="cancel">Abbrechen</button><button type="submit" class="${kind}">${confirm}</button></div>
     </form></div></div>`;
@@ -483,14 +510,13 @@ app.addEventListener('click', async event => {
   if (action === 'cancel') { state.dialog = null; render(); return; }
   if (action === 'close') { closeDetail(); return; }
   if (['send', 'approve', 'submit', 'schedule'].includes(action) && draftChanged()) { toast('Erst den geänderten Entwurf speichern.', 'error'); render(); return; }
-  if (['send', 'reject', 'remove', 'schedule', 'clock'].includes(action)) { state.dialog = action; render(); return; }
+  if (['send', 'reject', 'remove', 'schedule', 'clock', 'approve'].includes(action)) { state.dialog = action; render(); return; }
   if (action === 'sync') return mutate(async () => {
     const result = await request('/api/sync', { method: 'POST', body: '{}' });
     toast(result.importedTickets ? `${result.importedTickets} neue Mail(s)` : 'Keine neuen Mails – gleich nochmal versuchen');
   });
   if (action === 'todo') return mutate(() => request(`/api/todos/${control.dataset.id}`, { method: 'PATCH', body: JSON.stringify({ status: control.dataset.status }) }));
   if (action === 'submit') return mutate(() => request(`/api/tickets/${url(ticket)}/submit`, { method: 'POST', body: '{}' }), 'Zur Freigabe vorgelegt');
-  if (action === 'approve') return mutate(() => request(`/api/tickets/${url(ticket)}/approve`, { method: 'POST', body: '{}' }), 'Freigegeben');
 });
 
 app.addEventListener('change', event => {
@@ -523,6 +549,7 @@ app.addEventListener('submit', event => {
     const reason = String(values.get('reason') || '');
     const actions = {
       send: [() => request(`/api/tickets/${url(ticket)}/send`, { method: 'POST', body: '{}' }), 'Antwort gesendet'],
+      approve: [() => request(`/api/tickets/${url(ticket)}/approve`, { method: 'POST', body: '{}' }), 'Entscheidung freigegeben'],
       reject: [() => request(`/api/tickets/${url(ticket)}/reject`, { method: 'POST', body: JSON.stringify({ note: reason }) }), 'Abgelehnt'],
       remove: [() => request(`/api/tickets/${url(ticket)}/schedule`, { method: 'DELETE', body: JSON.stringify({ reason }) }), 'Versand gestoppt'],
       schedule: [() => request(`/api/tickets/${url(ticket)}/submit`, { method: 'POST', body: JSON.stringify({ delayHours: 24 }) }), 'Eingeplant'],

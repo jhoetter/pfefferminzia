@@ -10,7 +10,7 @@ from typing import Annotated, Any, Literal
 from dotenv import load_dotenv
 from fastapi import FastAPI, Query, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -404,6 +404,17 @@ def create_app() -> FastAPI:
         require_capability("life_review")
         return reject_draft(ticket_number, data.note, "human-ui")
 
+    @app.get("/api/tickets/{ticket_number}/decision.pdf")
+    async def decision_pdf(ticket_number: str):
+        require_capability("life_review")
+        from .decisions import decision_document
+
+        document = decision_document(ticket_number)
+        if not document:
+            return JSONResponse(status_code=404, content={"error": "Noch kein freigegebener Entscheidungsbeleg"})
+        return Response(content=document[1], media_type="application/pdf",
+                        headers={"Content-Disposition": f'inline; filename="{document[0]}"'})
+
     @app.post("/api/tickets/{ticket_number}/send")
     async def send(ticket_number: str):
         require_capability("manual_send")
@@ -415,7 +426,7 @@ def create_app() -> FastAPI:
         if ticket_data["productLine"] == "life":
             if capability_enabled("life_review"):
                 if not ticket_data["humanApprovedAt"]:
-                    raise ValueError("Approve the life draft in the mandatory review workflow before sending")
+                    raise ValueError("Erst die Leistungsentscheidung freigeben, dann senden")
             else:
                 # Drill 7: the human's explicit send action is the approval.
                 approve_draft(ticket_number, "human-ui")

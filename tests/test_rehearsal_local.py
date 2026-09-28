@@ -8,6 +8,7 @@ from fastapi.testclient import TestClient
 import pfefferminzia.agentmail_service as mail
 from pfefferminzia.app import create_app, initialize_application
 from pfefferminzia.store import get_ticket
+from pfefferminzia.decisions import propose_decision
 from pfefferminzia.agentmail_service import send_ticket_draft
 from pfefferminzia.checkpoints import current_checkpoint
 from pfefferminzia.database import close_database
@@ -38,7 +39,7 @@ class FakeMessages:
             "attachments": [],
         }
 
-    def reply(self, inbox_id, message_id, *, text, html):
+    def reply(self, inbox_id, message_id, *, text, html, attachments=None):
         assert inbox_id == "inbox-rehearsal"
         self.sent.append((message_id, text))
         return {"message_id": f"sent-{len(self.sent)}"}
@@ -126,10 +127,11 @@ def test_realistic_drills_8_to_11_without_network(monkeypatch, tmp_path, request
         for subject in fake.messages.available:
             number = find(client, subject)
             client.post(f"/api/tickets/{number}/classify", json={"productLine": "life", "category": "claim", "summary": "Life claim"})
-            put_draft(client, number, f"Prepared decision for {subject}")
-            response = client.post(f"/api/tickets/{number}/submit", json={})
-            assert response.json()["status"] == "awaiting_human", response.text
-            assert response.json()["humanApprovedAt"] is None
+            # Claude proposes the decision; the human approves the decision, not the letter.
+            propose_decision(number, "anerkannt", "PZ-2025, Abschnitt 3", f"Belegt für {subject}.", 1000, "CHF")
+            put_draft(client, number, f"Prepared reply for {subject}")
+            ticket = client.get(f"/api/tickets/{number}").json()
+            assert ticket["status"] == "awaiting_human" and ticket["humanApprovedAt"] is None, ticket
         approved = find(client, "Drill 8 approve")
         rejected = find(client, "Drill 8 reject")
         try:
@@ -140,12 +142,13 @@ def test_realistic_drills_8_to_11_without_network(monkeypatch, tmp_path, request
             raise AssertionError("Life reply escaped without human approval")
         blocked = client.post(f"/api/tickets/{approved}/send", json={})
         assert blocked.status_code == 400
-        assert "Approve the life draft" in blocked.json()["error"]
+        assert "Leistungsentscheidung freigeben" in blocked.json()["error"]
         assert client.post(f"/api/tickets/{approved}/approve", json={}).status_code == 200
         sent = client.post(f"/api/tickets/{approved}/send", json={})
         assert sent.json()["status"] == "sent", sent.text
+        assert client.get(f"/api/tickets/{approved}/decision.pdf").content.startswith(b"%PDF")
         assert client.post(f"/api/tickets/{rejected}/reject", json={"note": "Needs evidence"}).json()["status"] == "in_progress"
-        put_draft(client, rejected, "Reworked decision")
+        put_draft(client, rejected, "Reworked reply")
         assert get_ticket(rejected)["humanApprovedAt"] is None
         assert client.post(f"/api/tickets/{rejected}/send", json={}).status_code == 400
 

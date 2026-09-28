@@ -84,6 +84,23 @@ def migrate(db: sqlite3.Connection) -> None:
           UNIQUE(message_id, external_attachment_id)
         );
 
+        CREATE TABLE IF NOT EXISTS decisions (
+          ticket_id INTEGER PRIMARY KEY REFERENCES tickets(id) ON DELETE CASCADE,
+          version INTEGER NOT NULL DEFAULT 1,
+          outcome TEXT NOT NULL CHECK(outcome IN ('anerkannt', 'abgelehnt', 'nachfordern')),
+          amount REAL,
+          currency TEXT,
+          basis TEXT NOT NULL,
+          rationale TEXT NOT NULL,
+          proposed_by TEXT NOT NULL,
+          proposed_at TEXT NOT NULL,
+          approved_by TEXT,
+          approved_at TEXT,
+          rejected_note TEXT,
+          document_path TEXT,
+          document_sha256 TEXT
+        );
+
         CREATE TABLE IF NOT EXISTS reply_drafts (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           ticket_id INTEGER NOT NULL UNIQUE REFERENCES tickets(id) ON DELETE CASCADE,

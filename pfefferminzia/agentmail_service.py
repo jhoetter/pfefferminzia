@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 import html
 import json
 import os
@@ -283,8 +284,9 @@ def send_ticket_draft(
         raise ValueError("Ticket has no AgentMail inbox binding")
     if ticket["sourceInboxId"] != _configured_inbox_id():
         raise ValueError("Ticket belongs to a different AgentMail inbox")
-    if ticket["productLine"] == "life" and capability_enabled("life_review", db) and not ticket["humanApprovedAt"]:
-        raise ValueError("Life insurance replies require explicit human approval")
+    decision_based = ticket["productLine"] == "life" and capability_enabled("life_review", db)
+    if decision_based and not (ticket["humanApprovedAt"] and (ticket.get("decision") or {}).get("approvedAt")):
+        raise ValueError("Life insurance replies require explicit human approval of the decision")
     if ticket["draft"]["status"] == "sent":
         raise ValueError("This draft has already been sent")
     inbound = next(
@@ -295,12 +297,22 @@ def send_ticket_draft(
         raise ValueError("No inbound AgentMail message available to reply to")
     _assert_recipient_allowed(ticket["customerEmail"])
     body = ticket["draft"]["body"]
+    extra: dict[str, Any] = {}
+    if decision_based:
+        # The sealed decision travels with the letter.
+        from .decisions import decision_document
+
+        document = decision_document(ticket_number, db)
+        if document:
+            extra["attachments"] = [{"filename": document[0], "content_type": "application/pdf",
+                                     "content": base64.b64encode(document[1]).decode("ascii")}]
     response = _mapping(
         _client().inboxes.messages.reply(
             ticket["sourceInboxId"],
             inbound["externalMessageId"],
             text=body,
             html=f"<p>{html.escape(body).replace(chr(10), '<br>')}</p>",
+            **extra,
         )
     )
     message_id = str(_value(response, "message_id", "messageId"))

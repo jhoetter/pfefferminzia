@@ -335,8 +335,25 @@ def create_mcp_server(*, every_drill: bool = False, server_class: type[MCPServer
         return _without_bodies(add_internal_note_impl(ticketNumber, body, "mcp-agent"))
 
     @server.tool()
+    def propose_decision(
+        ticketNumber: Annotated[str, Field(pattern=r"^PF-\d+$")],
+        outcome: Literal["anerkannt", "abgelehnt", "nachfordern"],
+        basis: Annotated[str, Field(min_length=3, max_length=500, description="Tarifgeneration und Fundstelle, z. B. PZ-2025, Abschnitt 4")],
+        rationale: Annotated[str, Field(min_length=10, max_length=4000)],
+        amount: float | None = None,
+        currency: Literal["CHF", "EUR"] | None = None,
+    ) -> dict[str, Any]:
+        """Drill 8+: propose the structured Leistungsentscheidung of a life case for human approval in the cockpit. The human approves the decision, not the wording; approving seals it as a PDF. Changing it later voids the approval. Draft the reply on the basis of the approved decision."""
+        from .decisions import propose_decision as propose
+
+        try:
+            return propose(ticketNumber, outcome, basis, rationale, amount, currency, "mcp-agent")
+        except ValueError as error:
+            raise ToolError(str(error)) from error
+
+    @server.tool()
     def submit_ticket_reply(ticketNumber: Annotated[str, Field(pattern=r"^PF-\d+$")]) -> dict[str, Any]:
-        """Submit a draft to the controlled workflow; this never sends immediately."""
+        """Submit a liability draft to the intervention window; never sends immediately. Life cases use propose_decision instead."""
         return _without_bodies(submit_draft(ticketNumber, "mcp-agent", 24))
 
     @server.tool(annotations=Idempotent)
@@ -484,7 +501,7 @@ def create_mcp_server(*, every_drill: bool = False, server_class: type[MCPServer
         "list_tariffs": "knowledge", "list_contract_documents": "knowledge", "read_tariff": "knowledge",
         "list_ticket_attachments": "knowledge", "read_attachment": "knowledge",
         "classify_ticket": "life_review", "load_bestand": "knowledge", "draft_ticket_reply": "draft", "add_internal_note": "draft",
-        "submit_ticket_reply": "life_review",
+        "submit_ticket_reply": "life_review", "propose_decision": "life_review",
         "list_claims": "claims", "get_claim": "claims", "create_claim_from_ticket": "claims",
         "propose_claim_action": "claims", "review_claim_action": "claims", "create_claim_task": "claims",
         "route_ticket": "router", "remove_from_send_queue": "intervention_queue",
