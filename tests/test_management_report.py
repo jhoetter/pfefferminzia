@@ -48,3 +48,13 @@ def test_report_api_is_gated_to_final_drill(monkeypatch):
     response = TestClient(create_app()).get("/api/management-report")
     assert response.status_code == 200
     assert response.json() == {"tickets": [], "events": []}
+
+
+def test_board_deck_shows_control_events_and_a_recommendation():
+    from pfefferminzia.constants import ROOT
+
+    script = (ROOT / "slides" / "vorstand.js").read_text(encoding="utf-8")
+    assert "#control-chart" in script and "drawControls(data)" in script
+    for event in ("draft_approved", "draft_rejected", "schedule_cancelled", "queue_removed", "reply_sent"):
+        assert event in script
+    assert 'class="placeholder">Eure Empfehlung' not in script

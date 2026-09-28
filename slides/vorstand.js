@@ -22,8 +22,8 @@
       eyebrow: 'Was wir gebaut haben',
       title: 'Ein Agent, der vorbereitet. Menschen, die entscheiden.',
       html: `<div class="columns">
-        <div class="card"><h2>Der Agent</h2><p class="placeholder">Was erledigt er heute selbst? (z. B. Mails abholen, Kunden finden, Entwürfe schreiben)</p></div>
-        <div class="card mint"><h2>Der Mensch</h2><p class="placeholder">Wo entscheidet ein Mensch – und warum genau dort?</p></div>
+        <div class="card"><h2>Der Agent</h2><p>Holt die Post ab, findet Kundin und Vertrag, sortiert nach Sparte und schreibt belegte Antworten – mit Tarifgeneration.</p></div>
+        <div class="card mint"><h2>Der Mensch</h2><p>Leben: gibt jede Leistungsentscheidung frei. Haftpflicht: sieht 24 Stunden lang, was rausgeht, und kann stoppen.</p></div>
       </div>`,
     },
     {
@@ -34,14 +34,44 @@
       draw: data => drawCases(data),
     },
     {
+      eyebrow: 'Wo der Mensch eingriff',
+      title: 'Kontrolle ist kein Bremsklotz, sondern sichtbar.',
+      html: `<svg id="control-chart" role="img" aria-label="Kontrollereignisse" viewBox="0 0 1100 330" style="width:100%;height:330px"></svg>
+        <p id="control-note" class="placeholder">Lade Zahlen …</p>`,
+      draw: data => drawControls(data),
+    },
+    {
       eyebrow: 'Unsere Empfehlung',
       title: 'Was der Vorstand entscheiden soll',
       html: `<div class="columns">
-        <div class="card mint"><h2>Empfehlung</h2><p class="placeholder">Eure Empfehlung in zwei Sätzen – worauf sie sich stützt.</p></div>
+        <div class="card mint"><h2>Empfehlung</h2><p>Einen Pilot mit Pflichtfreigabe für Leben und Eingriffsfenster für einfache Haftpflichtfälle starten. Im Probelauf griff der Mensch dort ein, wo es nötig war: <span id="control-summary">…</span></p></div>
         <div class="card"><h2>Grenze der Aussage</h2><p>Ein Probelauf mit erfundenen Fällen in einem Workshop – kein Nachweis für Zeitersparnis oder Wirksamkeit.</p></div>
       </div>`,
     },
   ];
+
+  // ---- Grafik: wo der Mensch eingegriffen hat --------------------------------------------------
+  function drawControls(data) {
+    const count = (type, mode) => sum(data.events, event => event.type === type && (!mode || event.mode === mode));
+    const rows = [
+      {name: 'Freigaben', value: count('draft_approved')},
+      {name: 'Ablehnungen', value: count('draft_rejected')},
+      {name: 'Im Fenster geändert', value: count('schedule_cancelled')},
+      {name: 'Versand gestoppt', value: count('queue_removed')},
+      {name: 'Automatisch versandt', value: count('reply_sent', 'automatic')},
+    ];
+    const svg = d3.select('#control-chart');
+    svg.selectAll('*').remove();
+    const x = d3.scaleLinear().domain([0, Math.max(1, ...rows.map(row => row.value))]).range([0, 640]);
+    const row = svg.selectAll('g').data(rows).join('g').attr('transform', (_, i) => `translate(0, ${10 + i * 64})`);
+    row.append('text').attr('x', 0).attr('y', 34).attr('font-size', 22).attr('fill', '#173d2c').text(d => d.name);
+    row.append('rect').attr('x', 300).attr('y', 8).attr('height', 38).attr('rx', 8)
+      .attr('width', d => Math.max(2, x(d.value))).attr('fill', (_, i) => i === 4 ? '#173d2c' : '#52b986');
+    row.append('text').attr('x', d => 314 + x(d.value)).attr('y', 36).attr('font-size', 24).attr('font-weight', 750)
+      .attr('fill', '#173d2c').text(d => d.value);
+    note('#control-note', 'Kontrollereignisse aus unserem Probelauf. Null heißt: kam nicht vor.');
+    note('#control-summary', `${rows[0].value} Freigaben, ${rows[1].value} Ablehnungen, ${rows[3].value} gestoppte Versände.`);
+  }
 
   // ---- Grafik: Fälle nach Sparte (aus eurem Drill-9-Stand) ----------------------------------
   const sum = (items, test) => items.filter(test).reduce((total, item) => total + item.count, 0);
