@@ -80,13 +80,16 @@ async function refresh({ quiet = false } = {}) {
   const editing = document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
   if (state.busy || (quiet && (state.dialog || editing || draftChanged()))) return;
   try {
+    const before = JSON.stringify([state.dashboard, state.todos, state.ticket, state.evidence]);
     const [dashboard, todos] = await Promise.all([request('/api/dashboard'), request('/api/todos')]);
     state.dashboard = dashboard;
     state.todos = todos;
     state.fetchedAt = Date.now();
-    if (state.view !== 'tasks' && state.selected && !ticketsFor(state.view).some(t => t.ticketNumber === state.selected)) state.selected = null;
+    if (!['tasks', 'bestand'].includes(state.view) && state.selected && !ticketsFor(state.view).some(t => t.ticketNumber === state.selected)) state.selected = null;
     state.ticket = state.selected ? await request(`/api/tickets/${url(state.selected)}`) : null;
     await loadEvidence();
+    // The background refresh must not disturb reading: redraw only when something changed.
+    if (quiet && JSON.stringify([state.dashboard, state.todos, state.ticket, state.evidence]) === before) return;
   } catch (error) { toast(error.message, 'error'); }
   render();
 }
@@ -388,6 +391,12 @@ function render() {
   const headAction = state.view === 'queue'
     ? `<button type="button" data-action="clock" ${state.dashboard.autoSendEnabled ? '' : 'disabled'}>${icon('queue', 14)} Zeit +24 h</button>` : '';
   const tasks = state.view === 'tasks';
+  // Keep where the person was reading when the same case or customer stays open.
+  const place = `${state.view}|${state.selected}|${state.bestand.customer?.partnerId}`;
+  const scrolled = place === render.place
+    ? SCROLLERS.map(selector => document.querySelector(selector)?.scrollTop || 0) : null;
+  const listScroll = document.querySelector('.list')?.scrollTop || 0;
+  render.place = place;
   app.innerHTML = `<div class="shell ${!tasks && (state.selected || (bestand && state.bestand.customer)) ? 'with-detail' : ''}">${sidebar()}
     <main class="main"><header class="main-head"><h2>${titles[state.view]}</h2><span class="muted">${count}</span><div class="spacer"></div>${headAction}</header>
       <div class="split ${tasks ? 'single' : ''}">
@@ -396,8 +405,13 @@ function render() {
       </div></main></div>
     ${dialogMarkup()}${state.toast ? `<div class="toast ${state.toast.kind}" role="status">${html(state.toast.text)}</div>` : ''}`;
   updateCountdowns();
+  SCROLLERS.forEach((selector, index) => {
+    const node = document.querySelector(selector);
+    if (node) node.scrollTop = scrolled ? scrolled[index] : selector === '.list' ? listScroll : 0;
+  });
   if (state.dialog) document.querySelector('.dialog textarea')?.focus();
 }
+const SCROLLERS = ['.list', '.thread', '.props', '.detail-grid', '#draft-body'];
 
 function updateCountdowns() {
   const base = Date.parse(state.dashboard?.workshop?.clock?.now || new Date().toISOString());
