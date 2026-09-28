@@ -255,6 +255,11 @@ def sync_agentmail(db: sqlite3.Connection | None = None) -> dict[str, Any]:
                         (ticket_id, local_message_id, attachment_id, original_name, content_type, len(content), str(absolute.relative_to(STATE_ROOT)), extracted, stamp),
                     )
                     result["importedAttachments"] += 1
+        if capability_enabled("router", db):
+            # Drill 9: sort every open, unsorted case – also mail that arrived before the rule existed.
+            from .sorting import sort_unsorted
+
+            result["sortedCases"] = sort_unsorted(db)
         db.execute(
             "INSERT INTO sync_runs (inbox_id, imported_messages, imported_tickets, status, created_at) VALUES (?, ?, ?, 'success', ?)",
             (", ".join(result["inboxes"]) or None, result["importedMessages"], result["importedTickets"], utc_now()),
