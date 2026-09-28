@@ -152,7 +152,7 @@ Whiteboard-Punkt.
   Administrator-Passwort, legt das Remotion-Projekt an und rendert ein
   kurzes Video – in unter zehn Minuten? Das Video läuft in der Präsentation.
 - Reserve-Plätze getestet, nicht nur angelegt.
-- **Probe wie die Teilnehmenden:** Claude-App, Sonnet 5 auf „Mittel“ (kommt aus
+- **Probe wie die Teilnehmenden:** Claude-App, Sonnet 5.5 auf „Mittel“ (kommt aus
   `.claude/settings.json`; im Modellwähler kontrollieren), frische Kopie,
   frische Mail (`instructor send 6 --slot <Platz> --resend --yes`).
 - **Bewusst passiv spielen:** in jedem Drill mindestens einmal „weiß nicht“,

@@ -42,7 +42,7 @@ def test_tuesday_deck_covers_all_five_milestones() -> None:
     script = (ROOT / "slides" / "dienstag.js").read_text(encoding="utf-8")
     ids = re.findall(r"\bid: '([^']+)'", script)
 
-    assert len(ids) == 37
+    assert len(ids) == 38
     assert len(ids) == len(set(ids))
     for milestone in ("Drill6Start", "Drill7Start", "Drill8Start", "Drill9Start", "Drill10Start"):
         assert milestone in ids

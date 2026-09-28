@@ -66,6 +66,11 @@
       notes: 'ZEIT: 1 Minute. SAGEN: Gestern haben wir mit Daten und Urteilen gearbeitet. Heute geben wir dem Agenten kontrollierte operative Fähigkeiten. ÜBERLEITUNG: Wo genau kippt Assistenz in Wirkung? NICHT: Die vollständige Lösung vorwegnehmen.'
     },
     {
+      id: 'GreatNews', type: 'News', eyebrow: 'Frisch verkündet', title: 'Claude Sonnet 5.5 ist da – und ihr arbeitet heute damit.', avatar: true, avatarBubble: 'Ganz frisch!',
+      body: `<div class="day-hero-line"><span style="font-size:118px;line-height:1">GREAT NEWS!!!</span></div>`,
+      notes: 'ZEIT: 30 Sekunden, mit Energie. SAGEN: Gestern Abend wurde Claude Sonnet 5.5 verkündet – und genau das Modell nutzt ihr heute in euren Drills. Ihr seid also mit dem Neuesten unterwegs. NICHT: Zahlen oder Benchmarks nennen, die wir nicht selbst geprüft haben.'
+    },
+    {
       id: 'Bruecke', type: 'Statement', eyebrow: 'Von Montag zu Dienstag', title: 'Aus einer guten Antwort wird eine Handlung.',
       body: grid([
         card('Montag · verstehen', `<p class="day-emphasis">Claude analysiert und schlägt vor.</p>${pill('Augmentation', 'blue')}`),
@@ -319,8 +324,8 @@
   const agentisch = window.PFEFFERMINZIA_AGENTISCH_SLIDES || [];
 
   const deckIds = {
-    gesamt: ['Titel', 'ZielVideo', 'Bruecke', 'Agenda', 'Lernkonzept', 'LiveBeispiele', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus', 'Tempo', 'Whiteboard', 'Contract'],
-    input: ['Titel', 'Bruecke', 'Agenda', 'LiveBeispiele', 'Architektur', 'Belege', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus', 'ZielVideo', 'Mitnehmen', 'Lernkonzept', 'DrillRhythmus'],
+    gesamt: ['Titel', 'GreatNews', 'ZielVideo', 'Bruecke', 'Agenda', 'Lernkonzept', 'LiveBeispiele', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus', 'Tempo', 'Whiteboard', 'Contract'],
+    input: ['Titel', 'GreatNews', 'Bruecke', 'Agenda', 'LiveBeispiele', 'Architektur', 'Belege', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus', 'ZielVideo', 'Mitnehmen', 'Lernkonzept', 'DrillRhythmus'],
     'drill-06': ['Drill6Start', 'Zeitplan-drill-06', 'Drill6Los', 'Teilnehmende', 'Drill6Cockpit', 'Drill6Auftrag', 'Checkpoints', 'Reserve6', 'ReserveImmer'],
     'drill-07': ['Drill7Start', 'Zeitplan-drill-07', 'Rueckblick6', 'Drill7Kontext', 'Drill7Auftrag', 'Checkpoints', 'Reserve7', 'ReserveImmer'],
     'drill-08': ['Drill8Start', 'Zeitplan-drill-08', 'Rueckblick7', 'Drill8Review', 'Drill8Auftrag', 'Checkpoints', 'Reserve8', 'ReserveImmer'],

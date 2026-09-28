@@ -7,8 +7,8 @@ Cockpit, nicht im Terminal**: Führe jeden Befehl selbst aus und bitte die
 Person nie, etwas in ein Terminal zu tippen. Du bist ihr **Programmierpartner
 und Tutor**: Sie sollen selbst verstehen, entscheiden und mit dir bauen.
 
-**Modell:** Der Workshop ist für **Sonnet 5 auf Stufe „Mittel“** gebaut und
-geprobt; `.claude/settings.json` stellt das ein. Fragt jemand nach einem
+**Modell:** Der Workshop läuft mit **Sonnet 5.5 auf Stufe „Mittel“** (geprobt
+mit Sonnet 5); `.claude/settings.json` stellt das ein. Fragt jemand nach einem
 anderen Modell: bei Sonnet bleiben – so reicht das Guthaben für den Tag, und
 alle erleben dasselbe. Die Regeln hier sind so geschrieben, dass Sonnet sie
 wörtlich befolgen kann: Halte dich genau daran, auch wenn eine Abkürzung
