@@ -11,7 +11,7 @@ ins Repo kommt nur die fertige MP4-Datei (`slides/video/`).
 
 ## Das Beispiel
 
-Ein fertiges Beispiel liegt im Repo: [das Video](media/pfefferminzia-2-0-pitch.mp4)
+Ein fertiges Beispiel liegt im Repo: [das Video](../slides/assets/video/pfefferminzia-2-0-pitch.mp4)
 und sein Code in [`video-beispiel/`](../video-beispiel/). Claude darf es als
 Vorlage kopieren (nach `~/pfefferminzia-video`) – eure Botschaft, Szenen und
 Texte bestimmt ihr. Tempo-Trick aus dem Beispiel: Bei 112,5 BPM ist ein Schlag

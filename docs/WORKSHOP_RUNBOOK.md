@@ -191,6 +191,16 @@ Ordner. Oder Buddy werden: Fragen stellen, nicht Tastatur oder Freigabe
 - Drill 9: Timer-Reset nach Edit, transparente Router-Schwelle.
 - Drill 10: zweite, kürzere Videofassung oder Folie „Mein agentisches System“ ([VIDEO_REMOTION.md](VIDEO_REMOTION.md)).
 
+## Wenn ein Drill zu früh fertig ist
+
+Keine Einzel-Zusatzaufgabe, sondern eine **gemeinsame Runde** (10–15 Minuten,
+Folie „Reserve“ am Ende jedes Drill-Decks, Details in
+[RESERVE_RUNDEN.md](RESERVE_RUNDEN.md)): Drill 6 Angriff per Mail, Drill 7
+Laptops tauschen, Drill 8 Vier-Augen-Rollenspiel, Drill 9 Sortier-Wettbewerb
+(fünf Mails zum Kopieren), Drill 10 Premiere. Immer möglich: zwei zeigen,
+Claude als Prüfer, das eigene Haus. Themen-Backlog und Ablauf fürs Whiteboard:
+Deck „Anhang“.
+
 ## Wenn Tokens ausgehen
 
 1. Paar-Modus: eine Claude-Sitzung, zwei eigene Systeme, getrennte Rollen.

@@ -1,7 +1,7 @@
 # Beispiel: Launchvideo „Pfefferminzia 2.0“ (Remotion)
 
 Das Beispielvideo aus Drill 10, ganz aus React-Komponenten gebaut. Ergebnis:
-[`docs/media/pfefferminzia-2-0-pitch.mp4`](../docs/media/pfefferminzia-2-0-pitch.mp4).
+[`slides/assets/video/pfefferminzia-2-0-pitch.mp4`](../slides/assets/video/pfefferminzia-2-0-pitch.mp4).
 
 ```sh
 npm install

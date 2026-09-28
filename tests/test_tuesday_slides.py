@@ -42,7 +42,7 @@ def test_tuesday_deck_covers_all_five_milestones() -> None:
     script = (ROOT / "slides" / "dienstag.js").read_text(encoding="utf-8")
     ids = re.findall(r"\bid: '([^']+)'", script)
 
-    assert len(ids) == 30
+    assert len(ids) == 37
     assert len(ids) == len(set(ids))
     for milestone in ("Drill6Start", "Drill7Start", "Drill8Start", "Drill9Start", "Drill10Start"):
         assert milestone in ids
@@ -55,12 +55,19 @@ def test_tuesday_deck_covers_all_five_milestones() -> None:
     for drill in (6, 7, 8, 9):
         assert f"recap({drill}," in script and f"'Rueckblick{drill}'" in script
     assert "'Teilnehmende'" in script and "/api/instructor/roster" in script
+    # The bridge from input to Drill 6, a group round per drill for early finishers, and an appendix.
+    for slide in ("ZielVideo", "Mitnehmen", "Lernkonzept", "DrillRhythmus", "ReserveImmer", "AnhangWhiteboard", "AnhangAblauf"):
+        assert slide in ids
+    for drill in range(6, 11):
+        assert f"reserve({drill}," in script and f"'Reserve{drill}', 'ReserveImmer'" in script
+    assert (ROOT / "slides" / "assets" / "video" / "pfefferminzia-2-0-pitch.mp4").is_file()
+    assert (ROOT / "docs" / "RESERVE_RUNDEN.md").is_file()
     assert "Uebernickel" not in script and "Fragt Claude – oder mich." in script
     assert "LiveBeispiele" in ids
     assert "Cron" in script
     assert "Ich bin in Drill 6" in script
     assert "kein Werkzeug" in script
-    for deck in ("gesamt", "input", "drill-06", "drill-07", "drill-08", "drill-09", "drill-10", "abschluss", "teilnehmende", "agentisch"):
+    for deck in ("gesamt", "input", "drill-06", "drill-07", "drill-08", "drill-09", "drill-10", "abschluss", "teilnehmende", "anhang", "agentisch"):
         assert f"{deck}:" in script or f"'{deck}':" in script
     assert 'svg[aria-label^="Comicfigur Johannes"]' in script
 

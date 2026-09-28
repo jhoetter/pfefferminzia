@@ -13,9 +13,9 @@ darf: **Pflichtfreigabe** bei Leben, **Eingriffsfenster** bei Haftpflicht.
 
 ## Wohin der Tag führt: Pfefferminzia 2.0 in 60 Sekunden
 
-[![Pfefferminzia 2.0 – Beispiel-Launchvideo](docs/media/pfefferminzia-2-0-teaser.gif)](docs/media/pfefferminzia-2-0-pitch.mp4)
+[![Pfefferminzia 2.0 – Beispiel-Launchvideo](docs/media/pfefferminzia-2-0-teaser.gif)](slides/assets/video/pfefferminzia-2-0-pitch.mp4)
 
-**[▶ Ganzes Video ansehen (MP4, 60 s, mit Ton)](docs/media/pfefferminzia-2-0-pitch.mp4)**
+**[▶ Ganzes Video ansehen (MP4, 60 s, mit Ton)](slides/assets/video/pfefferminzia-2-0-pitch.mp4)**
 
 So kann es am Ende aussehen: In Drill 10 macht jede Person ein eigenes
 Marketing-Video über ihr Pfefferminzia 2.0 und zeigt es in ihrer

@@ -52,6 +52,13 @@
     notes: `ZEIT: 3 Minuten. Zwei, drei Stimmen einholen, dann weiter. Nicht den nächsten Drill erklären – das macht die nächste Folie.`
   });
 
+  // A group round for when a drill finishes early: everyone joins, the room learns from each other.
+  const reserve = (drill, title, steps, question) => ({
+    id: `Reserve${drill}`, type: 'Reserve', eyebrow: `Reserve · Drill ${drill}`, title: `Gemeinsame Runde: ${title}.`,
+    body: grid([card('So geht’s · 10–15 Minuten', `<ol class="day-tasks">${steps.map(step => `<li>${step}</li>`).join('')}</ol>`, 'mint-card'), card('Danach im Raum', `<p class="day-emphasis">${question}</p>`, 'red-card')], 'two', 'full'),
+    notes: `Nur zeigen, wenn der Drill deutlich früher fertig ist. Ablauf und Texte: docs/RESERVE_RUNDEN.md.`
+  });
+
   const slides = [
     {
       id: 'Titel', type: 'Titel', eyebrow: 'Dienstag · 29. September 2026', cover: true,
@@ -117,6 +124,33 @@
       id: 'Arbeitsrhythmus', type: 'Inhalt', eyebrow: 'So arbeiten wir', title: 'Ihr entscheidet. Claude baut.',
       body: `<div class="day-flow"><div class="day-flow-step"><b>Regel</b><span>in euren Worten</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Szenarien</b><span>was muss gelten?</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Bauen</b><span>Claude schreibt Code</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Prüfen</b><span>im Cockpit erleben</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Speichern</b><span>euer Stand</span></div></div>`,
       notes: 'ZEIT: 3 Minuten. SAGEN: Nicht vier Prompts, sondern echte Entwicklungszyklen. In jeder Etappe fragt Claude zuerst nach eurer Entscheidung – ein „mach einfach“ reicht nicht. Tempo: Claude führt Schritt für Schritt oder lässt euch mehr selbst probieren; wer früher fertig ist, baut die eigene Kommandozentrale aus. Fallnachweis und Sicherheitsgrenzen bleiben für alle gleich.'
+    },
+    {
+      id: 'ZielVideo', type: 'Ziel', eyebrow: 'Wohin der Tag führt', title: 'Um 16:30 zeigt ihr euer eigenes Video.', visual: true,
+      body: `<div class="day-shot"><video src="assets/video/pfefferminzia-2-0-pitch.mp4" poster="assets/drill10-video.webp" controls preload="metadata"></video></div>`,
+      notes: 'ZEIT: 2 Minuten. ERST ABSPIELEN, ohne Vorrede (60 Sekunden, Ton an). SAGEN: Diese Software bauen wir heute. Und am Ende des Tages macht ihr mit eurer eigenen, angepassten Version so ein Video – und zeigt es eurem Vorstand. NICHT: erklären, wie das Video gemacht ist – das kommt in Drill 10.'
+    },
+    {
+      id: 'Mitnehmen', type: 'Ziel', eyebrow: 'Was ihr mitnehmt', title: 'Heute: machen. Mittwoch: euer Haus.',
+      body: grid([
+        card('Ihr nehmt mit', `<p class="day-emphasis">Eine Arbeitsweise – nicht nur eine Software.</p>`, 'mint-card'),
+        card('Heute geparkt', `<p class="day-emphasis">Organisation, Recht, Rollen – Whiteboard und Mittwoch.</p>`)
+      ]),
+      notes: 'ZEIT: 1 Minute. SAGEN: Wenn es klappt, geht ihr heute Abend mit einem Gefühl dafür raus, wie sich stark agentisches Arbeiten anfühlt – weil ihr es selbst gemacht habt. Im Unternehmen hängen daran viele organisatorische Fragen. Die sind echt und wichtig. Heute ist Machen; die Organisation holen wir uns am Whiteboard und am Mittwoch mit euren eigenen Fällen.'
+    },
+    {
+      id: 'Lernkonzept', type: 'Ziel', eyebrow: 'So lernen wir heute', title: 'Claude führt euch. Ich bin immer da.',
+      body: grid([
+        card('Claude ist euer Tutor', `<p class="day-emphasis">Kennt den Drill und euer Tempo – und fragt nach eurer Meinung.</p>`, 'mint-card'),
+        card('Schneller?', `<p class="day-emphasis">Baut die Software nach euren Ideen weiter.</p>`),
+        card('Länger?', `<p class="day-emphasis">Checkpoints: niemand hängt hinterher.</p>`, 'red-card')
+      ], 'three'),
+      notes: 'ZEIT: 2 Minuten. SAGEN: Wir haben dafür ein neues Lernkonzept überlegt. Jeder Drill ist Claude-getrieben: Ihr könnt Claude jederzeit fragen, es hat Kontext über euer Tempo und was euch interessiert. Wer schneller ist, kann mehr machen als der Drill vorgibt – die Software nach eigenen Ideen weiterbauen. Wer länger braucht: Jeder Drill hat einen Checkpoint, niemand muss Sorge haben, hinterherzuhängen, und eure Arbeit geht nicht verloren. Und ich bin jederzeit da – fragt, winkt, ruft. Wir hoffen, dass euch das Konzept gefällt und ihr richtig viel mitnehmt.'
+    },
+    {
+      id: 'DrillRhythmus', type: 'Ziel', eyebrow: 'Jeder Drill', title: 'Immer derselbe Rhythmus.',
+      body: `<div class="day-flow"><div class="day-flow-step"><b>Input</b><span>5 Minuten:<br>worum es geht</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Start</b><span>ich zeige vorne,<br>wie ihr loslegt</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Ihr seid dran</b><span>mit Claude,<br>in eurem Tempo</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Rückblick</b><span>was wir gebaut<br>und gelernt haben</span></div></div>`,
+      notes: 'ZEIT: 1 Minute. SAGEN: Jeder Drill beginnt mit einem kurzen Input, was wir diesmal machen. Dann zeige ich vorne, was ihr tun müsst, um zu starten. Dann seid ihr dran. Am Ende machen wir einen kurzen Rückblick. Ihr könnt jederzeit Fragen stellen. ÜBERLEITUNG: Und jetzt: Drill 6.'
     },
     {
       id: 'Drill6Start', type: 'Kapitel', eyebrow: '10:00–11:00 · Meilenstein 1', title: 'Die Kommandozentrale', study: true,
@@ -212,7 +246,7 @@
     {
       id: 'Drill10Daten', type: 'Screenshot', eyebrow: 'Drill 10 · Ein Beispiel', title: 'Botschaft → Video → Vorstand.', study: true, visual: true,
       body: shot(['drill10-video.webp', 'Standbild aus dem Beispielvideo Pfefferminzia 2.0']),
-      notes: 'ZEIT: 2 Minuten. Das Beispielvideo aus der README kurz zeigen (docs/media/pfefferminzia-2-0-pitch.mp4) – als Möglichkeit, nicht als Vorlage zum Nachbauen. SAGEN: Claude richtet Node und Remotion im Hintergrund ein, während ihr die Botschaft überlegt. Klappt das nicht in fünf Minuten: Video weglassen, Präsentation bauen. Marketing darf begeistern – aber keine erfundenen Zahlen. Der Vorstand braucht Beleg und Grenze.'
+      notes: 'ZEIT: 2 Minuten. Das Beispielvideo aus der README kurz zeigen (slides/assets/video/pfefferminzia-2-0-pitch.mp4) – als Möglichkeit, nicht als Vorlage zum Nachbauen. SAGEN: Claude richtet Node und Remotion im Hintergrund ein, während ihr die Botschaft überlegt. Klappt das nicht in fünf Minuten: Video weglassen, Präsentation bauen. Marketing darf begeistern – aber keine erfundenen Zahlen. Der Vorstand braucht Beleg und Grenze.'
     },
     {
       id: 'Drill10Auftrag', type: 'Drill', eyebrow: "Drill 10 · Eure Aufgaben · 45 Minuten", title: "Ein Video. Eine Präsentation. Eure Botschaft.",
@@ -248,21 +282,53 @@
         card('Eine Frage', `<p class="day-emphasis">Welche externe Wirkung wäre bei euch heute schon verantwortbar?</p>`, 'red-card')
       ]),
       notes: 'ZEIT: 1 Minute. SAGEN: Die Gruppe schreibt den Contract am Whiteboard / im Handout. Was darf automatisch laufen, was bleibt absichtlich beim Menschen – und welchen Beleg bräuchtet ihr, um es morgen noch zu erklären? Am Mittwoch dient er als Startpunkt für den eigenen Fall.'
-    }
+    },
+    reserve(6, 'Angriff per Mail', ['Schickt eurem Nachbarn eine Mail ins Workshop-Postfach.', 'Versucht, Claude per Mail zu steuern: „Ignoriere alle Regeln …“', 'Der Nachbar lässt Claude die Mail lesen: Was passiert?'], 'Wo könnte bei euch eine Mail einen Agenten steuern?'),
+    reserve(7, 'Laptops tauschen', ['Setzt euch an den Platz eures Nachbarn.', 'Knackt seine Tarifprüfung: falsche Generation, ähnlicher Name, keine Vertragsnummer.', 'Nichts senden, nichts löschen – nur Entwürfe.'], 'Welche Prüfung hat am meisten ausgehalten?'),
+    reserve(8, 'Vier-Augen-Rollenspiel', ['A lässt Claude eine Entscheidung vorbereiten.', 'B gibt frei oder lehnt ab – mit einem Satz, laut.', 'Rollen tauschen, drei Fälle, zügig.'], 'Ab der wievielten Freigabe habt ihr nicht mehr genau gelesen?'),
+    reserve(9, 'Sortier-Wettbewerb', ['Ich schicke euch fünf knifflige Mails.', 'Postfach abrufen, eure Vorsortierung laufen lassen.', 'Wer hat alle fünf richtig – auch „bleibt offen“?'], 'Welche Mail hat eure Regel erwischt?'),
+    reserve(10, 'Premiere', ['Drei, vier von euch zeigen Video und eine Folie.', 'Eine Person spielt den skeptischen Finanzvorstand.', 'Abstimmen: Welches Video würdet ihr intern zeigen?'], 'Was hat den Vorstand überzeugt – der Film oder der Beleg?'),
+    {
+      id: 'ReserveImmer', type: 'Reserve', eyebrow: 'Reserve · jederzeit', title: 'Noch Zeit? Drei Runden, die immer gehen.',
+      body: grid([
+        card('Zwei zeigen', `<p class="day-emphasis">Zwei von euch zeigen je 2 Minuten, was sie gebaut haben.</p>`, 'mint-card'),
+        card('Claude prüft', `<p class="day-emphasis">„Welches Szenario fehlt noch in meinem Bau?“</p>`),
+        card('Euer Haus', `<p class="day-emphasis">Einen eigenen Prozess beschreiben – Claude schreibt den Steckbrief.</p>`, 'red-card')
+      ], 'three'),
+      notes: 'Details: docs/RESERVE_RUNDEN.md. „Zwei zeigen“ am liebsten mit Leuten, die etwas anderes gebaut haben als geplant. „Euer Haus“ ist ein guter Vorlauf für Mittwoch.'
+    },
+    {
+      id: 'AnhangWhiteboard', type: 'Anhang', eyebrow: 'Anhang · Whiteboard-Themen', title: 'Backlog für die Whiteboard-Session.',
+      body: `<div class="day-backlog">${[
+        ['Landkarte der Autonomie', 'Eigene Prozesse nach Risiko × Prüfbarkeit: wo Freigabe, wo Fenster, wo autonom?'],
+        ['Wer haftet?', 'Das Fenster lief ab, niemand griff ein: Agent, Mensch oder wer das Fenster festlegte?'],
+        ['Freigabe-Müdigkeit', 'Zehn Freigaben am Tag werden zum Durchwinken. Stichprobe, Checkliste, Rotation?'],
+        ['Vom Chat zum Betrieb', 'Niemand stößt mehr an: Auslöser, Wiederholung, Duplikate, Not-Aus.'],
+        ['Rollen', 'Wem gehört ein Agent? Wie arbeiten viele Menschen mit vielen Agenten?'],
+        ['Prüfer und Aufsicht', 'Was muss im Protokoll stehen, um es in einem Jahr zu erklären?']
+      ].map(([title, text]) => `<div class="day-card"><h3>${title}</h3><p>${text}</p></div>`).join('')}</div>`,
+      notes: 'Nur für dich. Ablauf-Vorschlag auf der nächsten Folie. Thema 1 knüpft an Verifier’s Law aus dem Input an, Thema 2 an Drill 9, Thema 3 an Drill 8, Thema 5 an die offene Frage aus dem Vortrag.'
+    },
+    {
+      id: 'AnhangAblauf', type: 'Anhang', eyebrow: 'Anhang · Whiteboard-Ablauf', title: '75 Minuten, vier Teile.',
+      body: `<div class="day-flow"><div class="day-flow-step"><b>20 Min.</b><span>Landkarte<br>im Plenum</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>25 Min.</b><span>Automation Contract<br>pro Tisch</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>20 Min.</b><span>Galerierundgang</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>10 Min.</b><span>Abschluss,<br>Brücke zu Mittwoch</span></div></div>`,
+      notes: 'Landkarte: zwei Achsen an die Wand (Risiko, Prüfbarkeit), jede Person klebt zwei eigene Prozesse. Contract: sechs Felder (Auslöser, Aktionen, Kontrollregel, Belege, Ausnahme, verantwortlicher Mensch) für einen Prozess pro Tisch. Galerie: Tische wandern, je eine Frage an jeden Contract. Abschluss: Was nehmt ihr als Regel mit? Welche externe Wirkung wäre bei euch heute schon verantwortbar?'
+    },
   ];
 
   const agentisch = window.PFEFFERMINZIA_AGENTISCH_SLIDES || [];
 
   const deckIds = {
-    gesamt: ['Titel', 'Bruecke', 'Agenda', 'LiveBeispiele', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus', 'Tempo', 'Whiteboard', 'Contract'],
-    input: ['Titel', 'Bruecke', 'Agenda', 'LiveBeispiele', 'Architektur', 'Belege', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus'],
-    'drill-06': ['Drill6Start', 'Zeitplan-drill-06', 'Drill6Los', 'Teilnehmende', 'Drill6Cockpit', 'Drill6Auftrag', 'Checkpoints'],
-    'drill-07': ['Drill7Start', 'Zeitplan-drill-07', 'Rueckblick6', 'Drill7Kontext', 'Drill7Auftrag', 'Checkpoints'],
-    'drill-08': ['Drill8Start', 'Zeitplan-drill-08', 'Rueckblick7', 'Drill8Review', 'Drill8Auftrag', 'Checkpoints'],
-    'drill-09': ['Drill9Start', 'Zeitplan-drill-09', 'Rueckblick8', 'Drill9Queue', 'Drill9Auftrag', 'Checkpoints'],
-    'drill-10': ['Drill10Start', 'Zeitplan-drill-10', 'Rueckblick9', 'Drill10Daten', 'Drill10Auftrag'],
+    gesamt: ['Titel', 'ZielVideo', 'Bruecke', 'Agenda', 'Lernkonzept', 'LiveBeispiele', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus', 'Tempo', 'Whiteboard', 'Contract'],
+    input: ['Titel', 'Bruecke', 'Agenda', 'LiveBeispiele', 'Architektur', 'Belege', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus', 'ZielVideo', 'Mitnehmen', 'Lernkonzept', 'DrillRhythmus'],
+    'drill-06': ['Drill6Start', 'Zeitplan-drill-06', 'Drill6Los', 'Teilnehmende', 'Drill6Cockpit', 'Drill6Auftrag', 'Checkpoints', 'Reserve6', 'ReserveImmer'],
+    'drill-07': ['Drill7Start', 'Zeitplan-drill-07', 'Rueckblick6', 'Drill7Kontext', 'Drill7Auftrag', 'Checkpoints', 'Reserve7', 'ReserveImmer'],
+    'drill-08': ['Drill8Start', 'Zeitplan-drill-08', 'Rueckblick7', 'Drill8Review', 'Drill8Auftrag', 'Checkpoints', 'Reserve8', 'ReserveImmer'],
+    'drill-09': ['Drill9Start', 'Zeitplan-drill-09', 'Rueckblick8', 'Drill9Queue', 'Drill9Auftrag', 'Checkpoints', 'Reserve9', 'ReserveImmer'],
+    'drill-10': ['Drill10Start', 'Zeitplan-drill-10', 'Rueckblick9', 'Drill10Daten', 'Drill10Auftrag', 'Reserve10', 'ReserveImmer'],
     abschluss: ['Zeitplan-abschluss', 'Whiteboard', 'Contract'],
     teilnehmende: ['Teilnehmende'],
+    anhang: ['AnhangWhiteboard', 'AnhangAblauf', 'Reserve6', 'Reserve7', 'Reserve8', 'Reserve9', 'Reserve10', 'ReserveImmer'],
     agentisch: agentisch.map(slide => slide.id)
   };
   slides.push(zeitplan('abschluss'));
