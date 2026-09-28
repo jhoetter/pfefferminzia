@@ -37,14 +37,13 @@ p, li { font-size: 22px; line-height: 1.45; }
 .slide.title { background: var(--forest); color: #fff; justify-content: center; }
 .slide.title h1 { color: #fff; font-size: 84px; }
 .slide.title .lead { color: var(--mint-soft); }
-.slide.title .logo { filter: brightness(0) invert(1); opacity: .9; }
 .slide.title footer { color: rgba(255,255,255,.6); }
 .video-frame { flex: 1; display: grid; place-items: center; border-radius: 18px; background: #0f261c; overflow: hidden; }
 .video-frame video { width: 100%; height: 100%; object-fit: contain; background: #000; }
 .video-frame .empty { color: var(--mint-soft); font-size: 24px; text-align: center; padding: 40px; }
 svg text { font-family: inherit; }
 .controls {
-  position: fixed; right: 16px; bottom: 12px; display: flex; gap: 6px; align-items: center;
+  position: fixed; left: 16px; top: 12px; display: flex; gap: 6px; align-items: center;
   color: rgba(255,255,255,.7); font-size: 13px; opacity: .25; transition: opacity .2s;
 }
 .controls:hover { opacity: 1; }

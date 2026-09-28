@@ -63,16 +63,16 @@
 
   // ---- Ab hier: die Präsentationsmechanik (Pfeiltasten, Leertaste, Klick, F für Vollbild) ----
   const deck = document.getElementById('deck');
-  const logo = '<img class="logo" src="./assets/pfefferminzia-logo.svg" alt="Pfefferminzia">';
+  const logo = dark => `<img class="logo" src="./assets/pfefferminzia-logo${dark ? '-hell' : ''}.svg" alt="Pfefferminzia">`;
   const footer = '<footer><span>Pfefferminzia Versicherungen · Vorstand</span><span>Workshop-Probelauf mit erfundenen Fällen</span></footer>';
   deck.innerHTML = slides.map(slide => {
     if (slide.kind === 'video') {
       const body = VIDEO
         ? `<video src="${VIDEO}" controls playsinline preload="metadata"></video>`
         : '<div class="empty">Hier läuft gleich euer Video.<br>Pfad oben in vorstand.js bei VIDEO eintragen.</div>';
-      return `<section class="slide">${logo}<div class="eyebrow">${slide.eyebrow}</div><h1>${slide.title}</h1><div class="video-frame">${body}</div>${footer}</section>`;
+      return `<section class="slide">${logo()}<div class="eyebrow">${slide.eyebrow}</div><h1>${slide.title}</h1><div class="video-frame">${body}</div>${footer}</section>`;
     }
-    return `<section class="slide ${slide.kind || ''}">${logo}<div class="eyebrow">${slide.eyebrow || ''}</div>
+    return `<section class="slide ${slide.kind || ''}">${logo(slide.kind === 'title')}<div class="eyebrow">${slide.eyebrow || ''}</div>
       <h1>${slide.title}</h1>${slide.lead ? `<p class="lead">${slide.lead}</p>` : ''}${slide.html || ''}${footer}</section>`;
   }).join('');
 
@@ -93,6 +93,7 @@
     if (element) { element.textContent = text; element.classList.remove('placeholder'); }
   }
   addEventListener('resize', fit);
+  addEventListener('hashchange', () => show((parseInt(location.hash.slice(1), 10) || 1) - 1));
   addEventListener('keydown', event => {
     if (['ArrowRight', 'PageDown', ' '].includes(event.key)) show(current + 1);
     if (['ArrowLeft', 'PageUp'].includes(event.key)) show(current - 1);
