@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 
 import pytest
@@ -196,3 +197,25 @@ def test_reply_from_an_earlier_run_shows_the_case_as_answered(monkeypatch, full_
     # A reply from an earlier run is no evidence for today's drill.
     assert case_evidence(6, full_db)["complete"] is False
     assert sync_agentmail(full_db)["importedMessages"] == 0
+
+
+@pytest.mark.asyncio
+async def test_inbox_fetch_reports_mail_the_cockpit_already_fetched(monkeypatch, full_db):
+    from mcp import Client
+
+    import pfefferminzia.database as database
+    from pfefferminzia.mcp_server import create_mcp_server
+
+    monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-08-start")
+    fake = FakeAgentMail()
+    monkeypatch.setattr(agentmail_service, "_client", lambda: fake)
+    monkeypatch.setenv("AGENTMAIL_API_KEY", "test-key")
+    monkeypatch.setenv("AGENTMAIL_INBOX_ID", "inbox-participant")
+    monkeypatch.setenv("WORKSHOP_ALLOWED_RECIPIENTS", "participant@example.test")
+    monkeypatch.setattr(database, "_singleton", full_db)
+    sync_agentmail(full_db)  # the cockpit's own 30-second fetch got there first
+    async with Client(create_mcp_server()) as client:
+        result = await client.call_tool("sync_agentmail", {})
+    answer = json.loads(result.content[0].text)
+    assert answer["importedTickets"] == 0
+    assert len(answer["waitingCases"]) == 2 and "2 offene Fälle" in answer["summary"]

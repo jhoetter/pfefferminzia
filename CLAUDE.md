@@ -316,9 +316,12 @@ lernen müssen sie nicht – den Code schreibst du.
   die Mail da?“), und sag nur das Ergebnis. Nie um Erlaubnis bitten.
 - An die Inbox können beliebige externe Absender schreiben (auch Gmail).
   `WORKSHOP_ALLOWED_RECIPIENTS` beschränkt nur **ausgehende** Antworten.
-  „0 neue Nachrichten“ heißt nur: in diesem Moment noch nichts da –
-  Zustellverzögerung erklären, kurz warten, erneut synchronisieren; nicht
-  ohne Beleg behaupten, die Mail sei an die falsche Adresse gegangen.
+  **Ob eine Mail da ist, steht in `waitingCases` bzw. `summary`, nicht in
+  `importedTickets`:** Das Cockpit ruft das Postfach alle 30 Sekunden selbst
+  ab, dein Abruf findet dann oft „0 neue“, obwohl die Mail längst im
+  Posteingang liegt. Erst wenn auch `waitingCases` leer ist, ist wirklich
+  nichts da – dann Zustellverzögerung erklären, kurz warten, erneut abrufen;
+  nie ohne Beleg behaupten, die Mail sei an die falsche Adresse gegangen.
 - Steht ein Fall nach dem Sync schon als „gesendet“ da (Ereignis
   `earlier_reply_imported`), wurde er aus diesem Postfach in einem früheren
   Durchlauf oder Ordner beantwortet. Das kurz so erklären; er zählt nicht als

@@ -367,8 +367,19 @@ def create_mcp_server(*, every_drill: bool = False, server_class: type[MCPServer
 
     @server.tool(name="sync_agentmail", annotations=ToolAnnotations(readOnlyHint=False, openWorldHint=True))
     def sync_agentmail_tool() -> dict[str, Any]:
-        """Fetch new mail from the participant's workshop inbox (created for this, so no need to ask); never sends email. The recipient allowlist restricts outbound replies, not inbound senders."""
-        return sync_agentmail()
+        """Fetch new mail from the participant's workshop inbox (created for this, so no need to ask); never sends email. The cockpit fetches every 30 s on its own, so read waitingCases, not only importedTickets. The recipient allowlist restricts outbound replies, not inbound senders."""
+        result = sync_agentmail()
+        # The cockpit may have fetched the mail already; what counts is what is waiting now.
+        waiting = [
+            {"ticketNumber": item["ticketNumber"], "subject": item["subject"], "receivedAt": item["lastMessageAt"]}
+            for item in list_tickets_impl(limit=50)
+            if not item["isDemo"] and item["status"] not in ("sent", "closed")
+        ]
+        summary = (
+            f"Im Posteingang warten {len(waiting)} offene Fälle: " + "; ".join(f"{w['ticketNumber']} {w['subject']}" for w in waiting)
+            if waiting else "Im Posteingang wartet kein offener Fall."
+        )
+        return {**result, "waitingCases": waiting, "summary": summary}
 
     @server.tool(name="list_claims", annotations=ReadOnly)
     def list_claims_tool(
@@ -564,6 +575,7 @@ def _register_instructor_tools(server: MCPServer) -> None:
 
 # Aliases prevent decorated tool function names from shadowing domain functions.
 get_workshop_status_impl = get_workshop_status
+list_tickets_impl = list_tickets
 get_customer_impl = get_customer
 get_contract_impl = get_contract
 resolve_ticket_customer_impl = resolve_ticket_customer
