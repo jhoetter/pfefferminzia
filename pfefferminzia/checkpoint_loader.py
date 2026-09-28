@@ -289,7 +289,8 @@ def apply_checkpoint_load(confirmation_token: str) -> dict[str, Any]:
         "casesBackup": str(backup) if backup else None,
         "sameFolderAndSession": True,
         "message": (
-            f"Drill {drill} ist geladen – hier im selben Ordner, in derselben Sitzung. Starte die Kommandozentrale "
+            f"Drill {drill}: {CHECKPOINTS[checkpoint]['title']} ist geladen – hier im selben Ordner, in derselben Sitzung. "
+            "Starte die Kommandozentrale "
             "neu (uv run pfefferminzia serve --open im Hintergrund) und beginne mit der Orientierung aus "
             "get_drill_guide. Keine neue Sitzung, kein anderer Ordner."
         ),

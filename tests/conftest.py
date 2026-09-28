@@ -1,6 +1,14 @@
 from __future__ import annotations
 
+import os
 import sqlite3
+
+# A participant's folder has a connected inbox and, after a drill switch, a
+# drill in .env. Tests must not inherit either: set them empty before any
+# module loads .env (python-dotenv never overrides a variable that exists).
+for _key in ("AGENTMAIL_API_KEY", "AGENTMAIL_INBOX_ID", "WORKSHOP_ALLOWED_RECIPIENTS",
+             "WORKSHOP_CHECKPOINT", "AUTO_SEND_ENABLED", "PFEFFERMINZIA_DB_PATH"):
+    os.environ[_key] = ""
 
 import pytest
 

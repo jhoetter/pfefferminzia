@@ -127,7 +127,7 @@
     {
       id: 'Drill6Auftrag', type: 'Drill', eyebrow: "Drill 6 · Eure Aufgaben · 60 Minuten", title: "Entscheiden. Bauen. Selbst senden.",
       subtitle: "Start: Nach dem Einrichten neue Sitzung im Ordner pfefferminzia – „weiter mit Drill 6“.", study: true,
-      body: taskBoard(["Mail lesen und sagen, was du antworten willst.", "Claude entwirft, du änderst – <strong>noch nicht senden</strong>.", "Bauen: „Antworten“ erledigt sich beim Senden.", "Senden – und in den Aufgaben sehen, dass es wirkt."], "Antwort gesendet, „Antworten“ hat sich selbst erledigt, die zweite Aufgabe ist offen, Stand gespeichert.", "Denkanstoß von Claude holen, dann deine eigene Kommandozentrale erweitern – z. B. eine Mini-Wissensbasis. Nicht vorgreifen."),
+      body: taskBoard(["Mail lesen und sagen, was du antworten willst.", "Claude entwirft, du änderst – <strong>noch nicht senden</strong>.", "Bauen: „Antworten“ erledigt sich beim Senden.", "Senden – und in den Aufgaben sehen, dass es wirkt."], "Antwort gesendet, „Antworten“ hat sich selbst erledigt, die zweite Aufgabe ist offen, Stand gespeichert.", "Denkanstoß von Claude holen, dann die heutigen Teile weiter ausbauen – was würdest du gern noch sehen? Z. B. eine Suche im Posteingang. Nicht vorgreifen."),
       notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Das sind eure Aufgaben für die nächste Stunde. Ihr entscheidet, Claude baut. Claude zeigt euch zuerst, was die Kommandozentrale kann, und führt euch Schritt für Schritt – aber es fragt euch, und ihr entscheidet. Wichtig: in Schritt 2 noch nicht senden, euer Senden ist in Schritt 4 der Beweis. Wer früher fertig ist, bekommt Denkanstöße und erweitert die eigene Kommandozentrale – nicht vorgreifen. Ich laufe rum. ZEITPLAN: 15 Min. Start, 10 Entwurf, 20 bauen, 10 senden und belegen, 5 Rückblick."
     },
     {
@@ -147,7 +147,7 @@
     {
       id: 'Drill7Auftrag', type: 'Drill', eyebrow: "Drill 7 · Eure Aufgaben · 60 Minuten", title: "Erst Quelle. Dann Entwurf. Dann du.",
       subtitle: "Start: „Ich will zu Drill 7. Frag mich, ob ich meinen Stand mitnehmen will.“ Claude lädt – im selben Ordner, ohne neue Sitzung.", study: true,
-      body: taskBoard(["Bestand ansehen: Kundin, Vertrag und Tarif selbst bestätigen.", "Entwurf mit Beleg ändern – <strong>noch nicht senden</strong>.", "Bauen: Ein falsches Tarifzitat wird gestoppt.", "Am eigenen Fall austricksen – dann senden."], "Geänderte Antwort gesendet, ein falsches Tarifzitat wird mit deiner Meldung gestoppt, Stand gespeichert.", "Denkanstoß von Claude holen, dann deine eigene Kommandozentrale erweitern – z. B. eine Beleg-Ampel. Nicht vorgreifen."),
+      body: taskBoard(["Bestand ansehen: Kundin, Vertrag und Tarif selbst bestätigen.", "Entwurf mit Beleg ändern – <strong>noch nicht senden</strong>.", "Bauen: Ein falsches Tarifzitat wird gestoppt.", "Am eigenen Fall austricksen – dann senden."], "Geänderte Antwort gesendet, ein falsches Tarifzitat wird mit deiner Meldung gestoppt, Stand gespeichert.", "Denkanstoß von Claude holen, dann die heutigen Teile weiter ausbauen – was würdest du gern noch sehen? Z. B. das Tarifblatt direkt im Cockpit. Nicht vorgreifen."),
       notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Neu ist der Bestand – die Daten von Montag, Claude lädt sie. Erst anschauen, dann die Mail. Nicht die erstbeste Tarif-PDF, sondern die zum Vertrag passende Generation. Die Mail ist eine Behauptung, der Vertrag ist der Beleg. Den Wortlaut der Fehlermeldung legt ihr selbst fest. Wer früher fertig ist: Denkanstöße und eigene Erweiterung (Vorschlag: Beleg-Ampel) – nie der nächste Drill. DOZENT: Drill-7-Mails nach dem Laden senden."
     },
     {
@@ -165,7 +165,7 @@
     {
       id: 'Drill8Auftrag', type: 'Drill', eyebrow: "Drill 8 · Eure Aufgaben · 60 Minuten", title: "Claude bereitet vor. Du entscheidest.",
       subtitle: "Start: „Ich will zu Drill 8. Frag mich, ob ich meinen Stand mitnehmen will.“ Claude lädt – im selben Ordner, ohne neue Sitzung.", study: true,
-      body: taskBoard(["Erst deine Prüfpunkte, dann die Vorlagen.", "Einen Fall freigeben, einen begründet ablehnen.", "Bauen: Der Ablehnungsgrund wird im Fall sichtbar.", "Freigegebenen Text ändern – die Freigabe erlischt."], "Freigabe und begründete Ablehnung im Protokoll, erloschene Freigabe gesehen, Stand gespeichert.", "Denkanstoß von Claude holen, dann deine eigene Kommandozentrale erweitern – z. B. eine Risiko-Einstufung. Nicht vorgreifen."),
+      body: taskBoard(["Erst deine Prüfpunkte, dann die Vorlagen.", "Einen Fall freigeben, einen begründet ablehnen.", "Bauen: Der Ablehnungsgrund wird im Fall sichtbar.", "Freigegebenen Text ändern – die Freigabe erlischt."], "Freigabe und begründete Ablehnung im Protokoll, erloschene Freigabe gesehen, Stand gespeichert.", "Denkanstoß von Claude holen, dann die heutigen Teile weiter ausbauen – was würdest du gern noch sehen? Z. B. eine Prüf-Checkliste beim Freigeben. Nicht vorgreifen."),
       notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Erst die eigenen Prüfpunkte, dann die Vorlage – sonst prüft man nur, was der Agent zeigt. Eine Ablehnung ist ein vollwertiger Erfolgspfad; die Begründung steuert Claude. Sind beide Entwürfe gut, den schwächeren ablehnen. Früher fertig: Denkanstöße und eigene Erweiterung (Vorschlag: Risiko-Einstufung). DOZENT: Drill-8-Mails nach dem Laden senden."
     },
     {
@@ -186,7 +186,7 @@
     {
       id: 'Drill9Auftrag', type: 'Drill', eyebrow: "Drill 9 · Eure Aufgaben · 60 Minuten", title: "Das Fenster ist sichtbar. Die Wirkung kommt später.",
       subtitle: "Start: „Ich will zu Drill 9. Frag mich, ob ich meinen Stand mitnehmen will.“ Claude lädt – im selben Ordner, ohne neue Sitzung.", study: true,
-      body: taskBoard(["Haftpflicht erkennen – was ist dir zu heikel?", "Vorhersagen, dann ändern, stoppen, laufen lassen.", "Bauen: Stopps erklären, nichts doppelt senden.", "„Zeit +24 h“ drücken, mit Vorhersage vergleichen."], "Eine Antwort ging automatisch raus, eine ist geändert, eine gestoppt – alles im Protokoll; Stand gespeichert.", "Denkanstoß von Claude holen, dann deine eigene Kommandozentrale erweitern – z. B. eine eigene Kennzahl. Nicht vorgreifen."),
+      body: taskBoard(["Haftpflicht erkennen – was ist dir zu heikel?", "Vorhersagen, dann ändern, stoppen, laufen lassen.", "Bauen: Stopps erklären, nichts doppelt senden.", "„Zeit +24 h“ drücken, mit Vorhersage vergleichen."], "Eine Antwort ging automatisch raus, eine ist geändert, eine gestoppt – alles im Protokoll; Stand gespeichert.", "Denkanstoß von Claude holen, dann die heutigen Teile weiter ausbauen – was würdest du gern noch sehen? Z. B. „geht als Nächstes raus“ sortiert. Nicht vorgreifen."),
       notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Jetzt kippt die Voreinstellung: Ohne Eingriff passiert etwas. Erst vorhersagen, dann vorspulen. Der Drill-9-Stand schaltet den automatischen Versand selbst ein; niemand stellt etwas von Hand um. Früher fertig: Denkanstöße und eigene Erweiterung (Vorschlag: eigene Kennzahl für Drill 10). DOZENT: Drill-9-Mails nach dem Laden senden."
     },
     {
@@ -203,7 +203,7 @@
     {
       id: 'Drill10Auftrag', type: 'Drill', eyebrow: "Drill 10 · Eure Aufgaben · 45 Minuten", title: "Eine Grafik. Eine Empfehlung. Eine Grenze.",
       subtitle: "Start: „Ich will zu Drill 10. Frag mich, ob ich meinen Stand mitnehmen will.“ Claude lädt – im selben Ordner.", study: true,
-      body: taskBoard(["Welche Frage soll dein Vorstand beantworten können?", "Grafik in Worten skizzieren, mit Claude bauen.", "Empfehlung mit Grenze formulieren.", "Zwei Minuten vorführen."], "Höchstens vier Folien mit Grafik, Empfehlung und Grenze; zwei Minuten vorgeführt; Stand gespeichert.", "Denkanstoß von Claude holen, dann deine eigene Kommandozentrale erweitern – z. B. eine Folie „Mein agentisches System“. Nicht vorgreifen."),
+      body: taskBoard(["Welche Frage soll dein Vorstand beantworten können?", "Grafik in Worten skizzieren, mit Claude bauen.", "Empfehlung mit Grenze formulieren.", "Zwei Minuten vorführen."], "Höchstens vier Folien mit Grafik, Empfehlung und Grenze; zwei Minuten vorgeführt; Stand gespeichert.", "Denkanstoß von Claude holen, dann die heutigen Teile weiter ausbauen – was würdest du gern noch sehen? Z. B. eine umschaltbare Grafik. Nicht vorgreifen."),
       notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Nur zeigen, was die gezählten Ereignisse belegen – keine erfundenen Unternehmenszahlen. Die Empfehlung schreibt ihr selbst; Claude kürzt und fragt kritisch nach. Bonus-Video mit Remotion (docs/BONUS_VIDEO.md) nur mit restlichem Guthaben."
     },
     {

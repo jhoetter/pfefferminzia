@@ -160,10 +160,11 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
             "task": "Baue mit Claude eine kleine Wissensbasis, die dir beim Beantworten von Mails hilft – z. B. erfundene Kontakte mit Rolle, Anrede und Zuständigkeit oder deine Antwortregeln (Ton, Signatur, Standardsätze). Sie liegt als einfache Datei in deiner Kopie (z. B. wissen/kontakte.csv, erster Eintrag: die Absenderadresse der Lehrer-Mail); ein neues Werkzeug, das nur lesen darf, lässt Claude darin nachschlagen. Test: Ein hinterlegter Kontakt liefert seine Anrede, ein unbekannter Absender die Standardanrede, und das Werkzeug ist nur lesend. Ob Claude die Anrede im Entwurf nutzt, prüft die Person live in einer neuen Code-Sitzung. Gute Rückfrage: „Claude Code könnte die Datei hier auch direkt lesen – warum lohnt sich trotzdem ein Werkzeug?“ (Ein Agent im Betrieb bekommt nur, was ihm Werkzeuge geben, und das Werkzeug legt fest: nur lesen, nur diese Angaben.) Nur erfundene Daten, keine echten Kontakte. Etwa 20–25 Minuten mit Steckbrief.",
             "decision": "Welche drei, vier Angaben würden deine Antworten wirklich besser machen – und was darf auf keinen Fall hinein?",
             "inspiration": [
-                "Werkzeuge: Claude darf selbst senden – ein neues Werkzeug. Welche Kontrolle gehört dann dazu (nur an die Antwort-Liste, nur nach deinem Ja, Eintrag im Protokoll)?",
-                "Oberfläche: Im Cockpit sehen, wodurch eine Aufgabe erledigt wurde – durch Versand, von Hand oder durch Claude.",
-                "Eingänge: Mails mit „dringend“ im Betreff bekommen eine markierte Aufgabe.",
-                "Werkzeuge: Beim Abholen neuer Mails legt Claude eine Zusammenfassung in drei Zeilen als interne Notiz an.",
+                "Posteingang: Suche und ein Filter „nur offene Fälle“.",
+                "Aufgaben: Fälligkeit und „wer ist dran“ – und sichtbar machen, wodurch eine Aufgabe erledigt wurde.",
+                "Entwurf: ein Knopf im Cockpit „Claude um einen Entwurf bitten“ – was müsste er Claude mitgeben?",
+                "Aktivität: verständlichere Einträge, z. B. „Claude hat entworfen, du hast drei Sätze geändert“.",
+                "Werkzeuge: Claude darf selbst senden – welche Kontrolle gehört dann dazu?",
             ],
         },
     },
@@ -217,10 +218,11 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
             "task": "Eine kleine Ampel am Entwurf im Cockpit: grün, wenn er Vertrag, passende Tarifgeneration und Fundstelle nennt; gelb, wenn etwas fehlt; rot bei einem Widerspruch zu dem, was im Bestand steht. Die Person legt die Regeln für jede Farbe fest. Szenarien: je ein Entwurf pro Farbe.",
             "decision": "Was macht einen Entwurf für dich grün – und was ist sofort rot?",
             "inspiration": [
-                "Wissen: Deine Mini-Wissensbasis um Textbausteine je Tarifgeneration ergänzen, z. B. welche Unterlagen bei einer Bezugsrechtsänderung nötig sind.",
-                "Kontrollen: Eine zweite Prüfregel – der Entwurf nennt eine Vertragsnummer, die nicht zum Fall gehört.",
-                "Kontrollen: Entwürfe ohne Fundstelle dürfen gespeichert, aber nicht gesendet werden.",
-                "Werkzeuge: Claude darf einen Rückruf als Aufgabe mit Fälligkeit planen.",
+                "Bestand: das Tarifblatt direkt im Cockpit anzeigen statt als Download.",
+                "Bestand: bei einer Kundin auch alle ihre Fälle aus dem Posteingang zeigen.",
+                "Aus dem Bestand: markieren, wo die Mail vom Bestand abweicht, z. B. eine falsche Vertragsnummer.",
+                "Bestand: nach Vertragsnummer oder Tarifgeneration suchen und filtern.",
+                "Wissen: deine Mini-Wissensbasis um Textbausteine je Tarifgeneration ergänzen.",
             ],
         },
     },
@@ -276,10 +278,11 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
             "task": "Lege mit Claude eine Einstufung fest (z. B. niedrig, mittel, hoch) und die Regeln dafür – etwa Beschwerde, Betrag, Sparte, fehlender Beleg. Claude setzt sie über ein neues Werkzeug pro Fall mit Begründung; das Cockpit zeigt sie an; das Protokoll hält fest, wer sie gesetzt hat. Test: ein Beispiel pro Stufe.",
             "decision": "Welche zwei Merkmale machen einen Fall für dich riskant – und wer darf die Einstufung ändern: Claude, du oder beide?",
             "inspiration": [
-                "Oberfläche: Deine Prüfpunkte aus Etappe 1 als Checkliste im Freigabe-Dialog; freigeben erst, wenn alle abgehakt sind.",
-                "Oberfläche: Zeigen, was sich seit der letzten Freigabe am Text geändert hat.",
-                "Kontrollen: Ablehnen nur mit Kategorie (Ton, Fakten, Beleg, Zusage), damit man später sieht, woran Entwürfe scheitern.",
-                "Werkzeuge: Claude darf freigeben – durchdenke, warum das die Freigabe aushebelt und welcher Kompromiss denkbar wäre, z. B. ein zweiter Mensch.",
+                "Freigaben: deine Prüfpunkte als Checkliste im Freigabe-Dialog; freigeben erst, wenn alle abgehakt sind.",
+                "Freigaben: zeigen, was sich seit der letzten Freigabe am Text geändert hat.",
+                "Freigaben: Ablehnen nur mit Kategorie (Ton, Fakten, Beleg, Zusage).",
+                "Sparte: anzeigen, warum Claude eine Sparte gewählt hat und wie sicher es sich ist.",
+                "Werkzeuge: Claude darf freigeben – durchdenke, warum das die Freigabe aushebelt.",
             ],
         },
     },
@@ -334,10 +337,11 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
             "task": "Lege fest, welche Frage dein Bericht beantworten soll (z. B. Warum wird im Fenster eingegriffen? Wie oft ändert der Mensch den Text des Agenten?), und ergänze in pfefferminzia/management_report.py eine gruppierte Zählung dafür – nur Zahlen, keine Texte oder Namen. Test in tests/test_management_report.py.",
             "decision": "Welche Frage soll deine Zahl beantworten – und was würde sie ausdrücklich nicht zeigen?",
             "inspiration": [
-                "Kontrollen: Beschwerden laufen nie automatisch, sie brauchen immer eine Freigabe.",
-                "Kontrollen: Die Fensterlänge hängt vom Fall ab, z. B. länger bei hohen Beträgen.",
-                "Oberfläche: Eine Übersicht „geht heute raus“ mit Countdown und Grund.",
-                "Werkzeuge: Claude darf nur Fälle einplanen, die deine Einstufung als niedrig führt.",
+                "Eingriffsfenster: sortiert nach „geht als Nächstes raus“, mit Grund und Betrag.",
+                "Eingriffsfenster: Beschwerden laufen nie automatisch, sie brauchen immer eine Freigabe.",
+                "Eingriffsfenster: die Fensterlänge hängt vom Fall ab, z. B. länger bei hohen Beträgen.",
+                "Schäden: eine eigene Schadenansicht mit Positionen und Verlauf.",
+                "Werkzeuge: Claude darf nur Fälle einplanen, die als niedriges Risiko gelten.",
             ],
         },
     },
@@ -391,9 +395,9 @@ DRILL_BRIEFS: dict[int, dict[str, Any]] = {
             "task": "Eine Zusatzfolie am Ende (zählt nicht zu den vier Report-Folien) in slides/management.js: dein System in sechs Bausteinen – was Claude darf, wo du entscheidest, was du heute selbst gebaut hast (aus MEINE_ERWEITERUNGEN.md) und was du als Nächstes bauen würdest.",
             "decision": "Welchen Baustein würdest du in deinem Haus als Erstes bauen – und welchen auf keinen Fall ohne menschliche Kontrolle?",
             "inspiration": [
+                "Report: die Grafik lässt sich zwischen Leben und Haftpflicht umschalten.",
+                "Report: eine Folie „Was wir nicht messen konnten“.",
                 "Bonus mit restlichem Guthaben: ein 30–60-Sekunden-Video deiner Lösung mit Remotion als letzte Folie.",
-                "Oberfläche: Die Grafik lässt sich zwischen Leben und Haftpflicht umschalten.",
-                "Protokoll: Eine Folie „Was wir nicht messen konnten“.",
             ],
         },
     },
@@ -421,6 +425,8 @@ SPEC_QUESTIONS = [
 ]
 
 EXTENSION_RULES = (
+    "Erst fragen, was die Person an den heute eingeführten Teilen gern anders oder zusätzlich hätte – was würde sie gern sehen? "
+    "'inspiration' sind Anregungen dafür, nur zeigen, wenn sie keine eigene Idee hat. "
     "Erst fragen, was die Person in ihrer Kommandozentrale gern hätte. Hat sie keine eigene Idee, das Problem der "
     "empfohlenen Erweiterung mit ihrer 'designQuestion' öffnen – 'task' ist nur deine Richtung, nicht vorlesen und "
     "nicht vorbauen. Ihre Skizze bestimmt den Entwurf; du ergänzt mit Rückfragen. Dann den Steckbrief "
@@ -581,6 +587,7 @@ def drill_guide(
     reference = REFERENCE_TAGS[drill]
     previous = f"checkpoint/{profile['name']}" if profile["name"] != "drill-10-complete" else "checkpoint/drill-10-start"
     return {
+        "headline": f"Drill {drill}: {profile['title']}",
         "youAreHere": (
             f"Dieser Ordner ist schon auf Drill {drill}. „weiter mit Drill {drill}“ heißt: Drill {drill} beginnen – "
             "nichts laden, keinen Wechsel anbieten, sondern mit der Orientierung starten. Einen Checkpoint nur "
@@ -608,6 +615,7 @@ def drill_guide(
             "Sprich wie mit einer Führungskraft ohne IT-Hintergrund (CLAUDE.md, Abschnitt 0): keine Datei- oder "
             "Funktionsnamen, kein Code, keine englischen Technikwörter; arbeite still und melde nur Ergebnisse. "
             "'buildTask', 'extension.task' und Hinweis-Level 3 sind nur deine Richtung – übersetzen, nie vorlesen. "
+            "Beginne jeden Drill (auch direkt nach einem Wechsel) mit der Zeile aus 'headline' als Überschrift. "
             "Zum Einstieg die 'orientation' vorstellen: was im Cockpit wo zu sehen ist, was heute neu ist, was Claude "
             "darf und nicht darf, und der Fahrplan in vier Schritten – kurz, als Liste; die Person einmal durch die Bereiche "
             "klicken lassen. Halte den Fahrplan: Will die Person vorgreifen (etwa in Drill 6 schon vor dem Bauen senden), "

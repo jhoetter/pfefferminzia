@@ -94,7 +94,7 @@ selbst im Cockpit – das ist der Beweis.
 - Die Aufgabe „Antworten“ ist von selbst entstanden. Welche Aufgaben entstehen bei euch aus einer Mail – und welche davon dürfte ein Agent anlegen, welche nie?
 - Woran merkst du bei einer neuen Kollegin, dass sie eine Mail nur überflogen hat – und woran würdest du es bei Claude merken?
 
-**Früher fertig?** Nicht den nächsten Drill vorwegnehmen – gestalte deine eigene Kommandozentrale weiter. Was hättest du gern? Oder denk über den Vorschlag **Meine Mini-Wissensbasis** (Baustein Wissen) nach: Wenn Claude beim Antworten wissen soll, wer dir schreibt und wie du die Person ansprichst – wie würdest du das aufbauen: Wo liegen die Angaben, wie kommt Claude dran, und wer darf sie ändern? *Warum jetzt:* In Drill 7 bekommt Claude die große Wissensbasis des Versicherers: Kunden, Verträge, Tarife. Wer hier schon eine kleine gebaut hat, erkennt dort dieselbe Idee im Großen. Claude fragt dich nach deiner Idee, hilft beim Steckbrief ([MEINE_ERWEITERUNGEN.md](../MEINE_ERWEITERUNGEN.md)) und baut dann mit dir.
+**Früher fertig?** Nicht den nächsten Drill vorwegnehmen – bau die heutigen Teile weiter aus: Was würdest du gern noch sehen oder tun können? Anregungen: Posteingang: Suche und ein Filter „nur offene Fälle“; Aufgaben: Fälligkeit und „wer ist dran“ – und sichtbar machen, wodurch eine Aufgabe erledigt wurde; Entwurf: ein Knopf im Cockpit „Claude um einen Entwurf bitten“ – was müsste er Claude mitgeben?. Oder der Vorschlag **Meine Mini-Wissensbasis**: Wenn Claude beim Antworten wissen soll, wer dir schreibt und wie du die Person ansprichst – wie würdest du das aufbauen: Wo liegen die Angaben, wie kommt Claude dran, und wer darf sie ändern? Claude fragt dich nach deiner Idee, hilft beim Steckbrief ([MEINE_ERWEITERUNGEN.md](../MEINE_ERWEITERUNGEN.md)) und baut dann mit dir.
 
 ## Drill 7 – Leben: Mensch bearbeitet, Agent bereitet vor (60 Min.)
 
@@ -150,7 +150,7 @@ deinem eigenen Fall auszutricksen – und sendest erst dann.
 - Claude darf Tarife nur lesen. Welche Quelle in deinem Haus dürfte ein Agent auf keinen Fall lesen – und warum?
 - Die Prüfregel stoppt einen falschen Tarif. Welche andere Zusage an Kunden würdest du gern automatisch prüfen lassen?
 
-**Früher fertig?** Nicht den nächsten Drill vorwegnehmen – gestalte deine eigene Kommandozentrale weiter. Was hättest du gern? Oder denk über den Vorschlag **Beleg-Ampel am Entwurf** (Baustein Oberfläche) nach: Stell dir vor, du musst in zehn Sekunden entscheiden, ob du einem Entwurf traust – was müsste dir das Cockpit dafür signalisieren? *Warum jetzt:* In Drill 8 gibst du Antworten frei, statt sie selbst zu schreiben. Eine schnelle Einschätzung zeigt dir, wo du genauer hinschauen musst. Claude fragt dich nach deiner Idee, hilft beim Steckbrief ([MEINE_ERWEITERUNGEN.md](../MEINE_ERWEITERUNGEN.md)) und baut dann mit dir.
+**Früher fertig?** Nicht den nächsten Drill vorwegnehmen – bau die heutigen Teile weiter aus: Was würdest du gern noch sehen oder tun können? Anregungen: Bestand: das Tarifblatt direkt im Cockpit anzeigen statt als Download; Bestand: bei einer Kundin auch alle ihre Fälle aus dem Posteingang zeigen; Aus dem Bestand: markieren, wo die Mail vom Bestand abweicht, z. B. eine falsche Vertragsnummer. Oder der Vorschlag **Beleg-Ampel am Entwurf**: Stell dir vor, du musst in zehn Sekunden entscheiden, ob du einem Entwurf traust – was müsste dir das Cockpit dafür signalisieren? Claude fragt dich nach deiner Idee, hilft beim Steckbrief ([MEINE_ERWEITERUNGEN.md](../MEINE_ERWEITERUNGEN.md)) und baut dann mit dir.
 
 ## Drill 8 – Leben: Agent bearbeitet, Mensch gibt frei (60 Min.)
 
@@ -204,7 +204,7 @@ Antwortfeld. Was im Hinweis steht, legst du fest.
 - Eine Freigabe verfällt, wenn sich der Text ändert. Wo gibt es bei euch heute Freigaben, die eigentlich verfallen müssten?
 - Deine Ablehnung hat Claude gesteuert. Was unterscheidet das von Feedback an eine neue Mitarbeiterin – und was nicht?
 
-**Früher fertig?** Nicht den nächsten Drill vorwegnehmen – gestalte deine eigene Kommandozentrale weiter. Was hättest du gern? Oder denk über den Vorschlag **Risiko-Einstufung je Fall** (Baustein Kontrollen) nach: Wie würdest du Fälle nach Risiko sortieren – woran erkennt man einen riskanten Fall, und wer sollte das festlegen? *Warum jetzt:* In Drill 9 laufen manche Antworten automatisch raus. Welche dürfen das? Deine Einstufung ist die Grundlage für diese Entscheidung. Claude fragt dich nach deiner Idee, hilft beim Steckbrief ([MEINE_ERWEITERUNGEN.md](../MEINE_ERWEITERUNGEN.md)) und baut dann mit dir.
+**Früher fertig?** Nicht den nächsten Drill vorwegnehmen – bau die heutigen Teile weiter aus: Was würdest du gern noch sehen oder tun können? Anregungen: Freigaben: deine Prüfpunkte als Checkliste im Freigabe-Dialog; freigeben erst, wenn alle abgehakt sind; Freigaben: zeigen, was sich seit der letzten Freigabe am Text geändert hat; Freigaben: Ablehnen nur mit Kategorie (Ton, Fakten, Beleg, Zusage). Oder der Vorschlag **Risiko-Einstufung je Fall**: Wie würdest du Fälle nach Risiko sortieren – woran erkennt man einen riskanten Fall, und wer sollte das festlegen? Claude fragt dich nach deiner Idee, hilft beim Steckbrief ([MEINE_ERWEITERUNGEN.md](../MEINE_ERWEITERUNGEN.md)) und baut dann mit dir.
 
 ## Drill 9 – Haftpflicht: Eingriffsfenster (60 Min.)
 
@@ -260,7 +260,7 @@ nötig sind, legst du fest.
 - Was passiert mit dem Eingriffsfenster am Freitagabend oder in der Ferienzeit?
 - Welche Routine läuft bei euch heute schon nach „geht raus, wenn niemand widerspricht“ – nur ohne Agent?
 
-**Früher fertig?** Nicht den nächsten Drill vorwegnehmen – gestalte deine eigene Kommandozentrale weiter. Was hättest du gern? Oder denk über den Vorschlag **Eine Kennzahl für deinen Report** (Baustein Protokoll) nach: Welche Frage würde dein Vorstand zum Eingriffsfenster stellen – und was müssten wir dafür mitzählen? *Warum jetzt:* In Drill 10 wird aus dem Protokoll ein Management-Bericht. Was dort nicht gezählt wird, kannst du nicht belegen. Claude fragt dich nach deiner Idee, hilft beim Steckbrief ([MEINE_ERWEITERUNGEN.md](../MEINE_ERWEITERUNGEN.md)) und baut dann mit dir.
+**Früher fertig?** Nicht den nächsten Drill vorwegnehmen – bau die heutigen Teile weiter aus: Was würdest du gern noch sehen oder tun können? Anregungen: Eingriffsfenster: sortiert nach „geht als Nächstes raus“, mit Grund und Betrag; Eingriffsfenster: Beschwerden laufen nie automatisch, sie brauchen immer eine Freigabe; Eingriffsfenster: die Fensterlänge hängt vom Fall ab, z. B. länger bei hohen Beträgen. Oder der Vorschlag **Eine Kennzahl für deinen Report**: Welche Frage würde dein Vorstand zum Eingriffsfenster stellen – und was müssten wir dafür mitzählen? Claude fragt dich nach deiner Idee, hilft beim Steckbrief ([MEINE_ERWEITERUNGEN.md](../MEINE_ERWEITERUNGEN.md)) und baut dann mit dir.
 
 ## Drill 10 – Management-Report (45 Min.)
 
@@ -309,7 +309,7 @@ Grenze. Ansicht: <http://127.0.0.1:3004/slides/index.html?deck=management>.
 - Wenn du morgen einen Baustein bei euch einführen dürftest: Welcher bringt am meisten, welcher birgt das größte Risiko?
 - Was müsste im Protokoll stehen, damit du einem Prüfer in einem Jahr erklären kannst, warum eine Antwort rausging?
 
-**Früher fertig?** Nicht den nächsten Drill vorwegnehmen – gestalte deine eigene Kommandozentrale weiter. Was hättest du gern? Oder denk über den Vorschlag **Folie: Mein agentisches System** (alle Bausteine) nach: Wie würdest du einer Kollegin in einem Bild erklären, was dein System darf und wo du entscheidest? *Warum jetzt:* Das nimmst du mit nach Hause: dein System in einem Bild. Claude fragt dich nach deiner Idee, hilft beim Steckbrief ([MEINE_ERWEITERUNGEN.md](../MEINE_ERWEITERUNGEN.md)) und baut dann mit dir.
+**Früher fertig?** Nicht den nächsten Drill vorwegnehmen – bau die heutigen Teile weiter aus: Was würdest du gern noch sehen oder tun können? Anregungen: Report: die Grafik lässt sich zwischen Leben und Haftpflicht umschalten; Report: eine Folie „Was wir nicht messen konnten“; Bonus mit restlichem Guthaben: ein 30–60-Sekunden-Video deiner Lösung mit Remotion als letzte Folie. Oder der Vorschlag **Folie: Mein agentisches System**: Wie würdest du einer Kollegin in einem Bild erklären, was dein System darf und wo du entscheidest? Claude fragt dich nach deiner Idee, hilft beim Steckbrief ([MEINE_ERWEITERUNGEN.md](../MEINE_ERWEITERUNGEN.md)) und baut dann mit dir.
 
 **Bonus mit restlichem Guthaben:** ein 30–60-Sekunden-Video deiner Lösung
 mit Remotion als letzte Folie – siehe [BONUS_VIDEO.md](BONUS_VIDEO.md).

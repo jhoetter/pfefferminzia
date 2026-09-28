@@ -121,7 +121,7 @@ function sidebar() {
         <button type="button" class="icon-button" data-action="sync" ${mail.ready ? '' : 'disabled'} aria-label="Posteingang abgleichen" title="Abgleichen">${icon('sync', 14)}</button>
       </div>
       ${has('management_report') ? `<a class="nav-item small" href="/slides/index.html?deck=management" target="_blank" rel="noopener">${icon('report', 14)}<span>Report</span></a>` : ''}
-      <span class="drill-tag">Drill ${drill()}</span>
+      <span class="drill-tag" title="${html(state.dashboard.workshop.checkpoint.title)}">Drill ${drill()} · ${html(state.dashboard.workshop.checkpoint.title)}</span>
     </div>
   </aside>`;
 }
