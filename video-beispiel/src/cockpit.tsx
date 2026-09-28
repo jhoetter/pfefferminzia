@@ -271,7 +271,7 @@ const Evidence: React.FC<{f: number}> = ({f}) => {
   ];
   return (
     <Card top={340} height={265} style={{padding: '18px 28px'}}>
-      <Label color={C.forest}>Aus dem Bestand</Label>
+      <Label color={C.forest}>Aus dem Bestand · von Claude zugeordnet</Label>
       <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: 40}}>
         {rows.map(([label, value, strong], i) => (
           <Field key={label} label={label} value={value} strong={strong} t={ramp(f, T.evidence + i * 8, T.evidence + i * 8 + 8)} />
@@ -303,7 +303,7 @@ const Decision: React.FC<{f: number}> = ({f}) => {
   const stamp = ramp(f, T.stamp, T.stamp + 6, easeOut);
   return (
     <Card top={625} height={225} style={{background: C.violetSoft, borderColor: approved ? C.forest : C.violet, borderWidth: 2}}>
-      <Label color={C.violet}>Leistungsentscheidung · Fassung 1</Label>
+      <Label color={C.violet}>Vorschlag von Claude · Leistungsentscheidung</Label>
       <div style={{fontFamily: display, fontSize: 38, fontWeight: 800, color: C.ink, marginBottom: 4}}>Leistung anerkannt · 314'000 EUR</div>
       <div style={{fontSize: 17, color: C.muted}}>Grundlage: Tarifblatt PZ-2025 – die Dreijahresfrist gilt nur bei Suizid.</div>
       <div
@@ -377,17 +377,17 @@ const QueueView: React.FC<{f: number}> = ({f}) => {
   return (
     <>
       <div style={{position: 'absolute', left: 48, top: 30, fontSize: 30, fontWeight: 800, color: C.ink}}>Eingriffsfenster</div>
-      <div style={{position: 'absolute', left: 48, top: 78, fontSize: 17, color: C.muted}}>Haftpflicht-Antworten gehen nach 24 Stunden automatisch raus – außer du greifst ein.</div>
       <svg width={420} height={420} style={{position: 'absolute', left: 90, top: 260}}>
         <circle cx={210} cy={210} r={r} fill="none" stroke={C.line} strokeWidth={22} />
         <circle
           cx={210} cy={210} r={r} fill="none" stroke={stopped ? C.red : C.mint} strokeWidth={22} strokeLinecap="round"
           strokeDasharray={circ} strokeDashoffset={circ * (1 - hours / 24)} transform="rotate(-90 210 210)"
         />
-        <text x={210} y={205} textAnchor="middle" fontFamily={display} fontWeight={800} fontSize={58} fill={stopped ? C.red : C.ink}>
-          {stopped ? 'Gestoppt' : fmt(hours)}
+        <text x={210} y={165} textAnchor="middle" fontFamily={text} fontSize={20} fill={C.muted}>{stopped ? 'Versand' : 'Automatischer Versand in'}</text>
+        <text x={210} y={228} textAnchor="middle" fontFamily={display} fontWeight={800} fontSize={58} fill={stopped ? C.red : C.ink}>
+          {stopped ? 'angehalten' : fmt(hours)}
         </text>
-        <text x={210} y={250} textAnchor="middle" fontFamily={text} fontSize={20} fill={C.muted}>PF-1039 · bis zum Versand</text>
+        <text x={210} y={272} textAnchor="middle" fontFamily={text} fontSize={20} fill={C.muted}>{stopped ? 'Du prüfst selbst · PF-1039' : 'Antwort PF-1039'}</text>
       </svg>
       {QUEUE.map((q, i) => {
         const isFirst = i === 0;
@@ -402,7 +402,7 @@ const QueueView: React.FC<{f: number}> = ({f}) => {
             <div style={{fontSize: 15, color: C.muted, marginBottom: 6}}>{q.id} · Haftpflicht</div>
             <div style={{fontSize: 21, fontWeight: 800, color: C.ink, marginBottom: 12}}>{q.subject}</div>
             <Chip
-              label={isFirst && stopped ? 'Versand gestoppt' : `Geht raus in ${fmt(isFirst ? hours : q.left - running * 0.11)}`}
+              label={isFirst && stopped ? 'Versand angehalten – du prüfst' : `Geht automatisch raus in ${fmt(isFirst ? hours : q.left - running * 0.11)}`}
               bg={isFirst && stopped ? C.redSoft : C.amberSoft} fg={isFirst && stopped ? C.red : C.amber}
             />
             {isFirst ? (
@@ -412,7 +412,7 @@ const QueueView: React.FC<{f: number}> = ({f}) => {
                   color: '#fff', background: stopped ? C.faint : C.red, transform: `scale(${1 - press * 0.07})`,
                 }}
               >
-                Versand stoppen
+                Versand anhalten
               </div>
             ) : null}
           </div>
@@ -430,7 +430,7 @@ const LOG: [string, string, string, boolean?][] = [
   ['08:03', 'Claude', 'Leistungsentscheidung vorgelegt · Fassung 1'],
   ['08:11', 'Mensch', 'Entscheidung freigegeben · Beleg versiegelt', true],
   ['08:12', 'Mensch', 'Antwort mit Beleg gesendet', true],
-  ['09:40', 'Mensch', 'Versand gestoppt · PF-1039', true],
+  ['09:40', 'Mensch', 'Automatischen Versand angehalten · PF-1039', true],
 ];
 
 const ActivityView: React.FC<{f: number}> = ({f}) => (

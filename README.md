@@ -38,8 +38,9 @@ fährt durch sie hindurch.
   Leistungsentscheidung frei (Stempel auf dem Schlag, PDF hängt an der
   Antwort), stoppt einen Versand im Eingriffsfenster, und das Protokoll füllt
   sich. Zum Schluss: „Der Agent bereitet vor. Du entscheidest.“
-- **Wenig Text, nichts springt:** fünf kurze Untertitel, immer an derselben
-  Stelle; der Takt steckt in der Handlung, nicht in Effekten.
+- **Wenig Text, nichts springt, und immer klar, wer handelt:** fünf kurze
+  Untertitel mit einer Erklärzeile („Claude schlägt vor. Du gibst frei.“),
+  immer an derselben Stelle; der Takt steckt in der Handlung, nicht in Effekten.
 - **Code:** [`video-beispiel/`](video-beispiel/) – `src/cockpit.tsx` ist die
   Oberfläche mit allen Ereignissen im Takt, `src/film.tsx` Kamera, Untertitel
   und Teile, `src/Pitch.tsx` die Zeitleiste. Vorschau:

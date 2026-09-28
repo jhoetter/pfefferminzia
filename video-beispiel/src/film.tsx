@@ -53,7 +53,7 @@ const Camera: React.FC<{shots: Shot[]; children: React.ReactNode; f: number}> = 
 };
 
 // ------------------------------------------------------------------ Untertitel: ruhig, immer an derselben Stelle
-const Caption: React.FC<{f: number; from: number; to: number; top?: boolean; children: React.ReactNode}> = ({f, from, to, top, children}) => {
+const Caption: React.FC<{f: number; from: number; to: number; top?: boolean; sub?: string; children: React.ReactNode}> = ({f, from, to, top, sub, children}) => {
   if (f < from || f > to) return null;
   const inT = ramp(f, from, from + 12);
   const outT = interpolate(f, [to - 8, to], [1, 0], clamp);
@@ -62,11 +62,14 @@ const Caption: React.FC<{f: number; from: number; to: number; top?: boolean; chi
       <div
         style={{
           display: 'flex', alignItems: 'center', gap: 22, padding: '18px 34px 18px 24px', borderRadius: 18,
-          background: 'rgba(7,20,14,.86)', transform: `translateY(${(1 - inT) * 110}%)`,
+          background: 'rgba(7,20,14,.93)', transform: `translateY(${(1 - inT) * 110}%)`,
         }}
       >
-        <div style={{width: 6, height: 50, borderRadius: 3, background: C.mint}} />
-        <div style={{fontFamily: display, fontWeight: 800, fontSize: 56, letterSpacing: -1.5, color: '#fff'}}>{children}</div>
+        <div style={{width: 6, alignSelf: 'stretch', borderRadius: 3, background: C.mint}} />
+        <div>
+          <div style={{fontFamily: display, fontWeight: 800, fontSize: 56, letterSpacing: -1.5, color: '#fff'}}>{children}</div>
+          {sub ? <div style={{fontFamily: text, fontWeight: 500, fontSize: 27, color: 'rgba(255,255,255,.78)', marginTop: 4}}>{sub}</div> : null}
+        </div>
       </div>
     </div>
   );
@@ -197,11 +200,11 @@ export const Tour: React.FC = () => {
       <Camera shots={TOUR} f={f}>
         <Cockpit f={f} modern cursor={TOUR_CURSOR} />
       </Camera>
-      <Caption f={f} from={S + BEAT} to={S + 2 * BAR - 12}>Vorsortiert.</Caption>
-      <Caption f={f} from={S + 2 * BAR + 8} to={S + 4 * BAR - 12}>Belegt – aus dem Bestand.</Caption>
-      <Caption f={f} from={T.click - 24} to={T.queue - 10} top>Freigeben kannst nur du.</Caption>
-      <Caption f={f} from={T.queue + 8} to={T.log - 10}>Stoppen auch.</Caption>
-      <Caption f={f} from={T.log + 8} to={T.log + 2 * BAR - 6}>Alles im Protokoll.</Caption>
+      <Caption f={f} from={S + BEAT} to={S + 2 * BAR - 12} sub="Jede neue Mail landet automatisch bei Leben oder Haftpflicht.">Sortiert sich selbst.</Caption>
+      <Caption f={f} from={S + 2 * BAR + 8} to={S + 4 * BAR - 12} sub="Vertrag, Tarif und Leistungsakte – aus dem Bestand, nicht aus der Mail.">Claude sucht die Belege.</Caption>
+      <Caption f={f} from={T.click - 24} to={T.queue - 10} top sub="Ohne deine Freigabe geht keine Leistungsentscheidung raus.">Claude schlägt vor. Du gibst frei.</Caption>
+      <Caption f={f} from={T.queue + 8} to={T.log - 10} top sub="Claudes Antwort geht nach 24 Stunden von selbst raus. Bis dahin kannst du sie anhalten.">Einfache Fälle: automatisch.</Caption>
+      <Caption f={f} from={T.log + 8} to={T.log + 2 * BAR - 6} sub="Wer hat was getan – Claude oder ein Mensch.">Alles im Protokoll.</Caption>
     </AbsoluteFill>
   );
 };
