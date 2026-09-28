@@ -102,9 +102,10 @@ def propose_decision(
         "UPDATE tickets SET status = 'awaiting_human', human_approved_at = NULL, updated_at = ? WHERE id = ?",
         (stamp, ticket["id"]),
     )
-    if previous and (previous["approved_at"] or ticket["status"] == "awaiting_human"):
-        _event(ticket["id"], "review_invalidated", actor, {"reason": "decision_changed", "version": version}, db)
     _event(ticket["id"], "human_review_required", actor, {"subject": "decision", "version": version}, db)
+    if previous and previous["approved_at"]:
+        # Newest event on purpose: the case should say the approval lapsed until the new version is approved.
+        _event(ticket["id"], "review_invalidated", actor, {"reason": "decision_changed", "version": version}, db)
     complete_ticket_todos(ticket_number, "review", db)
     create_todo(
         f"Entscheidung {ticket_number} prüfen",
