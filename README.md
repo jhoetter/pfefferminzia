@@ -19,22 +19,31 @@ darf: **Pflichtfreigabe** bei Leben, **Eingriffsfenster** bei Haftpflicht.
 
 So kann es am Ende aussehen: In Drill 10 macht jede Person ein eigenes
 Marketing-Video über ihr Pfefferminzia 2.0 und zeigt es in ihrer
-Präsentation für den Vorstand. Dieses Video ist ein **Beispiel**. Es ist
-komplett aus React-Komponenten gebaut, mit [Remotion](https://www.remotion.dev).
-Die Bausteine der Kommandozentrale (Posteingang, Bestand,
-Leistungsentscheidung, Eingriffsfenster, Protokoll) sind als Komponenten
-nachgebaut und werden im Takt der Musik hervorgehoben:
+Präsentation für den Vorstand. Dieses Video ist ein **Beispiel**, komplett aus
+React-Komponenten gebaut mit [Remotion](https://www.remotion.dev): Die
+Kommandozentrale ist als eine große Oberfläche nachgebaut, und eine Kamera
+fährt durch sie hindurch.
 
 - **Musik:** „Bounce Back“ (Bigsby, Audiio), 112,5 BPM – ein Schlag sind genau
   16 Bilder bei 30 fps. Ausschnitt 0:51–1:50, sodass der Drop auf Sekunde 24
   liegt.
-- **Story:** 24 s Chaos im Posteingang („Montag, 8:02 Uhr … Wer
-  entscheidet?“) → auf den Drop die Enthüllung → fünf Bausteine, je zwei
-  Takte → „Der Agent bereitet vor. Der Mensch entscheidet.“ → Abspann.
-- **Code:** [`video-beispiel/`](video-beispiel/) (`src/components/ui.tsx`
-  sind die Cockpit-Komponenten, `src/components/motion.tsx` die Bewegung im
-  Takt, `src/scenes.tsx` die Szenen, `src/Pitch.tsx` die Zeitleiste).
-  Vorschau: `cd video-beispiel && npm install && npm run studio`.
+- **Vor dem Drop – Pfefferminzia 1.0, in Grau:** Die Post trifft ein, erst auf
+  jedem Schlag, dann doppelt, dann vierfach so schnell. Harte Schnitte auf
+  jedem Takt: Zähler, Mail, drei Tarifblätter mit Fragezeichen, ein zögernder
+  Mauszeiger über „Senden“.
+- **Auf dem Drop – Farbe:** Das Logo zeichnet sich, „2.0“ kommt auf dem
+  nächsten Takt.
+- **Danach eine Kamerafahrt, zwei Takte pro Station:** Sparten rasten im
+  Achteltakt ein, Belege lösen sich aus dem Bestand, der Mensch gibt die
+  Leistungsentscheidung frei (Stempel auf dem Schlag, PDF hängt an der
+  Antwort), stoppt einen Versand im Eingriffsfenster, und das Protokoll füllt
+  sich. Zum Schluss: „Der Agent bereitet vor. Du entscheidest.“
+- **Wenig Text, nichts springt:** fünf kurze Untertitel, immer an derselben
+  Stelle; der Takt steckt in der Handlung, nicht in Effekten.
+- **Code:** [`video-beispiel/`](video-beispiel/) – `src/cockpit.tsx` ist die
+  Oberfläche mit allen Ereignissen im Takt, `src/film.tsx` Kamera, Untertitel
+  und Teile, `src/Pitch.tsx` die Zeitleiste. Vorschau:
+  `cd video-beispiel && npm install && npm run studio`.
 
 Alle Fälle im Video sind erfunden; es verspricht keine Zeitersparnis oder
 Wirksamkeit.

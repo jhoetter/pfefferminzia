@@ -12,9 +12,8 @@ npm run render   # → out/pfefferminzia-2-0-pitch.mp4
 | Datei | Inhalt |
 | --- | --- |
 | `src/theme.ts` | Farben, Schriften, Takt (112,5 BPM = 16 Bilder pro Schlag, Drop auf Bild 720) |
-| `src/components/ui.tsx` | Cockpit-Bausteine: Logo, Fenster, Mailzeile, Leistungsentscheidung, Countdown, Protokoll, Mauszeiger |
-| `src/components/motion.tsx` | Bewegung im Takt: pulsierender Hintergrund, Überschriften Wort für Wort, Hervorheben einer Komponente |
-| `src/scenes.tsx` | Die Szenen: Chaos, Enthüllung, fünf Bausteine, Botschaft, Abspann |
+| `src/cockpit.tsx` | Die Kommandozentrale als React-Oberfläche; jedes Ereignis (Mail trifft ein, Sparte rastet ein, Klick, Stempel) hängt am Bild und liegt auf einem Schlag |
+| `src/film.tsx` | Kamera mit harten Schnitten und Fahrten, Tiefenschärfe, Untertitel, die vier Teile |
 | `src/Pitch.tsx` | Zeitleiste und Musik |
 
 Die Musik kommt aus `../assets/music` (Audiio-Lizenz: nur im eigenen Video
