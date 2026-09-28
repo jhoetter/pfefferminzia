@@ -126,7 +126,7 @@ MAIL_TIMING = {
     6: "Direkt zu Beginn von Drill 6, sobald alle ihre Kommandozentrale offen haben.",
     7: "Nachdem alle zu Drill 7 gewechselt sind („Ich will zu Drill 7 …“).",
     8: "Nachdem alle zu Drill 8 gewechselt sind. Zwei Mails – beide an alle.",
-    9: "Nachdem alle zu Drill 9 gewechselt sind. Drei Mails – alle an alle.",
+    9: "Nach dem Wechsel zu Drill 9, gern sobald die ersten ihre Vorsortierung gebaut haben – kommen sie früher, werden sie beim nächsten Abruf einsortiert. Drei Mails – alle an alle.",
     0: "Optional, nur gezielt an Schnelle (Drill 7–9): prüft, dass Claude Anweisungen im Mailtext nicht befolgt.",
 }
 MAIL_TITLES = {

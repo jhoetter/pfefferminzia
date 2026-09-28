@@ -34,11 +34,11 @@ const EVENTS = {
   human_review_required: 'Zur Freigabe vorgelegt', draft_approved: 'Freigegeben', draft_rejected: 'Abgelehnt',
   review_invalidated: 'Freigabe erloschen', reply_scheduled: 'Eingeplant', schedule_cancelled: 'Termin abgebrochen',
   queue_removed: 'Versand gestoppt', earlier_reply_imported: 'Frühere Antwort übernommen', reply_sent: 'Antwort gesendet', internal_note: 'Notiz',
-  status_changed: 'Status geändert', classification_updated: 'Sparte zugeordnet', ticket_routed: 'Weitergeleitet',
+  status_changed: 'Status geändert', control_route_selected: 'Einsortiert', classification_updated: 'Sparte zugeordnet', ticket_routed: 'Weitergeleitet',
   customer_linked: 'Kunde verknüpft', contract_linked: 'Vertrag verknüpft',
 };
 const ACTORS = { 'mcp-agent': 'Claude', 'human-ui': 'Du', human: 'Du', 'agentmail-sync': 'Posteingang',
-  'auto-send-worker': 'Automatik', 'workshop-fixture': 'System' };
+  'auto-send-worker': 'Automatik', 'auto-sort': 'Vorsortierung', 'workshop-fixture': 'System' };
 const actor = value => ACTORS[value] || (String(value).startsWith('mcp') ? 'Claude' : 'System');
 
 const ICON = {
@@ -186,7 +186,7 @@ const senderName = value => {
 
 function primaryAction(ticket) {
   const noSend = ticket.isDemo ? 'disabled title="Demo-Fall: kein Versand"' : '';
-  if (ticket.status === 'scheduled') return `<span class="hint countdown" data-scheduled="${html(ticket.scheduledFor)}"></span><button type="button" data-action="remove">Versand stoppen</button>`;
+  if (ticket.status === 'scheduled') return `<span class="hint">Geht automatisch raus <span class="countdown" data-scheduled="${html(ticket.scheduledFor)}"></span></span><button type="button" data-action="remove">Versand stoppen</button>`;
   if (!ticket.draft) return '';
   if (ticket.productLine === 'life' && has('life_review')) {
     return ticket.decision?.approvedAt && ticket.humanApprovedAt
@@ -208,7 +208,7 @@ function composer(ticket) {
       <textarea id="draft-body" name="body" rows="${draft ? 7 : 3}" placeholder="Antwort an ${html(ticket.customerEmail || 'Absender')} …">${html(draft?.body || '')}</textarea>
       <div class="composer-foot">
         <span class="hint">${draft ? `Entwurf von ${html(author)}${draft.rationale ? ` · ${html(draft.rationale)}` : ''}` : 'Selbst schreiben oder Claude um einen Entwurf bitten'}</span>
-        <button type="submit" class="ghost">Speichern</button>${primaryAction(ticket)}
+        <button type="submit" class="ghost" ${ticket.status === 'scheduled' ? 'title="Die geänderte Antwort geht nicht automatisch raus; du planst sie danach neu ein."' : ''}>${ticket.status === 'scheduled' ? 'Ändern und Versand stoppen' : 'Speichern'}</button>${primaryAction(ticket)}
       </div>
     </form></section>`;
 }
@@ -226,6 +226,7 @@ function properties(ticket) {
   return `<aside class="props">
     ${property('Status', `${statusIcon(ticket.status)} ${html(STATUS[ticket.status]?.[0] || ticket.status)}`)}
     ${has('life_review') ? property('Sparte', lineValue) : ''}
+    ${has('life_review') && ticket.productLine !== 'unknown' && ticket.classificationSource ? property('Sortiert von', html(actor(ticket.classificationSource))) : ''}
     ${property('Von', html(ticket.customerEmail || '—'))}
     ${has('knowledge') ? property('Kunde', party ? html(party.displayName) : '<span class="muted">Nicht zugeordnet</span>') : ''}
     ${has('knowledge') ? property('Vertrag', contracts.length ? contracts.map(c => `${html(c.contractId)} <span class="muted">${html(c.tariffGenerationId)}</span>`).join('<br>') : '<span class="muted">—</span>') : ''}
@@ -544,7 +545,7 @@ app.addEventListener('submit', event => {
   if (form.dataset.form === 'todo') return mutate(() => request('/api/todos', { method: 'POST',
     body: JSON.stringify({ title: values.get('title'), ticketNumber: values.get('ticketNumber') || null }) }), 'Aufgabe angelegt');
   if (form.dataset.form === 'draft') return mutate(() => request(`/api/tickets/${url(ticket)}/draft`, { method: 'PUT',
-    body: JSON.stringify({ body: values.get('body') }) }), 'Entwurf gespeichert');
+    body: JSON.stringify({ body: values.get('body') }) }), state.ticket?.status === 'scheduled' ? 'Geändert – der Versand ist gestoppt. Neu einplanen, wenn es passt.' : 'Entwurf gespeichert');
   if (form.dataset.form === 'confirm') {
     const reason = String(values.get('reason') || '');
     const actions = {

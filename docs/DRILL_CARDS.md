@@ -214,46 +214,50 @@ Antwortfeld. Was im Hinweis steht, legst du fest.
 **Du kannst danach:**
 
 - Pflichtfreigabe und Eingriffsfenster am eigenen Erleben abwägen: Aufwand, Risiko, Verantwortung.
-- Festlegen, welche Fälle automatisch laufen dürfen und welche nie.
+- Selbst festlegen, wie eingehende Mails automatisch sortiert werden – nach Stichwörtern oder mit KI – und was bei Unklarheit passiert.
 - Vorher sagen, was die Automatik tun wird, und es danach am Protokoll überprüfen.
 
 **Baustein im Fokus:** Kontrollen, Protokoll. Eine Freigabe für jeden Fall kostet Zeit. Jetzt probierst du die Alternative: Antworten laufen automatisch, wenn niemand im Zeitfenster eingreift.
 
 **Was du heute im Cockpit siehst** – neu: Zum ersten Mal geht etwas automatisch raus – wenn niemand rechtzeitig widerspricht.
 
+- Neue Mails kommen unsortiert an – die automatische Vorsortierung nach Sparte baust du heute selbst. Bei jedem Fall steht, wer ihn einsortiert hat.
 - Links neu „Eingriffsfenster“: Haftpflichtantworten, die nach 24 Stunden automatisch rausgehen, mit Countdown.
-- Im Fall: Text ändern (dann wird der Termin gestoppt) oder „Versand stoppen“ mit Begründung.
+- Im Fall: „Ändern und Versand stoppen“ oder „Versand stoppen“ mit Begründung.
 - Im Eingriffsfenster: „Zeit +24 h“ spult die Workshop-Uhr vor – das kannst nur du.
 - Im Bestand neu: „Schäden“. Und unter „Aus dem Bestand“ stehen die Bausteine des Vertrags und der Schadenfall mit Beträgen und der letzten Empfehlung.
 - Claude kann: Sparte zuordnen, Antworten mit Beleg entwerfen, ins 24-Stunden-Fenster einplanen und einen Versand stoppen. Claude kann nicht: Die Uhr vorspulen, freigeben oder sofort senden.
 
 **So läuft die Stunde:**
 
-1. Welche Fälle sind Haftpflicht – und welcher wäre dir für Automatik zu heikel?
+1. Du entscheidest, wie neue Mails automatisch sortiert werden – Stichwörter oder KI – und was bei Unklarheit passiert.
 2. Claude plant ein; du sagst vorher, was rausgeht, und greifst ein: ändern, stoppen, laufen lassen.
-3. Gemeinsam bauen: Gestoppte Termine werden erklärt, und nichts geht doppelt raus.
+3. Gemeinsam bauen: die Vorsortierung – dann Postfach abrufen und prüfen, ob richtig einsortiert wurde.
 4. Du spulst die Uhr vor und vergleichst mit deiner Vorhersage.
 
-**Aufgabe:** Drei Haftpflichtfälle. Claude ordnet sie zu und plant die Antworten
-ins 24-Stunden-Fenster ein. Du änderst im Cockpit unter **Eingriffsfenster**
+**Aufgabe:** Neue Mails kommen unsortiert an. Zuerst baust du die
+automatische Vorsortierung (siehe Bauauftrag). Dann drei Haftpflichtfälle:
+Claude plant die Antworten ins 24-Stunden-Fenster ein. Du änderst im Cockpit unter **Eingriffsfenster**
 einen Text, stoppst bei einem mit Begründung den Versand und lässt einen laufen.
 Dann drückst du **Workshop-Zeit +24 h**: Genau eine Antwort geht automatisch
 raus. (Der automatische Versand ist in Drill 9 schon eingeschaltet; du musst
 nichts einstellen.)
 
-**Bauauftrag:** Auch gestoppte und geänderte Termine sollen im Cockpit
-erklärt werden. Und es soll geprüft sein, dass keine Antwort doppelt
-rausgeht und eine geänderte gar nicht automatisch. Welche Szenarien dafür
-nötig sind, legst du fest.
+**Bauauftrag:** Neue Mails sollen automatisch nach Sparte vorsortiert
+werden. Du entscheidest den Weg – **nach Stichwörtern** (eine feste Regel im
+Programm) oder **mit KI** (Claude sortiert jede neue Mail nach deinen
+Kriterien) –, woran du Leben und Haftpflicht erkennst und was bei Unklarheit
+passiert. Vorher legst du drei Szenarien fest: ein Leben-, ein Haftpflicht-
+und ein unklarer Fall.
 
 | Etappe | Frag Claude | Du entscheidest | Dann du |
 | --- | --- | --- | --- |
-| 1 · Routing prüfen | „Ordne die drei neuen Fälle nachvollziehbar zu. Welche sind Haftpflicht, und ist der Empfänger für Antworten erlaubt? Noch nichts einplanen.“ | Welcher Fall wäre dir für einen automatischen Versand zu heikel – und woran erkennst du das? | Sparte, Quellen und erlaubten Empfänger selbst prüfen; den heiklen Fall benennen. |
-| 2 · Warteschlange erleben | „Bereite belegte Antworten vor und plane sie ins 24-Stunden-Fenster ein.“ | Welchen lässt du laufen, welchen änderst du, welchen stoppst du – je ein Satz Begründung. Und: Wie viele Mails gehen nach +24 h raus, und welche? | Die Vorhersage aufschreiben, dann im Cockpit unter „Eingriffsfenster“ einen Text ändern, bei einem mit Begründung den Versand stoppen, einen laufen lassen. |
-| 3 · Selbst bauen | „Wie machen wir gestoppte Termine und Duplikatschutz überprüfbar? Frag mich zuerst, welche Fehler am schlimmsten wären – die prüfen wir dann als Szenarien.“ | Was wäre schlimmer: eine Antwort doppelt oder eine gestoppte Antwort doch versendet? Welche zwei Szenarien müssen wir deshalb unbedingt prüfen? | Die Szenarien festlegen, die nie schiefgehen dürfen, und die Verbesserung am Eingriffsfenster mit Claude bauen. |
+| 1 · Vorsortierung entwerfen | „Die neuen Mails kommen unsortiert an. Wie sollen sie automatisch Leben oder Haftpflicht zugeordnet werden? Frag mich nach meinem Weg.“ | Wie soll sortiert werden – nach Stichwörtern oder mit KI? Woran erkennst du Haftpflicht, woran Leben, und was soll passieren, wenn es nicht eindeutig ist? | Weg und Kriterien selbst festlegen und drei Szenarien nennen: ein Leben-, ein Haftpflicht- und ein unklarer Fall. |
+| 2 · Selbst bauen | „Bau die Vorsortierung mit mir, prüf sie an meinen Szenarien und ruf dann das Postfach ab.“ | Welcher Fall wäre dir für eine automatische Zuordnung zu heikel – und woran würdest du im Cockpit sehen, dass die Automatik sich geirrt hat? | Die Vorsortierung mit Claude bauen, das Postfach abrufen und im Cockpit prüfen, dass die drei Mails richtig einsortiert sind – und von wem. |
+| 3 · Warteschlange erleben | „Bereite belegte Antworten vor und plane sie ins 24-Stunden-Fenster ein.“ | Welchen lässt du laufen, welchen änderst du, welchen stoppst du – je ein Satz Begründung. Und: Wie viele Mails gehen nach +24 h raus, und welche? | Die Vorhersage aufschreiben, dann im Cockpit unter „Eingriffsfenster“ einen Text ändern, bei einem mit Begründung den Versand stoppen, einen laufen lassen. |
 | 4 · Wirkung belegen | „Was würde nach dem Zeitsprung automatisch rausgehen? Danach prüfe Versand und Protokoll mit mir und hilf mir, meinen Stand zu speichern.“ | Stimmt das Ergebnis mit deiner Vorhersage überein? Würdest du das Fenster in echt kürzer oder länger machen – wovon hängt es ab? | Im Cockpit „Workshop-Zeit +24 h“ drücken; genau einen Auto-Versand prüfen und mit der Vorhersage vergleichen; Stand speichern. |
 
-**Fertig, wenn:** Ein automatischer Versand, eine Änderung und ein Stopp sind im Protokoll nachvollziehbar; eigene Verbesserung am Eingriffsfenster geprüft und gespeichert.
+**Fertig, wenn:** Neue Mails werden automatisch nach deinen Regeln vorsortiert (Unklares bleibt offen); ein automatischer Versand, eine Änderung und ein Stopp stehen im Protokoll; Stand gespeichert.
 
 **Zum Schluss:** Für welche Fälle in deinem Haus wäre „läuft, wenn niemand widerspricht“ vertretbar – und wer schaut dann ins Fenster?
 

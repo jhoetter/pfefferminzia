@@ -122,7 +122,7 @@ Farid Nazari
 
 ## Drill 9 – Haftpflicht: Eingriffsfenster
 
-**Wann:** Nachdem alle zu Drill 9 gewechselt sind. Drei Mails – alle an alle.
+**Wann:** Nach dem Wechsel zu Drill 9, gern sobald die ersten ihre Vorsortierung gebaut haben – kommen sie früher, werden sie beim nächsten Abruf einsortiert. Drei Mails – alle an alle.
 
 ### Mail 1 von 3
 

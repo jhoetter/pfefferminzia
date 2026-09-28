@@ -137,7 +137,7 @@ def test_extensions_wait_for_the_auto_send_edit_and_stop_in_drill_nine(monkeypat
     monkeypatch.setenv("WORKSHOP_CHECKPOINT", "drill-09-start")
     ensure_workshop_fixtures(full_db)
     ticket = full_db.execute("SELECT id FROM tickets LIMIT 1").fetchone()["id"]
-    for kind, actor in (("reply_sent", "auto-send-worker"), ("schedule_cancelled", "cockpit-user")):
+    for kind, actor in (("control_route_selected", "auto-sort"), ("reply_sent", "auto-send-worker"), ("schedule_cancelled", "cockpit-user")):
         full_db.execute(
             "INSERT INTO ticket_events (ticket_id, type, actor, created_at) VALUES (?, ?, ?, '2026-09-29T10:00:00Z')",
             (ticket, kind, actor),
