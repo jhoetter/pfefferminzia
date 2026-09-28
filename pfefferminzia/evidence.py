@@ -31,7 +31,7 @@ CLAIM_STATUS = {
     "triage": "Erstprüfung", "investigation": "in Prüfung", "awaiting_human": "wartet auf menschliche Entscheidung",
     "approved_for_payment": "zur Zahlung freigegeben", "settled": "abgeschlossen", "denied": "abgelehnt", "closed": "geschlossen",
 }
-ACTIONS = {"PAY": "zahlen", "DENY": "ablehnen", "ESCALATE_COMPLEX": "an die Teamleitung", "REFER_SIU": "an die Ermittlung"}
+ACTIONS = {"PAY": "zahlen", "DENY": "ablehnen", "REQUEST_INFORMATION": "Unterlagen nachfordern", "ESCALATE_COMPLEX": "an die Teamleitung", "REFER_SIU": "an die Ermittlung"}
 LINKED_BY = {
     "exact_email": "automatisch beim Abrufen – die Absender-Adresse steht so im Bestand",
     "mcp_confirmed": "von Claude nachgeschlagen und zugeordnet",

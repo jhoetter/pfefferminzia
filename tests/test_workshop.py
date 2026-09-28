@@ -15,7 +15,7 @@ def test_participant_fixtures_are_linked_and_non_sendable(full_db):
     reset_workshop_fixtures(full_db)
     status = get_workshop_status(full_db)
     assert {key: status[key] for key in ("profile", "syntheticDataOnly", "demoTickets", "workshopClaims", "importedTruthTables")} == {
-        "profile": "participant", "syntheticDataOnly": True, "demoTickets": 7, "workshopClaims": 4, "importedTruthTables": 0
+        "profile": "participant", "syntheticDataOnly": True, "demoTickets": 7, "workshopClaims": 6, "importedTruthTables": 0
     }
     pieper = get_ticket("PF-10008", full_db)
     assert pieper["isDemo"] is True

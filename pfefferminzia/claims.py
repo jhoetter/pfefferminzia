@@ -481,17 +481,38 @@ SEED_CLAIMS = [
 ]
 
 
+# The two Drill 8 life cases. Falk's data has no benefit case for these contracts, so the workshop adds a
+# synthetic file: without it Claude would have nothing to ground a Leistungsentscheidung on.
+SEED_CLAIMS += [
+    {
+        "workshopOnly": True,
+        "claim": ("LF-2026-0202", "VTR-00000202", "PTR-00000002", "Todesfall nach Verkehrsunfall", "2026-08-14", "2026-08-20T10:30:00Z", "life", "DE", "EUR", 139000, 139000, 0, "investigation", "medium", "Leistung Leben DE", "Die versicherte Person Jana Ortlepp ist am 14.08.2026 bei einem Verkehrsunfall verstorben. Ihr Bruder Martin Ortlepp hat den Todesfall als gesetzlicher Erbe gemeldet. Sterbeurkunde und Polizeibericht (Unfall, Fremdverschulden) liegen vor; der Erbschein wird nachgereicht. Beiträge sind vollständig bezahlt.", "life_benefit_clear", "Workshop-Leistungsakte, synthetisch", "2026-08-20T10:30:00Z"),
+        "recommendation": None,
+        "events": [("claim_reported", "contact-center", {"channel": "phone", "reportedBy": "Martin Ortlepp (Bruder, gesetzlicher Erbe)"}, "2026-08-20T10:30:00Z"), ("information_received", "contact-center", {"documents": ["Sterbeurkunde", "Polizeibericht"]}, "2026-08-27T09:00:00Z")],
+        "tasks": [("DOCUMENT_CHECK", "Erbschein abwarten, dann Leistung an die gesetzlichen Erben entscheiden.", "Leistung Leben DE", None, "2026-08-27T09:01:00Z")],
+    },
+    {
+        "workshopOnly": True,
+        "claim": ("LF-2026-0602", "VTR-00000602", "PTR-00000006", "Todesfall nach Herzinfarkt", "2026-06-30", "2026-07-06T08:15:00Z", "life", "DE", "EUR", 314000, 314000, 0, "awaiting_human", "high", "Leistung Leben DE", "Der Versicherungsnehmer und die versicherte Person Farid Nazari ist am 30.06.2026 an einem Herzinfarkt verstorben – ein Jahr nach Vertragsbeginn (01.07.2025). Die Todesbescheinigung nennt eine natürliche Todesursache. Bezugsberechtigt ist Sabine Nazari. Mit Schreiben vom 10.09.2026 wurde ihr eine Ablehnung angekündigt; sie hat widersprochen.", "life_benefit_disputed", "Workshop-Leistungsakte, synthetisch", "2026-07-06T08:15:00Z"),
+        "recommendation": ("DENY", None, "Tod innerhalb von drei Jahren nach Vertragsbeginn; Leistung wird nach der Dreijahresfrist abgelehnt. (So am 10.09.2026 angekündigt.)", 0.62, "Leben-Altregel-v1", "sachbearbeitung-alt", "pending_review", None, None, "2026-09-10T14:00:00Z"),
+        "events": [("claim_reported", "customer-mail", {"reportedBy": "Sabine Nazari (bezugsberechtigt)"}, "2026-07-06T08:15:00Z"), ("information_received", "customer-mail", {"documents": ["Sterbeurkunde", "Todesbescheinigung: natürliche Todesursache (Herzinfarkt)"]}, "2026-07-14T11:00:00Z"), ("decision_announced", "sachbearbeitung-alt", {"outcome": "Ablehnung angekündigt", "letterDate": "2026-09-10"}, "2026-09-10T14:00:00Z")],
+        "tasks": [],
+    },
+]
+
+
 def ensure_workshop_claims(db: sqlite3.Connection | None = None) -> None:
     db = db or get_database()
     for seed in SEED_CLAIMS:
         claim = seed["claim"]
         if not db.execute("SELECT 1 FROM core_vertrag WHERE vertrag_id = ?", (claim[1],)).fetchone():
             raise RuntimeError(f"Cannot seed workshop claim; Falk contract is missing: {claim[1]}")
-        source = db.execute("SELECT vertrag_id, partner_id FROM core_schaden WHERE schaden_id = ?", (claim[0],)).fetchone()
-        if not source:
-            raise RuntimeError(f"Cannot seed workshop claim; Falk claim is missing: {claim[0]}")
-        if source["vertrag_id"] != claim[1] or source["partner_id"] != claim[2]:
-            raise RuntimeError(f"Cannot seed workshop claim; Falk claim linkage differs: {claim[0]}")
+        if not seed.get("workshopOnly"):
+            source = db.execute("SELECT vertrag_id, partner_id FROM core_schaden WHERE schaden_id = ?", (claim[0],)).fetchone()
+            if not source:
+                raise RuntimeError(f"Cannot seed workshop claim; Falk claim is missing: {claim[0]}")
+            if source["vertrag_id"] != claim[1] or source["partner_id"] != claim[2]:
+                raise RuntimeError(f"Cannot seed workshop claim; Falk claim linkage differs: {claim[0]}")
         cursor = db.execute(
             """INSERT INTO workshop_claims
               (claim_id, contract_id, policyholder_id, title, event_date, notified_at, product_line, market, currency,
@@ -507,6 +528,10 @@ def ensure_workshop_claims(db: sqlite3.Connection | None = None) -> None:
         )
         if cursor.rowcount == 0:
             continue
+        for event_type, actor, details, event_at in seed["events"]:
+            _add_claim_event(claim[0], event_type, actor, details, db, event_at)
+        if not seed["recommendation"]:
+            continue
         action, amount, rationale, confidence, rule_version, proposed_by, status, reviewed_by, reviewer_note, created_at = seed["recommendation"]
         db.execute(
             """INSERT INTO workshop_claim_recommendations
@@ -516,8 +541,6 @@ def ensure_workshop_claims(db: sqlite3.Connection | None = None) -> None:
             (claim[0], action, amount, rationale, confidence, rule_version, proposed_by, status, reviewed_by, reviewer_note,
              created_at, created_at if reviewed_by else None, f"seed:{claim[0]}:recommendation"),
         )
-        for event_type, actor, details, event_at in seed["events"]:
-            _add_claim_event(claim[0], event_type, actor, details, db, event_at)
         for task_type, description, assigned_to, due_at, task_at in seed["tasks"]:
             db.execute(
                 """INSERT INTO workshop_claim_tasks

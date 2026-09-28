@@ -6,7 +6,9 @@ from pfefferminzia.crm import get_customer
 
 def test_four_scenarios_link_to_exact_contracts_and_documents(full_db):
     claims = list_claims(db=full_db)
-    assert sorted(claim["claimId"] for claim in claims) == ["SCH-00000118", "SCH-00000318", "SCH-00000810", "SCH-00000918"]
+    assert sorted(claim["claimId"] for claim in claims) == [
+        "LF-2026-0202", "LF-2026-0602", "SCH-00000118", "SCH-00000318", "SCH-00000810", "SCH-00000918",
+    ]
     assert get_claim("SCH-00000810", full_db)["policyDocumentIds"] == ["RW-HP-AHB-DE-2013"]
     assert "SCH-00000810" in [claim["claimId"] for claim in get_customer("PTR-00000008", full_db)["claims"]]
     assert any(item["id"] == "claim-SCH-00000810" for item in get_customer("PTR-00000008", full_db)["timeline"])
@@ -33,3 +35,12 @@ def test_recommendations_require_human_review_and_tasks_are_idempotent(full_db):
     task_count = len(with_task["tasks"])
     replay = create_claim_task(claim_id=proposed["claimId"], task_type="EVIDENCE_REVIEW", description="Changed.", idempotency_key="grimm-task-001", actor="mcp-agent", db=full_db)
     assert len(replay["tasks"]) == task_count
+
+
+def test_drill_8_life_cases_have_a_benefit_file(full_db):
+    ortlepp = list_claims(contract_id="VTR-00000202", db=full_db)
+    nazari = get_claim("LF-2026-0602", full_db)
+    assert [claim["claimId"] for claim in ortlepp] == ["LF-2026-0202"]
+    assert ortlepp[0]["productLine"] == "life" and ortlepp[0]["tariffGenerationId"] == "PZ-2025"
+    assert nazari["recommendations"][0]["action"] == "DENY"
+    assert "Herzinfarkt" in nazari["summary"]

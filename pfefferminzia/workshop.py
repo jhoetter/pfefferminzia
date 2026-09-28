@@ -36,18 +36,18 @@ DEMO_TICKETS = [
     },
     {
         "ticketNumber": "PF-10004", "partnerId": "PTR-00000002", "contractId": "VTR-00000202",
-        "email": "jana.ortlepp@mail.example", "customerName": "Jana Ortlepp", "subject": "Leistungsprüfung RisikoLeben",
+        "email": "martin.ortlepp@mail.example", "customerName": "Jana Ortlepp", "subject": "Leistungsprüfung RisikoLeben",
         "status": "new", "productLine": "life", "category": "claim", "priority": "high", "minStage": 8,
         "summary": "Lebens-Leistungsfall benötigt eine vollständig vorbereitete Entscheidung und Antwort mit menschlicher Freigabe.",
-        "body": "Guten Tag\n\nzum Vertrag VTR-00000202 reiche ich die Unterlagen für die Leistungsprüfung ein. Bitte bestätigen Sie das weitere Vorgehen.\n\nFreundliche Grüsse\nJana Ortlepp",
+        "body": "Guten Tag\n\nwie telefonisch gemeldet, ist meine Schwester Jana Ortlepp am 14. August verstorben. Zum Vertrag VTR-00000202 reiche ich als gesetzlicher Erbe jetzt den Erbschein nach. Bitte teilen Sie mir Ihre Entscheidung mit.\n\nFreundliche Grüsse\nMartin Ortlepp",
         "createdAt": "2026-09-29T12:55:00Z",
     },
     {
         "ticketNumber": "PF-10006", "partnerId": "PTR-00000006", "contractId": "VTR-00000602",
-        "email": "farid.nazari@mail.example", "customerName": "Farid Nazari", "subject": "Rückfrage zur Leistungsentscheidung",
+        "email": "sabine.nazari@mail.example", "customerName": "Farid Nazari", "subject": "Rückfrage zur Leistungsentscheidung",
         "status": "new", "productLine": "life", "category": "claim", "priority": "normal", "minStage": 8,
         "summary": "Zweiter Lebens-Leistungsfall für Ablehnung, Kontextnachforderung und Überarbeitung.",
-        "body": "Guten Tag\n\nich habe eine Rückfrage zur angekündigten Entscheidung für Vertrag VTR-00000602. Bitte prüfen Sie die Unterlagen erneut und erläutern Sie die Grundlage.\n\nFreundliche Grüsse\nFarid Nazari",
+        "body": "Guten Tag\n\nSie haben mir angekündigt, die Leistung aus Vertrag VTR-00000602 nach dem Tod meines Mannes abzulehnen. Bitte prüfen Sie das erneut und erläutern Sie die Grundlage.\n\nFreundliche Grüsse\nSabine Nazari",
         "createdAt": "2026-09-29T13:05:00Z",
     },
     {

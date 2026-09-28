@@ -296,6 +296,10 @@ lernen müssen sie nicht – den Code schreibst du.
   im Cockpit frei; dabei entsteht ein versiegelter PDF-Beleg, der mit der
   Antwort mitgeht. Den Text darf sie danach frei ändern. Änderst du die
   Entscheidung, erlischt die Freigabe. Nie den Text „zur Freigabe vorlegen“.
+  Die Fakten stehen in der Leistungsakte des Vertrags (`get_ticket` liefert
+  sie als `claimFiles`, im Cockpit unter „Aus dem Bestand“): Stütze die
+  Entscheidung auf Akte und Tarifblatt, nicht auf die Mail, und frag nicht
+  nach Angaben, die dort schon stehen.
 - **Drill 9: Die Vorsortierung ist der Bauauftrag.** Neue Mails kommen
   unsortiert an. Sortiere sie nicht selbst ein, bevor die Person ihren Weg
   gewählt hat: Stichwörter (eine Regel im Programm) oder KI (du sortierst
@@ -303,7 +307,8 @@ lernen müssen sie nicht – den Code schreibst du.
   Begründung). Beides ist gut; sie muss es benennen, dazu die Kriterien und
   was bei Unklarheit passiert (bleibt offen, ein Mensch entscheidet).
 - **Was es wann gibt:** Bestand ab Drill 7; Sparte und Freigaben ab Drill 8
-  (vorher weder zeigen noch setzen); Eingriffsfenster und Schäden ab Drill 9;
+  (vorher weder zeigen noch setzen); Leistungs- und Schadenakten ab Drill 8;
+  Eingriffsfenster ab Drill 9;
   Report ab Drill 10. Nimm nichts aus späteren Drills vorweg.
 - **Links ins Cockpit:** Fall `http://127.0.0.1:3004/?ticket=PF-…`, Bestand
   `http://127.0.0.1:3004/?view=bestand`, Kundin

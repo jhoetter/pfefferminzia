@@ -49,11 +49,12 @@ SCENARIOS: list[Scenario] = [
         "subject": "Leistungsprüfung RisikoLeben — VTR-00000202",
         "text": (
             "Guten Tag,\n\n"
-            "zum Vertrag VTR-00000202 reiche ich die Unterlagen für die Leistungsprüfung ein. "
-            "Bitte bestätigen Sie die Entscheidung und das weitere Vorgehen.\n\n"
-            "Freundliche Grüße\nJana Ortlepp"
+            "wie telefonisch gemeldet, ist meine Schwester Jana Ortlepp am 14. August verstorben. "
+            "Zum Vertrag VTR-00000202 reiche ich als gesetzlicher Erbe jetzt den Erbschein nach. "
+            "Bitte teilen Sie mir Ihre Entscheidung und das weitere Vorgehen mit.\n\n"
+            "Freundliche Grüße\nMartin Ortlepp"
         ),
-        "expectation": "Partner PTR-00000002, PZ-2025. Im Cockpit freigeben und senden.",
+        "expectation": "Vertrag VTR-00000202 (Jana Ortlepp), PZ-2025, Leistungsakte LF-2026-0202. Klarer Fall: Entscheidung freigeben, Antwort mit Beleg senden.",
     },
     {
         "key": "leben-ablehnung",
@@ -61,11 +62,12 @@ SCENARIOS: list[Scenario] = [
         "subject": "Rückfrage zur Leistungsentscheidung — VTR-00000602",
         "text": (
             "Guten Tag,\n\n"
-            "bitte prüfen Sie die angekündigte Entscheidung für VTR-00000602 erneut. "
-            "In Ihrer Begründung fehlt der Bezug auf meine Vertragsgeneration.\n\n"
-            "Freundliche Grüße\nFarid Nazari"
+            "Sie haben mir mit Schreiben vom 10. September angekündigt, die Leistung aus VTR-00000602 "
+            "nach dem Tod meines Mannes abzulehnen. Bitte prüfen Sie das erneut: In Ihrer Begründung "
+            "fehlt der Bezug auf seine Vertragsgeneration, und er ist an einem Herzinfarkt gestorben.\n\n"
+            "Freundliche Grüße\nSabine Nazari"
         ),
-        "expectation": "Partner PTR-00000006, PZ-2025. Ersten Entwurf begründet ablehnen, Claude überarbeitet.",
+        "expectation": "Vertrag VTR-00000602 (Farid Nazari), PZ-2025, Leistungsakte LF-2026-0602. Die alte Ablehnung stützt sich auf eine Frist, die im Tarifblatt nur für Suizid gilt – Entscheidung begründet ablehnen, Claude überarbeitet.",
     },
     {
         "key": "haftpflicht-laufen-lassen",
