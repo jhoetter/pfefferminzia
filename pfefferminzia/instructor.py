@@ -227,7 +227,8 @@ def send_scenarios(drill: str, *, slots: list[str] | None = None, execute: bool 
     sent = []
     for index, entry in enumerate(plan):
         scenario = by_key[entry["scenario"]]
-        idempotency = f"pfm-{entry['scenario']}-{entry['slot']}" + (f"-{int(time.time())}" if resend else "")
+        # The day is part of the key: a rehearsal the day before must not block (or swallow) the real send.
+        idempotency = f"pfm-{time.strftime('%Y%m%d')}-{entry['scenario']}-{entry['slot']}" + (f"-{int(time.time())}" if resend else "")
         response = _mapping(client.inboxes.messages.send(
             config["INSTRUCTOR_INBOX_ID"], to=[entry["email"]], subject=scenario["subject"],
             text=scenario["text"], idempotency_key=idempotency,
