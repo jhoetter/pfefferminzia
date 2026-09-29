@@ -127,7 +127,7 @@ def main() -> None:
     scenarios = instructor_commands.add_parser("scenarios", help="Print the scenario messages")
     scenarios.add_argument("drill", nargs="?", default=None)
     send = instructor_commands.add_parser("send", help="Send one drill's scenario mails to all participants")
-    send.add_argument("drill", help="6, 7, 8, 9 or challenge")
+    send.add_argument("drill", help="6, 7, 8, 9, challenge – or 7-extra for the second Drill 7 case")
     send.add_argument("--slot", action="append", help="Only this participant slot, e.g. 03 (repeatable)")
     send.add_argument("--yes", action="store_true", help="Really send; without it only the plan is shown")
     send.add_argument("--resend", action="store_true", help="Send again even if the log says it was sent")

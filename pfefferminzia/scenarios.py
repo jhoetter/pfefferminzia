@@ -6,7 +6,7 @@ All identities and contract numbers are fictional workshop data.
 
 from __future__ import annotations
 
-from typing import TypedDict
+from typing import NotRequired, TypedDict
 
 
 class Scenario(TypedDict):
@@ -15,6 +15,7 @@ class Scenario(TypedDict):
     subject: str
     text: str
     expectation: str
+    extra: NotRequired[bool]  # only on request, e.g. a second case for people who sent too early
 
 
 SCENARIOS: list[Scenario] = [
@@ -42,6 +43,22 @@ SCENARIOS: list[Scenario] = [
             "Freundliche Grüße\nSimone Niederberger"
         ),
         "expectation": "Partner PTR-00000001, Tarifgeneration PL-2017. Mensch redigiert und sendet im Cockpit.",
+    },
+    {
+        # Second case for Drill 7, only on request: for people who sent too early and want to go through it again.
+        "key": "leben-bezugsrecht-2",
+        "drill": 7,
+        "extra": True,
+        "subject": "Bezugsberechtigung ändern — VTR-00002910",
+        "text": (
+            "Guten Tag,\n\n"
+            "in meiner Risikolebensversicherung VTR-00002910 sind bisher die gesetzlichen Erben begünstigt. "
+            "Ich möchte stattdessen meinen Lebensgefährten Jonas Brandt einsetzen. "
+            "Welche Unterlagen brauchen Sie von mir, und ab wann gilt die Änderung?\n\n"
+            "Freundliche Grüße\nHanna Haas"
+        ),
+        "expectation": "Hanna Haas, RisikoLeben VTR-00002910, Tarifgeneration PL-2017 (Tarifblatt Leben DE 2017). "
+        "Falle: Sie hat auch eine Haftpflicht-Police mit PM-2025 – die darf nicht zitiert werden. Mensch redigiert und sendet.",
     },
     {
         "key": "leben-freigabe",
@@ -121,7 +138,10 @@ SCENARIOS: list[Scenario] = [
 def scenarios_for(drill: int | str) -> list[Scenario]:
     if str(drill) == "challenge":
         return [item for item in SCENARIOS if item["drill"] == 0]
-    return [item for item in SCENARIOS if item["drill"] == int(drill)]
+    if str(drill).endswith("-extra"):
+        # Extra cases for one drill, sent only on request (e.g. "7-extra").
+        return [item for item in SCENARIOS if item["drill"] == int(str(drill)[:-6]) and item.get("extra")]
+    return [item for item in SCENARIOS if item["drill"] == int(drill) and not item.get("extra")]
 
 
 MAIL_TIMING = {
@@ -161,12 +181,20 @@ def mail_texts_markdown(slots: int = 17) -> str:
         "(zeigt den Plan) und `… send 7 --yes` (sendet aus der Dozenten-Inbox).", "",
     ]
     for drill in (6, 7, 8, 9, 0):
-        items = [item for item in SCENARIOS if item["drill"] == drill]
+        items = [item for item in SCENARIOS if item["drill"] == drill and not item.get("extra")]
         out += [f"## {MAIL_TITLES[drill]}", "", f"**Wann:** {MAIL_TIMING[drill]}", ""]
         for number, item in enumerate(items, 1):
             if len(items) > 1:
                 out += [f"### Mail {number} von {len(items)}", ""]
             out += ["**Betreff:**", "", "```text", item["subject"], "```", "",
+                    "**Text:**", "", "```text", item["text"].rstrip("\n"), "```", "",
+                    f"**Was dann passieren soll:** {item['expectation']}", ""]
+        for item in (item for item in SCENARIOS if item["drill"] == drill and item.get("extra")):
+            out += ["### Zweiter Fall – nur auf Wunsch", "",
+                    f"Für alle, die zu früh gesendet haben und den Drill noch einmal durcharbeiten wollen. "
+                    f"Nur an diese Personen schicken (Claude: „Schick den zweiten Drill-{drill}-Fall an Platz 03“ "
+                    f"oder `uv run pfefferminzia instructor send {drill}-extra --slot 03 --yes`).", "",
+                    "**Betreff:**", "", "```text", item["subject"], "```", "",
                     "**Text:**", "", "```text", item["text"].rstrip("\n"), "```", "",
                     f"**Was dann passieren soll:** {item['expectation']}", ""]
     return "\n".join(out).rstrip("\n") + "\n"

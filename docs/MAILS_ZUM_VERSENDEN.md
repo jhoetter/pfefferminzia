@@ -74,6 +74,29 @@ Simone Niederberger
 
 **Was dann passieren soll:** Partner PTR-00000001, Tarifgeneration PL-2017. Mensch redigiert und sendet im Cockpit.
 
+### Zweiter Fall – nur auf Wunsch
+
+Für alle, die zu früh gesendet haben und den Drill noch einmal durcharbeiten wollen. Nur an diese Personen schicken (Claude: „Schick den zweiten Drill-7-Fall an Platz 03“ oder `uv run pfefferminzia instructor send 7-extra --slot 03 --yes`).
+
+**Betreff:**
+
+```text
+Bezugsberechtigung ändern — VTR-00002910
+```
+
+**Text:**
+
+```text
+Guten Tag,
+
+in meiner Risikolebensversicherung VTR-00002910 sind bisher die gesetzlichen Erben begünstigt. Ich möchte stattdessen meinen Lebensgefährten Jonas Brandt einsetzen. Welche Unterlagen brauchen Sie von mir, und ab wann gilt die Änderung?
+
+Freundliche Grüße
+Hanna Haas
+```
+
+**Was dann passieren soll:** Hanna Haas, RisikoLeben VTR-00002910, Tarifgeneration PL-2017 (Tarifblatt Leben DE 2017). Falle: Sie hat auch eine Haftpflicht-Police mit PM-2025 – die darf nicht zitiert werden. Mensch redigiert und sendet.
+
 ## Drill 8 – Leben: Mensch gibt frei
 
 **Wann:** Nachdem alle zu Drill 8 gewechselt sind. Zwei Mails – beide an alle.
