@@ -29,7 +29,7 @@ Formulierungen, Handlungen und Nachweise stehen in den
 
 | Deck | Live-Einsatz | Folien |
 | --- | --- | ---: |
-| [Input](../slides/index.html?deck=input) | 08:30 · Live-Beispiele, Vibe Coding, MCP, Kontrolle | 9 |
+| [Input](../slides/index.html?deck=input) | 08:30 · Sonnet 5.5, MCP, Live-Beispiele, Kontrolle, Brücke mit Video | 16 |
 | [Drill 6](../slides/index.html?deck=drill-06) | 10:00 · Zeitplan, Start-Satz, Teilnehmende mit Schlüsselanfang, Cockpit | 7 |
 | [Drill 7](../slides/index.html?deck=drill-07) | 11:15 · Zeitplan, Rückblick 6, Bestand | 6 |
 | [Drill 8](../slides/index.html?deck=drill-08) | 13:15 · Zeitplan, Rückblick 7, Leistungsentscheidung | 6 |
@@ -47,6 +47,11 @@ Python-Server, aber ebenfalls **kein Node.js**. Pfeiltasten/Leertaste navigieren
 Referentenansicht mit Notizen, `F` Vollbild und `Esc` die Übersicht. Für den
 PDF-Export `&print-pdf` an eine Deck-URL mit `?deck=...` anhängen und mit
 Hintergrundgrafiken drucken.
+
+**Zum Verschicken:** [Dienstag-Folien.pdf](Dienstag-Folien.pdf) – Input,
+Drill 6–10, Abschluss und der Vortrag „Jede Aufgabe zuerst agentisch“ in einer
+Datei, ohne Teilnehmenden-Liste, Reserve-Runden und Anhang. Erzeugt aus den
+Decks mit `?handout=1&print-pdf` (Handout-Modus lässt die Dozenten-Folien weg).
 
 Die Folien sind bewusst knapp: je eine starke Zeile. Was du dazu sagst,
 steht in den **Notizen** (`S` öffnet die Referentenansicht). Jeder Drill beginnt

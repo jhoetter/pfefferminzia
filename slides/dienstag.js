@@ -84,6 +84,19 @@
       notes: 'ZEIT: 2 Minuten. SAGEN: Vier 60-Minuten-Drills plus ein 45-Minuten-Drill, dazwischen 15 Minuten Puffer und die Mittagspause. Jeder Drill: ein Fall für alle, ein eigener Bauauftrag – und ein Checkpoint mit Lösung, falls es klemmt. Jede Person arbeitet in ihrer eigenen Kopie. Zum Schluss 75 Minuten Whiteboard.'
     },
     {
+      id: 'MCP', type: 'Grundlage', eyebrow: 'MCP in einer Minute', title: 'MCP ist der Stecker zwischen Claude und eurer Software.',
+      body: `<div class="day-flow"><div class="day-flow-step"><b>Claude</b><span>denkt, plant,<br>schreibt</span></div><div class="day-arrow">↔</div><div class="day-flow-step"><b>MCP</b><span>ein Stecker –<br>wie USB</span></div><div class="day-arrow">↔</div><div class="day-flow-step"><b>Software</b><span>Postfach · Bestand<br>Kalender · CRM …</span></div></div>`,
+      notes: 'ZEIT: 3 Minuten. SAGEN: MCP heißt Model Context Protocol – ein offener Standard, über den ein KI-Modell mit Software spricht. Denkt an USB: ein Stecker, viele Geräte. Jede Software, die MCP anbietet, kann Claude Werkzeuge geben: nachschlagen, anlegen, ändern. Ohne Stecker bleibt Claude ein Chat – mit Stecker wird es ein Kollege, der im System arbeiten kann. Heute ist Pfefferminzia eure Software mit MCP-Stecker.'
+    },
+    {
+      id: 'MCPWerkzeuge', type: 'Grundlage', eyebrow: 'MCP in einer Minute', title: 'Werkzeuge sind Hände. Was fehlt, kann Claude nicht.',
+      body: grid([
+        card('Claude darf', `<p class="day-emphasis">Mails abrufen · im Bestand nachschlagen · Entwürfe schreiben · Entscheidungen vorschlagen</p>`, 'mint-card'),
+        card('Claude kann nicht', `<p class="day-emphasis">Senden · Freigeben · die Uhr vorspulen – das tut nur ihr im Cockpit.</p>`, 'red-card')
+      ]),
+      notes: 'ZEIT: 2 Minuten. SAGEN: Welche Werkzeuge ein Agent bekommt, ist eine Gestaltungsentscheidung – eure. In Pfefferminzia fehlt das Werkzeug „Senden“ absichtlich: Claude bereitet vor, die Wirkung löst der Mensch aus. Das ist die wichtigste Kontrolle überhaupt: nicht Vertrauen, sondern fehlende Hände. Später im Tag könnt ihr Claude selbst ein neues Werkzeug geben – und entscheidet dann, welche Kontrolle dazugehört. FRAGE: Welches Werkzeug würdet ihr einem Agenten bei euch als Erstes geben – und welches nie?'
+    },
+    {
       id: 'LiveBeispiele', type: 'Input', eyebrow: 'Morgens · Blick nach vorn', title: 'Ich zeige, wie ich arbeite. Dann baut ihr.',
       body: grid([
         card('Live-Demo', `<p class="day-emphasis">Drei eigene Anwendungen, im Browser.</p>`, 'mint-card'),
@@ -324,8 +337,8 @@
   const agentisch = window.PFEFFERMINZIA_AGENTISCH_SLIDES || [];
 
   const deckIds = {
-    gesamt: ['Titel', 'GreatNews', 'ZielVideo', 'Bruecke', 'Agenda', 'Lernkonzept', 'LiveBeispiele', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus', 'Tempo', 'Whiteboard', 'Contract'],
-    input: ['Titel', 'GreatNews', 'Bruecke', 'Agenda', 'LiveBeispiele', 'Architektur', 'Belege', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus', 'ZielVideo', 'Mitnehmen', 'Lernkonzept', 'DrillRhythmus'],
+    gesamt: ['Titel', 'GreatNews', 'ZielVideo', 'Bruecke', 'Agenda', 'MCP', 'MCPWerkzeuge', 'Lernkonzept', 'LiveBeispiele', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus', 'Tempo', 'Whiteboard', 'Contract'],
+    input: ['Titel', 'GreatNews', 'Bruecke', 'Agenda', 'MCP', 'MCPWerkzeuge', 'LiveBeispiele', 'Architektur', 'Belege', 'Kontrollmuster', 'Zielbild', 'Arbeitsrhythmus', 'ZielVideo', 'Mitnehmen', 'Lernkonzept', 'DrillRhythmus'],
     'drill-06': ['Drill6Start', 'Zeitplan-drill-06', 'Drill6Los', 'Teilnehmende', 'Drill6Cockpit', 'Drill6Auftrag', 'Checkpoints', 'Reserve6', 'ReserveImmer'],
     'drill-07': ['Drill7Start', 'Zeitplan-drill-07', 'Rueckblick6', 'Drill7Kontext', 'Drill7Auftrag', 'Checkpoints', 'Reserve7', 'ReserveImmer'],
     'drill-08': ['Drill8Start', 'Zeitplan-drill-08', 'Rueckblick7', 'Drill8Review', 'Drill8Auftrag', 'Checkpoints', 'Reserve8', 'ReserveImmer'],
@@ -339,7 +352,11 @@
   slides.push(zeitplan('abschluss'));
   const allSlides = [...slides, ...agentisch];
   const selectedIds = deckIds[deckName] || deckIds.gesamt;
-  const selectedSlides = selectedIds.map(id => allSlides.find(slide => slide.id === id));
+  // ?handout=1 (for the PDF): no instructor-only slides – participant keys and reserve rounds stay with the instructor.
+  const handout = new URLSearchParams(window.location.search).has('handout');
+  const selectedSlides = selectedIds
+    .filter(id => !handout || !(id === 'Teilnehmende' || id.startsWith('Reserve') || id.startsWith('Anhang')))
+    .map(id => allSlides.find(slide => slide.id === id));
   document.title = `Pfefferminzia · ${deckName === 'agentisch' ? 'Agentisch arbeiten' : deckName === 'gesamt' ? 'Gesamtkontext' : deckName}`;
   const footerLabel = deckName === 'agentisch'
     ? 'Arbeiten in agentischen Teams · Johannes Hötter'
