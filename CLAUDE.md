@@ -74,13 +74,17 @@ kostet ihre Aufmerksamkeit für das Eigentliche.
 
 Führe diese Schritte still selbst aus:
 
-1. **Flach** klonen, damit es auch im vollen WLAN schnell geht:
-   `git clone --depth 1 https://github.com/jhoetter/pfefferminzia ~/pfefferminzia`
-   (Befehl mit langer Zeitgrenze starten, etwa 10 Minuten). Gibt es den Ordner
-   schon als funktionierendes Repo, dort `git pull`. Ist er von einem
-   abgebrochenen Klonen halb angelegt, **nichts löschen**, sondern flach nach
-   `~/pfefferminzia-2` klonen und dort weiterarbeiten (in Schritt 6 dann diesen
-   Ordner nennen). Dann einen eigenen Branch: `git switch -c workshop/mein-tag`.
+1. **Flach** auf den Schreibtisch in den Ordner `pfefferminzia-2` klonen –
+   der Ordner `pfefferminzia` stammt noch vom Montag und bleibt unberührt:
+   `git clone --depth 1 https://github.com/jhoetter/pfefferminzia <Schreibtisch>/pfefferminzia-2`.
+   Schreibtisch: Mac `~/Desktop`; Windows `%USERPROFILE%\Desktop` – liegt er
+   in OneDrive, `%USERPROFILE%\OneDrive\Desktop` (bzw. „OneDrive\Schreibtisch“);
+   nimm den Ordner, den der Explorer als Desktop zeigt. Den Befehl mit langer
+   Zeitgrenze starten (etwa 10 Minuten). Gibt es `pfefferminzia-2` schon als
+   funktionierendes Repo, dort `git pull`; ist er von einem abgebrochenen
+   Klonen halb angelegt, **nichts löschen**, sondern nach `pfefferminzia-3`
+   klonen. Nie einen bestehenden Ordner löschen oder überschreiben. Dann einen
+   eigenen Branch: `git switch -c workshop/mein-tag`.
    Die Checkpoint-Stände holt der Drill-Wechsel selbst nach.
 2. `uv sync --frozen` und `uv run pfefferminzia setup` (legt auch `.env` an;
    liest und sendet keine Mails).
@@ -99,12 +103,15 @@ Führe diese Schritte still selbst aus:
    die Inbox zum Schlüssel und trägt alles ein; die Antwort-Adresse ist für
    alle gleich und schon hinterlegt. Gib den Schlüssel nie wieder aus. Melde
    nur: „Verbunden: pfefferminzia-07@agentmail.to“.
-6. Wurde diese Sitzung **außerhalb** des Ordners `pfefferminzia` gestartet,
+6. Wurde diese Sitzung **außerhalb** des neuen Ordners gestartet,
    gib genau einen Schritt: „Öffne in der Claude-App eine neue Code-Sitzung
-   mit dem Ordner `pfefferminzia` und schreibe dort ‚weiter mit Drill 6‘. Falls
+   mit dem Ordner `pfefferminzia-2` auf dem Schreibtisch und schreibe dort
+   ‚weiter mit Drill 6‘. Falls
    gefragt wird, ob der Pfefferminzia-Server verwendet werden darf: Ja.“ Sag
    dazu, dass der Schlüssel gespeichert ist und nicht noch einmal nötig ist.
-   (Nur wer im Terminal arbeitet: `cd ~/pfefferminzia && claude`.)
+   (Nur wer im Terminal arbeitet: `cd ~/Desktop/pfefferminzia-2 && claude`.)
+   Der Schlüssel wird im neuen Ordner neu gespeichert – einmal danach fragen,
+   auch wenn die Person ihn gestern schon eingegeben hat.
 
 **„weiter mit Drill N“ heißt: Drill N beginnen.** Steht der Ordner laut
 `get_workshop_status`/`get_drill_guide` (`youAreHere`) schon auf Drill N, lädst

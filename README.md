@@ -57,13 +57,13 @@ Bereich **Code**, starte eine neue Sitzung mit deinem Benutzerordner und
 schreibe:
 
 > Klone https://github.com/jhoetter/pfefferminzia flach (nur den neuesten
-> Stand) nach ~/pfefferminzia, richte alles nach der README ein und starte
-> die Kommandozentrale. Ich bin in Drill 6.
+> Stand) auf den Schreibtisch in den Ordner pfefferminzia-2, richte alles
+> nach der README ein und starte die Kommandozentrale. Ich bin in Drill 6.
 
 Claude richtet alles ein, öffnet die Kommandozentrale im Browser
 (<http://127.0.0.1:3004>) und fragt nach dem **Schlüssel von deinem Zettel**
 (beginnt mit `am_`). Danach bittet es dich einmal, eine **neue Code-Sitzung
-mit dem Ordner `pfefferminzia`** zu öffnen, damit es direkt mit der Software
+mit dem Ordner `pfefferminzia-2`** (auf dem Schreibtisch) zu öffnen, damit es direkt mit der Software
 sprechen kann. Den Schlüssel musst du dort nicht noch einmal angeben.
 
 > **Für Claude Code – Einrichtung:** Lies `CLAUDE.md` in diesem Repo und
@@ -71,7 +71,8 @@ sprechen kann. Den Schlüssel musst du dort nicht noch einmal angeben.
 > `workshop/mein-tag`, `uv sync --frozen`, `uv run pfefferminzia setup`,
 > `uv run pfefferminzia serve --open` im Hintergrund, nur nach dem Schlüssel
 > fragen und ihn per `uv run pfefferminzia connect` (über stdin) verbinden,
-> dann um eine neue Code-Sitzung im Ordner `pfefferminzia` bitten. Die Person
+> dann um eine neue Code-Sitzung im Ordner `pfefferminzia-2` auf dem
+> Schreibtisch bitten. Die Person
 > bedient kein Terminal und hört keinen Fachjargon.
 
 **Wenn du nicht weiterweißt, frag Claude.** Es ist hier dein Tutor: Es kennt

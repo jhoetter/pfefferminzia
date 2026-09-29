@@ -154,8 +154,9 @@ def handouts(directory: Path = INSTRUCTOR_DIR) -> dict[str, Any]:
             "So startest du:\n"
             "  1. Claude-App öffnen → Code → neue Sitzung mit deinem Benutzerordner.\n"
             "  2. Schreiben:\n"
-            f"     Klone {repo} nach ~/pfefferminzia, richte alles nach der README ein\n"
-            "     und starte die Kommandozentrale. Ich bin in Drill 6.\n"
+            f"     Klone {repo} flach (nur den neuesten Stand) auf den Schreibtisch in den\n"
+            "     Ordner pfefferminzia-2, richte alles nach der README ein und starte die\n"
+            "     Kommandozentrale. Ich bin in Drill 6.\n"
             "  3. Wenn Claude nach deinem Schlüssel fragt: die Zeile oben einfügen.\n\n"
             "Nicht in Gruppenchats teilen. Kein Terminal nötig – Claude erledigt die Technik.\n"
         )

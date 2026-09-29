@@ -63,7 +63,7 @@ def test_tuesday_deck_covers_all_five_milestones() -> None:
     assert "releases/download/workshop-medien/pfefferminzia-2-0-pitch.mp4" in script
     assert (ROOT / "docs" / "RESERVE_RUNDEN.md").is_file()
     assert "MCPWerkzeuge" in ids and "handout" in script
-    assert "flach (nur den neuesten Stand)" in script
+    assert "flach (nur den neuesten Stand) auf den Schreibtisch in den Ordner pfefferminzia-2" in script
     assert "Uebernickel" not in script and "Fragt Claude – oder mich." in script
     assert "LiveBeispiele" in ids
     assert "Cron" in script

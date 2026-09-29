@@ -20,8 +20,8 @@ Du brauchst **kein Terminal**. Öffne die Claude-App → **Code** → neue
 Sitzung mit deinem Benutzerordner und schreibe:
 
 > Klone https://github.com/jhoetter/pfefferminzia flach (nur den neuesten
-> Stand) nach ~/pfefferminzia, richte alles nach der README ein und starte
-> die Kommandozentrale. Ich bin in Drill 6.
+> Stand) auf den Schreibtisch in den Ordner pfefferminzia-2, richte alles
+> nach der README ein und starte die Kommandozentrale. Ich bin in Drill 6.
 
 Claude richtet alles ein und öffnet <http://127.0.0.1:3004>. Wenn es fragt,
 füge den **Schlüssel von deinem Zettel** ein (beginnt mit `am_`). Grauer
@@ -29,7 +29,7 @@ Text im Eingabefeld ist nur ein Vorschlag der App – nicht übernehmen; mehr
 brauchst du nicht. Das ist **nur** in diesem synthetischen Workshop in
 Ordnung; echte Zugangsdaten und Kundendaten gehören nie in einen Chat, den
 Schlüssel nie in Git, Gruppenchats oder Screenshots. Danach bittet Claude
-dich einmal, eine **neue Code-Sitzung mit dem Ordner `pfefferminzia`** zu
+dich einmal, eine **neue Code-Sitzung mit dem Ordner `pfefferminzia-2`** (Schreibtisch) zu
 öffnen, dort „weiter mit Drill 6“ zu schreiben und die Frage nach dem
 Pfefferminzia-Server mit Ja zu beantworten. Den Schlüssel musst du dort nicht
 noch einmal eingeben. Alles Weitere (Befehle,

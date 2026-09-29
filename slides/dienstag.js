@@ -179,10 +179,10 @@
     {
       id: 'Drill6Los', type: 'Drill', eyebrow: 'Drill 6 · So startet ihr', title: 'Ein Satz an Claude. Kein Terminal.', study: true,
       body: grid([
-        card('Claude-App → Code', `${prompt('Klone https://github.com/jhoetter/pfefferminzia flach (nur den neuesten Stand) nach ~/pfefferminzia, richte alles nach der README ein und starte die Kommandozentrale. Ich bin in Drill 6.')}<p class="day-small">Dann den Schlüssel vom Zettel einfügen.</p>`, 'mint-card'),
+        card('Claude-App → Code', `${prompt('Klone https://github.com/jhoetter/pfefferminzia flach (nur den neuesten Stand) auf den Schreibtisch in den Ordner pfefferminzia-2, richte alles nach der README ein und starte die Kommandozentrale. Ich bin in Drill 6.')}<p class="day-small">Dann den Schlüssel vom Zettel einfügen.</p>`, 'mint-card'),
         card('Nicht weiter?', `<p class="day-emphasis">Fragt Claude – oder mich.</p><p>Claude kennt den Drill und gibt Hinweise in kleinen Schritten. Ich laufe rum.</p>`)
       ]),
-      notes: 'ZEIT: 10 Minuten inkl. Einrichtung. SAGEN: Claude-App öffnen, Bereich Code, neue Sitzung mit eurem Benutzerordner. Sagt Claude den Satz; danach bittet es euch einmal um eine neue Sitzung im Ordner pfefferminzia, dann öffnet sich die Kommandozentrale – ein Softwaregerüst, das ihr heute ausbaut. Die erste Aufgabe steht schon drin: meine Mail beantworten. Keine Sorge: Beim nächsten Drill gibt es einen Checkpoint. VORHER: Claude bitten „Schick die Drill-6-Begrüßung an alle“.'
+      notes: 'ZEIT: 10 Minuten inkl. Einrichtung. SAGEN: Claude-App öffnen, Bereich Code, neue Sitzung mit eurem Benutzerordner. Sagt Claude den Satz; danach bittet es euch einmal um eine neue Sitzung im Ordner pfefferminzia-2 auf dem Schreibtisch (der Montags-Ordner pfefferminzia bleibt, wie er ist), dann öffnet sich die Kommandozentrale – ein Softwaregerüst, das ihr heute ausbaut. Die erste Aufgabe steht schon drin: meine Mail beantworten. Keine Sorge: Beim nächsten Drill gibt es einen Checkpoint. VORHER: Claude bitten „Schick die Drill-6-Begrüßung an alle“.'
     },
     {
       id: 'Teilnehmende', type: 'Setup', eyebrow: 'Drill 6 · Eure Plätze', title: 'Wer hat welchen Schlüssel?',
@@ -196,7 +196,7 @@
     },
     {
       id: 'Drill6Auftrag', type: 'Drill', eyebrow: "Drill 6 · Eure Aufgaben · 60 Minuten", title: "Entscheiden. Bauen. Selbst senden.",
-      subtitle: "Start: neue Sitzung im Ordner pfefferminzia – „weiter mit Drill 6“.", study: true,
+      subtitle: "Start: neue Sitzung im Ordner pfefferminzia-2 (Schreibtisch) – „weiter mit Drill 6“.", study: true,
       body: taskBoard(["Mail lesen: Was willst du antworten?", "Claude entwirft, du änderst – <strong>noch nicht senden</strong>.", "Bauen: „Antworten“ erledigt sich beim Senden.", "Senden – und sehen, dass es wirkt."], "Antwort gesendet, die Aufgabe hat sich selbst erledigt, Stand gespeichert.", "Denkanstoß von Claude holen, dann die eigene Kommandozentrale ausbauen."),
       notes: "ZEIT: 2 Minuten, dann bleibt die Folie stehen. SAGEN: Ihr entscheidet, Claude baut. Claude zeigt zuerst, was die Kommandozentrale kann, und fragt euch in jedem Schritt. Wichtig: in Schritt 2 noch nicht senden – euer Senden ist in Schritt 4 der Beweis. Wer früher fertig ist: Denkanstöße, dann eigene Erweiterung (z. B. Suche im Posteingang) – nicht vorgreifen. Ich laufe rum."
     },

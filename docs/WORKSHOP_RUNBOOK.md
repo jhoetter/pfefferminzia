@@ -92,7 +92,8 @@ Fallback.
 Die Teilnehmenden arbeiten **nur** in der Claude-App (Code) und im Cockpit;
 Claude führt alle Befehle für sie aus. Der Drill-Wechsel passiert im selben
 Ordner und in derselben Sitzung; nur beim allerersten Start (Klonen) gibt es
-einmal eine neue Code-Sitzung im Ordner `pfefferminzia`.
+einmal eine neue Code-Sitzung im Ordner `pfefferminzia-2` auf dem Schreibtisch
+(der Ordner `pfefferminzia` stammt noch vom Montag und bleibt unberührt).
 
 | Zeit | Du sagst | Du tust |
 | --- | --- | --- |
