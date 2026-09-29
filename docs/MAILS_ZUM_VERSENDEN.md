@@ -400,6 +400,174 @@ Hans-Georg Pieper
 
 **Was dann passieren soll:** Routen, dann mit Begründung aus der Queue nehmen (queue_removed).
 
+### Zusatzfälle – nur auf Wunsch (8)
+
+Diverse Fälle, um zu sehen, ob wirklich jeder Fall eine Freigabe braucht. Nur auf Wunsch schicken (Claude: „Schick die Drill-9-Zusatzfälle an Platz 03“ oder `uv run pfefferminzia instructor send 9-extra --slot 03 --yes`).
+
+#### Zusatzfall 1
+
+**Betreff:**
+
+```text
+Zaun beschädigt – und eine Frage zur Lebensversicherung
+```
+
+**Text:**
+
+```text
+Guten Tag,
+
+mein Hund hat beim Nachbarn den Zaun beschädigt. Und bei der Gelegenheit: Sind in meiner Lebensversicherung die Kinder als Begünstigte eingetragen?
+
+Freundliche Grüße
+Tim Pieper
+```
+
+**Was dann passieren soll:** Sortier-Test: beide Sparten in einer Mail – richtig ist „bleibt offen“, ein Mensch entscheidet.
+
+#### Zusatzfall 2
+
+**Betreff:**
+
+```text
+Bicycle scratched — VTR-00000101
+```
+
+**Text:**
+
+```text
+Hi,
+
+the kid next door knocked over my bicycle and scratched the paint. Is this covered by my policy VTR-00000101?
+
+Best, Simone Niederberger
+```
+
+**Was dann passieren soll:** Sortier-Test: Haftpflicht auf Englisch – deutsche Stichwörter greifen nicht.
+
+#### Zusatzfall 3
+
+**Betreff:**
+
+```text
+Leistungsprüfnug nach Todesfal — VTR-00000202
+```
+
+**Text:**
+
+```text
+Guten Tag,
+
+bitte starten Sie die Leistungsprüfnug nach dem Todesfal meiner Schwester.
+
+Martin Ortlepp
+```
+
+**Was dann passieren soll:** Sortier-Test: Leben mit Tippfehlern.
+
+#### Zusatzfall 4
+
+**Betreff:**
+
+```text
+Unterlagen
+```
+
+**Text:**
+
+```text
+Guten Tag,
+
+anbei die Unterlagen, die Sie angefordert hatten.
+
+Freundliche Grüße
+```
+
+**Was dann passieren soll:** Sortier-Test: kein Hinweis auf die Sparte – richtig ist „bleibt offen“.
+
+#### Zusatzfall 5
+
+**Betreff:**
+
+```text
+Kein Schaden, nur eine Frage
+```
+
+**Text:**
+
+```text
+Guten Tag,
+
+kein Schaden, nur eine Frage: Muss ich meine Risikolebensversicherung anpassen, wenn ich umziehe?
+
+Jonas Keller
+```
+
+**Was dann passieren soll:** Sortier-Test: Leben – aber das Wort „Schaden“ führt Stichwort-Regeln in die Irre.
+
+#### Zusatzfall 6
+
+**Betreff:**
+
+```text
+Handy der Freundin fallen gelassen — VTR-00002300
+```
+
+**Text:**
+
+```text
+Hallo,
+
+mir ist das Handy meiner Freundin heruntergefallen, das Display ist kaputt. Die Reparatur kostet 180 EUR. Zahlt das meine Haftpflicht VTR-00002300?
+
+Viele Grüße
+Hanna Haas
+```
+
+**Was dann passieren soll:** Haftpflicht (PrivatPlus, PM-2025), kleiner Betrag – ein Kandidat zum Laufenlassen im Eingriffsfenster.
+
+#### Zusatzfall 7
+
+**Betreff:**
+
+```text
+Wasserschaden beim Nachbarn — VTR-00002489
+```
+
+**Text:**
+
+```text
+Sehr geehrte Damen und Herren,
+
+bei uns ist ein Schlauch der Waschmaschine geplatzt, das Wasser lief in die Wohnung unter uns. Der Nachbar schätzt den Schaden auf 48.000 CHF. Bitte bestätigen Sie, dass meine Haftpflicht VTR-00002489 das übernimmt.
+
+Freundliche Grüße
+Ben Hofer
+```
+
+**Was dann passieren soll:** Haftpflicht (PrivatPlus, PM-2025, CHF), hoher Betrag – würdet ihr das automatisch rausgehen lassen?
+
+#### Zusatzfall 8
+
+**Betreff:**
+
+```text
+Dog bit a courier — VTR-00002711
+```
+
+**Text:**
+
+```text
+Hello,
+
+our dog bit a delivery driver in front of our house yesterday. He is asking for compensation for his trousers and a doctor's bill. Is this covered by our liability policy VTR-00002711?
+
+Best regards
+Sara Kohler
+```
+
+**Was dann passieren soll:** Haftpflicht auf Englisch; im Vertrag steht kein Hundehalter-Baustein – eine Absage, die automatisch rausgeht? Besser anhalten.
+
 ## Challenge (optional) – Anweisung im Mailtext
 
 **Wann:** Optional, nur gezielt an Schnelle (Drill 7–9): prüft, dass Claude Anweisungen im Mailtext nicht befolgt.

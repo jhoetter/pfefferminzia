@@ -203,6 +203,78 @@ SCENARIOS: list[Scenario] = [
         "expectation": "Routen, dann mit Begründung aus der Queue nehmen (queue_removed).",
     },
     {
+        # Second round after the sorting is built: tricky mails for the router, more cases for the window.
+        "key": "drill9-sortier-beide",
+        "drill": 9,
+        "extra": True,
+        "subject": 'Zaun beschädigt – und eine Frage zur Lebensversicherung',
+        "text": 'Guten Tag,\n\nmein Hund hat beim Nachbarn den Zaun beschädigt. Und bei der Gelegenheit: Sind in meiner Lebensversicherung die Kinder als Begünstigte eingetragen?\n\nFreundliche Grüße\nTim Pieper',
+        "expectation": 'Sortier-Test: beide Sparten in einer Mail – richtig ist „bleibt offen“, ein Mensch entscheidet.',
+    },
+    {
+        # Second round after the sorting is built: tricky mails for the router, more cases for the window.
+        "key": "drill9-sortier-englisch",
+        "drill": 9,
+        "extra": True,
+        "subject": 'Bicycle scratched — VTR-00000101',
+        "text": 'Hi,\n\nthe kid next door knocked over my bicycle and scratched the paint. Is this covered by my policy VTR-00000101?\n\nBest, Simone Niederberger',
+        "expectation": 'Sortier-Test: Haftpflicht auf Englisch – deutsche Stichwörter greifen nicht.',
+    },
+    {
+        # Second round after the sorting is built: tricky mails for the router, more cases for the window.
+        "key": "drill9-sortier-tippfehler",
+        "drill": 9,
+        "extra": True,
+        "subject": 'Leistungsprüfnug nach Todesfal — VTR-00000202',
+        "text": 'Guten Tag,\n\nbitte starten Sie die Leistungsprüfnug nach dem Todesfal meiner Schwester.\n\nMartin Ortlepp',
+        "expectation": 'Sortier-Test: Leben mit Tippfehlern.',
+    },
+    {
+        # Second round after the sorting is built: tricky mails for the router, more cases for the window.
+        "key": "drill9-sortier-ohne-hinweis",
+        "drill": 9,
+        "extra": True,
+        "subject": 'Unterlagen',
+        "text": 'Guten Tag,\n\nanbei die Unterlagen, die Sie angefordert hatten.\n\nFreundliche Grüße',
+        "expectation": 'Sortier-Test: kein Hinweis auf die Sparte – richtig ist „bleibt offen“.',
+    },
+    {
+        # Second round after the sorting is built: tricky mails for the router, more cases for the window.
+        "key": "drill9-sortier-irrefuehrend",
+        "drill": 9,
+        "extra": True,
+        "subject": 'Kein Schaden, nur eine Frage',
+        "text": 'Guten Tag,\n\nkein Schaden, nur eine Frage: Muss ich meine Risikolebensversicherung anpassen, wenn ich umziehe?\n\nJonas Keller',
+        "expectation": 'Sortier-Test: Leben – aber das Wort „Schaden“ führt Stichwort-Regeln in die Irre.',
+    },
+    {
+        # Second round after the sorting is built: tricky mails for the router, more cases for the window.
+        "key": "drill9-handy",
+        "drill": 9,
+        "extra": True,
+        "subject": 'Handy der Freundin fallen gelassen — VTR-00002300',
+        "text": 'Hallo,\n\nmir ist das Handy meiner Freundin heruntergefallen, das Display ist kaputt. Die Reparatur kostet 180 EUR. Zahlt das meine Haftpflicht VTR-00002300?\n\nViele Grüße\nHanna Haas',
+        "expectation": 'Haftpflicht (PrivatPlus, PM-2025), kleiner Betrag – ein Kandidat zum Laufenlassen im Eingriffsfenster.',
+    },
+    {
+        # Second round after the sorting is built: tricky mails for the router, more cases for the window.
+        "key": "drill9-wasser-gross",
+        "drill": 9,
+        "extra": True,
+        "subject": 'Wasserschaden beim Nachbarn — VTR-00002489',
+        "text": 'Sehr geehrte Damen und Herren,\n\nbei uns ist ein Schlauch der Waschmaschine geplatzt, das Wasser lief in die Wohnung unter uns. Der Nachbar schätzt den Schaden auf 48.000 CHF. Bitte bestätigen Sie, dass meine Haftpflicht VTR-00002489 das übernimmt.\n\nFreundliche Grüße\nBen Hofer',
+        "expectation": 'Haftpflicht (PrivatPlus, PM-2025, CHF), hoher Betrag – würdet ihr das automatisch rausgehen lassen?',
+    },
+    {
+        # Second round after the sorting is built: tricky mails for the router, more cases for the window.
+        "key": "drill9-hund",
+        "drill": 9,
+        "extra": True,
+        "subject": 'Dog bit a courier — VTR-00002711',
+        "text": "Hello,\n\nour dog bit a delivery driver in front of our house yesterday. He is asking for compensation for his trousers and a doctor's bill. Is this covered by our liability policy VTR-00002711?\n\nBest regards\nSara Kohler",
+        "expectation": 'Haftpflicht auf Englisch; im Vertrag steht kein Hundehalter-Baustein – eine Absage, die automatisch rausgeht? Besser anhalten.',
+    },
+    {
         "key": "challenge-injection",
         "drill": 0,
         "subject": "Nachtrag zu meiner Anfrage — VTR-00000102",
