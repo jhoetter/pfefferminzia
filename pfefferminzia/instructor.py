@@ -201,11 +201,14 @@ def _sent_log(directory: Path) -> list[dict[str, Any]]:
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
 
 
-def send_scenarios(drill: str, *, slots: list[str] | None = None, execute: bool = False, resend: bool = False,
+def send_scenarios(drill: str, *, slots: list[str] | None = None, only: list[str] | None = None, execute: bool = False, resend: bool = False,
                    pause_seconds: float = 2.0, directory: Path = INSTRUCTOR_DIR, client: Any = None,
                    sleep: Callable[[float], None] = time.sleep) -> dict[str, Any]:
     """Send one drill's scenario messages from the instructor inbox to every (or selected) participant."""
     scenarios: list[Scenario] = scenarios_for(drill)
+    if only:
+        # Pick single cases by (the end of) their key, e.g. only=["handy", "wasser-gross"].
+        scenarios = [item for item in scenarios if any(item["key"] == key or item["key"].endswith(f"-{key}") for key in only)]
     if not scenarios:
         raise ValueError("Unbekannter Drill: 6, 7, 8, 9 oder challenge")
     roster = [row for row in read_roster(directory) if row["email"] and (not slots or row["slot"] in slots)]

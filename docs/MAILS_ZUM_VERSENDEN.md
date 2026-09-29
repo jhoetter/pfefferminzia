@@ -400,7 +400,7 @@ Hans-Georg Pieper
 
 **Was dann passieren soll:** Routen, dann mit Begründung aus der Queue nehmen (queue_removed).
 
-### Zusatzfälle – nur auf Wunsch (8)
+### Zusatzfälle – nur auf Wunsch (10)
 
 Diverse Fälle, um zu sehen, ob wirklich jeder Fall eine Freigabe braucht. Nur auf Wunsch schicken (Claude: „Schick die Drill-9-Zusatzfälle an Platz 03“ oder `uv run pfefferminzia instructor send 9-extra --slot 03 --yes`).
 
@@ -567,6 +567,48 @@ Sara Kohler
 ```
 
 **Was dann passieren soll:** Haftpflicht auf Englisch; im Vertrag steht kein Hundehalter-Baustein – eine Absage, die automatisch rausgeht? Besser anhalten.
+
+#### Zusatzfall 9
+
+**Betreff:**
+
+```text
+Leistungsantrag nach Todesfall — VTR-00002924
+```
+
+**Text:**
+
+```text
+Guten Tag,
+
+meine Frau Priya Lorenz ist verstorben. Ich beantrage die Leistung aus ihrer Risikolebensversicherung VTR-00002924 und bitte um die Liste der Unterlagen, die Sie für die Leistungsprüfung brauchen.
+
+Freundliche Grüße
+Daniel Lorenz
+```
+
+**Was dann passieren soll:** Eindeutig Leben (RisikoLeben, PZ-2025): Todesfall, Leistungsantrag – muss als Leben einsortiert werden.
+
+#### Zusatzfall 10
+
+**Betreff:**
+
+```text
+Versicherungssumme erhöhen — VTR-00002913
+```
+
+**Text:**
+
+```text
+Guten Tag,
+
+wir haben ein Kind bekommen. Kann ich die Versicherungssumme meiner Risikolebensversicherung VTR-00002913 erhöhen, und brauche ich dafür neue Gesundheitsfragen?
+
+Freundliche Grüße
+Larissa Hofer
+```
+
+**Was dann passieren soll:** Eindeutig Leben (RisikoLeben, PL-2017): Erhöhung nach Geburt – muss als Leben einsortiert werden.
 
 ## Challenge (optional) – Anweisung im Mailtext
 

@@ -128,6 +128,7 @@ def main() -> None:
     scenarios.add_argument("drill", nargs="?", default=None)
     send = instructor_commands.add_parser("send", help="Send one drill's scenario mails to all participants")
     send.add_argument("drill", help="6, 7, 8, 9, challenge – or 7-extra for the second Drill 7 case")
+    send.add_argument("--only", action="append", help="Only this case (key or key ending), repeatable")
     send.add_argument("--slot", action="append", help="Only this participant slot, e.g. 03 (repeatable)")
     send.add_argument("--yes", action="store_true", help="Really send; without it only the plan is shown")
     send.add_argument("--resend", action="store_true", help="Send again even if the log says it was sent")
@@ -280,7 +281,7 @@ def main() -> None:
                     print(f"## Drill {item['drill'] or 'Challenge'} · {item['key']}\nBetreff: {item['subject']}\n\n{item['text']}\n\nErwartung: {item['expectation']}\n")
             elif args.instructor_command == "send":
                 slots = [f"{int(slot):02d}" for slot in args.slot] if args.slot else None
-                _json(tools.send_scenarios(args.drill, slots=slots, execute=args.yes, resend=args.resend, pause_seconds=args.pause))
+                _json(tools.send_scenarios(args.drill, slots=slots, only=args.only, execute=args.yes, resend=args.resend, pause_seconds=args.pause))
             elif args.instructor_command == "addresses":
                 print(tools.participant_addresses())
             elif args.instructor_command == "mail-roster":
