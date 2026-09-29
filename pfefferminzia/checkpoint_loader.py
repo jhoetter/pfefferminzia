@@ -65,8 +65,19 @@ def _plans_dir() -> Path:
     return path
 
 
+def _fetch_checkpoint_tag(tag: str) -> None:
+    """Fetch the newest official tag; a shallow clone (`--depth 1`) has no tags yet. Offline is fine."""
+    shallow = subprocess.run(["git", "rev-parse", "--is-shallow-repository"], cwd=ROOT, capture_output=True, text=True).stdout.strip() == "true"
+    command = ["git", "fetch", "--quiet", "--force", *(["--depth", "1"] if shallow else []), "origin", f"+{tag}:{tag}"]
+    try:
+        subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=180)
+    except (OSError, subprocess.SubprocessError):
+        pass
+
+
 def _official_ref(checkpoint: str) -> tuple[str, str, bool]:
     tag = f"refs/tags/checkpoint/{checkpoint}"
+    _fetch_checkpoint_tag(tag)
     try:
         commit = _git_output("rev-parse", "--verify", f"{tag}^{{commit}}")
         return tag, commit, True

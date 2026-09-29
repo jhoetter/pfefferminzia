@@ -145,7 +145,7 @@
     },
     {
       id: 'ZielVideo', type: 'Ziel', eyebrow: 'Wohin der Tag führt', title: 'Um 16:30 zeigt ihr euer eigenes Video.', visual: true,
-      body: `<div class="day-shot"><video src="assets/video/pfefferminzia-2-0-pitch.mp4" poster="assets/drill10-video.webp" controls preload="metadata"></video></div>`,
+      body: `<div class="day-shot"><video poster="assets/drill10-video.webp" controls preload="metadata"><source src="assets/video/pfefferminzia-2-0-pitch.mp4" type="video/mp4"><source src="https://github.com/jhoetter/pfefferminzia/releases/download/workshop-medien/pfefferminzia-2-0-pitch.mp4" type="video/mp4"></video></div>`,
       notes: 'ZEIT: 2 Minuten. ERST ABSPIELEN, ohne Vorrede (60 Sekunden, Ton an). SAGEN: Diese Software bauen wir heute. Und am Ende des Tages macht ihr mit eurer eigenen, angepassten Version so ein Video – und zeigt es eurem Vorstand. NICHT: erklären, wie das Video gemacht ist – das kommt in Drill 10.'
     },
     {
@@ -179,7 +179,7 @@
     {
       id: 'Drill6Los', type: 'Drill', eyebrow: 'Drill 6 · So startet ihr', title: 'Ein Satz an Claude. Kein Terminal.', study: true,
       body: grid([
-        card('Claude-App → Code', `${prompt('Klone https://github.com/jhoetter/pfefferminzia nach ~/pfefferminzia, richte alles nach der README ein und starte die Kommandozentrale. Ich bin in Drill 6.')}<p class="day-small">Dann den Schlüssel vom Zettel einfügen.</p>`, 'mint-card'),
+        card('Claude-App → Code', `${prompt('Klone https://github.com/jhoetter/pfefferminzia flach (nur den neuesten Stand) nach ~/pfefferminzia, richte alles nach der README ein und starte die Kommandozentrale. Ich bin in Drill 6.')}<p class="day-small">Dann den Schlüssel vom Zettel einfügen.</p>`, 'mint-card'),
         card('Nicht weiter?', `<p class="day-emphasis">Fragt Claude – oder mich.</p><p>Claude kennt den Drill und gibt Hinweise in kleinen Schritten. Ich laufe rum.</p>`)
       ]),
       notes: 'ZEIT: 10 Minuten inkl. Einrichtung. SAGEN: Claude-App öffnen, Bereich Code, neue Sitzung mit eurem Benutzerordner. Sagt Claude den Satz; danach bittet es euch einmal um eine neue Sitzung im Ordner pfefferminzia, dann öffnet sich die Kommandozentrale – ein Softwaregerüst, das ihr heute ausbaut. Die erste Aufgabe steht schon drin: meine Mail beantworten. Keine Sorge: Beim nächsten Drill gibt es einen Checkpoint. VORHER: Claude bitten „Schick die Drill-6-Begrüßung an alle“.'
@@ -264,7 +264,7 @@
     {
       id: 'Drill10Daten', type: 'Screenshot', eyebrow: 'Drill 10 · Ein Beispiel', title: 'Botschaft → Video → Vorstand.', study: true, visual: true,
       body: shot(['drill10-video.webp', 'Standbild aus dem Beispielvideo Pfefferminzia 2.0']),
-      notes: 'ZEIT: 2 Minuten. Das Beispielvideo aus der README kurz zeigen (slides/assets/video/pfefferminzia-2-0-pitch.mp4) – als Möglichkeit, nicht als Vorlage zum Nachbauen. SAGEN: Claude richtet Node und Remotion im Hintergrund ein, während ihr die Botschaft überlegt. Klappt das nicht in fünf Minuten: Video weglassen, Präsentation bauen. Marketing darf begeistern – aber keine erfundenen Zahlen. Der Vorstand braucht Beleg und Grenze.'
+      notes: 'ZEIT: 2 Minuten. Das Beispielvideo aus der README kurz zeigen (Release „workshop-medien“) – als Möglichkeit, nicht als Vorlage zum Nachbauen. SAGEN: Claude richtet Node und Remotion im Hintergrund ein, während ihr die Botschaft überlegt. Klappt das nicht in fünf Minuten: Video weglassen, Präsentation bauen. Marketing darf begeistern – aber keine erfundenen Zahlen. Der Vorstand braucht Beleg und Grenze.'
     },
     {
       id: 'Drill10Auftrag', type: 'Drill', eyebrow: "Drill 10 · Eure Aufgaben · 45 Minuten", title: "Ein Video. Eine Präsentation. Eure Botschaft.",

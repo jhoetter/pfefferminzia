@@ -11,7 +11,7 @@ ins Repo kommt nur die fertige MP4-Datei (`slides/video/`).
 
 ## Das Beispiel
 
-Ein fertiges Beispiel liegt im Repo: [das Video](../slides/assets/video/pfefferminzia-2-0-pitch.mp4)
+Ein fertiges Beispiel liegt im Repo: [das Video](https://github.com/jhoetter/pfefferminzia/releases/download/workshop-medien/pfefferminzia-2-0-pitch.mp4)
 und sein Code in [`video-beispiel/`](../video-beispiel/). Claude darf es als
 Vorlage kopieren (nach `~/pfefferminzia-video`) – eure Botschaft, Szenen und
 Texte bestimmt ihr. Tempo-Trick aus dem Beispiel: Bei 112,5 BPM ist ein Schlag
@@ -37,8 +37,8 @@ genau 16 Bilder; so landen Schnitte und Einblendungen auf der Musik.
 3. **Bilder (optional):** Screenshots deiner Kommandozentrale (Mac: `⌘⇧4`)
    in `~/pfefferminzia-video/public/`. Keine Schlüssel, keine privaten Mails.
    Es geht auch ohne: Logo, Farben, Text und Bewegung reichen.
-4. **Musik (optional):** Vier lizenzierte Instrumentals liegen in
-   `assets/music/` (Audiio). Claude misst auf Wunsch das Tempo und sucht den
+4. **Musik (optional):** Vier lizenzierte Instrumentals (Audiio) lädt Claude
+   bei Bedarf nach `assets/music/` herunter (Adressen in `assets/music/README.md`). Claude misst auf Wunsch das Tempo und sucht den
    Drop; nur im eigenen Video verwenden, nicht als Datei weitergeben.
 5. **Pfefferminzia-Look:** Tiefes Grün `#173d2c`, Minze `#52b986`, helles
    Minzgrün `#d9f1e1`; das Logo liegt in `slides/assets/pfefferminzia-logo.svg`.

@@ -7,3 +7,9 @@ __pycache__/
 node_modules/
 *.log
 .instructor/
+
+# Große Medien liegen im GitHub-Release „workshop-medien“, nicht im Repo (schnelles Klonen).
+assets/music/*.flac
+assets/music/*.wav
+slides/assets/video/*.mp4
+docs/Dienstag-Folien.pdf

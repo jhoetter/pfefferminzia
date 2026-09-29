@@ -74,8 +74,13 @@ kostet ihre Aufmerksamkeit für das Eigentliche.
 
 Führe diese Schritte still selbst aus:
 
-1. Klonen (Standard `~/pfefferminzia`; gibt es den Ordner schon als dieses
-   Repo, dort `git pull`), dann einen eigenen Branch: `git switch -c workshop/mein-tag`.
+1. **Flach** klonen, damit es auch im vollen WLAN schnell geht:
+   `git clone --depth 1 https://github.com/jhoetter/pfefferminzia ~/pfefferminzia`
+   (Befehl mit langer Zeitgrenze starten, etwa 10 Minuten). Gibt es den Ordner
+   schon als dieses Repo, dort `git pull`; ist er von einem abgebrochenen Klonen
+   halb angelegt (kein funktionierendes Repo, keine eigene Arbeit darin),
+   löschen und neu klonen. Dann einen eigenen Branch: `git switch -c workshop/mein-tag`.
+   Die Checkpoint-Stände holt der Drill-Wechsel selbst nach.
 2. `uv sync --frozen` und `uv run pfefferminzia setup` (legt auch `.env` an;
    liest und sendet keine Mails).
 3. App **im Hintergrund** starten: `uv run pfefferminzia serve --open`
@@ -404,7 +409,8 @@ Hand. **Erst das Video, dann die Präsentation.**
   Archiv von nodejs.org, nie `sudo`). Remotion-Projekt in
   `~/pfefferminzia-video` (außerhalb des Repos); als Vorlage darf das
   Beispiel aus `video-beispiel/` dorthin kopiert werden – Botschaft und Szenen
-  bestimmt die Person. Musik liegt in `assets/music/` (Audiio-Lizenz: nur im
+  bestimmt die Person. Musik wird bei Bedarf heruntergeladen (siehe
+  `assets/music/README.md`, Release „workshop-medien“; Audiio-Lizenz: nur im
   eigenen Video, nie als Datei weitergeben). Pfefferminzia-Look: Grün
   `#173d2c`, Minze `#52b986`, hell `#d9f1e1`, Logo
   `slides/assets/pfefferminzia-logo.svg`. Vorschau mit `npx remotion studio`,

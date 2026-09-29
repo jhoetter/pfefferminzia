@@ -19,9 +19,9 @@ Beim nächsten Drill gibt es immer einen offiziellen Zwischenstand mit Lösung.
 Du brauchst **kein Terminal**. Öffne die Claude-App → **Code** → neue
 Sitzung mit deinem Benutzerordner und schreibe:
 
-> Klone https://github.com/jhoetter/pfefferminzia nach ~/pfefferminzia,
-> richte alles nach der README ein und starte die Kommandozentrale.
-> Ich bin in Drill 6.
+> Klone https://github.com/jhoetter/pfefferminzia flach (nur den neuesten
+> Stand) nach ~/pfefferminzia, richte alles nach der README ein und starte
+> die Kommandozentrale. Ich bin in Drill 6.
 
 Claude richtet alles ein und öffnet <http://127.0.0.1:3004>. Wenn es fragt,
 füge den **Schlüssel von deinem Zettel** ein (beginnt mit `am_`). Grauer

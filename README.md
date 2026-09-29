@@ -13,9 +13,9 @@ darf: **Pflichtfreigabe** bei Leben, **Eingriffsfenster** bei Haftpflicht.
 
 ## Wohin der Tag führt: Pfefferminzia 2.0 in 60 Sekunden
 
-[![Pfefferminzia 2.0 – Beispiel-Launchvideo](docs/media/pfefferminzia-2-0-teaser.gif)](slides/assets/video/pfefferminzia-2-0-pitch.mp4)
+[![Pfefferminzia 2.0 – Beispiel-Launchvideo](docs/media/pfefferminzia-2-0-teaser.gif)](https://github.com/jhoetter/pfefferminzia/releases/download/workshop-medien/pfefferminzia-2-0-pitch.mp4)
 
-**[▶ Ganzes Video ansehen (MP4, 60 s, mit Ton)](slides/assets/video/pfefferminzia-2-0-pitch.mp4)**
+**[▶ Ganzes Video ansehen (MP4, 60 s, mit Ton)](https://github.com/jhoetter/pfefferminzia/releases/download/workshop-medien/pfefferminzia-2-0-pitch.mp4)**
 
 So kann es am Ende aussehen: In Drill 10 macht jede Person ein eigenes
 Marketing-Video über ihr Pfefferminzia 2.0 und zeigt es in ihrer
@@ -56,9 +56,9 @@ Git schon installiert). **Kein Terminal nötig.** Öffne in der Claude-App den
 Bereich **Code**, starte eine neue Sitzung mit deinem Benutzerordner und
 schreibe:
 
-> Klone https://github.com/jhoetter/pfefferminzia nach ~/pfefferminzia,
-> richte alles nach der README ein und starte die Kommandozentrale.
-> Ich bin in Drill 6.
+> Klone https://github.com/jhoetter/pfefferminzia flach (nur den neuesten
+> Stand) nach ~/pfefferminzia, richte alles nach der README ein und starte
+> die Kommandozentrale. Ich bin in Drill 6.
 
 Claude richtet alles ein, öffnet die Kommandozentrale im Browser
 (<http://127.0.0.1:3004>) und fragt nach dem **Schlüssel von deinem Zettel**

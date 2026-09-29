@@ -60,10 +60,10 @@ def test_tuesday_deck_covers_all_five_milestones() -> None:
         assert slide in ids
     for drill in range(6, 11):
         assert f"reserve({drill}," in script and f"'Reserve{drill}', 'ReserveImmer'" in script
-    assert (ROOT / "slides" / "assets" / "video" / "pfefferminzia-2-0-pitch.mp4").is_file()
+    assert "releases/download/workshop-medien/pfefferminzia-2-0-pitch.mp4" in script
     assert (ROOT / "docs" / "RESERVE_RUNDEN.md").is_file()
     assert "MCPWerkzeuge" in ids and "handout" in script
-    assert (ROOT / "docs" / "Dienstag-Folien.pdf").is_file()
+    assert "flach (nur den neuesten Stand)" in script
     assert "Uebernickel" not in script and "Fragt Claude – oder mich." in script
     assert "LiveBeispiele" in ids
     assert "Cron" in script

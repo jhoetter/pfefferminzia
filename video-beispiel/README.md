@@ -1,7 +1,7 @@
 # Beispiel: Launchvideo „Pfefferminzia 2.0“ (Remotion)
 
 Das Beispielvideo aus Drill 10, ganz aus React-Komponenten gebaut. Ergebnis:
-[`slides/assets/video/pfefferminzia-2-0-pitch.mp4`](../slides/assets/video/pfefferminzia-2-0-pitch.mp4).
+[Beispielvideo](https://github.com/jhoetter/pfefferminzia/releases/download/workshop-medien/pfefferminzia-2-0-pitch.mp4).
 
 ```sh
 npm install
@@ -16,7 +16,7 @@ npm run render   # → out/pfefferminzia-2-0-pitch.mp4
 | `src/film.tsx` | Kamera mit harten Schnitten und Fahrten, Tiefenschärfe, Untertitel, die vier Teile |
 | `src/Pitch.tsx` | Zeitleiste und Musik |
 
-Die Musik kommt aus `../assets/music` (Audiio-Lizenz: nur im eigenen Video
+Die Musik kommt aus `../assets/music` (erst herunterladen, siehe `assets/music/README.md`) (Audiio-Lizenz: nur im eigenen Video
 verwenden, nicht als Datei weitergeben). Alle Fälle sind erfunden.
 Teilnehmende kopieren diesen Ordner nach `~/pfefferminzia-video` und machen
 daraus ihr eigenes Video; im Repo bleibt er Node-frei (kein `node_modules`).

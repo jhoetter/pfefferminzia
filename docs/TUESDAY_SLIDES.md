@@ -48,7 +48,7 @@ Referentenansicht mit Notizen, `F` Vollbild und `Esc` die Übersicht. Für den
 PDF-Export `&print-pdf` an eine Deck-URL mit `?deck=...` anhängen und mit
 Hintergrundgrafiken drucken.
 
-**Zum Verschicken:** [Dienstag-Folien.pdf](Dienstag-Folien.pdf) – Input,
+**Zum Verschicken:** [Dienstag-Folien.pdf](https://github.com/jhoetter/pfefferminzia/releases/download/workshop-medien/Dienstag-Folien.pdf) (im Release „workshop-medien“) – Input,
 Drill 6–10, Abschluss und der Vortrag „Jede Aufgabe zuerst agentisch“ in einer
 Datei, ohne Teilnehmenden-Liste, Reserve-Runden und Anhang. Erzeugt aus den
 Decks mit `?handout=1&print-pdf` (Handout-Modus lässt die Dozenten-Folien weg).
