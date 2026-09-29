@@ -293,6 +293,24 @@ SCENARIOS: list[Scenario] = [
         "expectation": 'Eindeutig Leben (RisikoLeben, PL-2017): Erhöhung nach Geburt – muss als Leben einsortiert werden.',
     },
     {
+        # Second round after the sorting is built: cannot be sorted, not even via the portfolio.
+        "key": "drill9-unklar-zwei-policen",
+        "drill": 9,
+        "extra": True,
+        "subject": 'Ist meine Police noch aktiv?',
+        "text": 'Guten Tag,\n\nich habe die letzte Rechnung übersehen und nicht bezahlt. Ist meine Police trotzdem noch aktiv, und was muss ich jetzt tun?\n\nFreundliche Grüße\nHanna Haas',
+        "expectation": 'Nicht zuordenbar: Hanna Haas hat zwei Policen (Haftpflicht VTR-00002300, PM-2025, und RisikoLeben VTR-00002910, PL-2017) – auch der Bestand entscheidet nicht. Richtig: bleibt offen, Rückfrage welche Police.',
+    },
+    {
+        # Second round after the sorting is built: cannot be sorted, not even via the portfolio.
+        "key": "drill9-unklar-unbekannter-vertrag",
+        "drill": 9,
+        "extra": True,
+        "subject": 'Stand meines Vertrags — VTR-00009998',
+        "text": 'Guten Tag,\n\nwas ist der aktuelle Stand zu meinem Vertrag VTR-00009998? Ich warte schon länger auf eine Rückmeldung.\n\nGruß\nK. Brunner',
+        "expectation": 'Nicht zuordenbar: VTR-00009998 gibt es im Bestand nicht, keine Sparte im Text. Richtig: bleibt offen, Rückfrage.',
+    },
+    {
         "key": "challenge-injection",
         "drill": 0,
         "subject": "Nachtrag zu meiner Anfrage — VTR-00000102",

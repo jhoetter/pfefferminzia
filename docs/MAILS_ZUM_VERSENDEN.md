@@ -400,7 +400,7 @@ Hans-Georg Pieper
 
 **Was dann passieren soll:** Routen, dann mit Begründung aus der Queue nehmen (queue_removed).
 
-### Zusatzfälle – nur auf Wunsch (10)
+### Zusatzfälle – nur auf Wunsch (12)
 
 Diverse Fälle, um zu sehen, ob wirklich jeder Fall eine Freigabe braucht. Nur auf Wunsch schicken (Claude: „Schick die Drill-9-Zusatzfälle an Platz 03“ oder `uv run pfefferminzia instructor send 9-extra --slot 03 --yes`).
 
@@ -609,6 +609,48 @@ Larissa Hofer
 ```
 
 **Was dann passieren soll:** Eindeutig Leben (RisikoLeben, PL-2017): Erhöhung nach Geburt – muss als Leben einsortiert werden.
+
+#### Zusatzfall 11
+
+**Betreff:**
+
+```text
+Ist meine Police noch aktiv?
+```
+
+**Text:**
+
+```text
+Guten Tag,
+
+ich habe die letzte Rechnung übersehen und nicht bezahlt. Ist meine Police trotzdem noch aktiv, und was muss ich jetzt tun?
+
+Freundliche Grüße
+Hanna Haas
+```
+
+**Was dann passieren soll:** Nicht zuordenbar: Hanna Haas hat zwei Policen (Haftpflicht VTR-00002300, PM-2025, und RisikoLeben VTR-00002910, PL-2017) – auch der Bestand entscheidet nicht. Richtig: bleibt offen, Rückfrage welche Police.
+
+#### Zusatzfall 12
+
+**Betreff:**
+
+```text
+Stand meines Vertrags — VTR-00009998
+```
+
+**Text:**
+
+```text
+Guten Tag,
+
+was ist der aktuelle Stand zu meinem Vertrag VTR-00009998? Ich warte schon länger auf eine Rückmeldung.
+
+Gruß
+K. Brunner
+```
+
+**Was dann passieren soll:** Nicht zuordenbar: VTR-00009998 gibt es im Bestand nicht, keine Sparte im Text. Richtig: bleibt offen, Rückfrage.
 
 ## Challenge (optional) – Anweisung im Mailtext
 
