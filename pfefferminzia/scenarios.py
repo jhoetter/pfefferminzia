@@ -115,33 +115,6 @@ SCENARIOS: list[Scenario] = [
     },
     {
         # Test case on request: does every case really need an approval?
-        "key": "freigabe-test-handy",
-        "drill": 8,
-        "extra": True,
-        "subject": 'Handy der Freundin fallen gelassen — VTR-00002300',
-        "text": 'Hallo,\n\nmir ist das Handy meiner Freundin heruntergefallen, das Display ist kaputt. Die Reparatur kostet 180 EUR. Zahlt das meine Haftpflicht VTR-00002300?\n\nViele Grüße\nHanna Haas',
-        "expectation": 'Haftpflicht (PrivatPlus, PM-2025). Kleiner Betrag – heute keine Freigabe nötig. Sinnvoll? Eher nein.',
-    },
-    {
-        # Test case on request: does every case really need an approval?
-        "key": "freigabe-test-wasser-gross",
-        "drill": 8,
-        "extra": True,
-        "subject": 'Wasserschaden beim Nachbarn — VTR-00002489',
-        "text": 'Sehr geehrte Damen und Herren,\n\nbei uns ist ein Schlauch der Waschmaschine geplatzt, das Wasser lief in die Wohnung unter uns. Der Nachbar schätzt den Schaden auf 48.000 CHF. Bitte bestätigen Sie, dass meine Haftpflicht VTR-00002489 das übernimmt.\n\nFreundliche Grüße\nBen Hofer',
-        "expectation": 'Haftpflicht (PrivatPlus, PM-2025, CHF). Hoher Betrag – heute keine Freigabe nötig. Sinnvoll? Eher ja: Betragsgrenze?',
-    },
-    {
-        # Test case on request: does every case really need an approval?
-        "key": "freigabe-test-hund",
-        "drill": 8,
-        "extra": True,
-        "subject": 'Dog bit a courier — VTR-00002711',
-        "text": "Hello,\n\nour dog bit a delivery driver in front of our house yesterday. He is asking for compensation for his trousers and a doctor's bill. Is this covered by our liability policy VTR-00002711?\n\nBest regards\nSara Kohler",
-        "expectation": 'Haftpflicht (PrivatPlus, HP-MODERN, CHF), englisch. Im Vertrag steht kein Hundehalter-Baustein – vermutlich nicht gedeckt: eine Ablehnung ohne Freigabe? Diskussion.',
-    },
-    {
-        # Test case on request: does every case really need an approval?
         "key": "freigabe-test-kuendigung",
         "drill": 8,
         "extra": True,
@@ -172,18 +145,27 @@ SCENARIOS: list[Scenario] = [
         "key": "freigabe-test-unbekannt",
         "drill": 8,
         "extra": True,
-        "subject": 'Unfall – bitte schnell melden — VTR-00009999',
-        "text": 'Guten Tag,\n\nich hatte gestern einen Unfall und brauche dringend eine Bestätigung, dass mein Vertrag VTR-00009999 das abdeckt.\n\nGruß\nM. Schneider',
-        "expectation": 'Vertrag existiert nicht im Bestand – keine Zuordnung möglich. Antwort: Rückfrage statt Zusage. Freigabe nötig?',
+        "subject": 'Todesfall meines Vaters — VTR-00009999',
+        "text": 'Guten Tag,\n\nmein Vater ist letzte Woche verstorben. Er hatte eine Lebensversicherung bei Ihnen, Vertrag VTR-00009999. Bitte zahlen Sie die Summe aus.\n\nGruß\nM. Schneider',
+        "expectation": 'Leben, aber der Vertrag existiert nicht im Bestand – keine Zuordnung möglich. Antwort: Rückfrage statt Zusage. Braucht eine Rückfrage eine Freigabe?',
     },
     {
         # Test case on request: does every case really need an approval?
-        "key": "freigabe-test-allgemein",
+        "key": "freigabe-test-beitragspause",
         "drill": 8,
         "extra": True,
-        "subject": 'Zahnzusatzversicherung?',
-        "text": 'Hallo,\n\nbieten Sie auch eine Zahnzusatzversicherung an? Was kostet die ungefähr?\n\nDanke und Gruß\nAlex Winter',
-        "expectation": 'Kein Vertrag, keine Sparte – allgemeine Produktfrage. Freigabe sinnvoll? Eher nein.',
+        "subject": 'Beiträge pausieren? — VTR-00002916',
+        "text": 'Guten Tag,\n\nich habe meine Stelle verloren und kann die Beiträge für meine Risikolebensversicherung VTR-00002916 gerade nicht zahlen. Kann ich sie ein paar Monate aussetzen, ohne den Schutz zu verlieren?\n\nFreundliche Grüße\nEmil Schäfer',
+        "expectation": "Leben (RisikoLeben, PZ-2025, EUR 368'000). Kein Leistungsfall, aber eine Zusage mit Folgen für den Schutz. Freigabe sinnvoll? Eher ja.",
+    },
+    {
+        # Test case on request: does every case really need an approval?
+        "key": "freigabe-test-steuer",
+        "drill": 8,
+        "extra": True,
+        "subject": 'Bescheinigung für die Steuer — VTR-00001001',
+        "text": 'Guten Tag,\n\nkönnen Sie mir für meine Steuererklärung eine Bescheinigung über meine Vorsorgeversicherung VTR-00001001 schicken?\n\nVielen Dank\nNadia Ferreira-Bucher',
+        "expectation": 'Leben (Vorsorge, PZ-2025, CHF). Reine Verwaltung – heute trotzdem Freigabe nötig. Sinnvoll? Eher nein.',
     },
     {
         "key": "haftpflicht-laufen-lassen",
