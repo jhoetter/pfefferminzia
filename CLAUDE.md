@@ -77,9 +77,10 @@ Führe diese Schritte still selbst aus:
 1. **Flach** klonen, damit es auch im vollen WLAN schnell geht:
    `git clone --depth 1 https://github.com/jhoetter/pfefferminzia ~/pfefferminzia`
    (Befehl mit langer Zeitgrenze starten, etwa 10 Minuten). Gibt es den Ordner
-   schon als dieses Repo, dort `git pull`; ist er von einem abgebrochenen Klonen
-   halb angelegt (kein funktionierendes Repo, keine eigene Arbeit darin),
-   löschen und neu klonen. Dann einen eigenen Branch: `git switch -c workshop/mein-tag`.
+   schon als funktionierendes Repo, dort `git pull`. Ist er von einem
+   abgebrochenen Klonen halb angelegt, **nichts löschen**, sondern flach nach
+   `~/pfefferminzia-2` klonen und dort weiterarbeiten (in Schritt 6 dann diesen
+   Ordner nennen). Dann einen eigenen Branch: `git switch -c workshop/mein-tag`.
    Die Checkpoint-Stände holt der Drill-Wechsel selbst nach.
 2. `uv sync --frozen` und `uv run pfefferminzia setup` (legt auch `.env` an;
    liest und sendet keine Mails).
