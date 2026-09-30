@@ -332,6 +332,104 @@
       body: `<div class="day-flow"><div class="day-flow-step"><b>20 Min.</b><span>Landkarte<br>im Plenum</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>25 Min.</b><span>Automation Contract<br>pro Tisch</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>20 Min.</b><span>Galerierundgang</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>10 Min.</b><span>Abschluss,<br>Brücke zu Mittwoch</span></div></div>`,
       notes: 'Landkarte: zwei Achsen an die Wand (Risiko, Prüfbarkeit), jede Person klebt zwei eigene Prozesse. Die Prüfbarkeits-Achse ist Jason Weis Verifier’s Law: leicht prüfbar → leicht delegierbar; Frage an den Raum: Was bräuchtet ihr (Antwortschlüssel, Testfälle, Belege), damit ein Prozess auf der Achse nach rechts wandert? Contract: sechs Felder (Auslöser, Aktionen, Kontrollregel, Belege, Ausnahme, verantwortlicher Mensch) für einen Prozess pro Tisch. Galerie: Tische wandern, je eine Frage an jeden Contract. Abschluss: Was nehmt ihr als Regel mit? Welche externe Wirkung wäre bei euch heute schon verantwortbar?'
     },
+    {
+      id: 'MiTitel', type: 'Titel', eyebrow: 'Mittwoch · 30. September 2026', cover: true,
+      body: `<div class="day-cover-title">VOM SYSTEM IN<br>DIE EIGENE FIRMA</div><div class="day-cover-sub">Eure Fragen von gestern. Eure eigenen Fälle.</div><div class="day-cover-ribbon">BRING YOUR OWN CASE</div>`,
+      notes: 'ZEIT: 1 Minute. SAGEN: Gestern habt ihr ein agentisches System gebaut. Heute geht es darum, was davon in eure Firma passt. Erst eure Fragen von gestern, dann eure eigenen Fälle – ab 10 Uhr baut ihr, ich gehe rum.'
+    },
+    {
+      id: 'MiAblauf', type: 'Zeitplan', eyebrow: 'Heute früh', title: 'Bis 10 Uhr: Fragen klären, Fall wählen.',
+      body: `<div class="day-timeline">
+        <div class="day-timeline-row"><strong>08:30</strong><em>Rückblick</em><span>Was bleibt von gestern?</span></div>
+        <div class="day-timeline-row"><strong>08:45</strong><em>Eure Fragen</em><span>Deployment · Modelle · Server · Personas · Agenten-Dateien</span></div>
+        <div class="day-timeline-row"><strong>09:35</strong><em>Eure Fälle</em><span>Use Cases auf der Matrix, einer pro Person</span></div>
+        <div class="day-timeline-row"><strong>09:50</strong><em>Start</em><span>Steckbrief und ein Satz an Claude</span></div>
+        <div class="day-timeline-row now"><strong>10:00</strong><em>Ihr baut</em><span>am eigenen Fall – ich gehe rum</span></div>
+      </div>`,
+      notes: 'ZEIT: 30 Sekunden. Der Plan ist ein Rahmen: Wenn eine Frage mehr Zeit braucht, kürzen wir bei den anderen.'
+    },
+    {
+      id: 'MiRueckblick', type: 'Rückblick', eyebrow: 'Rückblick · Dienstag', title: 'Gestern in einem Bild.',
+      body: `<div class="day-flow"><div class="day-flow-step"><b>6</b><span>Posteingang:<br>Mensch sendet</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>7</b><span>Bestand:<br>belegter Entwurf</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>8</b><span>Freigabe der<br>Entscheidung</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>9</b><span>Automatisch mit<br>Eingriffsfenster</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>10</b><span>Video und<br>Vorstand</span></div></div>`,
+      notes: 'ZEIT: 10–15 Minuten. FLIPCHART: zwei Spalten „Würde ich morgen nutzen“ und „Macht mir Sorgen“. Reihum ein Satz pro Person, du schreibst mit (Stichworte). Die Sorgen-Spalte ist die Brücke zu „Eure Fragen“. Merksatz von gestern: Der Agent bereitet vor, der Mensch entscheidet – und welche Werkzeuge ein Agent bekommt, ist eine Gestaltungsentscheidung.'
+    },
+    {
+      id: 'MiFragen', type: 'Fragen', eyebrow: 'Eure Fragen von gestern', title: 'Womit fangen wir an?',
+      body: `<div class="day-backlog">${[
+        ['Wo läuft das Modell?', 'App, Schnittstelle, eigene Cloud, vertrauliche Ausführung, offene Modelle.'],
+        ['Welche Modelle?', 'Große Sprachmodelle, kleine offene Modelle – und was danach kommt.'],
+        ['Eigene Software betreiben', 'Vom Laptop auf den Server: was es wirklich braucht.'],
+        ['Synthetische Personas', 'Testen ohne echte Kundendaten.'],
+        ['Anweisungen für Agenten', 'CLAUDE.md, AGENTS.md und Design-Systeme.'],
+        ['Video aus Code', 'Was gestern bei Remotion und Pfefferminzia 2.0 funktioniert hat.']
+      ].map(([title, text]) => `<div class="day-card"><h3>${title}</h3><p>${text}</p></div>`).join('')}</div>`,
+      notes: 'ZEIT: 2 Minuten. Handzeichen: Jede Person darf zweimal die Hand heben. Die zwei, drei meistgewählten Themen zuerst, der Rest kürzer. Zu jedem Thema gibt es eine Folie; „Video aus Code“ nur auf Nachfrage mündlich: Botschaft vor Szenen, Takt statt Effekte, echte Bausteine der Oberfläche zeigen.'
+    },
+    {
+      id: 'MiDeployment', type: 'Frage', eyebrow: 'Eure Fragen · Deployment', title: 'Wo läuft das Modell? Fünf Stufen.',
+      body: `<div class="day-flow"><div class="day-flow-step"><b>App</b><span>Claude Team /<br>Enterprise</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Schnittstelle</b><span>direkt beim<br>Anbieter</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Eigene Cloud</b><span>AWS · Google ·<br>Microsoft, EU-Region</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Vertraulich</b><span>verschlüsselt auch<br>beim Betreiber</span></div><div class="day-arrow">→</div><div class="day-flow-step"><b>Offen, selbst</b><span>eigene Server,<br>eigener Betrieb</span></div></div>`,
+      notes: 'ZEIT: 10 Minuten. FLIPCHART: zwei Achsen – nach oben „Fähigkeit“, nach rechts „Kontrolle“. Die Gruppe sagt, wo welche Stufe liegt; du zeichnest. Dann: Wo steht euer Haus heute? SAGEN: Links wenig Aufwand und die stärksten Modelle, man regelt es über Verträge (Datenverarbeitung, keine Nutzung zum Training, Speicherdauer). Mitte: die Modelle über die eigene Cloud – bestehende Verträge, Datenstandort EU. Vertrauliche Ausführung (z. B. privatemode.ai): Daten bleiben auch für den Betreiber verschlüsselt. Rechts: offene Modelle auf eigenen Servern – volle Kontrolle, aber weniger Fähigkeit und ihr betreibt alles selbst. Die ehrliche Frage ist selten „welches Modell“, sondern „welche Daten dürfen wohin – und wer unterschreibt das“.'
+    },
+    {
+      id: 'MiModelle', type: 'Frage', eyebrow: 'Eure Fragen · Modelle', title: 'Nicht jede Aufgabe braucht das größte Modell.',
+      body: grid([
+        card('Große Sprachmodelle', `<p class="day-emphasis">Am fähigsten – für Denken, Planen, Code.</p>`, 'mint-card'),
+        card('Kleine, offene Modelle', `<p class="day-emphasis">Günstig, selbst betreibbar – für enge, klare Aufgaben.</p>`),
+        card('Was danach kommt', `<p class="day-emphasis">Weltmodelle: lernen, wie die Welt funktioniert – noch Forschung.</p>`, 'red-card')
+      ], 'three'),
+      notes: 'ZEIT: 8 Minuten. SAGEN: Gestern lief alles mit einem großen Modell (Sonnet 5.5) – für Programmieren und mehrstufige Arbeit ist das heute die Messlatte. Kleine offene Modelle lohnen sich, wenn die Aufgabe eng und gut prüfbar ist (Sortieren, Extrahieren) oder die Daten das Haus nicht verlassen dürfen. Weltmodelle bzw. Ansätze wie JEPA (Yann LeCun) versuchen, nicht Text vorherzusagen, sondern ein Modell der Welt zu lernen – spannend, aber kein Werkzeug für eure nächsten zwölf Monate. Praxisregel: mit dem stärksten Modell anfangen, bis es funktioniert; dann prüfen, ob ein kleineres reicht. Keine Zahlen versprechen, die wir nicht gemessen haben.'
+    },
+    {
+      id: 'MiServer', type: 'Frage', eyebrow: 'Eure Fragen · Eigene Software betreiben', title: 'Vom Laptop auf den Server.',
+      body: grid([
+        card('Leicht', `<p class="day-emphasis">Ein Server bei Hetzner oder in der eigenen Cloud – in einer Stunde.</p>`, 'mint-card'),
+        card('Die eigentliche Arbeit', `<p>Anmeldung · geheime Schlüssel · Datensicherung · Protokoll · Updates · Datenschutz</p><p class="day-emphasis">Wer betreibt es nachts um drei?</p>`, 'red-card')
+      ]),
+      notes: 'ZEIT: 8 Minuten. FLIPCHART: die Checkliste gemeinsam füllen – was fehlt Pfefferminzia noch, bevor sie echte Kundschaft bedienen dürfte? (Anmeldung und Rollen, Schlüssel nicht im Code, Backups, Protokoll, Updates, Datenschutz-Folgenabschätzung, Betrieb und Bereitschaft.) SAGEN: Mit Claude ist Code schnell geschrieben; Betrieb, Sicherheit und Verantwortung bleiben. Für den Anfang: intern, mit erfundenen oder freigegebenen Daten, hinter der Firmenanmeldung – und ein Name, wer es betreibt.'
+    },
+    {
+      id: 'MiPersonas', type: 'Frage', eyebrow: 'Eure Fragen · Synthetische Personas', title: 'Testen ohne echte Kundendaten.', visual: true,
+      body: `<div class="day-shot" style="gap:24px"><img src="./assets/agentisch/personas.webp" alt="Persona-Karten" style="max-width:48%"><img src="./assets/agentisch/council.webp" alt="Persona-Stimmen mit Einwänden" style="max-width:48%"></div>`,
+      notes: 'ZEIT: 8 Minuten. LIVE: data.sonaloop.com kurz zeigen. SAGEN: Synthetische Personas sind erfundene, aber stimmige Menschen mit Lebenslagen, Sprache, Widersprüchen. Wozu: (1) Use Cases testen, ohne echte Kundendaten zu verwenden – wie gestern bei Pfefferminzia, (2) Vielfalt prüfen: Funktioniert die Antwort auch für die Witwe, den Makler, den verärgerten Kunden? (3) Widerspruch holen: Personas können einer Idee widersprechen (rechts die Council-Ansicht). Grenze: Personas ersetzen keine echten Kundengespräche – sie machen die ersten Runden billiger. Für heute: Wer ab 10 Uhr baut, lässt sich von Claude erst ein paar Personas und Testfälle erfinden.'
+    },
+    {
+      id: 'MiAgentenDateien', type: 'Frage', eyebrow: 'Eure Fragen · Anweisungen für Agenten', title: 'Eine Datei macht Claude zu eurem Kollegen.',
+      body: grid([
+        card('CLAUDE.md / AGENTS.md', `<p class="day-emphasis">Wer vor dir sitzt · was du darfst · was nie · wie wir arbeiten</p>`, 'mint-card'),
+        card('Design-System', `<p class="day-emphasis">Eine gemeinsame Sprache für Oberfläche, Mensch und Agent.</p>`)
+      ]),
+      notes: 'ZEIT: 8 Minuten. LIVE: die CLAUDE.md von Pfefferminzia öffnen (Abschnitt 0 „So sprichst du“ und 3 „Was nur der Mensch tut“). SAGEN: Diese Datei hat Claude gestern zu eurem Tutor gemacht – mit Regeln wie „frag zuerst, bevor du baust“ und „senden tut nur der Mensch“. CLAUDE.md liest Claude Code, AGENTS.md ist das Gegenstück für andere Agenten; der Inhalt ist derselbe: Rolle, Zielgruppe, Grenzen, Arbeitsweise. Ein Design-System (Farben, Bausteine, Tonalität) sorgt dafür, dass Mensch und Agent dieselben Teile benutzen – wie gestern die Pfefferminzia-Farben im Video und in der Vorstandspräsentation. Für heute: Eure erste Datei entsteht aus eurem Steckbrief.'
+    },
+    {
+      id: 'MiMatrix', type: 'Eure Fälle', eyebrow: 'Eure Fälle', title: 'Wo lohnt es sich zu starten?',
+      body: `<div class="day-grid two" style="grid-template-rows:1fr 1fr;height:100%">
+        <div class="day-card"><h3>Viel Nutzen · schwer prüfbar</h3><p>Später – erst Belege und Prüfregeln bauen.</p></div>
+        <div class="day-card mint-card"><h3>Viel Nutzen · leicht prüfbar</h3><p class="day-emphasis">Hier heute starten.</p></div>
+        <div class="day-card"><h3>Wenig Nutzen · schwer prüfbar</h3><p>Liegen lassen.</p></div>
+        <div class="day-card"><h3>Wenig Nutzen · leicht prüfbar</h3><p>Gut zum Üben.</p></div>
+      </div>`,
+      notes: 'ZEIT: 12 Minuten. FLIPCHART: die Matrix groß zeichnen (nach oben Nutzen, nach rechts Prüfbarkeit). Reihum nennt jede Person zwei Use Cases aus ihrem Alltag in einem Satz; du oder die Person selbst schreibt ein Stichwort mit Kürzel an die passende Stelle. Nachfragen: „Woran würdest du merken, dass der Agent sich geirrt hat?“ – das bestimmt die Prüfbarkeit (Verifier’s Law von gestern). Jede Person wählt einen Fall, möglichst oben rechts.'
+    },
+    {
+      id: 'MiSteckbrief', type: 'Eure Fälle', eyebrow: 'Eure Fälle · Steckbrief', title: 'Sechs Fragen, bevor ihr baut.',
+      body: `<div class="day-backlog">${[
+        ['Auslöser', 'Was startet den Fall – eine Mail, ein Formular, ein Termin?'],
+        ['Was darf der Agent?', 'Lesen, nachschlagen, entwerfen – und was nie?'],
+        ['Wo entscheidet der Mensch?', 'Pflichtfreigabe oder Eingriffsfenster?'],
+        ['Belege', 'Worauf stützt sich das Ergebnis – und wo sieht man das?'],
+        ['Ausnahmen', 'Wann muss der Agent anhalten und fragen?'],
+        ['Erfolg', 'Ein Beispiel, ein Gegenbeispiel – woran merken wir, dass es funktioniert?']
+      ].map(([title, text]) => `<div class="day-card"><h3>${title}</h3><p>${text}</p></div>`).join('')}</div>`,
+      notes: 'ZEIT: 5 Minuten. Das ist der Automation Contract von gestern in handlich. Nicht ausfüllen lassen – Claude fragt die sechs Fragen im Gespräch ab (nächste Folie). Wichtig: nur erfundene oder freigegebene Daten.'
+    },
+    {
+      id: 'MiLos', type: 'Start', eyebrow: 'Ab 10 Uhr · Ein Satz an Claude', title: 'Euer Fall, euer Tutor.',
+      body: grid([
+        card('Claude-App → Code → neue Sitzung', prompt('Leg auf dem Schreibtisch den Ordner mein-use-case an. Frag mich nacheinander die sechs Fragen meines Steckbriefs – Auslöser, was du darfst, wo ich entscheide, Belege, Ausnahmen, Erfolg. Schreib daraus eine CLAUDE.md, in der steht: Du fragst zuerst, ich entscheide. Dann erfinde ein paar Personas und Testfälle, und wir bauen einen ersten kleinen Prototyp – nur mit erfundenen Daten.'), 'mint-card'),
+        card('Wie gestern', `<p class="day-emphasis">Ihr entscheidet, Claude baut. Ich gehe rum.</p><p class="day-small">Keine echten Kunden- oder Firmendaten.</p>`)
+      ]),
+      notes: 'ZEIT: 3 Minuten. SAGEN: Neue Code-Sitzung, Benutzerordner, diesen Satz schreiben. Claude fragt euch zuerst – wie gestern. Wer keinen eigenen Fall hat, nimmt einen von der Matrix oder baut Pfefferminzia weiter. Ab jetzt gehe ich rum.'
+    },
   ];
 
   const agentisch = window.PFEFFERMINZIA_AGENTISCH_SLIDES || [];
@@ -345,6 +443,7 @@
     'drill-09': ['Drill9Start', 'Zeitplan-drill-09', 'Rueckblick8', 'Drill9Queue', 'Drill9Auftrag', 'Checkpoints', 'Reserve9', 'ReserveImmer'],
     'drill-10': ['Drill10Start', 'Zeitplan-drill-10', 'Rueckblick9', 'Drill10Daten', 'Drill10Auftrag', 'Reserve10', 'ReserveImmer'],
     abschluss: ['Zeitplan-abschluss', 'Whiteboard', 'Contract'],
+    mittwoch: ['MiTitel', 'MiAblauf', 'MiRueckblick', 'MiFragen', 'MiDeployment', 'MiModelle', 'MiServer', 'MiPersonas', 'MiAgentenDateien', 'MiMatrix', 'MiSteckbrief', 'MiLos'],
     teilnehmende: ['Teilnehmende'],
     anhang: ['AnhangWhiteboard', 'AnhangAblauf', 'Reserve6', 'Reserve7', 'Reserve8', 'Reserve9', 'Reserve10', 'ReserveImmer'],
     agentisch: agentisch.map(slide => slide.id)

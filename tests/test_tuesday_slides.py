@@ -42,7 +42,7 @@ def test_tuesday_deck_covers_all_five_milestones() -> None:
     script = (ROOT / "slides" / "dienstag.js").read_text(encoding="utf-8")
     ids = re.findall(r"\bid: '([^']+)'", script)
 
-    assert len(ids) == 40
+    assert len(ids) == 52
     assert len(ids) == len(set(ids))
     for milestone in ("Drill6Start", "Drill7Start", "Drill8Start", "Drill9Start", "Drill10Start"):
         assert milestone in ids
@@ -69,7 +69,7 @@ def test_tuesday_deck_covers_all_five_milestones() -> None:
     assert "Cron" in script
     assert "Ich bin in Drill 6" in script
     assert "kein Werkzeug" in script
-    for deck in ("gesamt", "input", "drill-06", "drill-07", "drill-08", "drill-09", "drill-10", "abschluss", "teilnehmende", "anhang", "agentisch"):
+    for deck in ("gesamt", "input", "drill-06", "drill-07", "drill-08", "drill-09", "drill-10", "abschluss", "mittwoch", "teilnehmende", "anhang", "agentisch"):
         assert f"{deck}:" in script or f"'{deck}':" in script
     assert 'svg[aria-label^="Comicfigur Johannes"]' in script
 
